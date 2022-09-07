@@ -5,8 +5,8 @@
 
 ;*	Variables
 ;**********************************
-.def	SoundValue	$D2C2
-.def	HoldTime	$D46A	;keep a track of how long up/down buttons are held
+#define	SoundValue	$D2C2
+#define	HoldTime	$D46A	;keep a track of how long up/down buttons are held
 
 LevelSelectMenu:
 LABEL_A2C:
@@ -66,8 +66,8 @@ SoundTest_MainLoop:
 	jr		z, ++
 	ld   	a, (SoundValue)
 	ld   	($DD04), a
-++:	jr		SoundTest_MainLoop
-+:	ret
+	jr		SoundTest_MainLoop
+	ret
 
 _CheckInput:
 	ld   a, ($D147)
@@ -141,4 +141,4 @@ DrawSoundValue:
 CHARS:
 .DB "0123456789ABCDEF"
 
-.orga $0ec3
+.org $0ec3

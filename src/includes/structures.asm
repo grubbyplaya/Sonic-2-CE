@@ -47,14 +47,14 @@
 .endst
 
 ; Viewport Flag bits
-.def LVP_SCROLL_UP              0
-.def LVP_SCROLL_DOWN            1
-.def LVP_SCROLL_LEFT            2
-.def LVP_SCROLL_RIGHT           3
-.def LVP_ROW_UPDATE_PENDING     4
-.def LVP_COL_UPDATE_PENDING     5
-.def LVP_CAMERA_UPDATE_RQD      6
-.def LVP_CAMERA_LOCKED          7
+#define LVP_SCROLL_UP              0
+#define LVP_SCROLL_DOWN            1
+#define LVP_SCROLL_LEFT            2
+#define LVP_SCROLL_RIGHT           3
+#define LVP_ROW_UPDATE_PENDING     4
+#define LVP_COL_UPDATE_PENDING     5
+#define LVP_CAMERA_UPDATE_RQD      6
+#define LVP_CAMERA_LOCKED          7
 
 
 ; =============================================================================
@@ -119,36 +119,36 @@
 ; ---------------------------------------------------------
 ;  Object Flag Byte F3 bits
 ; ---------------------------------------------------------
-.def OBJ_F3_IN_AIR      0
-.def OBJ_F3_BIT1        1
-.def OBJ_F3_BIT2        2
-.def OBJ_F3_BIT3        3
-.def OBJ_F3_BIT4        4
-.def OBJ_F3_BIT5        5
-.def OBJ_F3_BIT6        6
-.def OBJ_F3_BIT7        7
+#define OBJ_F3_IN_AIR      0
+#define OBJ_F3_BIT1        1
+#define OBJ_F3_BIT2        2
+#define OBJ_F3_BIT3        3
+#define OBJ_F3_BIT4        4
+#define OBJ_F3_BIT5        5
+#define OBJ_F3_BIT6        6
+#define OBJ_F3_BIT7        7
 
 ; ---------------------------------------------------------
 ;  Object Flag Byte F4 bits
 ; ---------------------------------------------------------
-.def OBJ_F4_BIT0        0
-.def OBJ_F4_BIT1        1
-.def OBJ_F4_BIT2        2
-.def OBJ_F4_BIT3        3
-.def OBJ_F4_FACING_LEFT 4
-.def OBJ_F4_FLASHING    5
-.def OBJ_F4_BIT6        6
-.def OBJ_F4_VISIBLE     7
+#define OBJ_F4_BIT0        0
+#define OBJ_F4_BIT1        1
+#define OBJ_F4_BIT2        2
+#define OBJ_F4_BIT3        3
+#define OBJ_F4_FACING_LEFT 4
+#define OBJ_F4_FLASHING    5
+#define OBJ_F4_BIT6        6
+#define OBJ_F4_VISIBLE     7
 
 ; ---------------------------------------------------------
 ;  Collision flags (SprColFlags)
 ; ---------------------------------------------------------
-.def OBJ_COL_TOP        0
-.def OBJ_COL_BOTTOM     1
-.def OBJ_COL_RIGHT      2
-.def OBJ_COL_LEFT       3
+#define OBJ_COL_TOP        0
+#define OBJ_COL_BOTTOM     1
+#define OBJ_COL_RIGHT      2
+#define OBJ_COL_LEFT       3
 
 ; ---------------------------------------------------------
 ;  Object Flag Byte ix23 bits
 ; ---------------------------------------------------------
-.def OBJ_F23_BIT0       0
+#define OBJ_F23_BIT0       0

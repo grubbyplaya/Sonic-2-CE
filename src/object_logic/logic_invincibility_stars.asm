@@ -160,5 +160,5 @@ InvincibilityStars_State_01_Logic_01:	;$AF27
 	set     7, (hl)
 	jp      VF_Engine_MoveObjectToPlayer
 
-+:	ld      (ix+$00), $FF
+	ld      (ix+$00), $FF
 	ret    

@@ -26,7 +26,7 @@ BlockFragment_State_00_Logic_01:		;$AC34
 	and     a
 	jp      p, +
 	ld      de, DATA_B31_ACB8
-+:	add     hl, de
+	add     hl, de
 	ld      e, (hl)
 	inc     hl
 	ld      d, (hl)

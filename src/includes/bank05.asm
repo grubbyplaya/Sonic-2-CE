@@ -1,9 +1,9 @@
 Art_Sonic_Gliding:
-.incbin "art\sonic\art_ucmp_sonic_gliding.bin"
+#import "art\sonic\art_ucmp_sonic_gliding.bin" ;insert preferred directory here
 
 Art_Sonic_Minecart:
-.incbin "art\sonic\art_ucmp_sonic_minecart.bin"
+#import "art\sonic\art_ucmp_sonic_minecart.bin"
 
 
 ;seems to be empty padding
-.incbin "misc\b5_padding.bin"
+#import "misc\b5_padding.bin"

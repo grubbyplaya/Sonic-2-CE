@@ -74,7 +74,7 @@ PrisonAnimals_SetFalling:		;$93AE
 	and     $01
 	jr      z, +
 	ld      d, $02
-+:	ld      (ix+$17), d			
+	ld      (ix+$17), d			
 
 	ret     
 
@@ -107,7 +107,7 @@ PrisonAnimals_UpdateSpeed:		;$93D9
 	
 	ld      hl, $0000			;set speed = 0
 	
-+:	ld      (ix+$18), l			;set vertical speed
+	ld      (ix+$18), l			;set vertical speed
 	ld      (ix+$19), h
 	ret
 

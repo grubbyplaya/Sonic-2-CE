@@ -68,7 +68,7 @@ SHZ3_BirdRobot2_SetAnimationAttribs:	;$9B54
 	
 	ld      b, c			;object moving left - use alternate anim
 	
-+:	ld      (ix+$06), b		;set the object's animation frame number
+	ld      (ix+$06), b		;set the object's animation frame number
 	ld      (ix+$07), $04	;set the frame display timer
 	ret     
 
@@ -185,7 +185,7 @@ SHZ3_EggCapsule_Init:		;$9BFF
 	set     7, (ix+$03)
 	ret     
 
-+:	ld      (ix+$02), $02		;set state = 2
+	ld      (ix+$02), $02		;set state = 2
 	ret     
 
 ;checks for collisions between the egg capsule and the player
@@ -561,7 +561,7 @@ SHZ3_Boss_SetBossDestroyed:		;$9E3E
 SHZ3_Boss_StoreChildIndex:	;$9E46
 	ld      b, $08			;search the 8-element array at
 	ld      de, $D3BC		;$D3BC for an empty slot
--:	ld      a, (de)
+	ld      a, (de)
 	or      a				;is element empty?
 	jr      z, +
 	inc     de				;move to the next element
@@ -592,7 +592,7 @@ SHZ3_Boss_ClearChildIndex		;$9E5D
 	
 	ld      b, $08		;search the 8-element array for the 
 	ld      de, $D3BC	;object's index
--:	ld      a, (de)
+	ld      a, (de)
 	cp      c
 	jr      z, +		;jump if index found
 	inc     de			;move to the next element
@@ -600,7 +600,7 @@ SHZ3_Boss_ClearChildIndex		;$9E5D
 	ret
 
 ;remove the object's index from the array
-+:	xor     a
+	xor     a
 	ld      (de), a
 	ret
 
@@ -620,7 +620,7 @@ SHZ3_Boss_Init:				;$9E74
 	ret     
 
 ;FIXME:	this code initialises the object to an invalid state. 
-+:	ld      (ix+$02), $0D		;set state = $0D  ($0D does not exist).
+	ld      (ix+$02), $0D		;set state = $0D  ($0D does not exist).
 	ld      (ix+$24), $08		;set the hit counter
 	ret     
 
@@ -647,7 +647,7 @@ SHZ3_Boss_CheckNextState:		;$9EB0
 	ld      de, $D3BC			;array at $D3BC
 	ld      c, $00
 	
--:	ld      a, (de)				;or the value at (DE) with C
+	ld      a, (de)				;or the value at (DE) with C
 	or      c
 	ld      c, a
 	inc     de					;move to the next element
@@ -717,7 +717,7 @@ SHZ3_Boss_SetVelocities:		;$9F0A
 	and     $40
 	jr      nz, +	
 	ld      bc, $FF90			;move up
-+:	ld      (ix+$18), c			;set vertical speed
+	ld      (ix+$18), c			;set vertical speed
 	ld      (ix+$19), b
 	ret     
 
@@ -739,7 +739,7 @@ SHZ3_Boss_CollisionWithPlayer:	;$9F31
 	ld      (ix+$02), $0A		;set state = $0A
 	ret     
 
-+:	ld      (ix+$02), $0C		;set state = $0C
+	ld      (ix+$02), $0C		;set state = $0C
 	ret
 
 
@@ -787,7 +787,7 @@ SHZ3_Fireball_MainLogic:	;$9F7E
 	ld      a, $FF			;set the "player hurt" trigger
 	ld      ($D3A8), a
 	
-+:	call    VF_Engine_UpdateObjectPosition
+	call    VF_Engine_UpdateObjectPosition
 	
 	ld      hl, ($D514)		;get player's vpos
 	ld      de, $FFE8		;Adjustment value for HL

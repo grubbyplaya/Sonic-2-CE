@@ -265,7 +265,7 @@ LABEL_B31_B311:
 	and     $08
 	jr      nz, +
 	ld      hl, $FF00		;move left
-+:	ld      (ix+$16), l		;set horizontal speed
+	ld      (ix+$16), l		;set horizontal speed
 	ld      (ix+$17), h
 	ld      l, (ix+$18)		;get vertical speed
 	ld      h, (ix+$19)
@@ -288,7 +288,7 @@ LABEL_B31_B341:
 	ld      hl, $FF80
 	jr      z, +
 	ld      hl, $FFD0
-+:	ld      (ix+$18), l		;set the vertical speed
+	ld      (ix+$18), l		;set the vertical speed
 	ld      (ix+$19), h
 	ret     
 

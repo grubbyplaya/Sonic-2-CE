@@ -762,7 +762,7 @@ LABEL_B31_AB8C:
     xor     a
     ld      (hl), a
     
-+:  add     a, $0C            ;set player animation = running
+    add     a, $0C            ;set player animation = running
     ld      (Player.AnimFrame), a
     
     ld      a, $04            ;set frame display timer

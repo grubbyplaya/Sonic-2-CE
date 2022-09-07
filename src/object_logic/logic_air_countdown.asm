@@ -73,7 +73,7 @@ AirCountdown_Update:		;$B0DB
 	jr      z, +
 	set     7, (ix+$04)
 
-+:	ld      a, ($D469)			;check the air timer
+	ld      a, ($D469)			;check the air timer
 	or      a
 	ret     nz					;return if air timer != 0
 

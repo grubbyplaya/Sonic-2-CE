@@ -2,41 +2,41 @@
 .db $08, $00
 
 DemoControlSequence_GHZ:
-.incbin "demo\demo_control_sequence_ghz.bin"
+#import "demo\demo_control_sequence_ghz.bin"
 
 DemoControlSequence_SHZ:
-.incbin "demo\demo_control_sequence_shz.bin"
+#import "demo\demo_control_sequence_shz.bin"
 
 
 Art_Rings_UGZ:
-.incbin "art\rings\rings_ucmp_ugz.bin"
+#import "art\rings\rings_ucmp_ugz.bin"
 
 Art_Rings_SHZ1_3:
-.incbin "art\rings\rings_ucmp_shz1_3.bin"
+#import "art\rings\rings_ucmp_shz1_3.bin"
 
 Art_Rings_SHZ2:
-.incbin "art\rings\rings_ucmp_shz2.bin"
+#import "art\rings\rings_ucmp_shz2.bin"
 
 Art_Rings_ALZ:
-.incbin "art\rings\rings_ucmp_alz.bin"
+#import "art\rings\rings_ucmp_alz.bin"
 
 Art_Rings_GHZ:
-.incbin "art\rings\rings_ucmp_ghz.bin"
+#import "art\rings\rings_ucmp_ghz.bin"
 
 Art_Rings_GMZ:
-.incbin "art\rings\rings_ucmp_gmz.bin"
+#import "art\rings\rings_ucmp_gmz.bin"
 
 Art_Rings_SEZ:
-.incbin "art\rings\rings_ucmp_sez.bin"
+#import "art\rings\rings_ucmp_sez.bin"
 
 Art_Rings_CEZ:
-.incbin "art\rings\rings_ucmp_cez.bin"
+#import "art\rings\rings_ucmp_cez.bin"
 
 LABEL_B29_B400:				;push the last 16 sprites off of the screen
 	ld      b, $10			;by setting the VPOS attribute
 	ld      a, $E0
 	ld      hl, $DB30
--:	ld      (hl), a
+	ld      (hl), a
 	inc     hl
 	djnz    -
 	ret     
@@ -71,12 +71,12 @@ LABEL_B29_B433:
 	ld      b, $08
 	ld      hl, $DB30
 	ld      a, $9A
--:  ld      (hl), a
+	ld      (hl), a
 	inc     hl
 	djnz    -
 	ld      b, $08
 	ld      a, $B0
--:	ld      (hl), a
+	ld      (hl), a
 	inc     hl
 	djnz    -
 	ld      a, ($D46E)
@@ -90,7 +90,7 @@ LABEL_B29_B433:
 	add     hl, de
 	ld      de, $DBA0		;copy the 16-byte line of text to $DBA0
 	ld      b, $10
--:	xor     a
+	xor     a
 	ld      (de), a
 	inc     de
 	ld      a, (hl)			;check for $FF byte
@@ -109,8 +109,8 @@ LABEL_B29_B433:
 	cp      $EA
 	jr      z, ++
 	ld      c, $4A
-++:	ld      a, c
-+:	ld      (de), a			;copy char to work RAM
+	ld      a, c
+	ld      (de), a			;copy char to work RAM
 	inc     de
 	inc     hl
 	djnz    -
@@ -119,7 +119,7 @@ LABEL_B29_B433:
 	ld      ix, DATA_B29_B542
 	ld      de, $D46F
 	ld      b, $10
--:	ld      a, (hl)
+	ld      a, (hl)
 	ld      (de), a
 	inc     de
 	inc     hl
@@ -149,7 +149,7 @@ LABEL_B29_B4AF:
 	ld      c, $00
 	ld      ix, $D46F
 	ld      iy, $DBA0
--:	bit     7, (ix+$01)
+	bit     7, (ix+$01)
 	jr      z, +
 	ld      a, (ix+$02)
 	ld      h, (iy+$00)
@@ -159,10 +159,10 @@ LABEL_B29_B4AF:
 	ld      (iy+$00), a
 	xor     a
 	jr      ++
-+:	call    LABEL_B29_B4F5
+	call    LABEL_B29_B4F5
 	xor     a
 	dec     a
-++:	or      c
+	or      c
 	ld      c, a
 	inc     ix
 	inc     ix
@@ -210,11 +210,11 @@ LABEL_B29_B51C:
 
 ;movement data for the credits text?
 DATA_B29_B522:
-.incbin "unknown\bank29_B522.bin"
+#import "unknown\bank29_B522.bin"
 
 DATA_B29_B542:
-.incbin "unknown\bank29_B542.bin"
+#import "unknown\bank29_B542.bin"
 
 EndSequence_Data_CreditsText:
-.include "src\end_credits.asm"
+#include "src\end_credits.asm"
 

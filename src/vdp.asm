@@ -22,7 +22,7 @@ VDP_InitRegisters:
     ld    hl, _VDP_InitRegisters_RegValues
     
     ; loop over each register
--:  ld    a, (hl)
+    ld    a, (hl)
     out   (Ports_VDP_Control), a
     ld    (de), a
     ld    a, c
@@ -206,7 +206,7 @@ VDP_WriteAndSkip:       ; $134C
     
     ld    d, a
     
--:  ld    a, d
+    ld    a, d
     ; write the data to VRAM
     out   (Ports_VDP_Data), a
     push  af
@@ -242,7 +242,7 @@ VDP_WriteAndSkip:       ; $134C
 VDP_Write:		;$1361
     call  VDP_SetAddress
     
--:  ; write the low-order byte
+    ; write the low-order byte
     ld    a, e
     out   (Ports_VDP_Data), a
     push  af 
@@ -279,7 +279,7 @@ VDP_Copy:		 ;$1372
     ex    de, hl		 ;set the VRAM pointer
     call  VDP_SetAddress
 	
--:  ; read a byte from the source
+    ; read a byte from the source
     ld    a, (de)
     ; ...and copy to the VDP
     out   (Ports_VDP_Data), a
@@ -412,7 +412,7 @@ VDP_DrawText:       ; $13B8
 	push	de
 	push	bc
     
--:	; copy a byte from RAM to the VDP
+	; copy a byte from RAM to the VDP
     ld		a, (de)
 	out		(Ports_VDP_Data), a	;write a char to the VDP memory
 	
@@ -456,7 +456,7 @@ LABEL_13D2:
     push	de
     push	bc
     
--:  ld		a, ($D292)
+    ld		a, ($D292)
     bit		7, a
     jr		nz, +
 
@@ -483,7 +483,7 @@ LABEL_13D2:
 
     ; wait 6 frames for a button press?
     ld		b, $06
---: ei
+    ei
     halt
     ld		a, ($D137)
     and		$80
@@ -491,7 +491,7 @@ LABEL_13D2:
 
     djnz  --
 
-++: pop   hl
+    pop   hl
     pop   de
     pop   bc
 
@@ -505,7 +505,7 @@ LABEL_13D2:
     or    b
     jr    nz, -
 
-+:  pop   bc
+    pop   bc
     pop   de
     ret
 
@@ -691,7 +691,7 @@ VDP_ClearSAT:        ; $17C7
     ; loop over the 64 sprites
     ld        b, $40
     
--:    ; set the vpos and clear the hpos and char code
+      ; set the vpos and clear the hpos and char code
     ld        (hl), $F0
     inc        hl
     ld        (de), a

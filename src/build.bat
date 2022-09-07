@@ -1,0 +1,1 @@
+spasm64 -E s2.asm s2.8xp

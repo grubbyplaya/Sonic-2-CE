@@ -38,13 +38,13 @@ ChaosEmerald_Init:      ;$B7EE
     ld      (PatternLoadCue), a
     jr      ++
 
-+:
+
     ld      a, (CurrentLevel)    ;calculate which tiles to load
     add     a, $20                ;see subroutine at 783B (Engine_LoadSpriteTiles)
     ld      b, a
     call    Monitor_Emerald_CheckLoadTiles
 
-++:
+
     set     OBJ_F3_BIT7, (ix + Object.Flags03)
     res     OBJ_F4_FACING_LEFT, (ix + Object.Flags04)
     set     OBJ_F4_FLASHING, (ix + Object.Flags04)

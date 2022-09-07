@@ -4265,4 +4265,4 @@ DATA_B31_9D22:
 .db $02, $04, $06, $00, $16, $0A, $18, $1A, $00, $1C, $1E, $20
 
 
-.include "src\sprite_arrangement_data.asm"
+#include "sprite_arrangement_data.asm"

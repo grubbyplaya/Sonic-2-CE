@@ -61,7 +61,7 @@ LABEL_B28_A3F4:
 	jr      nz, +
 	ld      a, SFX_BombBounce
 	ld      ($DD04), a
-+:	ld      e, (ix+$18)		;get vertical velocity
+	ld      e, (ix+$18)		;get vertical velocity
 	ld      d, (ix+$19)
 	bit     7, d			;is sprite moving up?
 	jr      nz, +
@@ -70,10 +70,10 @@ LABEL_B28_A3F4:
 	sbc     hl, de
 	jr      c, ++
 	ld      hl, $0000
-++:	ld      (ix+$18), l		;set vertical velocity
+	ld      (ix+$18), l		;set vertical velocity
 	ld      (ix+$19), h
 LABEL_B28_A42C:
-+:	ld      h, (ix+$12)		;get horizontal pos
+	ld      h, (ix+$12)		;get horizontal pos
 	ld      l, (ix+$11)
 	ld      de, $0DA0
 	xor     a
@@ -107,7 +107,7 @@ LABEL_B28_A42C:
 	push    hl
 	pop     iy
 	ld      (iy+$02), $07
-+:	jp      VF_Engine_DisplayExplosionObject
+	jp      VF_Engine_DisplayExplosionObject
 
 
 UGZ3_Robotnik_State_00:		;$A483
@@ -422,7 +422,7 @@ UGZ3_Robotnik_State_07_Logic_01:		;$A6CA
 	bit     1, (ix+$22)
 	jr      z, +
 	ld      hl, $0280
-+:	ld      (ix+$16), l		;set horizontal velocity
+	ld      (ix+$16), l		;set horizontal velocity
 	ld      (ix+$17), h
 	call    VF_Engine_UpdateObjectPosition
 	ld      h, (ix+$12)		;get horizontal pos
@@ -451,7 +451,7 @@ UGZ3_Robotnik_State_09_Logic_01:		;$A711
 	add     a, b
 	jr      nz, +
 	dec     (ix+$1F)
-+:	ld      (ix+$1E), a
+	ld      (ix+$1E), a
 	ld      l, a
 	ld      h, $00
 	ld      de, $FE80
@@ -569,7 +569,7 @@ UGZ3_Pincers_State_01_Logic_01:		;$A7E5
 	jp      +
 UGZ3_Pincers_State_01_Logic_02		;$A7EC
 	ld      (ix+$06), $02	;set animation frame to $02
-+	ld      a, (ix+$24)
+	ld      a, (ix+$24)
 	inc     a
 	add     a, a
 	ld      (ix+$07), a		;set frame display timer

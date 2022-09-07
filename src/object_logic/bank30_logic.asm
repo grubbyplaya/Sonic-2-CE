@@ -1,5 +1,5 @@
 
-.include "src\object_logic\logic_titlescreen_objects.asm"
+#include "logic_titlescreen_objects.asm"
    
 
 DATA_B30_8E2B:
@@ -86,7 +86,7 @@ LABEL_B30_8EBB:
 	ld      de, $0040
 	jr      z, +
 	ld      de, $FFC0
-+:	ld      l, (ix+$16)
+  	ld      l, (ix+$16)
 	ld      h, (ix+$17)
 	add     hl, de
 	ld      (ix+$16), l
@@ -125,7 +125,7 @@ LABEL_B30_8EFB:
 	ld      de, $0040
 	jr      z, +
 	ld      de, $ffc0
-+:	ld      l, (ix+$18)
+  	ld      l, (ix+$18)
 	ld      h, (ix+$19)
 	add     hl, de
 	ld      (ix+$18), l
@@ -169,7 +169,7 @@ LABEL_B30_8F5E:
 	ld      (hl), a
 	inc     hl
 	ld      b, $04
--:	call    LABEL_B30_8F7D
+  	call    LABEL_B30_8F7D
 	inc     hl
 	inc     hl
 	inc     hl
@@ -810,7 +810,7 @@ LABEL_B30_9386:
 	ld      a, ($d501)
 	cp      $31
 	ret     nz
-+:	ld      a, (ix+$01)
+  	ld      a, (ix+$01)
 	inc     a
 	ld      (ix+$02), a
 	ld      (ix+$1f), $40
@@ -1050,7 +1050,7 @@ LABEL_B30_9568:
 	cp      $3F
 	jr      z, +
 	set     7, (ix+$04)
-+:	set     4, (ix+$04)
+  	set     4, (ix+$04)
 	set     1, (ix+$04)
 	ld      (ix+$02), $01
 	ld      hl, ($D514)
@@ -1080,7 +1080,7 @@ LABEL_B30_95B0:
 	bit     0, (ix+$1f)
 	jr      z, +
 	ld      de, $0008
-+:	add     hl, de
+  	add     hl, de
 	ex      de, hl
 	bit     7, d
 	jr      z, LABEL_B30_95D1

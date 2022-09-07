@@ -132,7 +132,7 @@ Signpost_State_02_Logic_01:		;$B937
 	call    LABEL_B31_B9C2		;Should we show the ring signpost?
 	jr      c, +
 	ld      b, $06				;signpost art
-+:	ld      (ix+$1E), b
+	ld      (ix+$1E), b
 	ret     
 
 
@@ -207,7 +207,7 @@ LABEL_B31_B9C2:
 	ld      a, SFX_ExtraLife
 	ld      ($DD04), a
 	call    LABEL_200 + $010B
-+:  ld      b, $08			;which signpost art?
+	ld      b, $08			;which signpost art?
 	scf     
 	ret     
 

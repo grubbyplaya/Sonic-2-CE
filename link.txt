@@ -1,2 +1,0 @@
-[objects]
-s2.o

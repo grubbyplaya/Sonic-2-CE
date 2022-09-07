@@ -62,7 +62,7 @@ LABEL_B31_AD88:
 	ret     nz
 	ld      hl, $D373
 	ld      b, $08
--:	ld      de, ($D511)			;player's horiz. position in level.
+	ld      de, ($D511)			;player's horiz. position in level.
 	ld      (hl), e
 	inc     hl
 	ld      (hl), d
@@ -90,7 +90,7 @@ LABEL_B31_ADB3:
 	ld      ($D373), hl
 	ld      hl, ($D514)			;player's vert. position in level.
 	ld      ($D375), hl
-++:	ld      a, (ix+$3F)
+	ld      a, (ix+$3F)
 	add     a, a
 	ld      l, a
 	ld      h, $00
@@ -113,7 +113,7 @@ LABEL_B31_ADB3:
 	ld      (ix+$15), a
 	ret     
 
-+:	ld      (ix+$00), $FF
+	ld      (ix+$00), $FF
 	ret     
 
 DATA_B31_AE00:

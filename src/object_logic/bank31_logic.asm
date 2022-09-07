@@ -1,8 +1,8 @@
-.include "src\object_logic\logic_sonic.asm"
+#include "logic_sonic.asm"
 
-.include "src\object_logic\logic_ring_sparkle.asm"
+#include "logic_ring_sparkle.asm"
 
-.include "src\object_logic\logic_block_fragment.asm"
+#include "logic_block_fragment.asm"
 
 DATA_B31_ACEB:
 .dw DATA_B31_ACEF
@@ -34,7 +34,7 @@ LABEL_B31_AD00:
 	ld      (ix+$07), $80
 	ret     
 
-+:	ld      a, (CurrentLevel)		;$AD19
+	ld      a, (CurrentLevel)		;$AD19
 	cp      $04
 	jr      nz, +
 	ld      a, $F6
@@ -45,30 +45,30 @@ LABEL_B31_AD00:
 	ld      (ix+$07), $80
 	ret     
 
-+:	ld      (ix+$00), $ff			;$AD33
+	ld      (ix+$00), $ff			;$AD33
 	ret     
 
 
-.include "src\object_logic\logic_speedshoes_stars.asm"
+#include "logic_speedshoes_stars.asm"
 
 
-.include "src\object_logic\logic_invincibility_stars.asm"	
+#include "logic_invincibility_stars.asm"	
 
 
-.include "src\object_logic\logic_hide_timer_rings.asm"
+#include "logic_hide_timer_rings.asm"
 
 
-.include "src\object_logic\logic_dropped_ring.asm"
+#include "logic_dropped_ring.asm"
 
 
-.include "src\object_logic\logic_air_countdown.asm"
+#include "logic_air_countdown.asm"
 
 
 ;ALZ air bubbles
-.include "src\object_logic\logic_alz_bubble.asm"
+#include "logic_alz_bubble.asm"
 
 
-.include "src\object_logic\logic_water_splash.asm"
+#include "logic_water_splash.asm"
 
 
 DATA_B31_B513:
@@ -163,23 +163,23 @@ DATA_B31_B590:
 
 
 ;underground zone fireball logic
-.include "src\object_logic\logic_ugz_fireball.asm"
+#include "logic_ugz_fireball.asm"
 
 
 ;Explosion logic
-.include "src\object_logic\logic_explosion.asm"
+#include "logic_explosion.asm"
 
 
 ;Monitor logic
-.include "src\object_logic\logic_monitors.asm"
+#include "logic_monitors.asm"
 
 
 ;Emerald logic
-.include "src\object_logic\logic_chaosemeralds.asm"
+#include "logic_chaosemeralds.asm"
 
 
 ;Signpost logic
-.include "src\object_logic\logic_signpost.asm"
+#include "logic_signpost.asm"
 
 
 Logic_FallingSpike:		;$BA7A
@@ -356,7 +356,7 @@ LABEL_B31_BB61:
 	ld      a, e
 	cpl     
 	ld      e, a
-+:	ld      hl, $0180
+  	ld      hl, $0180
 	xor     a
 	sbc     hl, de
 	jr      nc, +
@@ -372,7 +372,7 @@ LABEL_B31_BB61:
 	ld      b, a
 	jr      nc, +
 	ld      b, $ff
-+:	ld      hl, ($d511)
+  	ld      hl, ($d511)
 	ld      e, (ix+$11)
 	ld      d, (ix+$12)
 	xor     a
@@ -382,7 +382,7 @@ LABEL_B31_BB61:
 	ld      hl, $0000
 	xor     a
 	sbc     hl, de
-+:	ld      a, h
+  	ld      a, h
 	or      a
 	ret     nz
 	ld      a, l
@@ -437,7 +437,7 @@ LABEL_B31_BBF9:
 	
 	dec     hl
 	
-+:	ld      (ix+$11), l		;set hpos
+  	ld      (ix+$11), l		;set hpos
 	ld      (ix+$12), h
 	ret     
 
@@ -492,7 +492,7 @@ LABEL_B31_BC45:
 	and     $07
 	jr      nz, +
 	dec     hl
-+:	ld      (ix+$11), l
+  	ld      (ix+$11), l
 	ld      (ix+$12), h
 	ret
 

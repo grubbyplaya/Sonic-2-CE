@@ -8,7 +8,7 @@ Palette_Update:
 	ld      ix, BgPaletteControl
 	ld      iy, WorkingCRAM
 	ld      b, $02
--:	push    bc
+  	push    bc
 	push    iy
 	ld      a, (ix+$00)
 	or      a
@@ -16,7 +16,7 @@ Palette_Update:
 	call    Palette_UpdateColours
 	ld      a, $FF
 	ld      (Palette_UpdateTrig), a
-+:	ld      de, $0002		;check FgPaletteControl
+  	ld      de, $0002		;check FgPaletteControl
 	add     ix, de
 	pop     iy
 	ld      de, $0010
@@ -35,7 +35,7 @@ Palette_UpdateColours:
 	ret
 
 Palette_Reset:				;$8044
-+:	call    Palette_CalculateOffset
+  	call    Palette_CalculateOffset
 	push    iy
 	pop     de
 	ld      bc, $0010
@@ -46,7 +46,7 @@ Palette_Reset:				;$8044
 Palette_FadeToColour:		;$8054
 	call    Palette_CalculateOffset
 	ld      b, $10
--:	push    bc
+  	push    bc
     ld      a, (ix+$00)
     and     $03
     ld      c, a
@@ -58,7 +58,7 @@ Palette_FadeToColour:		;$8054
     sub     b
     jr      nc, +
     xor     a
-+:  and     $03
+    and     $03
     ld      (iy+$00), a
     ld      a, (hl)
     and     $0C
@@ -70,7 +70,7 @@ Palette_FadeToColour:		;$8054
     sub     b
     jr      nc, +
     xor     a
-+:	rlca    
+  	rlca    
     rlca    
     and     $0c
     or      (iy+$00)
@@ -87,7 +87,7 @@ Palette_FadeToColour:		;$8054
     sub     b
     jr      nc, +
     xor     a
-+:	rlca    
+  	rlca    
 	rlca    
 	rlca    
 	rlca    
@@ -109,7 +109,7 @@ Palette_FadeToColour:		;$8054
 Palette_FadeToBlack:		;80B8
 	call    Palette_CalculateOffset		;get a pointer to the palette into HL
 	ld      b, $10				;loop over all 16 colours
--:  ld      a, (iy+$00)			
+    ld      a, (iy+$00)			
 	and     $3C					;keep hold of R and G components
 	ld      c, a
 	ld      a, (iy+$00)
@@ -119,7 +119,7 @@ Palette_FadeToBlack:		;80B8
 	and     $03
 	or      c					;recombine with the R and G components
 	ld      (iy+$00), a			;store updated colour
-+:  ld      a, (iy+$00)
+    ld      a, (iy+$00)
 	and     $33					;keep hold of the R and B components
 	ld      c, a
 	ld      a, (iy+$00)
@@ -129,7 +129,7 @@ Palette_FadeToBlack:		;80B8
 	and     $0C
 	or      c					;recombine with the R and B components
 	ld      (iy+$00), a			;store updated colour
-+:  ld      a, (iy+$00)
+    ld      a, (iy+$00)
 	and     $0F					;keep hold of the G and B 
 	ld      c, a
 	ld      a, (iy+$00)
@@ -139,7 +139,7 @@ Palette_FadeToBlack:		;80B8
 	and     $30
 	or      c					;recombine with the G and B components
 	ld      (iy+$00), a			;store updated colour
-+:  inc     iy
+    inc     iy
 	djnz    -					;move to next colour
 	inc     (ix+$00)
 	ld      a, (ix+$00)

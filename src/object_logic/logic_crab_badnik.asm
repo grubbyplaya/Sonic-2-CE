@@ -190,7 +190,7 @@ Crab_State_02_Logic_02:		;$8568
 	bit     0, a
 	jr      z, +
 	ld      (ix+$02), $01
-+:	jp      LABEL_B28_8594
+	jp      LABEL_B28_8594
 
 
 Crab_State_03_Logic_01:		;$8584
@@ -222,7 +222,7 @@ CrabProjectile_State_00_Logic_01:	;$85A7
 	or      a
 	jr      z, +			;if this is the first projectile
 	ld      hl, $FF80		;set horizontal speed to -128
-+:	ld      (ix+$16), l
+	ld      (ix+$16), l
 	ld      (ix+$17), h
 	ld      hl, $FC00
 	ld      (ix+$18), l		;set vertical speed to -1024
@@ -241,7 +241,7 @@ CrabProjectile_State_01_Logic_01:	;$85C7
 	bit     6, (ix+$04)
 	jr      z, +
 	ld      (ix+$00), $FF		;destroy the object
-+:	call    VF_Engine_CheckCollision
+	call    VF_Engine_CheckCollision
 	ld      a, (ix+$21)
 	and     $0F
 	ret     z

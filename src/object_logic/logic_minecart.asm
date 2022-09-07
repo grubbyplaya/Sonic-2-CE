@@ -107,7 +107,7 @@ Minecart_State_02_Logic_01:		;$8971
 	add     hl, de
 	ld      (ix+$16), l		;set horizontal speed
 	ld      (ix+$17), h
-+:	ld      bc, $0010
+	ld      bc, $0010
 	ld      de, $FFF0
 	call    LABEL_200 + $63
 	ld      a, ($D353)
@@ -148,7 +148,7 @@ Minecart_State_03_Logic_01:		;$89B4
 	ld      l, a
 	ld      (ix+$16), l		;store horizontal speed
 	ld      (ix+$17), h
-+:	ld      bc, $FFF0
+	ld      bc, $FFF0
 	ld      de, $FFF0
 	call    LABEL_200 + $63
 	ld      a, ($D353)
@@ -173,7 +173,7 @@ Minecart_State_04_Logic_01:		;$8A0B
 	bit     7, (ix+$17)
 	jr      z, +
 	ld      bc, $FFF0
-+:	ld      de, $FFF0
+	ld      de, $FFF0
 	call    LABEL_200 + $63
 	ld      a, ($D353)
 	ld      hl, DATA_B28_8B0C
@@ -183,7 +183,7 @@ Minecart_State_04_Logic_01:		;$8A0B
 	ld      hl, $0000
 	ld      (ix+$16), l
 	ld      (ix+$17), h
-+:	ld      bc, $0600
+	ld      bc, $0600
 	ld      de, $0020
 	call    VF_Engine_SetObjectVerticalSpeed
 	bit     1, (ix+$22)
@@ -245,7 +245,7 @@ LABEL_B28_8ABD:
 	dec     (ix+$1F)
 	jr      nz, +
 	res     6, (ix+$03)
-+:	call    VF_Engine_CheckCollision
+	call    VF_Engine_CheckCollision
 	ld      a, (ix+$21)
 	and     $0D
 	ld      (ix+$21), a
@@ -281,7 +281,7 @@ LABEL_B28_8B27:
 	ld      hl, $0000
 	xor     a
 	sbc     hl, de
-+:	push    hl
+	push    hl
 	pop     bc
 	ld      de, $FFE0
 	call    LABEL_200 + $63

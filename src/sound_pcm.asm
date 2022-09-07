@@ -33,7 +33,7 @@ Sound_PlaySegaSound_PlaySample:     ; $8023
 	rrca    
 	rrca    
 	ld      b, l
--:	djnz    -
+	djnz    -
 
 	and     $0F
 	or      $90
@@ -44,7 +44,7 @@ Sound_PlaySegaSound_PlaySample:     ; $8023
 	out     (Ports_PSG), a
 	ld      b, l
     
--:	djnz    -
+	djnz    -
 
 	ld      a, (de)
 	cpl     
@@ -73,4 +73,4 @@ Sound_PlaySegaSound_PlaySample:     ; $8023
 
 
 Sound_Data_SegaPCM:     ; $805E
-.incbin "misc/sega_sound.bin"
+#import "misc/sega_sound.bin"

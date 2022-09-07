@@ -1,10 +1,10 @@
 ;**********************************
 ;*	Variables
 ;**********************************
-.def	TileCount		$D342
-.def	SourcePointer	$D346
-.def	BitFieldCount	$D340
-.def	FlagPointer		$D344
+#define	TileCount		$D342
+#define	SourcePointer	$D346
+#define	BitFieldCount	$D340
+#define	FlagPointer		$D344
 
 ;**************************************************
 ;* LoadTiles - 
@@ -45,30 +45,30 @@ _LABEL_1AA6_22:
 	xor  a						;reset counter
 	ld   (BitFieldCount), a
 
--:	call _GetCompressionType	;select the correct decompression method
+  	call _GetCompressionType	;select the correct decompression method
 								
 	cp   $00					;$00 - blank tile
 	jr   nz, +
 	call WriteBlankTile			;write a blank tile to VRAM
 	jr   ++
 	
-+:	cp   $02					;$02 - compressed tile
+  	cp   $02					;$02 - compressed tile
 	jr   nz, +
 	call LoadCompressedTile
 	call WriteTileToVRAM
 	jr   ++
 	
-+:	cp   $03					;$03 - xor compressed tile
+  	cp   $03					;$03 - xor compressed tile
 	jr   nz, +
 	call LoadCompressedTile
 	call XORDecode
 	call WriteTileToVRAM
 	jr   ++
 	
-+:	call LoadUncompressedTile	;$01 - uncompressed tile
+  	call LoadUncompressedTile	;$01 - uncompressed tile
 	call WriteTileToVRAM
 	
-++:	ld   hl, (TileCount)			;decrement tile count
+   	ld   hl, (TileCount)			;decrement tile count
 	dec  hl
 	ld   (TileCount), hl
 	ld   a, l
@@ -103,7 +103,7 @@ LoadCompressedTile:		;$1B1E
 	ld   b, (hl)
 	inc  hl
 	ld   a, $20
--:	push af
+  	push af
 	rr   b
 	rr   c
 	rr   d
@@ -111,10 +111,10 @@ LoadCompressedTile:		;$1B1E
 	jr   c, +			;if previous lsb was 0, read a byte from (hl)
 	ld   (ix+0), $00	;previous lsb was 0 - write $00 to (ix)
 	jr   ++
-+:	ld   a, (hl)		;read byte from (hl) and write to (ix)
+  	ld   a, (hl)		;read byte from (hl) and write to (ix)
 	ld   (ix+0), a
 	inc  hl				;increment source pointer
-++:	inc  ix				;increment destination pointer
+   	inc  ix				;increment destination pointer
 	pop  af
 	dec  a
 	jr   nz, -
@@ -127,7 +127,7 @@ LoadCompressedTile:		;$1B1E
 XORDecode:
 	ld   ix, $D300		;decode data at $D300
 	ld   b, $07
--:	ld   a, (ix+0)		;xor byte at (ix+0) with byte at (ix+2)...
+  	ld   a, (ix+0)		;xor byte at (ix+0) with byte at (ix+2)...
 	xor  (ix+2)
 	ld   (ix+2), a		;...and store the result at (ix+2)
 	
@@ -167,15 +167,15 @@ _GetCompressionType:
 	xor  a				;reset counter
 	ld   (BitFieldCount), a
 	
-+:	ld   b, a
+  	ld   b, a
 	ld   hl, (FlagPointer)	;read flag pointer
 	ld   a, (hl)
--:	dec  b
+  	dec  b
 	jp   m, +			;jump if sign (<0)
 	rrca				;rotate previous compression type out
 	rrca
 	jp   -
-+:	and  $03
+  	and  $03
 	push af
 	ld   a, (BitFieldCount)
 	inc  a
@@ -203,7 +203,7 @@ WriteTileToVRAM:
 	jp   nz, WriteMirroredTileToVRAM
 	ld   hl, $D300		;copy 32 bytes from $D300 to VRAM
 	ld   b, $20
--:	ld   a, (hl)
+  	ld   a, (hl)
 	out  ($BE), a
 	push hl
 	pop  hl
@@ -218,7 +218,7 @@ WriteTileToVRAM:
 WriteMirroredTileToVRAM:
 	ld   hl, $D300
 	ld   b, $20
--:	ld   e, (hl)		;read a byte of tile data from RAM
+  	ld   e, (hl)		;read a byte of tile data from RAM
 	ld   d, Engine_Data_ByteFlipLUT >> 8
 	ld   a, (de)		;"flip" the byte by using it as an
 						;index into the array at $100 and

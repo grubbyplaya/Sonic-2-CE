@@ -107,9 +107,9 @@ LABEL_B31_B017:
 	ld      (ix+$3d), h
 	ld      (ix+$18), l
 	ld      (ix+$19), h
-+:	bit     6, (ix+$04)
+	bit     6, (ix+$04)
 	ret     z
-++:	ld      (ix+$00), $ff
+	ld      (ix+$00), $ff
 	ret     
 
 LABEL_B31_B06C:

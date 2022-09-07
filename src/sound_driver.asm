@@ -1,5 +1,5 @@
-.include "src/includes/sound_defines.asm"
-.include "src/includes/sound_macros.asm"
+#include "includes/sound_defines.asm"
+#include "includes/sound_macros.asm"
 
 .BANK 2 SLOT 2
 .ORG $0000
@@ -29,7 +29,7 @@ Sound_Update:       ; $8000
     dec   (hl)
     jp    Sound_InitPSG
 
-+:  ; read music trigger and copy to "current sound"
+    ; read music trigger and copy to "current sound"
     call  Sound_CheckSoundTriggers
     
     ; adjust channels to the correct tempo
@@ -142,7 +142,7 @@ Sound_AdjustForSpeed:       ; $8086
     ld    de, Sound_ChannelSize        ;for the 4 channels
     ld    b, 4
     
--:  inc   (hl)
+    inc   (hl)
     add   hl, de
     djnz  -
 
@@ -201,7 +201,7 @@ Sound_CheckSoundTriggers_CheckTrigger:
     ld    a, (de)
     ld    (iy + 0), a        ;DD03
 
-+:  ; reset the trigger
+    ; reset the trigger
     xor   a
     ld    (de), a
     ; move to the next trigger byte
@@ -243,7 +243,7 @@ Sound_FadeOut:           ; $80D0
     ; this will be used to move the pointer to the next channel
     ld    de, $0030
 
--:  ; check to see if the channel is active
+    ; check to see if the channel is active
     bit   Sound_ChannelActiveBit, (hl)
     jp    z, Sound_FadeOut_LoopNext
 
@@ -264,7 +264,7 @@ Sound_FadeOut:           ; $80D0
     jp    Sound_FadeOut_DisableSFXChannel
 
     
-+:  ; check for the noise channel
+    ; check for the noise channel
     cp    $E0
     ; jump if channel != noise
     jp    nz, ++
@@ -274,7 +274,7 @@ Sound_FadeOut:           ; $80D0
     res   Sound_ChannelSuppressBit, (hl)
 
 
-++: ; clear the primary tone 2 channel's suppress bit
+    ; clear the primary tone 2 channel's suppress bit
     ld    hl, $DDA0
     res   Sound_ChannelSuppressBit, (hl)
 
@@ -300,7 +300,7 @@ Sound_FadeOut_LoopNext:
     ret
 
 
-+:  ; reset the minor count value
+    ; reset the minor count value
     ld    a, (Sound_FadeMinorReset)
     ld    (Sound_FadeMinorCount), a
    
@@ -318,7 +318,7 @@ Sound_FadeOut_LoopNext:
     ; loop 3 times (3 tone channels)
     ld    b, 3
     
--:  ; check and attenuate as necessary
+    ; check and attenuate as necessary
     call  Sound_FadeOut_IncreaseAttenuation
     add   hl, de
     djnz  -
@@ -421,7 +421,7 @@ Sound_StopSFX:      ; $8170
     ; this will be stored as the next sound command for the channel
     ld    hl, _Sound_StopSFX_command
 
--:  ; store the "next command" pointer
+    ; store the "next command" pointer
     ld    (iy + Sound_ChnlNextCommand), l
     ld    (iy + Sound_ChnlNextCommand + 1), h
     
@@ -513,7 +513,7 @@ Sound_LoadMusicModule:        ; $8188
     ; initialise required number of channels
     ; starting with structure at $DD40
     ld    de, Sound_Channel_Music_0
--:  call  Sound_InitChannel
+    call  Sound_InitChannel
     djnz  -
 
 
@@ -569,7 +569,7 @@ Sound_LoadSFXModule:        ; $81C7
     inc   hl
 
     ; loop over each channel
--:  inc   hl
+    inc   hl
     ld    a, (hl)
     dec   hl
 
@@ -900,7 +900,7 @@ Sound_ApplyToneEffect:      ; $82D0
     ld    (ix + Sound_ChnlToneAdjustment), l
     ld    (ix + Sound_ChnlToneAdjustment + 1), h
 
-+:  ; pop the tone value into BC
+    ; pop the tone value into BC
     pop   bc
 
     ; apply the effect to the tone value
@@ -982,7 +982,7 @@ Sound_PitchEnvelope_SignExtend:       ; $8356
 Sound_PitchEnvelope_CalculateTone:        ; $835A
     ld   h, $00
     
-+:  ld   l, a
+    ld   l, a
     ; add the effect data to the tone data
     add  hl, de
     
@@ -1083,7 +1083,7 @@ Sound_ReadStreamData_CalcNoteHold:      ; $83A6
     ld    (ix + Sound_ChnlToneDuration), a
     ld    (ix + Sound_ChnlToneDuration_Next), a
 
-++: ; store the data pointer
+    ; store the data pointer
     ld    (ix + Sound_ChnlNextCommand), e
     ld    (ix + Sound_ChnlNextCommand + 1), d
     
@@ -1096,7 +1096,7 @@ Sound_ReadStreamData_CalcNoteHold:      ; $83A6
     
     res   5, (ix + Sound_ChnlControl)
     
-+:  ld    a, (ix + $0F)
+    ld    a, (ix + $0F)
     ld    (ix + $0E), a
     
     ; clear pitch bend length / pitch envelope index value
@@ -1160,10 +1160,10 @@ Sound_ReadLiteral:       ;$83DC
 
     dec   b
     
-++: ; adjust the tone value
+    ; adjust the tone value
     add   hl, bc
 
-+:  ; store the tone data
+    ; store the tone data
     ld    (ix + Sound_ChnlToneData), l
     ld    (ix + Sound_ChnlToneData+1), h
     
@@ -1324,7 +1324,7 @@ Sound_MultiplyA:        ; $843E
 
     ; multiply using repeated add
     ld    c, a
--:  add   a, c
+    add   a, c
     djnz  -
     ret
 
@@ -1332,8 +1332,8 @@ Sound_MultiplyA:        ; $843E
 
 ; PSG values approximately corresponding to MIDI notes
 Sound_Data_NoteValues:        ; $8448
-.include "src/sound_note_values.asm"
-;.include "src/sound_note_values_tuned.asm"
+#include "sound_note_values.asm"
+#include "sound_note_values_tuned.asm"
 
 
 ; =============================================================================
@@ -1374,7 +1374,7 @@ Sound_UpdateToneChannel:        ; $84D4
     ; and write to the PSG
     jr    Sound_WriteChannelData
 
-+:  ; check to see if PSG writes should be suppressed
+    ; check to see if PSG writes should be suppressed
     bit   Sound_ChannelSuppressBit, (ix + Sound_ChnlControl)
     ret   nz
     
@@ -1385,7 +1385,7 @@ Sound_UpdateToneChannel:        ; $84D4
     dec   (ix + $0E)
     call  z, LABEL_85F8_134
     
-+:  ld    a, (ix + Sound_ToneEffectFlags)
+    ld    a, (ix + Sound_ToneEffectFlags)
     or    a
     jr    z, Sound_UpdateChannelVolume
     
@@ -1419,7 +1419,7 @@ Sound_WriteChannelData:        ;$850B
     jp    p, ++    
     dec   d
     
-++: ; add the detune value to the data
+    ; add the detune value to the data
     ld    e, a
     add   hl, de
     
@@ -1435,7 +1435,7 @@ Sound_WriteChannelData:        ;$850B
     ; change to channel 2 instead
     ld    a, Sound_PSG_Latch | Sound_PSG_Tone2
 
-++: ; store the channel number in the C register
+    ; store the channel number in the C register
     ld    c, a
 
     ; get the low 4-bits of data and combine them with the channel number
@@ -1489,7 +1489,7 @@ Sound_UpdateChannelVolume:        ; $853A
     jr    z, +
     ld    a, $0F
 
-+:  ; fetch channel number from the structure
+    ; fetch channel number from the structure
     or    (ix + Sound_ChnlNumber)
     ; set the "type" bit to volume
     add   a, Sound_PSG_Type_Volume
@@ -1534,7 +1534,7 @@ Sound_CheckApplyVolumeEffect:       ; $8558
 
     xor   a                ;resulting volume was < 0. reset to 0
 
-+:  or    a
+    or    a
     ld    (ix + Sound_ChnlVolume), a        ;set current volume
     jr    nz, LABEL_85EE_161
     
@@ -1560,9 +1560,9 @@ LABEL_8580_159:
     cp    e
     jr    c, ++
     
-+:  ld    a, e
+    ld    a, e
 
-++: cp    e
+    cp    e
     ld    (ix + Sound_ChnlVolume), a
     jr    nz, LABEL_85EE_161
     ld    a, (ix + $1D)
@@ -1572,9 +1572,9 @@ LABEL_8580_159:
     xor   $30
     jr    ++
 
-+:  xor   $60
+    xor   $60
 
-++: ld    (ix + $1D), a
+    ld    (ix + $1D), a
     jr    LABEL_85EE_161
 
 
@@ -1593,7 +1593,7 @@ LABEL_85B0_162:
     ; there was a carry - set volume off
     ld    a, $FF
     
-+:  cp    $FF
+    cp    $FF
     ld    (ix + Sound_ChnlVolume), a
     jr    nz, LABEL_85EE_161
     
@@ -1618,7 +1618,7 @@ LABEL_85D2_167:
     ld    (ix + Sound_ChnlVolume), a
     jp    Sound_SetVolumeOff
 
-+:  ld    (ix + Sound_ChnlVolume), a
+    ld    (ix + Sound_ChnlVolume), a
     ; FALL THROUGH
 
 LABEL_85EE_161:
@@ -1762,7 +1762,7 @@ Sound_UpdateNoiseChannel:        ; $865C
     ld    e, (ix + Sound_ChnlNextCommand)
     ld    d, (ix + Sound_ChnlNextCommand  + 1)
     
--:  ; fetch a byte of data from the source address
+    ; fetch a byte of data from the source address
     ld    a, (de)
     inc   de
     
@@ -2124,7 +2124,7 @@ Sound_Command_ReadLiteral:      ; $87CD
     set   Sound_ChnlReadLiteralBit, (ix + Sound_ChnlControl)
     ret
 
-+:  res   Sound_ChnlReadLiteralBit, (ix + Sound_ChnlControl)
+    res   Sound_ChnlReadLiteralBit, (ix + Sound_ChnlControl)
     ret
 
 
@@ -2160,7 +2160,7 @@ LABEL_87DB:
     ld    hl, $DE30
     ld    (hl), $00
 
-+:  push  af
+    push  af
     ; read noise channel data?
     ld    a, ($DD11)
     out   (Ports_PSG), a
@@ -2212,7 +2212,7 @@ LABEL_881D:
     xor   a
     ld    (Sound_Priority), a
 
-+:  pop   bc
+    pop   bc
     pop   bc
     ret
 
@@ -2308,7 +2308,7 @@ Sound_Command_ConditionalJump:      ; $887B
     ld    a, (de)
     ld    (hl), a
 
-+:  inc   de
+    inc   de
 
     ; decrement the loop counter
     dec   (hl)
@@ -2385,20 +2385,20 @@ LABEL_88D5:
     or    a
     jr    z, +
     ld    a, $08
-+:  ld    (ix + $1E), a
+    ld    (ix + $1E), a
     ret
 
 
 
 Sound_Data_PitchEnvelopes:      ; $88DE
-.include "src/sound_pitch_effects.asm"
+#include "sound_pitch_effects.asm"
 
 ; volume envelopes
 Sound_Data_VolumeEnvelopes:     ; $8A2F
-.include "src/sound_volume_effects.asm"
+#include "sound_volume_effects.asm"
 
 Sound_Data_Priorities:
-.incbin "sound\sound_priorities.bin"
+#import "sound/sound_priorities.bin"
 
 
 ; -----------------------------------------------------------------------------
@@ -2476,186 +2476,186 @@ Sound_Data_SFXPointers:         ; $8C0D
 .dw Sound_Data_SFX_1B
 
 Sound_Data_Music_ALZ:           ; $8C59
-;.incbin "sound/music_alz.bin"
-.include "sound/music_alz.asm"
+#import "sound/music_alz.bin"
+#include "sound/music_alz.asm"
 
 Sound_Data_Music_UGZ:           ; $8F98
-;.incbin "sound/music_ugz.bin"
-.include "sound/music_ugz.asm"
+#import "sound/music_ugz.bin"
+#include "sound/music_ugz.asm"
 
 Sound_Data_Music_GMZ:           ; $94DD
-;.incbin "sound/music_gmz.bin"
-.include "sound/music_gmz.asm"
+#import "sound/music_gmz.bin"
+#include "sound/music_gmz.asm"
 
 Sound_Data_Music_CEZ:           ; $9819
-;.incbin "sound/music_cez.bin"
-.include "sound/music_cez.asm"
+#import "sound/music_cez.bin"
+#include "sound/music_cez.asm"
 
 Sound_Data_Music_GHZ:           ; $9B99
-;.incbin "sound/music_ghz.bin"
-.include "sound/music_ghz.asm"
+  #import "sound/music_ghz.bin"
+#include "sound/music_ghz.asm"
 
 Sound_Data_Music_SHZ:           ; $A053
-;.incbin "sound/music_shz.bin"
-.include "sound/music_shz.asm"
+  #import "sound/music_shz.bin"
+#include "sound/music_shz.asm"
 
 Sound_Data_Music_SEZ:           ; $A2CE
-;.incbin "sound/music_sez.bin"
-.include "sound/music_sez.asm"
+  #import "sound/music_sez.bin"
+#include "sound/music_sez.asm"
 
 Sound_Data_Music_Intro:         ; $A7C6
-;.incbin "sound/music_intro.bin"
-.include "sound/music_intro.asm"
-;.include "sound/music_starlight.asm"
+  #import "sound/music_intro.bin"
+#include "sound/music_intro.asm"
+;#include "sound/music_starlight.asm"
 
 Sound_Data_Music_Boss:          ; $AA00
-;.incbin "sound/music_boss.bin"
-.include "sound/music_boss.asm"
+  #import "sound/music_boss.bin"
+#include "sound/music_boss.asm"
 
 Sound_Data_Music_SpeedShoes:    ; $AB9A
-;.incbin "sound/music_speed_shoes.bin"
-.include "sound/music_speed_shoes.asm"
+  #import "sound/music_speed_shoes.bin"
+#include "sound/music_speed_shoes.asm"
 
 Sound_Data_Music_Invincibility: ; $AC88
-;.incbin "sound/music_invincibility.bin"
-.include "sound/music_invincibility.asm"
+  #import "sound/music_invincibility.bin"
+#include "sound/music_invincibility.asm"
 
 Sound_Data_Music_EndOfLevel:    ; $AE1E
-;.incbin "sound/music_end_of_level.bin"
-.include "sound/music_end_of_level.asm"
+  #import "sound/music_end_of_level.bin"
+#include "sound/music_end_of_level.asm"
 
 Sound_Data_Music_LoseLife:      ; $AF1C
-;.incbin "sound/music_lose_life.bin"
-.include "sound/music_lose_life.asm"
+  #import "sound/music_lose_life.bin"
+#include "sound/music_lose_life.asm"
 
 Sound_Data_Music_Continue:      ; $AFA4
-;.incbin "sound/music_continue.bin"
-.include "sound/music_continue.asm"
+  #import "sound/music_continue.bin"
+#include "sound/music_continue.asm"
 
 Sound_Data_Music_Emerald:       ; $B0BE
-;.incbin "sound/music_emerald.bin"
-.include "sound/music_emerald.asm"
+  #import "sound/music_emerald.bin"
+#include "sound/music_emerald.asm"
 
 Sound_Data_Music_GameOver:      ; $B176
-;.incbin "sound/music_gameover.bin"
-.include "sound/music_gameover.asm"
+  #import "sound/music_gameover.bin"
+#include "sound/music_gameover.asm"
 
 Sound_Data_Music_Ending:        ; $B232
-;.incbin "sound/music_ending.bin"
-.include "sound/music_ending.asm"
+  #import "sound/music_ending.bin"
+#include "sound/music_ending.asm"
 
 Sound_Data_Music_Unknown:       ; $B946 
-;.incbin "sound/music_unknown.bin"
-.include "sound/music_unknown.asm"
+  #import "sound/music_unknown.bin"
+#include "sound/music_unknown.asm"
 
 Sound_Data_Music_TitleCard:     ; $BA90
-;.incbin "sound/music_titlecard.bin"
-.include "sound/music_titlecard.asm"
+  #import "sound/music_titlecard.bin"
+#include "sound/music_titlecard.asm"
 
 
 Sound_Data_SFX_Ring:            ; $BAEA
-;.incbin "sound/sfx_ring.bin"
-.include "sound/sfx_ring.asm"
+  #import "sound/sfx_ring.bin"
+#include "sound/sfx_ring.asm"
 
 Sound_Data_SFX_Roll:            ; $BB07
-;.incbin "sound/sfx_roll.bin"
-.include "sound/sfx_roll.asm"
+  #import "sound/sfx_roll.bin"
+#include "sound/sfx_roll.asm"
 
 Sound_Data_SFX_Spring:          ; $BB1F
-;.incbin "sound/sfx_spring.bin"
-.include "sound/sfx_spring.asm"
+  #import "sound/sfx_spring.bin"
+#include "sound/sfx_spring.asm"
 
 Sound_Data_SFX_Jump:            ; $BB45
-;.incbin "sound/sfx_jump.bin"
-.include "sound/sfx_jump.asm"
+  #import "sound/sfx_jump.bin"
+#include "sound/sfx_jump.asm"
 
 Sound_Data_SFX_04:              ; $BB6C
-;.incbin "sound/sfx_04.bin"
-.include "sound/sfx_04.asm"
+  #import "sound/sfx_04.bin"
+#include "sound/sfx_04.asm"
 
 Sound_Data_SFX_05:              ; $BB89
-;.incbin "sound/sfx_05.bin"
-.include "sound/sfx_05.asm"
+  #import "sound/sfx_05.bin"
+#include "sound/sfx_05.asm"
 
 Sound_Data_SFX_06:              ; $BBB8
-;.incbin "sound/sfx_06.bin"
-.include "sound/sfx_06.asm"
+  #import "sound/sfx_06.bin"
+#include "sound/sfx_06.asm"
 
 Sound_Data_SFX_07:              ; $BBD0
-;.incbin "sound/sfx_07.bin"
-.include "sound/sfx_07.asm"
+  #import "sound/sfx_07.bin"
+#include "sound/sfx_07.asm"
 
 Sound_Data_SFX_08:              ; $BBE6
-;.incbin "sound/sfx_08.bin"
-.include "sound/sfx_08.asm"
+  #import "sound/sfx_08.bin"
+#include "sound/sfx_08.asm"
 
 Sound_Data_SFX_09:              ; $BBF8
-;.incbin "sound/sfx_09.bin"
-.include "sound/sfx_09.asm"
+  #import "sound/sfx_09.bin"
+#include "sound/sfx_09.asm"
 
 Sound_Data_SFX_0A:              ; $BC0B
-;.incbin "sound/sfx_0A.bin"
-.include "sound/sfx_0A.asm"
+  #import "sound/sfx_0A.bin"
+#include "sound/sfx_0A.asm"
 
 Sound_Data_SFX_0B:              ; $BC33
-;.incbin "sound/sfx_0B.bin"
-.include "sound/sfx_0B.asm"
+  #import "sound/sfx_0B.bin"
+#include "sound/sfx_0B.asm"
 
 Sound_Data_SFX_0C:              ; $BC56
-;.incbin "sound/sfx_0C.bin"
-.include "sound/sfx_0C.asm"
+  #import "sound/sfx_0C.bin"
+#include "sound/sfx_0C.asm"
 
 Sound_Data_SFX_0D:              ; $BC7F
-;.incbin "sound/sfx_0D.bin"
-.include "sound/sfx_0D.asm"
+  #import "sound/sfx_0D.bin"
+#include "sound/sfx_0D.asm"
 
 Sound_Data_SFX_0E:              ; $BCBF
-;.incbin "sound/sfx_0E.bin"
-.include "sound/sfx_0E.asm"
+  #import "sound/sfx_0E.bin"
+#include "sound/sfx_0E.asm"
 
 Sound_Data_SFX_0F:              ; $BCDC
-;.incbin "sound/sfx_0F.bin"
-.include "sound/sfx_0F.asm"
+  #import "sound/sfx_0F.bin"
+#include "sound/sfx_0F.asm"
 
 Sound_Data_SFX_10:              ; $BCF0
-;.incbin "sound/sfx_10.bin"
-.include "sound/sfx_10.asm"
+  #import "sound/sfx_10.bin"
+#include "sound/sfx_10.asm"
 
 Sound_Data_SFX_11:              ; $BD0D
-;.incbin "sound/sfx_11.bin"
-.include "sound/sfx_11.asm"
+  #import "sound/sfx_11.bin"
+#include "sound/sfx_11.asm"
 
 Sound_Data_SFX_12:              ; $BD21
-;.incbin "sound/sfx_12.bin"
-.include "sound/sfx_12.asm"
+  #import "sound/sfx_12.bin"
+#include "sound/sfx_12.asm"
 
 Sound_Data_SFX_13:              ; $BD3C
-;.incbin "sound/sfx_13.bin"
-.include "sound/sfx_13.asm"
+  #import "sound/sfx_13.bin"
+#include "sound/sfx_13.asm"
 
 Sound_Data_SFX_14:              ; $BD53
-;.incbin "sound/sfx_14.bin"
-.include "sound/sfx_14.asm"
+  #import "sound/sfx_14.bin"
+#include "sound/sfx_14.asm"
 
 Sound_Data_SFX_15:              ; $BD6D
-;.incbin "sound/sfx_15.bin"
-.include "sound/sfx_15.asm"
+  #import "sound/sfx_15.bin"
+#include "sound/sfx_15.asm"
 
 Sound_Data_SFX_16:              ; $BD8D
-;.incbin "sound/sfx_16.bin"
-.include "sound/sfx_16.asm"
+  #import "sound/sfx_16.bin"
+#include "sound/sfx_16.asm"
 
 Sound_Data_SFX_17:              ; $BDC0
-;.incbin "sound/sfx_17.bin"
-.include "sound/sfx_17.asm"
+  #import "sound/sfx_17.bin"
+#include "sound/sfx_17.asm"
 
 Sound_Data_SFX_18:              ; $BDE0
-;.incbin "sound/sfx_18.bin"
-.include "sound/sfx_18.asm"
+  #import "sound/sfx_18.bin"
+#include "sound/sfx_18.asm"
 
 Sound_Data_SFX_19:              ; $BE0D
-;.incbin "sound/sfx_19.bin"
-.include "sound/sfx_19.asm"
+  #import "sound/sfx_19.bin"
+#include "sound/sfx_19.asm"
 
 Sound_Data_SFX_1A:              ; $BE2A 
     Stop

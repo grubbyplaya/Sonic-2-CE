@@ -239,7 +239,7 @@ PrisonCapsule_LockCamera:		;$916E
 	cp      $80
 	ret     nc
 
-+:	ld      (ix+$02), $05		;set state = $05
+	ld      (ix+$02), $05		;set state = $05
 
 	ld      a, (CurrentLevel)	;work out where to lock the camera
 	add     a, a				;calculate an index into the array
@@ -291,7 +291,7 @@ PrisonCapsule_SetEndOfLevel:	;$91D7
 	ld      ($DD04), a			;play end of level music
 
 
-+:	ld      a, (ix+$1E)			;make the capsule vibrate
+	ld      a, (ix+$1E)			;make the capsule vibrate
 	inc     (ix+$1E)
 	and     $06
 	ld      e, a
