@@ -8,12 +8,12 @@
 ;  Out:
 ;    None.
 ; -----------------------------------------------------------------------------
-.macro wait_1s
+#macro wait_1s
     ld    b, Time_1Second
     ei
     halt
     djnz  -
-.endm
+#endmacro
 
 
 ; =============================================================================
@@ -26,13 +26,13 @@
 ;  Out:
 ;    None.
 ; -----------------------------------------------------------------------------
-.macro Engine_FillMemory args value
+#macro Engine_FillMemory args value
     ld    hl, $C001
     ld    de, $C002
     ld    bc, $1FEE
     ld    (hl), value
     ldir
-.endm
+#endmacro
 
 
 ; =============================================================================
@@ -46,7 +46,7 @@
 ;  Out:
 ;    None.
 ; -----------------------------------------------------------------------------
-.macro PaletteIx args palette_addr
+#macro PaletteIx args palette_addr
     .if palette_addr <= Palettes
         .printt "Specified palette address ($"
         .printv palette_addr
@@ -54,4 +54,4 @@
         .fail
     .endif
     .db ((palette_addr - Palettes) / 16)
-.endm
+#endmacro

@@ -1,92 +1,92 @@
-.macro Sound_IsChannelActive
+#macro Sound_IsChannelActive
 	bit  Sound_ChannelActiveBit, (ix + Sound_ChnlControl)
-.endm
+#endmacro
 
 
-.macro Rest
+#macro Rest
     .db $80
-.endm
+#endmacro
 
 
-.macro Detune
+#macro Detune
     .db $E1, \1
-.endm
+#endmacro
 
 
-.macro AdjustVolume
+#macro AdjustVolume
     .db $E6, \1
-.endm
+#endmacro
 
 
-.macro RepeatLast
+#macro RepeatLast
     .db $E7, \1
-.endm
+#endmacro
 
 
-.macro SetGlblSpeed
+#macro SetGlblSpeed
     .db $ED, \1
-.endm
+#endmacro
 
 
-.macro PitchBend
+#macro PitchBend
     .db $F0, \1, \2, \3, \4
-.endm
+#endmacro
 
-.macro Stop
+#macro Stop
     .db $F2
-.endm
+#endmacro
 
 
-.macro VolumeEnvelope       ;VolumeEffect
+#macro VolumeEnvelope       ;VolumeEffect
     .db $F5, \1
-.endm
+#endmacro
 
 
-.macro Jump
+#macro Jump
     .db $F6
     .dw \1
-.endm
+#endmacro
 
 
-.macro Loop
+#macro Loop
     .db $F7
     .db \1
     .db \2
     .dw \3
-.endm
+#endmacro
 
 
-.macro Branch
+#macro Branch
     .db $F8
     .dw \1
-.endm
+#endmacro
 
 
-.macro Return
+#macro Return
     .db $F9
-.endm
+#endmacro
 
 
-.macro SetChnlSpeed
+#macro SetChnlSpeed
     .db $FA, \1
-.endm
+#endmacro
 
 
-.macro PitchAdjust
+#macro PitchAdjust
     .db $FB, \1
-.endm
+#endmacro
 
 
-.macro ReadLiteral
+#macro ReadLiteral
     .db $FD, \1
-.endm
+#endmacro
 
 
-.macro ReadLiteral_On
+#macro ReadLiteral_On
     .db $FD, 1
-.endm
+#endmacro
 
 
-.macro ReadLiteral_Off
+#macro ReadLiteral_Off
     .db $FD, 0
-.endm
+#endmacro
