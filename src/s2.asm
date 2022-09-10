@@ -8,6 +8,7 @@
 #include	"includes/macros.asm"
 #include	"includes/memory_layout.asm"
 #include	"ti84pce.inc"
+.assume ADL=1
 .db tExtTok,tAsm84CeCmp
 
 ;=====================================================================
@@ -877,7 +878,7 @@ ContinueScreen_MainLoop:		;7DB
 	
 	; check to see if button 1/2 is pressed
 	ld	a, (Engine_InputFlagsLast)
-	and	 BTN_1 | BTN_2
+	and	 kbd2nd | kbdAlpha
 	jr	nz, +
 	
 	ld	hl, ContinueScreen_Timer	;increase the timer
