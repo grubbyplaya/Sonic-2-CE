@@ -25,7 +25,7 @@ DATA_B31_ACF8:
 LABEL_B31_AD00:
 	ld      a, (CurrentLevel)
 	or      a
-	jr      nz, +
+	jr      nz, +_
 	ld      a, $88			;tile index
 	ld      (ix+$08), a		;set tile index for right-facing sprite
 	ld      (ix+$09), a		;set tile index for left-facing sprite
@@ -36,7 +36,7 @@ LABEL_B31_AD00:
 
 	ld      a, (CurrentLevel)		;$AD19
 	cp      $04
-	jr      nz, +
+	jr      nz, +_
 	ld      a, $F6
 	ld      (ix+$08), a
 	ld      (ix+$09), a
@@ -348,7 +348,7 @@ LABEL_B31_BB61:
 	ld      de, ($D516)		;get player's horizontal speed
 
 	bit     7, d
-	jr      z, +
+	jr      z, +_
 	dec     de
 	ld      a, d
 	cpl     
@@ -359,25 +359,25 @@ LABEL_B31_BB61:
   	ld      hl, $0180
 	xor     a
 	sbc     hl, de
-	jr      nc, +
+	jr      nc, +_
 	ld      a, b
 	add     a, a
 	ld      b, a
 	ld      hl, $0380
 	xor     a
 	sbc     hl, de
-	jr      nc, +
+	jr      nc, +_
 	ld      a, b
 	add     a, b
 	ld      b, a
-	jr      nc, +
+	jr      nc, +_
 	ld      b, $ff
   	ld      hl, ($d511)
 	ld      e, (ix+$11)
 	ld      d, (ix+$12)
 	xor     a
 	sbc     hl, de
-	jr      nc, +
+	jr      nc, +_
 	ex      de, hl
 	ld      hl, $0000
 	xor     a
@@ -433,7 +433,7 @@ LABEL_B31_BBF9:
 	
 	ld      a, ($D12F)		;get frame counter value
 	and     $01
-	jr      nz, +			;jump if frame counter % 2 != 0
+	jr      nz, +_			;jump if frame counter % 2 != 0
 	
 	dec     hl
 	
@@ -490,7 +490,7 @@ LABEL_B31_BC45:
 	dec     hl
 	ld      a, ($D12F)
 	and     $07
-	jr      nz, +
+	jr      nz, +_
 	dec     hl
   	ld      (ix+$11), l
 	ld      (ix+$12), h

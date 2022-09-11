@@ -72,7 +72,7 @@ PrisonAnimals_SetFalling:		;$93AE
 	ld      a, (ix+$3F)			;set the object's horizontal speed based on the
 	ld      d, $FE				;value at ix+$3F (the object parameter)
 	and     $01
-	jr      z, +
+	jr      z, +_
 	ld      d, $02
 	ld      (ix+$17), d			
 
@@ -103,7 +103,7 @@ PrisonAnimals_UpdateSpeed:		;$93D9
 	ld      hl, $0040
 	xor     a
 	sbc     hl, de				;subtract 64 from vertical speed
-	jr      c, +				;jump if speed now < 0
+	jr      c, +_				;jump if speed now < 0
 	
 	ld      hl, $0000			;set speed = 0
 	

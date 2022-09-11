@@ -74,7 +74,7 @@ LABEL_B28_8067:
 	rlca    
 	rlca    
 	or      a
-	jr      nz, +
+	jr      nz, +_
 	inc     a
   	ld      (ix+$02), a
 	ret     
@@ -129,7 +129,7 @@ LABEL_B28_80C3:
 LABEL_B28_80D6:
 	ld      a, $01
 	bit     4, (ix+$0A)
-	jr      z, +
+	jr      z, +_
 	neg     
   	ld      (ix+$17), a
 	call    LABEL_B28_814F
@@ -218,7 +218,7 @@ LABEL_B28_814F:
 	ld      b, a
 	ld      a, ($d3b9)
 	or      a
-	jr      z, +
+	jr      z, +_
 	cp      b
 	ret     nz
   	ld      a, b
@@ -473,7 +473,7 @@ LABEL_B28_8352:
 	set     7, (ix+$03)
 	ld      a, (ix+$3f)
 	dec     a
-	jr      z, +
+	jr      z, +_
 	bit     6, (ix+$04)
 	ret     nz
 	set     1, (ix+$04)
@@ -496,7 +496,7 @@ LABEL_B28_837F:
 LABEL_B28_8383:
 	ld      a, (ix+$3f)
 	dec     a
-	jr      z, +
+	jr      z, +_
 	bit     6, (ix+$04)
 	ret     nz
   	ld      a, $00
@@ -573,7 +573,7 @@ LABEL_B28_840E:
 
 
 ;Logic for crab badnik
-#include " "src/object_logic/logic_crab_badnik.asm"
+#include " "object_logic/logic_crab_badnik.asm"
 
 
 Logic_SHZ_YellowBird:		;$85F3
@@ -721,7 +721,7 @@ LABEL_B28_86C4:
 	ld      d, (ix+$12)
 	xor     a
 	sbc     hl, de
-	jr      nc, +
+	jr      nc, +_
 	dec     hl
 	ld      a, h
 	cpl     
@@ -763,7 +763,7 @@ LABEL_B28_870A:
 	ld      d, (ix+$15)
 	xor     a
 	sbc     hl, de
-	jr      nc, +
+	jr      nc, +_
 	dec     hl
 	ld      a, h
 	cpl     
@@ -801,7 +801,7 @@ LABEL_B28_8746:
 	call    VF_Engine_CheckCollision
 	ld      a, (ix+$21)
 	and     $0f
-	jr      z, +
+	jr      z, +_
 	ld      a, $ff
 	ld      (Player_HurtTrigger), a
   	bit     6, (ix+$04)
@@ -811,7 +811,7 @@ LABEL_B28_8746:
 
 
 
-#include " "src/object_logic/logic_glider.asm"
+#include "object_logic/logic_glider.asm"
 
 
 
@@ -845,7 +845,7 @@ LABEL_B28_881E:
 	ret     z
 	ld      a, ($d501)
 	cp      $22
-	jp      z, +
+	jp      z, +_
 	ld      a, $22
 	ld      ($d502), a
 	ld      a, SFX_RollWheel
@@ -872,11 +872,11 @@ LABEL_B28_881E:
 	sbc     hl, de
 	ld      a, h
 	or      a
-	jr      z, ++
+	jr      z, ++_
 	ld      l, $00
    	ld      a, l
 	cp      $4f
-	jr      c, ++
+	jr      c, ++_
 	ld      a, $4f
    	and     $f8
 	rrca    
@@ -901,11 +901,11 @@ LABEL_B28_8889:
 	sbc     hl, de
 	ld      a, h
 	or      a
-	jr      z, +
+	jr      z, +_
 	ld      l, $00
   	ld      a, l
 	cp      $4f
-	jr      c, +
+	jr      c, +_
 	ld      a, $4f
   	and     $f8
 	rrca    
@@ -926,7 +926,7 @@ DATA_B28_88C5
 
 
 ;Minecart logic
-#include " "src/object_logic/logic_minecart.asm"
+#include "object_logic/logic_minecart.asm"
 
 
 DATA_B28_8B5A:
@@ -962,7 +962,7 @@ LABEL_B28_8B7E:
 	call    LABEL_200 + $36
 	ld      hl, $0100
 	bit     0, (ix+$1e)
-	jr      z, +
+	jr      z, +_
 	ld      hl, $ff00
   	ld      (ix+$16), l
 	ld      (ix+$17), h
@@ -983,7 +983,7 @@ LABEL_B28_8B7E:
 LABEL_B28_8BBE
 	ld      a, h
 	or      a
-	jr      nz, +
+	jr      nz, +_
 	ld      a, l
 	cp      (ix+$3f)
 	jr      c, LABEL_B28_8BCC
@@ -1046,11 +1046,11 @@ LABEL_B28_8BCC:
 	sbc     hl, de
 	ld      a, h
 	or      a
-	jr      z, ++
+	jr      z, ++_
 	ld      l, $00
    	ld      a, l
 	cp      $4f
-	jr      c, ++
+	jr      c, ++_
 	ld      a, $4f
    	and     $f8
 	rrca    
@@ -1076,11 +1076,11 @@ LABEL_B28_8C6D:
 	sbc     hl, de
 	ld      a, h
 	or      a
-	jr      z, +
+	jr      z, +_
 	ld      l, $00
   	ld      a, l
 	cp      $4f
-	jr      c, +
+	jr      c, +_
 	ld      a, $4f
   	and     $f8
 	rrca    
@@ -1138,12 +1138,12 @@ LABEL_B28_8CDB:
 	add     hl, de
 	ld      (ix+$0a), h
 	ld      (ix+$3f), l
-	jr      c, +
+	jr      c, +_
 	xor     a
 	add     hl, de
 	ld      (ix+$0a), h
 	ld      (ix+$3f), l
-	jr      c, +
+	jr      c, +_
 	xor     a
 	add     hl, de
 	ld      (ix+$0a), h
@@ -1165,18 +1165,18 @@ LABEL_B28_8D1C:
 	sbc     hl, de
 	ld      (ix+$0a), h
 	ld      (ix+$3f), l
-	jr      c, +
+	jr      c, +_
 	xor     a
 	sbc     hl, de
 	ld      (ix+$0a), h
 	ld      (ix+$3f), l
-	jr      c, +
+	jr      c, +_
 	xor     a
 	sbc     hl, de
 	ld      (ix+$0a), h
 	ld      (ix+$3f), l
 	jr      nc, LABEL_B28_8D78
-    inc     (ix+$1f)
+	inc     (ix+$1f)
 	ld      (ix+$0a), $80
 	ld      (ix+$3f), $00
 	ld      a, (ix+$3b)
@@ -1222,7 +1222,7 @@ LABEL_B28_8DA6:
 LABEL_B28_8DAC:
 	ld      a, (ix+$0a)
 	cp      $40
-	jr      c, +
+	jr      c, +_
 	neg     
 	sub     $80
   	add     a, $40
@@ -1286,7 +1286,7 @@ LABEL_B28_8DF8:
 	srl     b
 	ld      de, ($d516)
 	bit     7, d
-	jr      z, +
+	jr      z, +_
 	dec     de
 	ld      a, d
 	cpl     
@@ -1297,25 +1297,25 @@ LABEL_B28_8DF8:
   	ld      hl, $0180
 	xor     a
 	sbc     hl, de
-	jr      nc, +
+	jr      nc, +_
 	ld      a, b
 	add     a, a
 	ld      b, a
 	ld      hl, $0380
 	xor     a
 	sbc     hl, de
-	jr      nc, +
+	jr      nc, +_
 	ld      a, b
 	add     a, b
 	ld      b, a
-	jr      nc, +
+	jr      nc, +_
 	ld      b, $ff
   	ld      hl, ($d511)
 	ld      e, (ix+$11)
 	ld      d, (ix+$12)
 	xor     a
 	sbc     hl, de
-	jr      nc, +
+	jr      nc, +_
 	ex      de, hl
 	ld      hl, $0000
 	xor     a
@@ -1340,7 +1340,7 @@ LABEL_B28_8E66:
 	call    VF_Engine_CheckCollision
 	ld      a, (ix+$21)
 	and     $0f
-	jr      nz, +
+	jr      nz, +_
 	ld      de, $0050
 	ld      bc, $0600
 	call    VF_Engine_SetObjectVerticalSpeed
@@ -1535,7 +1535,7 @@ LABEL_B28_8FC9:
 	ld      l, a
 	ld      de, $0040
   	add     hl, de
-	djnz    -
+	djnz    -_
 	ld      (ix+$19), h
 	ld      (ix+$18), l
 LABEL_B28_9014:
@@ -1557,11 +1557,11 @@ DATA_B28_901E:
 
 
 ;Logic for the end of level prison capsule
-#include " "src/object_logic/logic_prison_capsule.asm"
+#include "object_logic/logic_prison_capsule.asm"
 
 
 ;Logic for the animals that fall from the prison capsule
-#include " "src/object_logic/logic_prison_animals.asm"
+#include "object_logic/logic_prison_animals.asm"
 
 
 DATA_B28_9419:
@@ -1887,7 +1887,7 @@ LABEL_B28_963C:
 	ld      h, (ix+$12)
 	xor     a
 	sbc     hl, de
-	jr      c, +
+	jr      c, +_
 	ld      a, h
 	or      a
 	ret     nz
@@ -1954,10 +1954,10 @@ LABEL_B28_96CC:
 LABEL_B28_96D2:
 	ld      a, (ix+$17)
 	bit     7, a
-	jr      z, +
+	jr      z, +_
 	neg     
   	cp      $04
-	jr      nc, +
+	jr      nc, +_
 	ld      l, (ix+$16)
 	ld      h, (ix+$17)
 	ld      e, l
@@ -1994,7 +1994,7 @@ LABEL_B28_9706:
 	xor     a
 	sbc     hl, de
 	ld      bc, $ffc0
-	jr      c, +
+	jr      c, +_
 	ld      bc, $0040
   	ld      (ix+$16), c
 	ld      (ix+$17), b
@@ -2047,7 +2047,7 @@ LABEL_B28_977F:
 	ld      e, (ix+$16)
 	ld      a, (ix+$17)
 	or      e
-	jr      z, +
+	jr      z, +_
 	xor     a
 	bit     7, (ix+$17)
 	ret     z
@@ -2291,7 +2291,7 @@ LABEL_B28_9900:
 	ld      h, (ix+$12)
 	xor     a
 	sbc     hl, de
-	jr      c, +
+	jr      c, +_
 	ld      a, h
 	or      a
 	ret     nz
@@ -2558,7 +2558,7 @@ LABEL_B28_9B0B:
 
 
 ; Logic for SHZ3 boss objects
-#include " "src/object_logic/logic_shz3_boss.asm"
+#include "object_logic/logic_shz3_boss.asm"
 
 
 DATA_B28_9FB8:
@@ -2602,7 +2602,7 @@ LABEL_B28_9FE7:
 	ld      ($d46b), a
 	ld      hl, $0040
 	bit     4, (ix+$04)
-	jr      z, +
+	jr      z, +_
 	ld      hl, $ffc0
   	ld      (ix+$16), l
 	ld      (ix+$17), h
@@ -2651,7 +2651,7 @@ LABEL_B28_A055:
 	ld      (ix+$19), h
 	ld      hl, $0380
 	bit     4, (ix+$04)
-	jr      z, +
+	jr      z, +_
 	ld      hl, $fc80
   	ld      (ix+$16), l
 	ld      (ix+$17), h
@@ -2664,7 +2664,7 @@ LABEL_B28_A07C
 	ld      (ix+$19), h
 	ld      hl, $0100
 	bit     4, (ix+$04)
-	jr      z, +
+	jr      z, +_
 	ld      hl, $ff00
   	ld      (ix+$16), l
 	ld      (ix+$17), h
@@ -2895,7 +2895,7 @@ LABEL_B28_A217:
 	ld      b, $03
 	ld      a, (ix+$0a)
 	dec     a
-	jr      nz, +
+	jr      nz, +_
 	ld      b, $04
   	ld      (ix+$02), b
 	ret     
@@ -2937,7 +2937,7 @@ LABEL_B28_A262:
 	ld      h, (ix+$12)
 	xor     a
 	sbc     hl, de
-	jr      c, +
+	jr      c, +_
 	ld      a, h
 	or      a
 	ret     nz
@@ -3088,7 +3088,7 @@ LABEL_B28_A35D:
 ;************************************
 ;* Logic for UGZ3 Boss - Robotnik	*
 ;************************************
-#include " "src/object_logic/logic_ugz3_boss.asm"
+#include "object_logic/logic_ugz3_boss.asm"
 
 
 
@@ -3392,7 +3392,7 @@ LABEL_B28_A9E9:
 	ld      d, (ix+$12)
 	xor     a
 	sbc     hl, de
-	jr      nc, +
+	jr      nc, +_
 	ex      de, hl
 	ld      hl, $0000
 	xor     a
@@ -3667,7 +3667,7 @@ LABEL_B28_AC12:
 	ld      e, (ix+$16)
 	ld      a, (ix+$17)
 	or      e
-	jr      z, +
+	jr      z, +_
 	xor     a
 	bit     7, (ix+$17)
 	ret     z
@@ -3685,15 +3685,15 @@ LABEL_B28_AC2B:
 	call    LABEL_200 + $1B
 	ld      a, (ix+$00)
 	cp      $42
-	jr      nz, +
+	jr      nz, +_
 	ld      a, (ix+$21)
 	and     $0f
-	jr      z, ++
+	jr      z, ++_
 	ld      a, $ff
 	ld      ($d3a8), a
-    ld      a, (ix+$21)
+	ld      a, (ix+$21)
 	and     $0f
-	jr      z, ++
+	jr      z, ++_
 	ld      e, (ix+$16)
 	ld      d, (ix+$17)
 	ld      hl, $0000
@@ -3854,11 +3854,11 @@ LABEL_B28_AD47:
 	ld      a, $40
 	call    Logic_CheckPlayerHorizontalProximity
 	cp      $00
-	jr      z, +
+	jr      z, +_
 	ld      a, $40
 	call    Logic_CheckPlayerVerticalProximity
 	cp      $00
-	jr      z, +
+	jr      z, +_
 	ld      (ix+$02), $02
   	ret     
 
@@ -4061,7 +4061,7 @@ LABEL_B28_AEEE:
 	ld      d, (ix+$12)
 	xor     a
 	sbc     hl, de
-	jr      nc, +
+	jr      nc, ++_
 	ex      de, hl
 	ld      hl, $0000
 	xor     a
@@ -4075,7 +4075,7 @@ LABEL_B28_AEEE:
 	ld      d, (ix+$15)
 	xor     a
 	sbc     hl, de
-	jr      nc, +
+	jr      nc, +_
 	ex      de, hl
 	ld      hl, $0000
 	xor     a
@@ -4107,13 +4107,13 @@ LABEL_B28_AF43:
 	call    LABEL_200 + $39
 	ld      a, (ix+$22)
 	and     $0c
-	jr      nz, +
+	jr      nz, +_
 	call    VF_Engine_UpdateObjectPosition
 	call    LABEL_200 + $60
 	call    LABEL_200 + $3F
 	ld      a, (ix+$21)
 	and     $0f
-	jr      nz, +
+	jr      nz, +_
 	dec     (ix+$1f)
 	jp      nz, VF_Logic_CheckDestroyObject
   	ld      (ix+$02), $03
@@ -4126,7 +4126,7 @@ LABEL_B28_AF8A:
 	call    LABEL_200 + $3f
 	ld      a, (ix+$06)
 	cp      $04
-	jr      z, +
+	jr      z, +_
 	call    VF_Engine_UpdateObjectPosition
   	call    VF_Engine_CheckCollision
 	ld      l, (ix+$3a)
@@ -4346,19 +4346,19 @@ LABEL_B28_B101:
 	ld      a, $40				;check player proximity
 	call    Logic_CheckPlayerVerticalProximity
 	or      a
-	jr      z, +				;jump if player is not close enough
+	jr      z, +_				;jump if player is not close enough
 	
 	ld      hl, ($D511)			;HL = player hpos
 	ld      d, (ix+$12)			;DE = object hpos
 	ld      e, (ix+$11)
 	xor     a
 	sbc     hl, de
-	jr      c, +				;jump if object to right of player
+	jr      c, +_				;jump if object to right of player
 	
 	ld      de, $0040
 	xor     a
 	sbc     hl, de
-	jr      nc, +				;jump if player not with 64 pixels of object
+	jr      nc, +_				;jump if player not with 64 pixels of object
 	
 	ld      (ix+$02), $07		;set state = $07
 	ld      (ix+$17), $00		;set horizontal velocity
@@ -4394,7 +4394,7 @@ Motobug_MoveLeft:		;$B161
 	ld      a, $40				;check to see if player is close
 	call    Logic_CheckPlayerVerticalProximity
 	or      a
-	jr      z, +				;jump if player not close enough
+	jr      z, +_				;jump if player not close enough
 	
 	ld      de, ($D511)			;DE = player hpos
 	ld      h, (ix+$12)			;HL = object hpos
@@ -4402,12 +4402,12 @@ Motobug_MoveLeft:		;$B161
 
 	xor     a
 	sbc     hl, de
-	jr      c, +				;jump if player is to right of object
+	jr      c, +_				;jump if player is to right of object
 
 	ld      de, $0040
 	xor     a
 	sbc     hl, de
-	jr      nc, +				;jump if player not with 64 pixels of object
+	jr      nc, +_				;jump if player not with 64 pixels of object
 
 	ld      (ix+$02), $08		;set state = $08
 	ld      (ix+$17), $00		;set horizontal velocity
@@ -4534,7 +4534,7 @@ LABEL_B28_B290:
 	call    VF_Logic_UpdateObjectDirectionFlag
 	call    Logic_CheckBackgroundCollision
 	bit     0, a
-	jr      nz, +
+	jr      nz, +_
 	ld      h, (ix+$17)
 	ld      l, (ix+$16)
 	ld      de, $0004
@@ -4561,7 +4561,7 @@ LABEL_B28_B2D0:
 	call    VF_Logic_UpdateObjectDirectionFlag
 	call    Logic_CheckBackgroundCollision
 	bit     0, a
-	jr      nz, +
+	jr      nz, +_
 	ld      h, (ix+$17)
 	ld      l, (ix+$16)
 	ld      de, $0004
@@ -4592,7 +4592,7 @@ Logic_Generic_CheckDestroyObject:		;$B311
 
 
 ;Logic for the Newtron (chameleon) badnik
-#include " "src/object_logic/logic_newtron_badnik.asm"
+#include "object_logic/logic_newtron_badnik.asm"
 
 
 
@@ -4888,7 +4888,7 @@ LABEL_B28_B698:
 	cp      c
 	jr      z, LABEL_B28_B6AC
 	inc     de
-	djnz    -
+	djnz    -_
 	ret     
 
 LABEL_B28_B6AC:
@@ -4934,7 +4934,7 @@ LABEL_B28_B6E3:
 	add     a, $01
 	ld      (ix+$1e), a
 	and     $80
-	jr      z, +
+	jr      z, +_
 	ld      h, (ix+$19)
 	ld      l, (ix+$18)
 	call    LABEL_B28_BC23
@@ -4952,7 +4952,7 @@ LABEL_B28_B6E3:
 	call    LABEL_200 + $39
 	ld      a, (ix+$22)
 	and     $0c
-	jr      z, +
+	jr      z, +_
 	ld      h, (ix+$17)
 	ld      l, (ix+$16)
 	call    LABEL_B28_BC23
@@ -5001,7 +5001,7 @@ DATA_B28_B75C:
 
 LABEL_B28_B766:
 	bit     6, (ix+$04)
-	jr      nz, +
+	jr      nz, +_
 	ld      (ix+$02), $01
   	ret     
 
@@ -5117,7 +5117,7 @@ LABEL_B28_B844:
 	jp      nz, LABEL_B28_B8DF
 	call    Logic_CheckBackgroundCollision
 	bit     0, a
-	jr      z, +
+	jr      z, +_
 	call    LABEL_B28_BD26
   	bit     7, (ix+$17)
 	jr      nz, LABEL_B28_B89A
@@ -5250,11 +5250,11 @@ LABEL_B28_B956:
 	ld      a, $40
 	call    Logic_CheckPlayerVerticalProximity
 	cp      $00
-	jr      z, +
+	jr      z, +_
 	ld      a, $40
 	call    Logic_CheckPlayerHorizontalProximity
 	cp      $00
-	jr      z, +
+	jr      z, +_
 	ld      (ix+$02), $02
   	call    VF_Engine_CheckCollision
 	call    VF_Engine_UpdateObjectPosition
@@ -5263,7 +5263,7 @@ LABEL_B28_B956:
 	call    LABEL_B28_BCB3
 	call    Logic_CheckBackgroundCollision
 	bit     0, a
-	jr      z, +
+	jr      z, +_
 	call    LABEL_B28_BD26
   	ld      a, (ix+$21)
 	and     $0f
@@ -5377,7 +5377,7 @@ LABEL_B28_BA30:
 	ld      de, $0000
 	call    VF_Engine_GetCollisionValueForBlock
 	cp      $81
-	jr      nz, +
+	jr      nz, +_
 	ld      hl, ($bb2a)
 	ld      (ix+$18), l
 	ld      (ix+$19), h
@@ -5426,14 +5426,14 @@ LABEL_B28_BAA3:
 LABEL_B28_BAC9:
 	ld      a, (ix+$17)
 	or      a
-	jr      nz, +
+	jr      nz, +_
 	ld      a, (ix+$16)
 	or      a
-	jr      z, ++
+	jr      z, ++_
   	call    LABEL_200 + $39
 	ld      a, (ix+$22)
 	and     $0c
-	jr      z, ++
+	jr      z, ++_
 	ld      (ix+$17), $00
 	ld      (ix+$16), $00
    	call    VF_Engine_CheckCollision
@@ -5452,7 +5452,7 @@ LABEL_B28_BAC9:
 	ld      de, $0000
 	call    VF_Engine_GetCollisionValueForBlock
 	cp      $81
-	jr      nz, +
+	jr      nz, +_
 	ld      hl, $ff00
 	ld      (ix+$18), l
 	ld      (ix+$19), h
@@ -5485,7 +5485,7 @@ LABEL_B28_BB36:
 
 LABEL_B28_BB3C:
 	bit     6, (ix+$04)
-	jr      z, +
+	jr      z, +_
 	ld      a, $ff
 	ld      (ix+$00), a
   	ld      (ix+$02), $01
@@ -5742,7 +5742,7 @@ LABEL_B28_BCB3:
 	jr      c, LABEL_B28_BD14
 	ld      a, c
 	and     $01
-	jr      nz, +
+	jr      nz, +_
 	ld      h, (ix+$17)
 	ld      l, (ix+$16)
 	call    LABEL_B28_BC23
@@ -5767,7 +5767,7 @@ LABEL_B28_BCE4:
 	jr      c, LABEL_B28_BD14
 	ld      a, c
 	and     $01
-	jr      nz, +
+	jr      nz, +_
 	ld      h, (ix+$17)
 	ld      l, (ix+$16)
 	call    LABEL_B28_BC23
@@ -5797,7 +5797,7 @@ LABEL_B28_BD26:
 ;test for a collision with the background tiles
 Logic_CheckBackgroundCollision:			;$BD36
 	bit     7, (ix+$17)		;which direction is the object moving?
-	jr      nz, +			;jump if moving left
+	jr      nz, +_			;jump if moving left
 	
 							;get the mapping block type
 	ld      bc, $0008		;horizontal adjustment value if moving right
@@ -5808,11 +5808,11 @@ Logic_CheckBackgroundCollision:			;$BD36
    	ld      de, $FFF0		;vertical adjustment value (-16px)
 	call    VF_Engine_GetCollisionValueForBlock
 	cp      $81
-	jr      z, +
+	jr      z, +_
 	cp      $8D
-	jr      z, +
+	jr      z, +_
 	cp      $90
-	jr      z, +
+	jr      z, +_
 	jr      Logic_CheckBackgroundCollision_Bottom
 	
   	ld      a, ($D353)			;search the 8-element array at $BD86 for the current mapping number.
@@ -5827,15 +5827,15 @@ Logic_CheckBackgroundCollision:			;$BD36
 ;test for a collision at the bottom of the object with the background tiles
 Logic_CheckBackgroundCollision_Bottom:	;$BD68
 	bit     7, (ix+$17)		;which direction is the sprite moving?
-	jr      nz, +			;jump if moving left
+	jr      nz, +_			;jump if moving left
 	ld      bc, $0008		;horizontal adjustment value if moving right
-	jr      ++
+	jr      ++_
   	ld      bc, $FFF8		;horizontal adjustment value if moving left
    	ld      de, $0010		;vertical adjustment value (+16px)
 	call    VF_Engine_GetCollisionValueForBlock
 	
 	bit     7, a
-	jr      z, +			;jump if block value < $80
+	jr      z, +_			;jump if block value < $80
 	
 	ld      a, $00
 	ret     
@@ -5978,7 +5978,7 @@ LABEL_B28_BE53:
 	call    VF_Engine_CheckCollision
 	call    Logic_CheckBackgroundCollision
 	bit     0, a
-	jr      z, +
+	jr      z, +_
 	call    LABEL_B28_BD26
   	call    VF_Engine_UpdateObjectPosition
 	call    LABEL_200 + $60
@@ -6120,7 +6120,7 @@ LABEL_B28_BF6E:
 	bit     0, a
 	jr      nz, LABEL_B28_BFA4
 	bit     1, a
-	jr      z, +
+	jr      z, +_
 	ld      h, (ix+$19)
 	ld      l, (ix+$18)
 	call    LABEL_B28_BC23

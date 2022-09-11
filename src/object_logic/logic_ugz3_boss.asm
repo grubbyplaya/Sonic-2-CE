@@ -58,17 +58,17 @@ LABEL_B28_A3F4:
 	bit     1, (ix+$22)
 	jr      z, LABEL_B28_A42C
 	bit     6, (ix+$04)
-	jr      nz, +
+	jr      nz, +_
 	ld      a, SFX_BombBounce
 	ld      ($DD04), a
 	ld      e, (ix+$18)		;get vertical velocity
 	ld      d, (ix+$19)
 	bit     7, d			;is sprite moving up?
-	jr      nz, +
+	jr      nz, +_
 	ld      hl, $0080
 	xor     a
 	sbc     hl, de
-	jr      c, ++
+	jr      c, ++_
 	ld      hl, $0000
 	ld      (ix+$18), l		;set vertical velocity
 	ld      (ix+$19), h
@@ -94,10 +94,10 @@ LABEL_B28_A42C:
 	jp      z, VF_Engine_DisplayExplosionObject
 	ld      a, (iy+$02)
 	cp      $03
-	jr      z, +
+	jr      z, +_
 	ld      a, (ix+$01)
 	cp      $03
-	jr      z, +
+	jr      z, +_
 	ld      (iy+$02), $02
 	ld      (iy+$1e), $40
 	dec     (iy+$24)
@@ -420,7 +420,7 @@ UGZ3_Robotnik_State_07_Logic_01:		;$A6CA
 	ld      (ix+$19), h
 	ld      hl, $0000
 	bit     1, (ix+$22)
-	jr      z, +
+	jr      z, +_
 	ld      hl, $0280
 	ld      (ix+$16), l		;set horizontal velocity
 	ld      (ix+$17), h
@@ -449,7 +449,7 @@ UGZ3_Robotnik_State_09_Logic_01:		;$A711
 	rlca    
 	sub     $08
 	add     a, b
-	jr      nz, +
+	jr      nz, +_
 	dec     (ix+$1F)
 	ld      (ix+$1E), a
 	ld      l, a
@@ -566,7 +566,7 @@ UGZ3_Pincers_State_00_Logic_01:		;$A7D7
 
 UGZ3_Pincers_State_01_Logic_01:		;$A7E5
 	ld      (ix+$06), $01	;set animation frame to $01
-	jp      +
+	jp      +_
 UGZ3_Pincers_State_01_Logic_02		;$A7EC
 	ld      (ix+$06), $02	;set animation frame to $02
 	ld      a, (ix+$24)

@@ -758,7 +758,7 @@ LABEL_B31_AB8C:
     inc     (hl)
     ld      a, (hl)
     cp      $04
-    jr      c, +
+    jr      c, +_
     xor     a
     ld      (hl), a
     

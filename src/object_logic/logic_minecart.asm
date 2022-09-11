@@ -102,7 +102,7 @@ Minecart_State_02_Logic_01:		;$8971
 	ld      h, (ix+$17)
 	ld      a, h
 	cp      $04
-	jr      nc, +			;jump if H >= $04
+	jr      nc, +_			;jump if H >= $04
 	ld      de, $0010
 	add     hl, de
 	ld      (ix+$16), l		;set horizontal speed
@@ -136,7 +136,7 @@ Minecart_State_03_Logic_01:		;$89B4
 	ld      l, a
 	ld      a, h
 	cp      $04
-	jr      nc, +			;jump if hi-byte of speed >= $04
+	jr      nc, +_		;jump if hi-byte of speed >= $04
 	ld      de, $0010		;increase speed by 16
 	add     hl, de
 	dec     hl
@@ -171,7 +171,7 @@ LABEL_B28_89F7:
 Minecart_State_04_Logic_01:		;$8A0B
 	ld      bc, $0010
 	bit     7, (ix+$17)
-	jr      z, +
+	jr      z, +_
 	ld      bc, $FFF0
 	ld      de, $FFF0
 	call    LABEL_200 + $63
@@ -179,7 +179,7 @@ Minecart_State_04_Logic_01:		;$8A0B
 	ld      hl, DATA_B28_8B0C
 	ld      bc, $001B
 	cpir    
-	jr      nz, +
+	jr      nz, +_
 	ld      hl, $0000
 	ld      (ix+$16), l
 	ld      (ix+$17), h
@@ -243,7 +243,7 @@ LABEL_B28_8ABD:
 	bit     6, (ix+$03)
 	jr      z, +
 	dec     (ix+$1F)
-	jr      nz, +
+	jr      nz, +_
 	res     6, (ix+$03)
 	call    VF_Engine_CheckCollision
 	ld      a, (ix+$21)
@@ -276,7 +276,7 @@ LABEL_B28_8B27:
 	ld      l, (ix+$2C)
 	ld      h, $00
 	bit     7, (ix+$17)
-	jr      z, +
+	jr      z, +_
 	ex      de, hl
 	ld      hl, $0000
 	xor     a

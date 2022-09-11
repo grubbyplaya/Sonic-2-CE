@@ -34,7 +34,7 @@ Engine_UpdateObjectLayout:            ;$8000
     ld    hl, (Camera_X)        ;get camera hpos
     ld    de, $FF80
     add   hl, de
-    jr    c, +                  ;jump if hpos was >= 128
+    jr    c, +_                 ;jump if hpos was >= 128
     
     ld    hl, $0000
     
@@ -43,7 +43,7 @@ Engine_UpdateObjectLayout:            ;$8000
     ld    hl, (Camera_Y)        ;get camera vpos
     ld    bc, $FF80
     add   hl, bc
-    jr    c, +                  ;jump if camera vpos >= 128
+    jr    c, +_                 ;jump if camera vpos >= 128
     
     ld    hl, $0000
 
@@ -51,7 +51,7 @@ Engine_UpdateObjectLayout:            ;$8000
 
     ld    a, (hl)               ;read the object number
     inc   a
-    jr    z, +                  ;check for $FF terminator byte
+    jr    z, +_                 ;check for $FF terminator byte
 
     ld    a, (bc)               ;check the active objects array to see
     or    a                     ;if the slot is available
@@ -64,7 +64,7 @@ Engine_UpdateObjectLayout:            ;$8000
     
     ld    de, $0009             ;move to the next sprite header
     add   hl, de
-    jr    -
+    jr    -_
 
     ret
 
@@ -85,7 +85,7 @@ ObjectLayout_CheckLoadObject:        ;$804D
     jp    c, ObjectLayout_Return    ;jump if cam pos > object pos
 
     or    a
-    jr    nz, +                 ;jump if hi-byte of obj hpos != 0
+    jr    nz, +_                ;jump if hi-byte of obj hpos != 0
 
     ld    a, e                  ;compare with lo-byte of current screen pos
     exx
@@ -104,7 +104,7 @@ ObjectLayout_CheckLoadObject:        ;$804D
     jp    c, ObjectLayout_Return
 
     or    a
-    jr    nz, +
+    jr    nz, +_
 
     ld    a, e
     exx
@@ -125,7 +125,7 @@ ObjectLayout_CheckLoadObject:        ;$804D
     jp    c, ObjectLayout_Return
 
     or    a
-    jr    nz, +
+    jr    nz, +_
 
     ld    a, e
     exx
@@ -142,7 +142,7 @@ ObjectLayout_CheckLoadObject:        ;$804D
     jp    c, ObjectLayout_Return
 
     or    a
-    jr    nz, +
+    jr    nz, +_
 
     ld    a, e
     exx

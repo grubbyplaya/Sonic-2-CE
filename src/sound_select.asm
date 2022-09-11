@@ -20,7 +20,7 @@ LABEL_A2C:
     ld   hl, $3808				;VRAM destination
     ld   de, _Title				;source data
     ld   bc, $10
-    call VDP_DrawText
+    call os_FontDrawText
 	jr   SoundTest_DrawEntry1
 
 _Title:
@@ -32,7 +32,7 @@ SoundTest_DrawEntry1:
 	ld   hl, $3888
 	ld   de, SoundTest_Entry1
 	ld   bc, SoundTest_DrawEntry2 - SoundTest_Entry1
-	call VDP_DrawText
+	call os_FontDrawText
 	jr   SoundTest_DrawEntry2
 
 SoundTest_Entry1:
@@ -61,9 +61,9 @@ SoundTest_MainLoop:
 	call 	DrawSoundValue
 	ld   	a, ($D147)
 	bit		5, a
-	jr   	nz, +
+	jr   	nz, +_
 	bit		4, a
-	jr		z, ++
+	jr		z, ++_
 	ld   	a, (SoundValue)
 	ld   	($DD04), a
 	jr		SoundTest_MainLoop
@@ -123,7 +123,7 @@ DrawSoundValue:
 	ex		de, hl
 	ld		hl, $3896
 	ld		bc, $0001
-	call	VDP_DrawText
+	call	os_FontDrawText
 	
 	ld		a, (SoundValue)
 	and		$0F
@@ -134,7 +134,7 @@ DrawSoundValue:
 	ex		de, hl
 	ld		hl, $3898
 	ld		bc, $0001
-	call	VDP_DrawText
+	call	os_FontDrawText
 	
 	ret
 

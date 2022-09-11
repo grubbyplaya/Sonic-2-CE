@@ -37,7 +37,7 @@ DATA_B31_AF90:
 
 
 LABEL_B31_AFAA:
-	ld		hl, ($D511)		;move sprite to 16-pixels above player
+	ld	  hl, ($D511)		;move sprite to 16-pixels above player
 	ld      (ix+$11), l		;set sprite's hpos
 	ld      (ix+$12), h
 	ld      hl, ($D514)
@@ -80,8 +80,8 @@ DATA_B31_B009:
 
 
 LABEL_B31_B017:
-	ld		l, (ix+$18)			;add 32 to sprite's horizontal speed
-	ld		h, (ix+$19)
+	ld	  l, (ix+$18)			;add 32 to sprite's horizontal speed
+	ld	  h, (ix+$19)
 	ld      de, $0020
 	add     hl, de
 	ld      (ix+$18), l
@@ -95,14 +95,14 @@ LABEL_B31_B017:
 	bit     7, (ix+$19)
 	call    z, LABEL_200 + $60
 	bit     1, (ix+$22)
-	jr      z, +
+	jr      z, +_
 	res     6, (ix+$03)
 	ld      l, (ix+$3c)
 	ld      h, (ix+$3d)
 	ld      bc, $0080
 	xor     a
 	add     hl, bc
-	jr      c, ++
+	jr      c, ++_
 	ld      (ix+$3c), l
 	ld      (ix+$3d), h
 	ld      (ix+$18), l

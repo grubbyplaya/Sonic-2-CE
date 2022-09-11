@@ -32,11 +32,11 @@ ChaosEmerald_Init:      ;$B7EE
     ; if level is SEZ we don't need to bother loading the tiles
     ld      a, (CurrentLevel)
     cp      Level_SEZ
-    jr      nz, +
+    jr      nz, +_
     
     add     a, $20
     ld      (PatternLoadCue), a
-    jr      ++
+    jr      ++_
 
 
     ld      a, (CurrentLevel)    ;calculate which tiles to load

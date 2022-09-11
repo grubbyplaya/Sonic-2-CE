@@ -30,7 +30,7 @@ VDP_InitRegisters:
     inc   c
     inc   de
     inc   hl
-    djnz  -
+    djnz  -_
     
     ret
 
@@ -219,7 +219,7 @@ VDP_WriteAndSkip:       ; $134C
     dec   bc
     ld    a, b
     or    c
-    jr    nz, -
+    jr    nz, -_
     
     pop   de
     ret
@@ -256,7 +256,7 @@ VDP_Write:		;$1361
     dec   bc
     ld    a, b
     or    c
-    jr    nz, -
+    jr    nz, -_
 
     ret
 
@@ -291,7 +291,7 @@ VDP_Copy:		 ;$1372
     dec   bc
     ld    a, b
     or    c
-    jr    nz, -
+    jr    nz, -_
     
     ret
 
@@ -430,7 +430,7 @@ VDP_DrawText:       ; $13B8
 	dec		bc
 	ld		a, c
 	or		b
-	jr		nz, -
+	jr		nz, -_
 
 	pop		bc
 	pop		de
@@ -458,7 +458,7 @@ LABEL_13D2:
     
     ld		a, ($D292)
     bit		7, a
-    jr		nz, +
+    jr		nz, +_
 
     di
     
@@ -487,9 +487,9 @@ LABEL_13D2:
     halt
     ld		a, ($D137)
     and		$80
-    jr		nz, ++
+    jr		nz, ++_
 
-    djnz  --
+    djnz  --_
 
     pop   hl
     pop   de
@@ -503,7 +503,7 @@ LABEL_13D2:
     dec   bc
     ld    a, c
     or    b
-    jr    nz, -
+    jr    nz, -_
 
     pop   bc
     pop   de
@@ -699,7 +699,7 @@ VDP_ClearSAT:        ; $17C7
     ld        (de), a
     inc        de
     
-    djnz    -
+    djnz    -_
     
     ; flag the SAT update trigger
     ld        a, $FF

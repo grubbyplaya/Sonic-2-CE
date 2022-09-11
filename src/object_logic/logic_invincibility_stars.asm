@@ -155,7 +155,7 @@ InvincibilityStars_State_00_Logic_01:	;$AF14
 InvincibilityStars_State_01_Logic_01:	;$AF27
 	ld      a, ($D532)
 	cp      $02
-	jr      nz, +
+	jr      nz, +_
 	ld      hl, $D503
 	set     7, (hl)
 	jp      VF_Engine_MoveObjectToPlayer

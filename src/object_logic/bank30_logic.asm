@@ -84,7 +84,7 @@ LABEL_B30_8EBB:
 	ld      a, (ix+$1F)
 	and     $01
 	ld      de, $0040
-	jr      z, +
+	jr      z, +_
 	ld      de, $FFC0
   	ld      l, (ix+$16)
 	ld      h, (ix+$17)
@@ -123,7 +123,7 @@ LABEL_B30_8EFB:
 	ld      a, (ix+$1F)
 	and     $02
 	ld      de, $0040
-	jr      z, +
+	jr      z, +_
 	ld      de, $ffc0
   	ld      l, (ix+$18)
 	ld      h, (ix+$19)
@@ -806,7 +806,7 @@ LABEL_B30_9386:
 	ld      (ix+$17), h
 	ld      a, (ix+$01)
 	cp      $09
-	jr      nz, +
+	jr      nz, +_
 	ld      a, ($d501)
 	cp      $31
 	ret     nz
@@ -1048,7 +1048,7 @@ LABEL_B30_9568:
 	ld      a, ($D2C5)
 	and     $3F
 	cp      $3F
-	jr      z, +
+	jr      z, +_
 	set     7, (ix+$04)
   	set     4, (ix+$04)
 	set     1, (ix+$04)
@@ -1078,7 +1078,7 @@ LABEL_B30_95B0:
 	ld      l, (ix+$0b)
 	ld      de, $fff8
 	bit     0, (ix+$1f)
-	jr      z, +
+	jr      z, +_
 	ld      de, $0008
   	add     hl, de
 	ex      de, hl

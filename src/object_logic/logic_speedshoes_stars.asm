@@ -72,16 +72,16 @@ LABEL_B31_AD88:
 	inc     hl
 	ld      (hl), d
 	inc     hl
-	djnz    -
+	djnz    -_
 	ret     
 
 LABEL_B31_ADB3:
 	ld      a, ($D532)		;check for speed shoes power-up
 	cp      $01
-	jr      nz, +
+	jr      nz, +_
 	ld      a, (ix+$3F)
 	or      a
-	jp      nz, ++
+	jp      nz, ++_
 	ld      hl, $D38E
 	ld      de, $D392
 	ld      bc, $001C

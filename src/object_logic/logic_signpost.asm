@@ -126,11 +126,11 @@ Signpost_State_02_Logic_01:		;$B937
 	ld      a, $A9
 	ld      ($DD04), a
 	call    LABEL_B31_B981		;Should we show the Tails signpost?
-	jr      c, +
+	jr      c, +_
 	call    LABEL_B31_B9A0		;Should we show the Sonic signpost?
-	jr      c, +
+	jr      c, +_
 	call    LABEL_B31_B9C2		;Should we show the ring signpost?
-	jr      c, +
+	jr      c, +_
 	ld      b, $06				;signpost art
 	ld      (ix+$1E), b
 	ret     
@@ -200,7 +200,7 @@ LABEL_B31_B9C2:
 	call    LABEL_200 + $010E
 	ld      a, (RingCounter)		;if the ring count wrapped past 99
 	or      a				;add 1 life.
-	jr      nz, +
+	jr      nz, +_
 	ld      a, (LifeCounter)
 	inc     a
 	ld      (LifeCounter), a

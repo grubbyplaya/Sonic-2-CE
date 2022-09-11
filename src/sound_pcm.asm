@@ -33,7 +33,7 @@ Sound_PlaySegaSound_PlaySample:     ; $8023
 	rrca    
 	rrca    
 	ld      b, l
-	djnz    -
+	djnz    -_
 
 	and     $0F
 	or      $90
@@ -44,7 +44,7 @@ Sound_PlaySegaSound_PlaySample:     ; $8023
 	out     (Ports_PSG), a
 	ld      b, l
     
-	djnz    -
+	djnz    -_
 
 	ld      a, (de)
 	cpl     

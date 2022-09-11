@@ -30,7 +30,7 @@ LABEL_B3_8023:
 	rrca    
 	rrca    
 	ld      b, l
-	djnz    -
+	djnz    -_
 	and     $0F
 	or      $90			;set volume of tone channel 0
 	out     ($7F), a
@@ -39,7 +39,7 @@ LABEL_B3_8023:
 	add     a, $20
 	out     ($7F), a	;CHECK: sets volume to 0?
 	ld      b, l
-	djnz    -
+	djnz    -_
 	ld      a, (de)
 	cpl     
 	and     $0F

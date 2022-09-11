@@ -263,7 +263,7 @@ LABEL_B31_B311:
 	jp      z, LABEL_B31_B341
 	ld      hl, $0100		;move right
 	and     $08
-	jr      nz, +
+	jr      nz, +_
 	ld      hl, $FF00		;move left
 	ld      (ix+$16), l		;set horizontal speed
 	ld      (ix+$17), h
@@ -282,11 +282,11 @@ LABEL_B31_B341:
 	ld      b, a
 	ld      hl, $FF00
 	and     $01				;is up button pressed?
-	jr      nz, +
+	jr      nz, +_
 	ld      a, b
 	and     $02				;is down button pressed
 	ld      hl, $FF80
-	jr      z, +
+	jr      z, +_
 	ld      hl, $FFD0
 	ld      (ix+$18), l		;set the vertical speed
 	ld      (ix+$19), h
@@ -343,15 +343,15 @@ LABEL_B31_B3BD:
 	ld      hl, $D3CE
 	ld      b, $20
 	xor     a
--:	ld      (hl), a
+_:	ld      (hl), a
 	inc     hl
-	djnz    -
+	djnz    -_
 	ld      hl, $D3EE
 	ld      b, $10
 	xor     a
--:	ld      (hl), a
+_:	ld      (hl), a
 	inc     hl
-	djnz    -
+	djnz    -_
 	ret     
 
 LABEL_B31_B3D2:
@@ -363,9 +363,9 @@ Logic_Bubble_SetHorizontalSpeed:	;$B3D9
 	inc     (ix+$1E)
 	ld      hl, $0040		;horiz speed = 64
 	bit     4, (ix+$1E)		;16th frame?
-	jr      z, +
+	jr      z, +_
 	ld      hl, $FFC0		;horiz speed = -64
-+:	ld      (ix+$16), l
+_:	ld      (ix+$16), l
 	ld      (ix+$17), h
 	call    VF_Engine_UpdateObjectPosition
 	ret     

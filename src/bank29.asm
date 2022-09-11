@@ -38,7 +38,7 @@ LABEL_B29_B400:				;push the last 16 sprites off of the screen
 	ld      hl, $DB30
 	ld      (hl), a
 	inc     hl
-	djnz    -
+	djnz    -_
 	ret     
 
 LABEL_B29_B40C:
@@ -73,12 +73,12 @@ LABEL_B29_B433:
 	ld      a, $9A
 	ld      (hl), a
 	inc     hl
-	djnz    -
+	djnz    -_
 	ld      b, $08
 	ld      a, $B0
 	ld      (hl), a
 	inc     hl
-	djnz    -
+	djnz    -_
 	ld      a, ($D46E)
 	ld      l, a
 	ld      h, $00
@@ -101,19 +101,19 @@ LABEL_B29_B433:
 	add     a, a
 	add     a, $12
 	cp      $45
-	jr      c, +
+	jr      c, +_
 	ld      c, $46
 	cp      $E8
-	jr      z, ++
+	jr      z, ++_
 	ld      c, $48
 	cp      $EA
-	jr      z, ++
+	jr      z, ++_
 	ld      c, $4A
 	ld      a, c
 	ld      (de), a			;copy char to work RAM
 	inc     de
 	inc     hl
-	djnz    -
+	djnz    -_
 
 	ld      hl, DATA_B29_B522
 	ld      ix, DATA_B29_B542
@@ -131,7 +131,7 @@ LABEL_B29_B433:
 	ld      (de), a
 	inc     ix
 	inc     de
-	djnz    -
+	djnz    -_
 	ld      a, ($D46E)
 	inc     a
 	ld      ($D46E), a
@@ -150,15 +150,15 @@ LABEL_B29_B4AF:
 	ld      ix, $D46F
 	ld      iy, $DBA0
 	bit     7, (ix+$01)
-	jr      z, +
+	jr      z, +_
 	ld      a, (ix+$02)
 	ld      h, (iy+$00)
 	sub     h
-	jr      c, +
+	jr      c, +_
 	ld      a, (ix+$02)
 	ld      (iy+$00), a
 	xor     a
-	jr      ++
+	jr      ++_
 	call    LABEL_B29_B4F5
 	xor     a
 	dec     a
@@ -169,7 +169,7 @@ LABEL_B29_B4AF:
 	inc     ix
 	inc     iy
 	inc     iy
-	djnz    -
+	djnz    -_
 	ld      a, c
 	or      a
 	ret     nz

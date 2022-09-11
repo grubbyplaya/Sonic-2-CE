@@ -48,22 +48,22 @@ _LABEL_1AA6_22:
   	call _GetCompressionType	;select the correct decompression method
 								
 	cp   $00					;$00 - blank tile
-	jr   nz, +
+	jr   nz, +_
 	call WriteBlankTile			;write a blank tile to VRAM
-	jr   ++
+	jr   ++_
 	
   	cp   $02					;$02 - compressed tile
-	jr   nz, +
+	jr   nz, +_
 	call LoadCompressedTile
 	call WriteTileToVRAM
-	jr   ++
+	jr   ++_
 	
   	cp   $03					;$03 - xor compressed tile
-	jr   nz, +
+	jr   nz, +_
 	call LoadCompressedTile
 	call XORDecode
 	call WriteTileToVRAM
-	jr   ++
+	jr   ++_
 	
   	call LoadUncompressedTile	;$01 - uncompressed tile
 	call WriteTileToVRAM
@@ -73,7 +73,7 @@ _LABEL_1AA6_22:
 	ld   (TileCount), hl
 	ld   a, l
 	or   h
-	jr   nz, -
+	jr   nz, -_
 	ret
 
 ;*************************************************************
@@ -108,16 +108,16 @@ LoadCompressedTile:		;$1B1E
 	rr   c
 	rr   d
 	rr   e
-	jr   c, +			;if previous lsb was 0, read a byte from (hl)
+	jr   c, +_			;if previous lsb was 0, read a byte from (hl)
 	ld   (ix+0), $00	;previous lsb was 0 - write $00 to (ix)
-	jr   ++
+	jr   ++_
   	ld   a, (hl)		;read byte from (hl) and write to (ix)
 	ld   (ix+0), a
 	inc  hl				;increment source pointer
    	inc  ix				;increment destination pointer
 	pop  af
 	dec  a
-	jr   nz, -
+	jr   nz, -_
 	ld   (SourcePointer), hl	;store next source pointer
 	ret
 
@@ -145,7 +145,7 @@ XORDecode:
 	
 	inc  ix
 	inc  ix				;ix += 2
-	djnz -
+	djnz -_
 	ret
 
 ;**********************************************************************
@@ -159,7 +159,7 @@ XORDecode:
 _GetCompressionType:
 	ld   a, (BitFieldCount)		;get counter value (4 flags per byte)
 	cp   $04			;do we need to increment flag-byte pointer?
-	jr   nz, +
+	jr   nz, +_
 	
 	ld   hl, (FlagPointer)	;increment the flag-byte pointer
 	inc  hl
@@ -171,10 +171,10 @@ _GetCompressionType:
 	ld   hl, (FlagPointer)	;read flag pointer
 	ld   a, (hl)
   	dec  b
-	jp   m, +			;jump if sign (<0)
+	jp   m, +_			;jump if sign (<0)
 	rrca				;rotate previous compression type out
 	rrca
-	jp   -
+	jp   -_
   	and  $03
 	push af
 	ld   a, (BitFieldCount)
@@ -208,7 +208,7 @@ WriteTileToVRAM:
 	push hl
 	pop  hl
 	inc  hl
-	djnz -
+	djnz -_
 	ret
 
 ;************************************************************
@@ -227,5 +227,5 @@ WriteMirroredTileToVRAM:
 	push hl
 	pop  hl
 	inc  hl
-	djnz -
+	djnz -_
 	ret

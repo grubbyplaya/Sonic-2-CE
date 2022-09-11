@@ -24,7 +24,7 @@ BlockFragment_State_00_Logic_01:		;$AC34
 	ld      de, DATA_B31_AC98
 	ld      a, ($D517)		;hi-byte of player velocity
 	and     a
-	jp      p, +
+	jp      p, +_
 	ld      de, DATA_B31_ACB8
 	add     hl, de
 	ld      e, (hl)

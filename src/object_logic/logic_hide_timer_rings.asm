@@ -34,9 +34,9 @@ HideTimerRings_MoveSprites:		;$AF58
 	ld      hl, $DB38		;start at the 56th SAT vpos entry
 	ld      b, $08			;and work backwards
 
-	dec		(hl)			;move the sprite up
+	dec	  (hl)			;move the sprite up
 	inc     hl				;move to the next sprite entry
-	djnz    -
+	djnz    -_
 
 	ld      hl, $DB38		;check the first sprite's vpos attribute
 	ld      a, (hl)

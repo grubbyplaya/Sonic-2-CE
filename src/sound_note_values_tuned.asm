@@ -96,363 +96,363 @@
 ; =============================================================================
 ;  MIDI NOTE MACROS
 ; -----------------------------------------------------------------------------
-.macro A2
+#macro A2
 .db $81
-.endm
+#endmacro
 
-.macro As2
+#macro As2
 .db $82
-.endm
+#endmacro
 
-.macro B2
+#macro B2
 .db $83
-.endm
+#endmacro
 
-.macro C3
+#macro C3
 .db $84
-.endm
+#endmacro
 
-.macro Cs3
+#macro Cs3
 .db $85
-.endm
+#endmacro
 
-.macro D3
+#macro D3
 .db $86
-.endm
+#endmacro
 
-.macro Ds3
+#macro Ds3
 .db $87
-.endm
+#endmacro
 
-.macro E3
+#macro E3
 .db $88
-.endm
+#endmacro
 
-.macro F3
+#macro F3
 .db $89
-.endm
+#endmacro
 
-.macro Fs3
+#macro Fs3
 .db $8A
-.endm
+#endmacro
 
-.macro G3
+#macro G3
 .db $8B
-.endm
+#endmacro
 
-.macro Gs3
+#macro Gs3
 .db $8C
-.endm
+#endmacro
 
-.macro A3
+#macro A3
 .db $8D
-.endm
+#endmacro
 
-.macro As3
+#macro As3
 .db $8E
-.endm
+#endmacro
 
-.macro B3
+#macro B3
 .db $8F
-.endm
+#endmacro
 
-.macro C4
+#macro C4
 .db $90
-.endm
+#endmacro
 
-.macro Cs4
+#macro Cs4
 .db $91
-.endm
+#endmacro
 
-.macro D4
+#macro D4
 .db $92
-.endm
+#endmacro
 
-.macro Ds4
+#macro Ds4
 .db $93
-.endm
+#endmacro
 
-.macro E4
+#macro E4
 .db $94
-.endm
+#endmacro
 
-.macro F4
+#macro F4
 .db $95
-.endm
+#endmacro
 
-.macro Fs4
+#macro Fs4
 .db $96
-.endm
+#endmacro
 
-.macro G4
+#macro G4
 .db $97
-.endm
+#endmacro
 
-.macro Gs4
+#macro Gs4
 .db $98
-.endm
+#endmacro
 
-.macro A4
+#macro A4
 .db $99
-.endm
+#endmacro
 
-.macro As4
+#macro As4
 .db $9A
-.endm
+#endmacro
 
-.macro B4
+#macro B4
 .db $9B
-.endm
+#endmacro
 
-.macro C5
+#macro C5
 .db $9C
-.endm
+#endmacro
 
-.macro Cs5
+#macro Cs5
 .db $9D
-.endm
+#endmacro
 
-.macro D5
+#macro D5
 .db $9E
-.endm
+#endmacro
 
-.macro Ds5
+#macro Ds5
 .db $9F
-.endm
+#endmacro
 
-.macro E5
+#macro E5
 .db $A0
-.endm
+#endmacro
 
-.macro F5
+#macro F5
 .db $A1
-.endm
+#endmacro
 
-.macro Fs5
+#macro Fs5
 .db $A2
-.endm
+#endmacro
 
-.macro G5
+#macro G5
 .db $A3
-.endm
+#endmacro
 
-.macro Gs5
+#macro Gs5
 .db $A4
-.endm
+#endmacro
 
-.macro A5
+#macro A5
 .db $A5
-.endm
+#endmacro
 
-.macro As5
+#macro As5
 .db $A6
-.endm
+#endmacro
 
-.macro B5
+#macro B5
 .db $A7
-.endm
+#endmacro
 
-.macro C6
+#macro C6
 .db $A8
-.endm
+#endmacro
 
-.macro Cs6
+#macro Cs6
 .db $A9
-.endm
+#endmacro
 
-.macro D6
+#macro D6
 .db $AA
-.endm
+#endmacro
 
-.macro Ds6
+#macro Ds6
 .db $AB
-.endm
+#endmacro
 
-.macro E6
+#macro E6
 .db $AC
-.endm
+#endmacro
 
-.macro F6
+#macro F6
 .db $AD
-.endm
+#endmacro
 
-.macro Fs6
+#macro Fs6
 .db $AE
-.endm
+#endmacro
 
-.macro G6
+#macro G6
 .db $AF
-.endm
+#endmacro
 
-.macro Gs6
+#macro Gs6
 .db $B0
-.endm
+#endmacro
 
-.macro A6
+#macro A6
 .db $B1
-.endm
+#endmacro
 
-.macro As6
+#macro As6
 .db $B2
-.endm
+#endmacro
 
-.macro B6
+#macro B6
 .db $B3
-.endm
+#endmacro
 
-.macro C7
+#macro C7
 .db $B4
-.endm
+#endmacro
 
-.macro Cs7
+#macro Cs7
 .db $B5
-.endm
+#endmacro
 
-.macro D7
+#macro D7
 .db $B6
-.endm
+#endmacro
 
-.macro Ds7
+#macro Ds7
 .db $B7
-.endm
+#endmacro
 
-.macro E7
+#macro E7
 .db $B8
-.endm
+#endmacro
 
-.macro F7
+#macro F7
 .db $B9
-.endm
+#endmacro
 
-.macro Fs7
+#macro Fs7
 .db $BA
-.endm
+#endmacro
 
-.macro G7
+#macro G7
 .db $BB
-.endm
+#endmacro
 
-.macro Gs7
+#macro Gs7
 .db $BC
-.endm
+#endmacro
 
-.macro A7
+#macro A7
 .db $BD
-.endm
+#endmacro
 
-.macro As7
+#macro As7
 .db $BE
-.endm
+#endmacro
 
-.macro B7
+#macro B7
 .db $BF
-.endm
+#endmacro
 
-.macro C8
+#macro C8
 .db $C0
-.endm
+#endmacro
 
-.macro Cs8
+#macro Cs8
 .db $C1
-.endm
+#endmacro
 
-.macro D8
+#macro D8
 .db $C2
-.endm
+#endmacro
 
-.macro Ds8
+#macro Ds8
 .db $C3
-.endm
+#endmacro
 
-.macro E8
+#macro E8
 .db $C4
-.endm
+#endmacro
 
-.macro F8
+#macro F8
 .db $C5
-.endm
+#endmacro
 
-.macro Fs8
+#macro Fs8
 .db $C6
-.endm
+#endmacro
 
-.macro G8
+#macro G8
 .db $C7
-.endm
+#endmacro
 
-.macro Gs8
+#macro Gs8
 .db $C8
-.endm
+#endmacro
 
-.macro A8
+#macro A8
 .db $C9
-.endm
+#endmacro
 
-.macro As8
+#macro As8
 .db $CA
-.endm
+#endmacro
 
-.macro B8
+#macro B8
 .db $CB
-.endm
+#endmacro
 
-.macro C9
+#macro C9
 .db $CC
-.endm
+#endmacro
 
-.macro Cs9
+#macro Cs9
 .db $CD
-.endm
+#endmacro
 
-.macro D9
+#macro D9
 .db $CE
-.endm
+#endmacro
 
-.macro Ds9
+#macro Ds9
 .db $CF
-.endm
+#endmacro
 
-.macro E9
+#macro E9
 .db $D0
-.endm
+#endmacro
 
-.macro F9
+#macro F9
 .db $D1
-.endm
+#endmacro
 
-.macro Fs9
+#macro Fs9
 .db $D2
-.endm
+#endmacro
 
-.macro G9
+#macro G9
 .db $D3
-.endm
+#endmacro
 
-.macro Gs9
+#macro Gs9
 .db $D4
-.endm
+#endmacro
 
-.macro A9
+#macro A9
 .db $D5
-.endm
+#endmacro
 
-.macro As9
+#macro As9
 .db $D6
-.endm
+#endmacro
 
-.macro B9
+#macro B9
 .db $D7
-.endm
+#endmacro
 
-.macro C10
+#macro C10
 .db $D8
-.endm
+#endmacro
 
-.macro Cs10
+#macro Cs10
 .db $D9
-.endm
+#endmacro
 
-.macro D10
+#macro D10
 .db $DA
-.endm
+#endmacro
 

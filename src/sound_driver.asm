@@ -21,7 +21,7 @@ Sound_Update:       ; $8000
     ld    hl, Sound_ResetTrg
     ld    a, (hl)
     or    a
-    jr    z, +
+    jr    z, +_
     
     ; if MSB is reset the sound driver is disabled
     ret   p
@@ -144,7 +144,7 @@ Sound_AdjustForSpeed:       ; $8086
     
     inc   (hl)
     add   hl, de
-    djnz  -
+    djnz  -_
 
     ret
 
@@ -178,7 +178,7 @@ Sound_CheckSoundTriggers_CheckTrigger:
     and   $7F               ;ignore MSB
     
     ; jump if the trigger is 0 (no new module)
-    jr    z, +
+    jr    z, +_
     
     ; fetch a priority value for the module number
     dec   a
@@ -191,7 +191,7 @@ Sound_CheckSoundTriggers_CheckTrigger:
     ; if the current sound's priority is greater than the
     ; new sound's don't bother changing anything...
     cp    (ix + 0)
-    jr    c, +            ;jump if $DD0F < A
+    jr    c, +_            ;jump if $DD0F < A
 
     ; ...otherwise, set the new priority...
     and   $7F
@@ -256,7 +256,7 @@ Sound_FadeOut:           ; $80D0
     ; check for tone 1 channel
     cp    $A0
     ; jump if channel != tone 1
-    jp    nz, +
+    jp    nz, +_
 
     ; chear the primary tone 1 channel's suppress bit
     ld    hl, $DD70
@@ -267,7 +267,7 @@ Sound_FadeOut:           ; $80D0
     ; check for the noise channel
     cp    $E0
     ; jump if channel != noise
-    jp    nz, ++
+    jp    nz, ++_
 
     ; clear the noise channel's suppress bit
     ld    hl, $DDD0
@@ -287,14 +287,14 @@ Sound_FadeOut_DisableSFXChannel:            ; $8101
 
 Sound_FadeOut_LoopNext:
     add   hl, de
-    djnz  -
+    djnz  -_
 
     ; decrement the fadeout minor count
     ld    a, (Sound_FadeMinorCount)
     dec   a
     ; if the minor count value is 0 we need to
     ; reset it and decrement the major count
-    jr    z, +
+    jr    z, +_
     ld    (Sound_FadeMinorCount), a
     
     ret
@@ -321,7 +321,7 @@ Sound_FadeOut_LoopNext:
     ; check and attenuate as necessary
     call  Sound_FadeOut_IncreaseAttenuation
     add   hl, de
-    djnz  -
+    djnz  -_
 
     ; adjust the noise channel volume
     ld    hl, Sound_NoiseChnlVolume
@@ -427,7 +427,7 @@ Sound_StopSFX:      ; $8170
     
     ; move to the next channel structure
     add   iy, de
-    djnz  -
+    djnz  -_
 
     ret
 
@@ -514,7 +514,7 @@ Sound_LoadMusicModule:        ; $8188
     ; starting with structure at $DD40
     ld    de, Sound_Channel_Music_0
     call  Sound_InitChannel
-    djnz  -
+    djnz  -_
 
 
 ; =============================================================================
@@ -606,7 +606,7 @@ Sound_LoadSFXModule_PriT1_SecT0:      ; $8208
 
 LABEL_820F_115:
     call  Sound_LoadSFXModule_InitChannel
-    djnz  -
+    djnz  -_
 
     jp    Sound_SetActive
 
@@ -868,7 +868,7 @@ Sound_ApplyToneEffect:      ; $82D0
     
     ; decrement the counter
     dec   (ix + Sound_PitchBendLength)
-    jr    nz, +
+    jr    nz, +_
 
     ; the counter is zero. we need to apply the effect
     ; and reset the counter value
@@ -977,7 +977,7 @@ Sound_PitchEnvelope_ResetIndex:       ; $8353
 
 Sound_PitchEnvelope_SignExtend:       ; $8356
     ld   h, $FF
-    jr   +
+    jr   +_
 
 Sound_PitchEnvelope_CalculateTone:        ; $835A
     ld   h, $00
@@ -1073,7 +1073,7 @@ Sound_ReadStreamData_SetNoteHold:       ; $8397
     ld   (ix + Sound_ChnlToneDuration), a
 
     dec  de
-    jr   ++
+    jr   ++_
 
 
 ; calculate note duration based on the channel's tempo value
@@ -1092,7 +1092,7 @@ Sound_ReadStreamData_CalcNoteHold:      ; $83A6
     ret   nz
 
     bit   Sound_ChnlVolumeOnlyBit, (ix + Sound_ChnlControl)
-    jr    nz, +
+    jr    nz, +_
     
     res   5, (ix + Sound_ChnlControl)
     
@@ -1141,7 +1141,7 @@ Sound_ReadLiteral:       ;$83DC
     ; if the value is 0 don't bother adjusting
     ld    l, a      ;<-- 'high' byte is copied into L
     or    h
-    jr    z, +
+    jr    z, +_
 
     ; apply the pitch adjustment
     
@@ -1156,7 +1156,7 @@ Sound_ReadLiteral:       ;$83DC
     ; check the accumulator's sign bit.
     ; if the bit is set we need to sign extend into
     ; the B register
-    jp    p, ++
+    jp    p, ++_
 
     dec   b
     
@@ -1325,7 +1325,7 @@ Sound_MultiplyA:        ; $843E
     ; multiply using repeated add
     ld    c, a
     add   a, c
-    djnz  -
+    djnz  -_
     ret
 
 
@@ -1352,7 +1352,7 @@ Sound_UpdateToneChannel:        ; $84D4
     
     ; if the duration counter is > 0 we dont need to bother fetching
     ; new data but we may need to update a tone effect
-    jr    nz, +
+    jr    nz, +_
     
     ; duration counter == 0
     ; fetch data from the stream
@@ -1380,7 +1380,7 @@ Sound_UpdateToneChannel:        ; $84D4
     
     ld    a, (ix + $0E)
     or    a
-    jr    z, +
+    jr    z, +_
     
     dec   (ix + $0E)
     call  z, LABEL_85F8_134
@@ -1416,7 +1416,7 @@ Sound_WriteChannelData:        ;$850B
     ld    a, (ix + Sound_ChnlDetune)    
     or    a
     ; check the value's sign and extend into D if necessary
-    jp    p, ++    
+    jp    p, ++_    
     dec   d
     
     ; add the detune value to the data
@@ -1429,7 +1429,7 @@ Sound_WriteChannelData:        ;$850B
     
     ; jump if it's a tone channel
     cp    Sound_PSG_Latch | Sound_PSG_Noise
-    jr    nz, ++ 
+    jr    nz, ++_ 
     
     ; if we get here, the channel is a noise channel
     ; change to channel 2 instead
@@ -1486,7 +1486,7 @@ Sound_UpdateChannelVolume:        ; $853A
     
     ; make sure that we don't overflow the 4 data bits
     bit   4, a
-    jr    z, +
+    jr    z, +_
     ld    a, $0F
 
     ; fetch channel number from the structure
@@ -1530,7 +1530,7 @@ Sound_CheckApplyVolumeEffect:       ; $8558
     ld    d, (ix + Sound_ChnlVolEffectAdjust)   ;get volume adjustment value
     ld    a, (ix + Sound_ChnlVolume)            ;get current volume value
     sub   d
-    jr    nc, +
+    jr    nc, +_
 
     xor   a                ;resulting volume was < 0. reset to 0
 
@@ -1555,10 +1555,10 @@ LABEL_8580_159:
     ld    d, (ix + $21)
     ld    e, (ix + $22)
     add   a, d
-    jr    c, +
+    jr    c, +_
     
     cp    e
-    jr    c, ++
+    jr    c, ++_
     
     ld    a, e
 
@@ -1568,9 +1568,9 @@ LABEL_8580_159:
     ld    a, (ix + $1D)
     bit   3, (ix + $1D)
     
-    jr    z, +
+    jr    z, +_
     xor   $30
-    jr    ++
+    jr    ++_
 
     xor   $60
 
@@ -1588,7 +1588,7 @@ LABEL_85B0_162:
     
     ; add the adjustment value (increase attenuation)
     add   a, d
-    jr    nc, +
+    jr    nc, +_
     
     ; there was a carry - set volume off
     ld    a, $FF
@@ -1609,7 +1609,7 @@ LABEL_85D2_167:
     ld    a, (ix + Sound_ChnlVolume)
     ld    d, (ix + $24)
     add   a, d
-    jr    nc, +
+    jr    nc, +_
     
     ld    a, (ix + $1D)
     and   $0F
@@ -1787,7 +1787,7 @@ Sound_UpdateNoiseChannel_InterpretCommand:      ; $867D
 
 Sound_UpdateNoiseChannel_ReturnStub:        ; $8663
     inc   de
-    jr    -    
+    jr    -_    
 
 
 
@@ -2142,13 +2142,13 @@ LABEL_87DB:
     
     
     bit   Sound_ChnlVolumeOnlyBit, (ix + Sound_ChnlControl)
-    jr    nz, +
+    jr    nz, +_
     
     ; load HL with pointer to secondary tone 2 channel
     ld    hl, $DE30
     ; jump if channel is active
     bit   7, (hl)
-    jp    nz, +
+    jp    nz, +_
 
     ; load HL with pointer to primary tone 2 channel
     ld    hl, $DDA0
@@ -2198,15 +2198,15 @@ LABEL_881D:
     
     ld    ix, $DE00
     bit   7, (ix+$00)
-    jr    nz, +
+    jr    nz, +_
     
     ld    ix, $DE30
     bit   7, (ix+$00)
-    jr    nz, +
+    jr    nz, +_
     
     ld    ix, $DE60
     bit   7, (ix+$00)
-    jr    nz, +
+    jr    nz, +_
     
     ; clear the priority value
     xor   a
@@ -2300,7 +2300,7 @@ Sound_Command_ConditionalJump:      ; $887B
     ; read the loop counter from the channel structure
     ld    a, (hl)
     or    a
-    jr    nz, +
+    jr    nz, +_
 
     ; if the counter is zero this must be the first iteration
     ; of the loop. we need to read the counter value from the 
@@ -2383,7 +2383,7 @@ LABEL_88BB:
 
 LABEL_88D5:
     or    a
-    jr    z, +
+    jr    z, +_
     ld    a, $08
     ld    (ix + $1E), a
     ret
@@ -2414,66 +2414,66 @@ Sound_Data_MusicSpeeds:
 
 
 Sound_Data_MusicPointers:        ; $8BE7
-.dw Sound_Data_Music_ALZ
-.dw Sound_Data_Music_UGZ
-.dw Sound_Data_Music_GMZ 
-.dw Sound_Data_Music_CEZ
-.dw Sound_Data_Music_GHZ
-.dw Sound_Data_Music_SHZ
-.dw Sound_Data_Music_SEZ
-.dw Sound_Data_Music_Intro
-.dw Sound_Data_Music_Boss
-.dw Sound_Data_Music_SpeedShoes
-.dw Sound_Data_Music_Invincibility
-.dw Sound_Data_Music_EndOfLevel
-.dw Sound_Data_Music_LoseLife 
-.dw Sound_Data_Music_Continue
-.dw Sound_Data_Music_Emerald
-.dw Sound_Data_Music_GameOver
-.dw Sound_Data_Music_Ending 
-.dw Sound_Data_Music_Unknown
-.dw Sound_Data_Music_TitleCard
+.dl Sound_Data_Music_ALZ
+.dl Sound_Data_Music_UGZ
+.dl Sound_Data_Music_GMZ 
+.dl Sound_Data_Music_CEZ
+.dl Sound_Data_Music_GHZ
+.dl Sound_Data_Music_SHZ
+.dl Sound_Data_Music_SEZ
+.dl Sound_Data_Music_Intro
+.dl Sound_Data_Music_Boss
+.dl Sound_Data_Music_SpeedShoes
+.dl Sound_Data_Music_Invincibility
+.dl Sound_Data_Music_EndOfLevel
+.dl Sound_Data_Music_LoseLife 
+.dl Sound_Data_Music_Continue
+.dl Sound_Data_Music_Emerald
+.dl Sound_Data_Music_GameOver
+.dl Sound_Data_Music_Ending 
+.dl Sound_Data_Music_Unknown
+.dl Sound_Data_Music_TitleCard
 
 
 Sound_Data_SFXPointers:         ; $8C0D
-.dw Sound_Data_SFX_Ring         ; $00
-.dw Sound_Data_SFX_Roll         ; $01
-.dw Sound_Data_SFX_Spring       ; $02
-.dw Sound_Data_SFX_Jump         ; $03
-.dw Sound_Data_SFX_04
-.dw Sound_Data_SFX_05
-.dw Sound_Data_SFX_06
-.dw Sound_Data_SFX_07
-.dw Sound_Data_SFX_08
-.dw Sound_Data_SFX_09
-.dw Sound_Data_SFX_0A
-.dw Sound_Data_SFX_0B
-.dw Sound_Data_SFX_0C 
-.dw Sound_Data_SFX_0D
-.dw Sound_Data_SFX_0E
-.dw Sound_Data_SFX_0F
-.dw Sound_Data_SFX_10
-.dw Sound_Data_SFX_11
-.dw Sound_Data_SFX_12
-.dw Sound_Data_SFX_13
-.dw Sound_Data_SFX_14
-.dw Sound_Data_SFX_15
-.dw Sound_Data_SFX_16
-.dw Sound_Data_SFX_17
-.dw Sound_Data_SFX_18
-.dw Sound_Data_SFX_19
-.dw Sound_Data_SFX_1A
-.dw Sound_Data_SFX_1B
-.dw Sound_Data_SFX_1B
-.dw Sound_Data_SFX_1B
-.dw Sound_Data_SFX_1B
-.dw Sound_Data_SFX_1B
-.dw Sound_Data_SFX_1B
-.dw Sound_Data_SFX_1B
-.dw Sound_Data_SFX_1B
-.dw Sound_Data_SFX_1B
-.dw Sound_Data_SFX_1B
-.dw Sound_Data_SFX_1B
+.dl Sound_Data_SFX_Ring         ; $00
+.dl Sound_Data_SFX_Roll         ; $01
+.dl Sound_Data_SFX_Spring       ; $02
+.dl Sound_Data_SFX_Jump         ; $03
+.dl Sound_Data_SFX_04
+.dl Sound_Data_SFX_05
+.dl Sound_Data_SFX_06
+.dl Sound_Data_SFX_07
+.dl Sound_Data_SFX_08
+.dl Sound_Data_SFX_09
+.dl Sound_Data_SFX_0A
+.dl Sound_Data_SFX_0B
+.dl Sound_Data_SFX_0C 
+.dl Sound_Data_SFX_0D
+.dl Sound_Data_SFX_0E
+.dl Sound_Data_SFX_0F
+.dl Sound_Data_SFX_10
+.dl Sound_Data_SFX_11
+.dl Sound_Data_SFX_12
+.dl Sound_Data_SFX_13
+.dl Sound_Data_SFX_14
+.dl Sound_Data_SFX_15
+.dl Sound_Data_SFX_16
+.dl Sound_Data_SFX_17
+.dl Sound_Data_SFX_18
+.dl Sound_Data_SFX_19
+.dl Sound_Data_SFX_1A
+.dl Sound_Data_SFX_1B
+.dl Sound_Data_SFX_1B
+.dl Sound_Data_SFX_1B
+.dl Sound_Data_SFX_1B
+.dl Sound_Data_SFX_1B
+.dl Sound_Data_SFX_1B
+.dl Sound_Data_SFX_1B
+.dl Sound_Data_SFX_1B
+.dl Sound_Data_SFX_1B
+.dl Sound_Data_SFX_1B
+.dl Sound_Data_SFX_1B
 
 Sound_Data_Music_ALZ:           ; $8C59
 #import "sound/music_alz.bin"

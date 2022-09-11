@@ -12,7 +12,7 @@ Palette_Update:
 	push    iy
 	ld      a, (ix+$00)
 	or      a
-	jr      z, +
+	jr      z, +_
 	call    Palette_UpdateColours
 	ld      a, $FF
 	ld      (Palette_UpdateTrig), a
@@ -22,7 +22,7 @@ Palette_Update:
 	ld      de, $0010
 	add     iy, de
 	pop     bc
-	djnz    -
+	djnz    -_
 	ret
 
 Palette_UpdateColours:	
@@ -56,7 +56,7 @@ Palette_FadeToColour:		;$8054
     ld      b, a
     ld      a, c
     sub     b
-    jr      nc, +
+    jr      nc, +_
     xor     a
     and     $03
     ld      (iy+$00), a
@@ -68,7 +68,7 @@ Palette_FadeToColour:		;$8054
     ld      b, a
     ld      a, c
     sub     b
-    jr      nc, +
+    jr      nc, +_
     xor     a
   	rlca    
     rlca    
@@ -85,7 +85,7 @@ Palette_FadeToColour:		;$8054
     ld      b, a
     ld      a, c
     sub     b
-    jr      nc, +
+    jr      nc, +_
     xor     a
   	rlca    
 	rlca    
@@ -97,7 +97,7 @@ Palette_FadeToColour:		;$8054
 	inc     iy
 	inc     hl
 	pop     bc
-	djnz    -
+	djnz    -_
 	inc     (ix+$00)
 	ld      a, (ix+$00)
 	and     $07
@@ -114,7 +114,7 @@ Palette_FadeToBlack:		;80B8
 	ld      c, a
 	ld      a, (iy+$00)
 	and     $03					;get the B component
-	jr      z, +
+	jr      z, +_
 	sub     $01					;fade the B component
 	and     $03
 	or      c					;recombine with the R and G components
@@ -124,7 +124,7 @@ Palette_FadeToBlack:		;80B8
 	ld      c, a
 	ld      a, (iy+$00)
 	and     $0C
-	jr      z, +
+	jr      z, +_
 	sub     $04					;fade the G component
 	and     $0C
 	or      c					;recombine with the R and B components
@@ -134,13 +134,13 @@ Palette_FadeToBlack:		;80B8
 	ld      c, a
 	ld      a, (iy+$00)
 	and     $30
-	jr      z, +
+	jr      z, +_
 	sub     $10					;fade the R component
 	and     $30
 	or      c					;recombine with the G and B components
 	ld      (iy+$00), a			;store updated colour
     inc     iy
-	djnz    -					;move to next colour
+	djnz    -_					;move to next colour
 	inc     (ix+$00)
 	ld      a, (ix+$00)
 	and     $03

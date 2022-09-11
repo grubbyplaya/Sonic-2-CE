@@ -70,7 +70,7 @@ AirCountdown_Update:		;$B0DB
 	
 	res     7, (ix+$04)			;toggle the object's visibility
 	bit     2, (ix+$07)
-	jr      z, +
+	jr      z, +_
 	set     7, (ix+$04)
 
 	ld      a, ($D469)			;check the air timer

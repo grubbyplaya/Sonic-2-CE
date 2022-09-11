@@ -229,7 +229,7 @@ PrisonCapsule_LockCamera:		;$916E
 	xor     a
 
 	sbc     hl, de				;compare object's hpos with camera hpos
-	jr      c, +				;jump if object to left of camera
+	jr      c, +_				;jump if object to left of camera
 
 	ld      a, h				;return if the object is too far offscreen
 	or      a
@@ -278,11 +278,11 @@ PrisonCapsule_SetEndOfLevel:	;$91D7
 	
 	ld      a, ($D501)			;check player state
 	cp      PlayerState_EndOfLevel
-	jr      z, +
+	jr      z, +_
 
 	ld      a, ($D503)			;check to see if player is jumping
 	bit     0, a
-	jp      nz, +
+	jp      nz, +_
 
 	ld      a, PlayerState_EndOfLevel
 	ld      ($D502), a			;set player state
