@@ -1,6 +1,6 @@
 # Sonic the Hedgehog 2 CE
 
-A currently unfinished port of the Sega Master System port of Sonic 2 to the TI-84+ CE.
+A currently unfinished port of the Sega Master System version of Sonic 2 to the TI-84+ CE.
 
 
 To Do:
