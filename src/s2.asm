@@ -26,8 +26,8 @@
 	.IFNEQ Version 1
 		.PRINTT "FAIL: Invalid build version!\n"
 		.FAIL 
-	.ENDIF
-.ENDIF
+	#endif
+#endif
 ;=====================================================================
 
 #define LevelDataStart		 $C001
@@ -236,11 +236,11 @@ _error_msg:
 
 
 .db "MS SONIC", $A5, "THE", $A5, "HEDGEHOG.2 "
-.IFEQ Version 2
+#ifdef Version 2
 	.db "Ver2.20 1992/12/09"
-.ELSE
+#else
 	.db "Ver1.00 1992/09/05"
-.ENDIF
+#endif
 .db " SEGA /Aspect Co.,Ltd "
 
 
@@ -5171,23 +5171,23 @@ Player_HandleFalling:		 ;$3456
 
 
 LABEL_3467:
-.IFEQ Version 2
+#ifdef Version 2
 	res	 7, (ix + Object.Flags04)
 	ld	hl, -256
-.ELSE
+#else
 	ld	hl, -192
-.ENDIF
+#endif
 	ld	(ix + Object.VelX), l
 	ld	(ix + Object.VelX + 1), h
 	call	LABEL_3A62
 	bit	 1, (ix+$23)	 ;check to see if we're standing on something
 	ret	 z
 
-.IFEQ Version 1.0
+#ifdef Version 1.0
 	ld	hl, -256
 	ld	(ix + Object.VelX), l	 ;set Player.VelX
 	ld	(ix + Object.VelX + 1), h
-.ENDIF
+#endif
 	jp	Player_SetState_Walking
 
 	
@@ -5768,11 +5768,11 @@ LABEL_384E:
 	ret
 
 
-.IFEQ Version 2
+#ifdef Version 2
 	ld	a, ($D501)
 	cp	PlayerState_Rolling
 	jr	z, -_
-.ENDIF
+#endif
 	set	 0, (ix+$03)
 	ld	hl, $0080				 ;make player rebound down
 	ld	(Player.VelY), hl
@@ -6753,9 +6753,9 @@ Engine_LimitScreenPos_Right:	;$3CE6
 
 .ORG $3D16
 
-.IFEQ Version 2
+#ifdef Version 2
 .db $D5, $C9
-.ENDIF
+#endif
 
 Data_AccelerationValues_Right:		; $3D16
 #import "misc/accel_values_right.bin"
@@ -6907,29 +6907,29 @@ LABEL_4109:
 	cp	$F0
 	jp	nc, LABEL_4135
 	
-.IFEQ Version 2
+#ifdef Version 2
 	ld	hl, ($D176)
 	ld	de, $0020
 	add	 hl, de
 	ld	de, ($D514)
 	ex	de, hl
-.ELSE
+#else
 	ld	de, ($D176)
 	ld	hl, ($D514)
-.ENDIF
+#endif
 	xor	 a
 	sbc	 hl, de
 	
-.IFEQ Version 2
+#ifdef Version 2
 	jp	nc, +_
 	ld	($D514), de
 
-.ELSE
+#else
 	jp	c, LABEL_4135
 	ld	a, h
 	or	a
 	jp	nz, LABEL_4135
-.ENDIF
+#endif
 	xor	 a
 	ret
 
@@ -7852,11 +7852,11 @@ LABEL_47C9:
 	and	 $BF
 	ret	 nz
 
-.IFEQ Version 2
+#ifdef Version 2
 	ld	a, (Player.State)
 	cp	PlayerState_EndOfLevel
 	ret	 z
-.ENDIF
+#endif
 	jp	Engine_ChangeLevelMusic
 
 
@@ -7876,11 +7876,11 @@ Collision_Monitor:			;$47F6
 	bit	 3, a
 	jr	nz, Collision_Monitor_Invincibility
 	bit	 6, a
-.IFEQ Version 2
+#ifdef Version 2
 	jp	nz, LABEL_4884
-.ELSE
+#else
 	jr	nz, LABEL_4884
-.ENDIF
+#endif
 	ret
 
 Collision_Monitor_Rings:	;4817
@@ -7892,7 +7892,7 @@ Collision_Monitor_Rings:	;4817
 	ld	a, SFX_10Rings
 	ld	(Sound_MusicTrigger1), a
 
-.IFEQ Version 2
+#ifdef Version 2
 	call	Engine_UpdateRingCounterSprites
 	
 	ld	a, (RingCounter)
@@ -7905,9 +7905,9 @@ Collision_Monitor_Rings:	;4817
 	ld	a, SFX_ExtraLife
 	ld	(Sound_MusicTrigger1), a
 	jp	Engine_CapLifeCounterValue
-.ELSE
+#else
 	jp	Engine_UpdateRingCounterSprites
-.ENDIF
+#endif
 
 Collision_Monitor_Life:	 ;482A
 	res	 1, (hl)
@@ -9242,11 +9242,11 @@ LABEL_5EFD:
 
 
 	cp	$F0					;jump if object >= $F0
-.IFEQ Version 2
+#ifdef Version 2
 	jr	nc, LABEL_5F73
-.ELSE
+#else
 	jr	nc, LABEL_5F51
-.ENDIF
+#endif
 	
 	;FIXME: surplus op
 	ld	a, (ix + Object.ObjID)
@@ -9289,17 +9289,17 @@ LABEL_5F3D:
 	call	LABEL_617C
 	ret	
 
-.IFEQ Version 2
+#ifdef Version 2
 LABEL_5F73:
 	cp	$FE
 	jp	z, $620F
 	cp	$FF
 	jp	z, $6245
 	ret
-.ENDIF
+#endif
 
 
-.IFEQ Version 1.0
+#ifdef Version 1.0
 LABEL_5F51:
 	and	 $0F
 	add	 a, a
@@ -9334,7 +9334,7 @@ DATA_5F60:
 LABEL_5F80:
 ret
 
-.ENDIF
+#endif
 
 
 Logic_Pointers		;$5F81
@@ -14149,11 +14149,11 @@ UpdateCyclingPalette_Rain:		;$7D41
 	add	 a, (iy+$02)
 	ld	e, a
 	ld	d, $00
-.IFEQ Version 2
+#ifdef Version 2
 	ld	hl, $AECA
-.ELSE
+#else
 	ld	hl, DATA_B30_AF4A
-.ENDIF
+#endif
 	add	 hl, de
 	ld	de, $D4CA
 	ld	bc, $0003
@@ -14203,11 +14203,11 @@ UpdateCyclingPalette_Lava:		;$7DA7
 	add	 a, (iy+$02)
 	ld	e, a
 	ld	d, $00
-.IFEQ Version 2
+#ifdef Version 2
 	ld	hl, $AEC1
-.ELSE
+#else
 	ld	hl, DATA_B30_AF41
-.ENDIF
+#endif
 	add	 hl, de
 	ld	de, $D4D3	;update 3 colours in CRAM
 	ld	bc, $0003
@@ -14540,23 +14540,23 @@ Engine_AnimateRingArt:		;$7FAE
 
 
 
-.BANK 1 SLOT 1
+
 .ORG 0
 
 ROM_HEADER:				;$7FF0
 .db "TMR SEGA" 
 .db $00, $00			;reserved
-.IFEQ Version 1
+#ifdef Version 1
 	.db $99, $5F		;checksum
-.ELSE
+#else
 	.db $6C, $9E
-.ENDIF
+#endif
 .db $15, $90			;product code
-.IFEQ Version 1
+#ifdef Version 1
 	.db $00			 ;version
-.ELSE
+#else
 	.db $01
-.ENDIF
+#endif
 .db $40				 ;region code/rom size
 
 

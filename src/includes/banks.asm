@@ -2,32 +2,33 @@
 ;		BANK 03 - 
 ;			Sega PCM data.
 ;===========================================================================
-.BANK 3
+call Bank03
 .ORG $0000
+Bank03:
 
-#include "bank03.asm"
+#include "includes/bank03.asm"
 
 
 ;===========================================================================
 ;		BANK 04 - 
 ;			Art for Sonic (uncompressed). Some badnik & misc art.
 ;===========================================================================
-.BANK 4
+call Bank04
 .ORG $0000
-Bank4:
+Bank04:
 
-#include "bank04.asm"
+#include "includes/bank04.asm"
 
 
 ;===========================================================================
 ;		BANK 05 - 
 ;			Art for Sonic gliding & minecart.
 ;===========================================================================
-.BANK 5
+call Bank05
 .ORG $0000
-Bank5:
+Bank05:
 
-#include "bank05.asm"
+#include "includes/bank05.asm"
 
 
 ;===========================================================================
@@ -35,22 +36,22 @@ Bank5:
 ;			Art for Sonic running in a loop. 
 ;			Art for CEZ block & wheel.
 ;===========================================================================
-.BANK 6
+call Bank06
 .ORG $0000
-Bank6:
+Bank06:
 
-#include "bank06.asm"
+#include "includes/bank06.asm"
 
 
 ;===========================================================================
 ;		BANK 07 - 
 ;			Art for icons, numbers & monitors.
 ;===========================================================================
-.BANK 7
+call Bank07
 .ORG $0000
 Bank07:
 
-#include "bank07.asm"
+#include "includes/bank07.asm"
 
 
 ;===========================================================================
@@ -58,11 +59,11 @@ Bank07:
 ;			Art for intro sequence & beta title screen.
 ;			Mappings for intro/title screen.
 ;===========================================================================
-.BANK 8
+call Bank08
 .ORG $0000
 Bank08:
 
-#include "bank08.asm"
+#include "includes/bank08.asm"
 
 
 ;===========================================================================
@@ -70,194 +71,194 @@ Bank08:
 ;			Palette update code. Tile art for UGZ. Badniks & misc tiles.
 ;			All palettes.
 ;===========================================================================
-.BANK 9
+call Bank09
 .ORG $0000
 Bank09:
 
-#include "bank09.asm"
+#include "includes/bank09.asm"
 
 
 ;===========================================================================
 ;		BANK 10 - 
 ;			Tile art for SHZ1/3, GHZ & GMZ. Tile art for ending sequence text.
 ;===========================================================================
-.BANK 10
+call Bank10
 .ORG $0000
 Bank10:
 
-#include "bank10.asm"
+#include "includes/bank10.asm"
 
 
 ;===========================================================================
 ;		BANK 11 - 
 ;			Mappings for SHZ. Layout for CEZ1
 ;===========================================================================
-.BANK 11
+call Bank11
 .ORG $0000
 Bank11:
 
-#include "bank11.asm"
+#include "includes/bank11.asm"
 
 
 ;===========================================================================
 ;		BANK 12 - 
 ;			Mappings for GHZ & ALZ. Layout for SHZ3 & GMZ3
 ;===========================================================================
-.BANK 12
+call Bank12
 .ORG $0000
 Bank12:
 
-#include "bank12.asm"
+#include "includes/bank12.asm"
 
 ;===========================================================================
 ;		BANK 13 - 
 ;			Layout for GHZ 1/2/3 & SHZ 1/2
 ;===========================================================================
-.BANK 13
+call Bank13
 .ORG $0000
 Bank13:
 
-#include "bank13.asm"
+#include "includes/bank13.asm"
 
 
 ;===========================================================================
 ;		BANK 14 - 
 ;			Layout for ALZ 1/2/3 & UGZ 1
 ;===========================================================================
-.BANK 14
+call Bank14
 .ORG $0000
 Bank14:
 
-#include "bank14.asm"
+#include "includes/bank14.asm"
 
 
 ;===========================================================================
 ;		BANK 15 - 
 ;			Mappings for UGZ & ALZ2. Art for Game Over and Continue screens.
 ;===========================================================================
-.BANK 15
+call Bank15
 .ORG $0000
 Bank15:
 
-#include "bank15.asm"
+#include "includes/bank15.asm"
 
 
 ;===========================================================================
 ;		BANK 16 - 
 ;			Badnik art.
 ;===========================================================================
-.BANK 16
+call Bank16
 .ORG $0000
 Bank16:
 
-#include "bank16.asm"
+#include "includes/bank16.asm"
 
 
 ;===========================================================================
 ;		BANK 17 - 
 ;			Copy of Sonic glider & minecart art.
 ;===========================================================================
-.BANK 17
+call Bank17
 .ORG $0000
 Bank17:
 
-#include "bank17.asm"
+#include "includes/bank17.asm"
 
 
 ;===========================================================================
 ;		BANK 18 - 
 ;			Copy of Sonic loop art. Some CEZ sprite art.
 ;===========================================================================
-.BANK 18
+call Bank18
 .ORG $0000
 Bank18:
 
-#include "bank18.asm"
+#include "includes/bank18.asm"
 
 
 ;===========================================================================
 ;		BANK 19 - 
 ;			Layout for GMZ1/2 & SEZ1/2. Art for Tails/Eggman from intro.
 ;===========================================================================
-.BANK 19
+call Bank19
 .ORG $0000
 Bank19:
 
-#include "bank19.asm"
+#include "includes/bank19.asm"
 
 
 ;===========================================================================
 ;		BANK 20 - 
 ;			Level tile art for SEZ 1/2/3.
 ;===========================================================================
-.BANK 20
+call Bank20
 .ORG $0000
 Bank20:
 
-#include "bank20.asm"
+#include "includes/bank20.asm"
 
 ;===========================================================================
 ;		BANK 21 - 
 ;			Level tile art for ALZ 1/2/3 and CEZ 1/2/3
 ;===========================================================================
-.BANK 21
+call Bank21
 .ORG $0000
 Bank21:
 
-#include "bank21.asm"
+#include "includes/bank21.asm"
 
 
 ;===========================================================================
 ;		BANK 22 - 
 ;			32x32 Mappings for GMZ, SEZ1/3 & ending sequence.
 ;===========================================================================
-.BANK 22
+call Bank22
 .ORG $0000
 Bank22:
 
-#include "bank22.asm"
+#include "includes/bank22.asm"
 
 
 ;===========================================================================
 ;		BANK 23 - 
 ;			32x32 Mappings for CEZ3 & SEZ2. Art for GHZ. Layout for UGZ.
 ;===========================================================================
-.BANK 23
+call Bank23
 .ORG $0000
 Bank23:
 
-#include "bank23.asm"
+#include "includes/bank23.asm"
 
 
 ;===========================================================================
 ;		BANK 24 - 
 ;			32x32 Mappings for CEZ1 & 2. CEZ boss art. Title screen art.
 ;===========================================================================
-.BANK 24
+call Bank24
 .ORG $0000
 Bank24:
 
-#include "bank24.asm"
+#include "includes/bank24.asm"
 
 
 ;===========================================================================
 ;		BANK 25 - 
 ;			Title Card Pictures & Mappings
 ;===========================================================================
-.BANK 25
+call Bank25
 .ORG $0000
 Bank25:
 
-#include "bank25.asm"
+#include "includes/bank25.asm"
 
 ;===========================================================================
 ;		BANK 26 - 
 ;			Boss art.
 ;===========================================================================
-.BANK 26
+call Bank26
 .ORG $0000
 
-#include "bank26.asm"
+#include "includes/bank26.asm"
 
 
 ;===========================================================================
@@ -265,47 +266,47 @@ Bank25:
 ;			Layout for CEZ2, CEZ3, SEZ3, UGZ3, good/bad ending.
 ;			Tile art for ending sequence.
 ;===========================================================================
-.BANK 27
+call Bank27
 .ORG $0000
 
-#include "bank27.asm"
+#include "includes/bank27.asm"
 
 
 ;===========================================================================
 ;		BANK 28 - 
 ;			Sprite Logic.
 ;===========================================================================
-.BANK 28
+call Bank28
 .ORG $0000
 Bank28:
 
-#include "C:/Users/kobia/Downloads/s2smsdisasm-master/src/object_logic/bank28.asm"
+#include "object_logic/bank28.asm"
 
 
 ;===========================================================================
 ;		BANK 29 - 
 ;			End credits text & logic. Ring art for each zone.
 ;===========================================================================
-.BANK 29
+call Bank29
 .ORG $0000
 Bank29:
 
-#include "C:/Users/kobia/Downloads/s2smsdisasm-master/src/bank29.asm"
+#include "bank29.asm"
 
 
 ;===========================================================================
 ;		BANK 29 - 
 ;			Collision data. End credits text & logic. Ring art for each zone.
 ;===========================================================================
-.BANK 30
+call Bank30
 .ORG $0000
 Bank30:
 
-#include "bank30.asm"
+#include "includes/bank30.asm"
 
 ;===========================================================================
-.BANK 31
+call Bank31
 .ORG $0000
 Bank31:
 
-#include "bank31.asm"
+#include "includes/bank31.asm"

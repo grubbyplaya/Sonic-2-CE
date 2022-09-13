@@ -1,9 +1,9 @@
 #include "includes/sound_defines.asm"
 #include "includes/sound_macros.asm"
 
-.BANK 2 SLOT 2
+call Bank02
 .ORG $0000
-Bank2:
+Bank02:
 
 ; =============================================================================
 ; Sound_Update()

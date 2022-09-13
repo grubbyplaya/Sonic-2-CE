@@ -12,7 +12,7 @@
     ld    b, Time_1Second
     ei
     halt
-    djnz  -
+    djnz  -_
 #endmacro
 
 

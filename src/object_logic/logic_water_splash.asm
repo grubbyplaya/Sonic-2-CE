@@ -11,9 +11,9 @@ WaterSplash_State_01:		;$B4DE
 .db $FF, $09
 	.db SFX_Splash
 .db $04, $01
-	.dw WaterSplash_DoNothing
+	.dl WaterSplash_DoNothing
 .db $08, $02
-	.dw WaterSplash_DoNothing
+	.dl WaterSplash_DoNothing
 .db $FF, $01
 
 

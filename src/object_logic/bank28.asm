@@ -546,7 +546,7 @@ DATA_B28_83DD:
 LABEL_B28_83E3:
 	ld      hl, $0100
 	bit     0, (ix+$1e)
-	jr      z, +
+	jr      z, +_
 	ld      hl, $ff00
   	ld      (ix+$16), l
 	ld      (ix+$17), h
@@ -573,7 +573,7 @@ LABEL_B28_840E:
 
 
 ;Logic for crab badnik
-#include " "object_logic/logic_crab_badnik.asm"
+#include "object_logic/logic_crab_badnik.asm"
 
 
 Logic_SHZ_YellowBird:		;$85F3
@@ -3080,7 +3080,7 @@ LABEL_B28_A35D:
 	ld      ($d518), hl
 	ld      hl, $0500
 	bit     4, (ix+$04)
-	jr      z, + 
+	jr      z, +_ 
 	ld      hl, $fb00
   	ld      ($d516), hl
 	ret     

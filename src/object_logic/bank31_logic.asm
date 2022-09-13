@@ -1,8 +1,8 @@
-#include "logic_sonic.asm"
+#include "object_logic/logic_sonic.asm"
 
-#include "logic_ring_sparkle.asm"
+#include "object_logic/logic_ring_sparkle.asm"
 
-#include "logic_block_fragment.asm"
+#include "object_logic/logic_block_fragment.asm"
 
 DATA_B31_ACEB:
 .dw DATA_B31_ACEF
@@ -49,26 +49,26 @@ LABEL_B31_AD00:
 	ret     
 
 
-#include "logic_speedshoes_stars.asm"
+#include "object_logic/logic_speedshoes_stars.asm"
 
 
-#include "logic_invincibility_stars.asm"	
+#include "object_logic/logic_invincibility_stars.asm"	
 
 
-#include "logic_hide_timer_rings.asm"
+#include "object_logic/logic_hide_timer_rings.asm"
 
 
-#include "logic_dropped_ring.asm"
+#include "object_logic/logic_dropped_ring.asm"
 
 
-#include "logic_air_countdown.asm"
+#include "object_logic/logic_air_countdown.asm"
 
 
 ;ALZ air bubbles
-#include "logic_alz_bubble.asm"
+#include "object_logic/logic_alz_bubble.asm"
 
 
-#include "logic_water_splash.asm"
+#include "object_logic/logic_water_splash.asm"
 
 
 DATA_B31_B513:
@@ -163,23 +163,23 @@ DATA_B31_B590:
 
 
 ;underground zone fireball logic
-#include "logic_ugz_fireball.asm"
+#include "object_logic/logic_ugz_fireball.asm"
 
 
 ;Explosion logic
-#include "logic_explosion.asm"
+#include "object_logic/logic_explosion.asm"
 
 
 ;Monitor logic
-#include "logic_monitors.asm"
+#include "object_logic/logic_monitors.asm"
 
 
 ;Emerald logic
-#include "logic_chaosemeralds.asm"
+#include "object_logic/logic_chaosemeralds.asm"
 
 
 ;Signpost logic
-#include "logic_signpost.asm"
+#include "object_logic/logic_signpost.asm"
 
 
 Logic_FallingSpike:		;$BA7A

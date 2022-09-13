@@ -1,5 +1,5 @@
 
-#include "logic_titlescreen_objects.asm"
+#include "object_logic/logic_titlescreen_objects.asm"
    
 
 DATA_B30_8E2B:
@@ -174,7 +174,7 @@ LABEL_B30_8F5E:
 	inc     hl
 	inc     hl
 	inc     hl
-	djnz    -
+	djnz    -_
 	bit     6, (ix+$04)
 	ret     z
 	ld      a, (ix+$0b)
