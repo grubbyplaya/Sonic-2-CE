@@ -1,7 +1,7 @@
-#include "src\palette_routines.asm"
+#include "palette_routines.asm"
 
 Palettes:
-#include "src\includes\palettes.asm"
+#include "includes\palettes.asm"
 
 LoopMotionData:		;$840F
 #import "misc\data_loop_motion.bin"

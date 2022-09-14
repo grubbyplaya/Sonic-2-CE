@@ -1,6 +1,6 @@
 Mappings32_CEZ1_2:
 #import "mappings\cez\mappings32_cez1_2.bin"
-#include "mappings\cez\mappings32_cez1_2.asm
+#include "mappings\cez\mappings32_cez1_2.asm"
 
 Art_Title_Screen:
 #import "art\intro_title\art_title_screen.bin"

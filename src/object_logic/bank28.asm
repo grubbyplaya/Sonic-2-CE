@@ -991,7 +991,7 @@ LABEL_B28_8BBE
 LABEL_B28_8BCC:
 	ld      a, ($d3cd)
 	or      a
-	jp      z, +
+	jp      z, +_
 	push    ix
 	pop     hl
 	call    VF_Engine_GetObjectIndexFromPointer
@@ -1014,7 +1014,7 @@ LABEL_B28_8BCC:
 	ret     z
 	ld      a, ($d501)
 	cp      $22
-	jp      z, +
+	jp      z, +_
 	push    ix
 	pop     hl
 	call    VF_Engine_GetObjectIndexFromPointer
@@ -1105,16 +1105,16 @@ DATA_B28_8CB5:
 .dw LABEL_B28_8CBF
 
 LABEL_B28_8CB9:
-.db $01 $01
+.db $01, $01
 	.dw LABEL_B28_8CC9
-.db $FF $00
+.db $FF, $00
 
 LABEL_B28_8CBF:
-.db $10 $01
+.db $10, $01
 	.dw LABEL_B28_8CDB
-.db $10 $02
+.db $10, $02
 	.dw LABEL_B28_8CDB
-.db $FF $00
+.db $FF, $00
 
 
 LABEL_B28_8CC9:
@@ -2096,7 +2096,7 @@ DATA_B28_97C1:
 DATA_B28_97D5:
 .db $FF, $02 
 	.dw LABEL_B28_98DF
-.db $FF $05
+.db $FF, $05
 	.db $08
 .db $02, $00
 	.dw VF_DoNothing

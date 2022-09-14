@@ -62,9 +62,9 @@ LevelHeaders_Intro_Title:
 
 
 ;LevelHeader_UGZ1:
-;.db :Mappings32_UGZ	;bank number for 32x32 mappings
+;.db Mappings32_UGZ	;bank number for 32x32 mappings
 ;.dw Mappings32_UGZ		;pointer to 32x32 mappings
-;.db :Layout_UGZ1		;bank number for level layout
+;.db Layout_UGZ1		;bank number for level layout
 ;.dw Layout_UGZ1		;level layout pointer
 ;.dw $00A8				;level width in blocks
 ;.dw $FF58				;2's comp level width in blocks
@@ -80,9 +80,9 @@ LevelHeaders_Intro_Title:
 
 
 LevelHeader_GHZ1:
-.db :Mappings32_GHZ
+.db Mappings32_GHZ
 .dw Mappings32_GHZ
-.db :Layout_GHZ1
+.db Layout_GHZ1
 .dw Layout_GHZ1
 .dw $0100
 .dw $FF00
@@ -94,9 +94,9 @@ LevelHeader_GHZ1:
 .dw MultTable_256
 
 LevelHeader_GHZ2:
-.db :Mappings32_GHZ
+.db Mappings32_GHZ
 .dw Mappings32_GHZ
-.db :Layout_GHZ2
+.db Layout_GHZ2
 .dw Layout_GHZ2
 .dw $0100
 .dw $FF00
@@ -108,9 +108,9 @@ LevelHeader_GHZ2:
 .dw MultTable_256
 
 LevelHeader_GHZ3:
-.db :Mappings32_GHZ
+.db Mappings32_GHZ
 .dw Mappings32_GHZ
-.db :Layout_GHZ3
+.db Layout_GHZ3
 .dw Layout_GHZ3
 .dw $00A8
 .dw $FF58
@@ -122,9 +122,9 @@ LevelHeader_GHZ3:
 .dw MultTable_168
 
 LevelHeader_SHZ1:
-.db :Mappings32_SHZ1_3
+.db Mappings32_SHZ1_3
 .dw Mappings32_SHZ1_3
-.db :Layout_SHZ1
+.db Layout_SHZ1
 .dw Layout_SHZ1
 .dw $0060
 .dw $FFA0
@@ -136,9 +136,9 @@ LevelHeader_SHZ1:
 .dw MultTable_96
 
 LevelHeader_SHZ2:
-.db :Mappings32_SHZ2
+.db Mappings32_SHZ2
 .dw Mappings32_SHZ2
-.db :Layout_SHZ2
+.db Layout_SHZ2
 .dw Layout_SHZ2
 .dw $0080
 .dw $FF80
@@ -150,9 +150,9 @@ LevelHeader_SHZ2:
 .dw MultTable_128
 
 LevelHeader_SHZ3:
-.db :Mappings32_SHZ1_3
+.db Mappings32_SHZ1_3
 .dw Mappings32_SHZ1_3
-.db :Layout_SHZ3
+.db Layout_SHZ3
 .dw Layout_SHZ3
 .dw $0060
 .dw $FFA0
@@ -165,9 +165,9 @@ LevelHeader_SHZ3:
 
 
 LevelHeader_ALZ1:
-.db :Mappings32_ALZ
+.db Mappings32_ALZ
 .dw Mappings32_ALZ
-.db :Layout_ALZ1
+.db Layout_ALZ1
 .dw Layout_ALZ1
 .dw $0080
 .dw $FF80
@@ -179,9 +179,9 @@ LevelHeader_ALZ1:
 .dw MultTable_128
 
 LevelHeader_ALZ2:
-.db :Mappings32_ALZ2
+.db Mappings32_ALZ2
 .dw Mappings32_ALZ2
-.db :Layout_ALZ2
+.db Layout_ALZ2
 .dw Layout_ALZ2
 .dw $0048
 .dw $FFB8
@@ -193,9 +193,9 @@ LevelHeader_ALZ2:
 .dw MultTable_72
 
 LevelHeader_ALZ3:
-.db :Mappings32_ALZ
+.db Mappings32_ALZ
 .dw Mappings32_ALZ
-.db :Layout_ALZ3
+.db Layout_ALZ3
 .dw Layout_ALZ3
 .dw $0080
 .dw $FF80
@@ -208,9 +208,9 @@ LevelHeader_ALZ3:
 
 
 LevelHeader_UGZ1:
-.db :Mappings32_UGZ		;bank number for 32x32 mappings
+.db Mappings32_UGZ		;bank number for 32x32 mappings
 .dw Mappings32_UGZ		;pointer to 32x32 mappings
-.db :Layout_UGZ1		;bank number for level layout
+.db Layout_UGZ1		;bank number for level layout
 .dw Layout_UGZ1			;level layout pointer
 .dw $00A8				;level width in blocks?
 .dw $FF58				;2's comp level width in blocks
@@ -223,9 +223,9 @@ LevelHeader_UGZ1:
 
 
 LevelHeader_UGZ2:
-.db :Mappings32_UGZ
+.db Mappings32_UGZ
 .dw Mappings32_UGZ
-.db :Layout_UGZ2
+.db Layout_UGZ2
 .dw Layout_UGZ2
 .dw $00A8
 .dw $FF58
@@ -237,9 +237,9 @@ LevelHeader_UGZ2:
 .dw MultTable_168
 
 LevelHeader_UGZ3:
-.db :Mappings32_UGZ
+.db Mappings32_UGZ
 .dw Mappings32_UGZ
-.db :Layout_UGZ3
+.db Layout_UGZ3
 .dw Layout_UGZ3
 .dw $0080
 .dw $FF80
@@ -251,9 +251,9 @@ LevelHeader_UGZ3:
 .dw	MultTable_128
 
 LevelHeader_GMZ1:
-.db :Mappings32_GMZ
+.db Mappings32_GMZ
 .dw Mappings32_GMZ
-.db :Layout_GMZ1
+.db Layout_GMZ1
 .dw Layout_GMZ1
 .dw $0060
 .dw $FFA0
@@ -265,9 +265,9 @@ LevelHeader_GMZ1:
 .dw MultTable_96
 
 LevelHeader_GMZ2:
-.db :Mappings32_GMZ
+.db Mappings32_GMZ
 .dw Mappings32_GMZ
-.db :Layout_GMZ2
+.db Layout_GMZ2
 .dw Layout_GMZ2
 .dw $0080
 .dw $FF80
@@ -279,9 +279,9 @@ LevelHeader_GMZ2:
 .dw MultTable_128
 
 LevelHeader_GMZ3:
-.db :Mappings32_GMZ
+.db Mappings32_GMZ
 .dw Mappings32_GMZ
-.db :Layout_GMZ3
+.db Layout_GMZ3
 .dw Layout_GMZ3
 .dw $0028
 .dw $FFD8
@@ -294,9 +294,9 @@ LevelHeader_GMZ3:
 
 
 LevelHeader_SEZ1:
-.db :Mappings32_SEZ1_3
+.db Mappings32_SEZ1_3
 .dw Mappings32_SEZ1_3
-.db :Layout_SEZ1
+.db Layout_SEZ1
 .dw Layout_SEZ1
 .dw $0028
 .dw $FFD8
@@ -308,9 +308,9 @@ LevelHeader_SEZ1:
 .dw MultTable_40
 
 LevelHeader_SEZ2:
-.db :Mappings32_SEZ2
+.db Mappings32_SEZ2
 .dw Mappings32_SEZ2
-.db :Layout_SEZ2
+.db Layout_SEZ2
 .dw Layout_SEZ2
 .dw $0080
 .dw $FF80
@@ -322,9 +322,9 @@ LevelHeader_SEZ2:
 .dw MultTable_128
 
 LevelHeader_SEZ3:
-.db :Mappings32_SEZ1_3
+.db Mappings32_SEZ1_3
 .dw Mappings32_SEZ1_3
-.db :Layout_SEZ3
+.db Layout_SEZ3
 .dw Layout_SEZ3
 .dw $0018
 .dw $FFE8
@@ -336,9 +336,9 @@ LevelHeader_SEZ3:
 .dw MultTable_24
 
 LevelHeader_CEZ1:
-.db :Mappings32_CEZ1_2
+.db Mappings32_CEZ1_2
 .dw Mappings32_CEZ1_2
-.db :Layout_CEZ1
+.db Layout_CEZ1
 .dw Layout_CEZ1
 .dw $00A8
 .dw $FF58
@@ -350,9 +350,9 @@ LevelHeader_CEZ1:
 .dw MultTable_168
 
 LevelHeader_CEZ2:
-.db :Mappings32_CEZ1_2
+.db Mappings32_CEZ1_2
 .dw Mappings32_CEZ1_2
-.db :Layout_CEZ2
+.db Layout_CEZ2
 .dw Layout_CEZ2
 .dw $0038
 .dw $FFC8
@@ -364,9 +364,9 @@ LevelHeader_CEZ2:
 .dw MultTable_56
 
 LevelHeader_CEZ3:
-.db :Mappings32_CEZ3
+.db Mappings32_CEZ3
 .dw Mappings32_CEZ3
-.db :Layout_CEZ3
+.db Layout_CEZ3
 .dw Layout_CEZ3
 .dw $0028
 .dw $FFD8
@@ -378,9 +378,9 @@ LevelHeader_CEZ3:
 .dw MultTable_40
 
 LevelHeader_5803:
-.db :Mappings32_Ending
+.db Mappings32_Ending
 .dw Mappings32_Ending
-.db :Layout_Bad_Ending
+.db Layout_Bad_Ending
 .dw Layout_Bad_Ending
 .dw $0020
 .dw $FFE0
@@ -392,9 +392,9 @@ LevelHeader_5803:
 .dw MultTable_32
 
 LevelHeader_5819:
-.db :Mappings32_Ending
+.db Mappings32_Ending
 .dw Mappings32_Ending
-.db :Layout_Good_Ending
+.db Layout_Good_Ending
 .dw Layout_Good_Ending
 .dw $0020
 .dw $FFE0
@@ -406,9 +406,9 @@ LevelHeader_5819:
 .dw MultTable_32
 
 LevelHeader_Intro:
-.db :Mappings32_Intro
+.db Mappings32_Intro
 .dw Mappings32_Intro
-.db :Layout_Intro
+.db Layout_Intro
 .dw Layout_Intro
 .dw $0010
 .dw $FFF0
@@ -420,9 +420,9 @@ LevelHeader_Intro:
 .dw MultTable_16
 
 LevelHeader_Title:
-.db :Mappings32_Title
+.db Mappings32_Title
 .dw Mappings32_Title
-.db :Layout_Title
+.db Layout_Title
 .dw Layout_Title
 .dw $0010
 .dw $FFF0

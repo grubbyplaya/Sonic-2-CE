@@ -1,9 +1,9 @@
 Layout_GMZ1:
-.IFEQ Version 2.2
+#ifdef Version 2.2
 #import "layout\gmz\layout_gmz1_2.2.bin"
-.ELSE
+#else
 #import "layout\gmz\layout_gmz1.bin"
-.ENDIF
+#endif
 
 Layout_GMZ2:
 #import "layout\gmz\layout_gmz2.bin"

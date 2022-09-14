@@ -8,15 +8,15 @@ Layout_GHZ3:
 #import "layout\ghz\layout_ghz3.bin"
 
 Layout_SHZ1:
-.IFEQ Version 2.2
+#ifdef Version 2.2
 #import "layout\shz\layout_shz1_2.2.bin"
-.ELSE
+#else
 #import "layout\shz\layout_shz1.bin"
-.ENDIF
+#endif
 
 Layout_SHZ2:
-.IFEQ Version 2.2
+#ifdef Version 2.2
 #import "layout\shz\layout_shz2_2.2.bin"
-.ELSE
+#else
 #import "layout\shz\layout_shz2.bin"
-.ENDIF
+#endif

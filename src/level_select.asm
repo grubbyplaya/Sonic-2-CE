@@ -1,13 +1,13 @@
 ;**********************************
 ;*	Variables
 ;**********************************
-.def	CursorPos	$D2C2
-.def	HoldTime	$D46A	;keep a track of how long up/down buttons are held
+#define	CursorPos	$D2C2
+#define	HoldTime	$D46A	;keep a track of how long up/down buttons are held
 
 LevelSelectMenu:
 LABEL_A2C:
 	di
-	call LevelSelect_LoadFont
+    call LevelSelect_LoadFont
     call Engine_ClearLevelAttributes
     call Engine_ClearWorkingVRAM
     call VDP_ClearScreen

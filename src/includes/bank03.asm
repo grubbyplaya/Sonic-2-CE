@@ -1,1 +1,1 @@
-#include "src/sound_pcm.asm"
+#include "sound_pcm.asm"

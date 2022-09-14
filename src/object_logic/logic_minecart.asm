@@ -241,7 +241,7 @@ LABEL_B28_8AAE:
 
 LABEL_B28_8ABD:
 	bit     6, (ix+$03)
-	jr      z, +
+	jr      z, +_
 	dec     (ix+$1F)
 	jr      nz, +_
 	res     6, (ix+$03)

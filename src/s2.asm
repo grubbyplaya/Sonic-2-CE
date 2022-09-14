@@ -501,7 +501,7 @@ Engine_HandleVBlank:		; $04A5
 	jr	nz, Engine_HandleVBlank_UpdateSound
 	
 	;load ROM bank-9 into frame-2 and call the palette update code
-	ld	a, :Palette_Update
+	ld	a, Palette_Update
 	ld	($FFFF), a
 	call	Palette_Update
 	
@@ -524,7 +524,7 @@ Engine_HandleVBlank:		; $04A5
 	call	Engine_UpdateCyclingPalettes
 	
 Engine_HandleVBlank_UpdateSound:		; $055D
-	ld	a, :Sound_Update
+	ld	a, Sound_Update
 	ld	($FFFF), a
 	call	Sound_Update
 	
@@ -1570,10 +1570,10 @@ Engine_LoadPlayerTiles:	 ;$10BF
 	ld	de, Data_PlayerSprites - $04
 	ld	a, ($D34E)
 	bit	 6, a			 ;if bit 6 is set the sprite is facing left
-	jr	z, +
+	jr	z, +_
 	ld	de, Data_PlayerSprites_Mirrored - $04
 	add		hl, de
-	ld	a, :Data_PlayerSprites
+	ld	a, Data_PlayerSprites
 	ld	($FFFF), a
 	ld	a, (hl)		;bank number
 	inc	 hl
@@ -5318,7 +5318,7 @@ Player_HandleEndOfLevel_ExitRight:		; $3544
 	; i.e. "velocity = max(velocity, 0);"
 	ld	hl, (Player.VelX)
 	bit	 7, h
-	jr	z, +
+	jr	z, +_
 	
 	ld	hl, $0000
 	ld	(Player.VelX), hl
@@ -5776,7 +5776,7 @@ LABEL_384E:
 	set	 0, (ix+$03)
 	ld	hl, $0080				 ;make player rebound down
 	ld	(Player.VelY), hl
-	jr	-
+	jr	-_
 
  set	 0, (ix+$03)
 	res	 1, (ix+$22)			 ;reset "bottom collision" in background flags
@@ -6717,7 +6717,7 @@ Engine_LimitScreenPos_Left:	 ;$3CD9
 	ld	(Player.X), hl
 	xor	 a
 	ld	(Player.SubPixelX), a
-	jr	+
+	jr	+_
 
 Engine_LimitScreenPos_Right:	;$3CE6
 	ld	hl, (Camera_X)		 ;horizontal cam offset
@@ -7718,7 +7718,7 @@ LABEL_46EA:
 	call	LABEL_376E
 	ld	a, (ix+$02)
 	cp	$1E
-	jr	z, +
+	jr	z, +_
 	res	 0, (ix+$03)
 	ld	a, (Engine_InputFlags)
 	and	 $30
@@ -8232,7 +8232,7 @@ Engine_UpdateCameraXPos:	;$49FA
 	sbc	 hl, de
 	jr	nc, Engine_UpdateCameraXPos_Limit		 ;limit camera to level width
 	bit	 3, (ix+$00)
-	jr	nz, +		 ;FIXME: this seems a bit pointless. This subroutine is identical.
+	jr	nz, +_		 ;FIXME: this seems a bit pointless. This subroutine is identical.
 	
 	ld	a, ($D174)
 	ld	b, a
@@ -8267,7 +8267,7 @@ Engine_UpdateCameraYPos:		;$4A37
 	sbc	 hl, de
 	jr	nc, Engine_UpdateCameraYPos_Limit		 ;limit camera to level height
 	bit	 1, (ix+$00)
-	jr	nz, +				 ;FIXME: subroutine identical to below. required?
+	jr	nz, +_				 ;FIXME: subroutine identical to below. required?
 	ld	a, ($D176)
 	and	 $F8
 	ld	b, a
@@ -9472,7 +9472,7 @@ Engine_UpdateObject_Animation:		;$60AC
 	; update the object's animation-related variables
 	
 	; swap in the bank with the frame mapping data
-	ld	a, :Object_AnimFrameMappings
+	ld	a, Object_AnimFrameMappings
 	call	Engine_SwapFrame2
 	
 	; calculate a pointer to the object's frame mapping pointers
@@ -11244,7 +11244,7 @@ LABEL_6A25:
 	exx	
 	inc	 ix
 	inc	 ix
-	djnz	-
+	djnz	-_
 	ld	b, $08
 	ld	ix, $D455
 	ld	de, ($D174)
@@ -13444,7 +13444,7 @@ LevelSelect_LoadFont:		 ; $76D7
 	di
 	
 	; Page in the bank containing the font
-	ld	a, :Art_LevelSelect_Font
+	ld	a, Art_LevelSelect_Font
 	call	Engine_SwapFrame2		
 	
 	; set the VRAM address pointer to $2400
@@ -13663,9 +13663,9 @@ Engine_ClearPaletteRAM:	 ; $782D
 	ret
 
 
-/**************************************************************************
-			START OF PLC HANDLER CODE
-***************************************************************************/
+;/**************************************************************************
+;			START OF PLC HANDLER CODE
+;***************************************************************************/
 #define PatternLoadCue	 $D3AB	 ;PLC index
 #define PLC_BankNumber	 $D3AC	 ;Bank number to load tile data from
 #define PLC_VRAMAddr		 $D3B0	 ;Destination VRAM address
@@ -13852,75 +13852,75 @@ PLC_EndOfLevelPatterns:	 ;$7924
 ;	 $aa, $bb, $cc, $cc, $dd, $dd, $FF
 
 PLC_EOL_PrisonCapsule:
-.db :Art_Prison_Capsule
+.db Art_Prison_Capsule
 	.db $46
 	.dw $0C40
 	.dw Art_Prison_Capsule
 .db $FF ;End of boss prison capsule
 
 PLC_EOL_PrisonCapsuleAnimals:	 ;End of boss prison capsule animals
-.db :Art_Animals
+.db Art_Animals
 	.db $30
 	.dw $1500
 	.dw Art_Animals
 .db $FF
 
 PLC_EOL_SignPost:		 ;End-of-level signpost
-.db :Art_Signpost
+.db Art_Signpost
 	.db $64
 	.dw $0C40
 	.dw Art_Signpost
 .db $FF
 
 PLC_EOL_GMZ_Boss:
-.db :Art_GMZ_Boss
+.db Art_GMZ_Boss
 	.db $4A
 	.dw $0C40
 	.dw Art_GMZ_Boss
-.db :Art_GMZ_Boss + $80	 ;mirror the tiles
+.db Art_GMZ_Boss + $80	 ;mirror the tiles
 	.db $4A
 	.dw $1580
 	.dw Art_GMZ_Boss
 .db $FF ;$794A - GMZ Boss
 
 PLC_EOL_SHZ_Boss:
-.db :Art_SHZ_Boss
+.db Art_SHZ_Boss
 	.db $6E
 	.dw $0C40
 	.dw Art_SHZ_Boss	;$8940
 .db $FF	 ;$795C - SHZ Boss
 
 PLC_EOL_ALZ_Boss:
-.db :Art_ALZ_Boss
+.db Art_ALZ_Boss
 	.db $4C
 	.dw $0C40
 	.dw Art_ALZ_Boss
-.db :Art_ALZ_Boss + $80	 ;mirror the tiles
+.db Art_ALZ_Boss + $80	 ;mirror the tiles
 	.db $4C
 	.dw $15C0
 	.dw Art_ALZ_Boss
 .db $FF	 ;$7963 - ALZ Boss
 
 PLC_EOL_GHZ_Boss:		 ;$7970 - GHZ Boss
-.db :Art_GHZ_Boss
+.db Art_GHZ_Boss
 	.db $96
 	.dw $0C40
 	.dw Art_GHZ_Boss	;$A080
 .db $FF
 
 PLC_EOL_UGZ_Boss:		 ;$7977 - UGZ Boss
-.db :Art_Boss_UGZ
+.db Art_Boss_UGZ
 	.db $6A
 	.dw $0C40
 	.dw Art_Boss_UGZ	;$A102
 .db $FF
 
 PLC_EOL_SEZ_Boss:
-.db :Art_SilverSonic
+.db Art_SilverSonic
 	.db $44
 	.dw $0C40
 	.dw Art_SilverSonic
-.db :Art_SilverSonic + $80		;mirror the tiles
+.db Art_SilverSonic + $80		;mirror the tiles
 	.db $44
 	.dw $14C0
 	.dw Art_SilverSonic
@@ -13930,7 +13930,7 @@ PLC_EOL_Unknown_2:
 .db $FF
 
 PLC_EOL_Unknown_3:
-.db :Art_Tails
+.db Art_Tails
 	.db $48
 	.dw $0C40
 	.dw Art_Tails	 ;$B48A
@@ -13968,7 +13968,7 @@ Engine_HandlePLC_ChaosEmerald:	;$7993
 Engine_HandlePLC_MonitorArt:	;$79C7
 	di	;Disable interrupts - we're accessing VRAM
 
-	ld	a, :Art_Monitors		;swap in bank 7
+	ld	a, Art_Monitors		;swap in bank 7
 	call	Engine_SwapFrame2
 
 	ld	a, (PatternLoadCue)	 ;calculate an offset into the pointer array
@@ -14001,9 +14001,9 @@ Monitor_Art_Pointers:		 ;$79E9
 .dw Art_Monitor_8
 
 
-/**************************************************************************
-	END	 OF PLC HANDLER CODE
-***************************************************************************/
+;/**************************************************************************
+;	END	 OF PLC HANDLER CODE
+;***************************************************************************/
 
 
 LevelTilesets:			;$79FB
