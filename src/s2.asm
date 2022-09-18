@@ -8,7 +8,6 @@
 #include	"includes/macros.asm"
 #include	"includes/memory_layout.asm"
 #include	"ti84pce.inc"
-.assume ADL=1
 .db tExtTok,tAsm84CeCmp
 
 ;=====================================================================
@@ -132,10 +131,10 @@ _START:
 	in	a, (Ports_VDP_VCounter)
 	; wait for scanline to = 176
 	cp	$B0
-	jr	nz, -_
+	jr	nz, _START
 	
 	;Clear a work ram ($C001 to $DFF0)
-	Engine_FillMemory	 $00
+	call Engine_FillMemory	 $00
 	
 	; initialise the frame page variables
 	ld	a, $01		; bank 01 in frame 01
@@ -584,7 +583,7 @@ Engine_WaitForInterrupt:		 ; $0593
 	ld	hl, Engine_InterruptServiced
 	ld	a, (hl)
 	or	a
-	jr	z, -_
+	jr	z, Engine_WaitForInterrupt
 	
 	ld	(hl), $00
 	ret
@@ -799,7 +798,7 @@ GameState_Gameover:	 ; $072F
 	ld	b, Time_2Seconds
 	ei
 	halt
-	djnz	-_
+	djnz	GameState_Gameover
 	
 	ld	bc, $0D98
 	 call	Engine_WaitForInterrupt
@@ -809,7 +808,7 @@ GameState_Gameover:	 ; $072F
 	dec	 bc
 	ld	a, b
 	or	c
-	jr	nz, -_
+	jr	nz, GameState_Gameover
 	
 	; fade out over 1 second
 	call	PaletteFadeOut
@@ -928,7 +927,7 @@ GameState_NextAct:		; $0820
 	ld	b, Time_3Seconds
 	ei
 	halt
-	djnz	-_
+	djnz	GameState_NextAct
 	
 	; store number of lives when starting the act. this is used
 	; by the signpost object to calculate whether to display the
@@ -943,7 +942,7 @@ GameState_NextAct:		; $0820
 	ld	b, $1E
 	ei
 	halt
-	djnz	-_
+	djnz	PaletteFadeOut
 	
 	; stop music
 	ld	a, Music_Null		 ; FIXME: use XOR A
@@ -1040,7 +1039,7 @@ LABEL_8A4:
 	ld	b, $1E
 	ei
 	halt
-	djnz	LABEL_8A4
+	djnz	PaletteFadeOut
 	call	Engine_ClearWorkingVRAM
 	call	Engine_ClearLevelAttributes
 	call	VDP_ClearScreen
@@ -1063,8 +1062,8 @@ LABEL_8A4:
 	inc	 a
 	ld	(CurrentLevel), a
 	cp	$06
-	jr	c, +
-	jr	z, ++
+	jr	c, +_
+	jr	z, ++_
 	ld	a, ($D2C5)
 	and	 $3F
 	cp	$3F
@@ -1104,20 +1103,20 @@ GameState_KillPlayer:		 ; $092A
 	; make sure that the player object is in the correct state
 	ld	a, (Player.StateNext)
 	cp	PlayerState_LostLife
-	jr	z, +
+	jr	z, +_
 	ld	a, PlayerState_LostLife
 	ld	(Player.StateNext), a
 	
 	; check player's onscreen position
 	ld	a, (Player.ScreenY + 1)
 	cp	2
-	jr	nz, -_
+	jr	nz, GameState_KillPlayer
 
 	; wait for 2 seconds
 	ld	b, Time_2Seconds
 	ei
 	halt
-	djnz	-_
+	djnz	GameState_KillPlayer
 
 	; stop music
 	ld	a, Music_Null
@@ -1187,12 +1186,12 @@ GameState_Titlecard:		; $097F
 
 
 LABEL_9C4:
-	xor	 a
+	xor	a
 	ld	(LevelTimerTrigger), a
 	ld	a, ($D12E)
 	or	a
-	jr	z, -_
-	xor	 a
+	jr	z, LABEL_9C4
+	xor	a
 	ld	($D12E), a
 	
 	xor	 a
@@ -1353,7 +1352,7 @@ LABEL_F41:
 	dec	 bc
 	ld	a, b
 	or	c
-	jr	nz, -_
+	jr	nz, LABEL_F41
 
 	ld	a, PlayerState_16
 	ld	(Player.StateNext), a
@@ -1368,7 +1367,7 @@ LABEL_F41:
 	dec	 bc
 	ld	a, b
 	or	c
-	jr	nz, -_
+	jr	nz, LABEL_F41
 
 	ld	bc, $003C
 	call	LABEL_107C
@@ -1379,7 +1378,7 @@ LABEL_F41:
 	dec	 bc
 	ld	a, b
 	or	c
-	jr	nz, -_
+	jr	nz, LABEL_F41
 
 	xor	 a
 	ld	($D700), a
@@ -1469,7 +1468,7 @@ LABEL_FB9:
 	dec	 bc
 	ld	a, b
 	or	c
-	jr	nz, -_
+	jr	nz, - LABEL_FB9
 	
 	ld	bc, $04B0
 	call	LABEL_107C
@@ -1481,7 +1480,7 @@ LABEL_FB9:
 	dec	 bc	
 	ld	a, b
 	or	c
-	jr	nz, LABEL_FB9
+	jr	nz, - LABEL_FB9
 
 	ret	
 
@@ -1646,7 +1645,7 @@ Engine_UpdateSpriteAttribsArt:			;$1274
 	ld	(hl), a
 	ld	a, ($D350)
 	cp	(hl)
-	jr	z, +
+	jr	z, +_
 	ld	a, (hl)
 	ld	($D350), a
 	set	 7, (hl)
@@ -1676,20 +1675,20 @@ LABEL_12A3_4:
 	in	a, (Ports_VDP_Control)
 	and	 a
 	; loop until vblank interrupt is set
-	jp	p, -
+	jp	p, LABEL_12A3_4
 	
 	; busywait for a while
 	dec	 bc
 	ld	a, c
 	or	b
-	jp	nz, -
+	jp	nz, LABEL_12A3_4
 
 	; read the VDP status flags again
 	in	a, ($BF)
 	and	 a
 	ld	a, $01
 	;jump if pending frame interrupt
-	jp	m, +
+	jp	m, LABEL_12A3_4
 
 	dec	 a
 
@@ -1813,7 +1812,7 @@ Engine_UpdateSpriteAttribs:	 ;$17DF
 	;move to next object
 	ld	de, _sizeof_Object		
 	add	 ix, de
-	djnz	-_
+	djnz	Engine_UpdateSpriteAttribs
 	
 	
 	; check to see if we have sprites that weren't updated
@@ -1937,7 +1936,7 @@ Engine_UpdateObjectVPOS:		;$1842
 	exx
 	
 	; update the next sprite
-	djnz	-_
+	djnz	Engine_UpdateObjectVPOS
 	
 	; store the current v-pos pointer
 	ld	(Engine_UpdateSpriteAttribs_vpos_ptr), iy
@@ -2094,7 +2093,7 @@ Engine_UpdateObjectHPOS:		;$1896
 	exx
 	
 	; update the next sprite
-	djnz	Engine_UpdateObjectHPOS
+	djnz - Engine_UpdateObjectHPOS
 	
 	; store the h-pos entry pointer
 	ld	(Engine_UpdateSpriteAttribs_hpos_ptr), iy
@@ -2187,7 +2186,7 @@ Engine_UpdateSpriteAttribs_NoClear:		;$1937
  ; move to the next object
 	ld	de, _sizeof_Object
 	add	 ix, de
-	djnz	-_
+	djnz	Engine_UpdateSpriteAttribs_NoClear
 
 	ld	a, $FF
 	ld	(VDP_SATUpdateTrig), a
@@ -2246,7 +2245,7 @@ Engine_LoadMappings:		;$1982
 	call	VDP_SetAddress	;...and set VRAM pointer
 	pop	 de
 	
-	djnz	-_
+	djnz	Engine_LoadMappings
 
 	; move to the next row
 	pop	 hl
@@ -2256,7 +2255,7 @@ Engine_LoadMappings:		;$1982
 	; make sure we dont overwrite the SAT
 	ld	a, h
 	cp	$3F
-	jp	nz, +
+	jp	nz, +_
 	ld	h, $38
 	
 	pop	 bc				;move to the next row
@@ -2607,7 +2606,7 @@ ScoreCard_UpdateScore:		;$1C12
 
 	ld	a, SFX_ScoreTick	;score 'tick' sound
 	ld	(NextMusicTrack), a
-      jr	-_
+      jr	ScoreCard_UpdateScore
 	
 	; wait a second
 	wait_1s
@@ -2657,7 +2656,7 @@ ScoreCard_UpdateScore:		;$1C12
 	ld	a, (hl)
 	inc	 hl
 	or	(hl)
-	jr	nz, -_
+	jr	nz, ScoreCard_UpdateScore
 
 	ld	hl, $3C2A		 ;vram address
 	ld	de, ScoreCard_Mappings_Blank	;mapping source
@@ -2876,7 +2875,7 @@ c:
 	pop	 de
 	dec	 de
 	pop	 bc
-	djnz	Engine_UpdateObjectHPOS
+	djnz   Engine_UpdateObjectHPOS
 	ret
 
 ;mappings for scorecard digits 0-9
@@ -2932,7 +2931,7 @@ Score_ConvertBCDtoASCI:		;$1E37
 	ret	 c
 
 	inc	 hl
-	djnz	-_
+	djnz	Score_ConvertBCDtoASCI
 
 	ld	hl, $D2A8
 	xor	 a				;clear flags
@@ -3332,7 +3331,7 @@ LABEL_20FB:
 	ld	de, ($D100)
 	add	 hl, de
 	ld	($D104), hl
-	djnz	-
+	djnz	LABEL_20FB
 	push	ix
 	pop	 hl
 	ld	de, $0010
@@ -3381,7 +3380,7 @@ LABEL_20FB:
 	ld	de, ($D100)
 	add	 hl, de
 	ld	($D104), hl
-	djnz	-_
+	djnz	LABEL_20FB
 
 	push	ix
 	pop	 hl
@@ -3695,7 +3694,7 @@ LABEL_243C:
 	ld	b, $2A
 	ei
 	halt
-	djnz	-_
+	djnz	PaletteFadeOut
 	ld	hl, $D292
 	res	 5, (hl)	 ;clear load intro flag
 	res	 7, (hl)	 ;clear load level flag
@@ -3709,7 +3708,7 @@ LABEL_2459_51:
 	ld	b, $2A
 	ei
 	halt	 
-	djnz	-_
+	djnz	PaletteFadeOut
 	ld	hl, $D292
 	res	 4, (hl)	;clear load title screen flag
 	set	 3, (hl)	;set load demo flag
@@ -3766,7 +3765,7 @@ LABEL_24BE_48:
 	ld	b, $2A
 	ei
 	halt
-	djnz	-_
+	djnz	PaletteFadeOut
 	xor	 a
 	ld	($D292), a
 	ld	(GlobalTriggers), a
@@ -3812,42 +3811,42 @@ LevelDemoHeaders:
 
 ;SHZ demo
 .db $01
-.db :DemoControlSequence_SHZ
+.db DemoControlSequence_SHZ
 .dw DemoControlSequence_SHZ
 
 ;GHZ demo
 .db $03
-.db :DemoControlSequence_GHZ
+.db DemoControlSequence_GHZ
 .dw DemoControlSequence_GHZ
 
 ;ALZ demo
 .db $02
-.db :DemoControlSequence_ALZ
+.db DemoControlSequence_ALZ
 .dw DemoControlSequence_ALZ
 
 ;SEZ demo
 .db $05
-.db :DemoControlSequence_SEZ
+.db DemoControlSequence_SEZ
 .dw DemoControlSequence_SEZ
 
 ;SHZ demo
 .db $01
-.db :DemoControlSequence_SHZ
+.db DemoControlSequence_SHZ
 .dw DemoControlSequence_SHZ
 
 ;GHZ demo
 .db $03
-.db :DemoControlSequence_GHZ
+.db DemoControlSequence_GHZ
 .dw DemoControlSequence_GHZ
 
 ;ALZ demo
 .db $02
-.db :DemoControlSequence_ALZ
+.db DemoControlSequence_ALZ
 .dw DemoControlSequence_ALZ
 
 ;SEZ demo
 .db $05
-.db :DemoControlSequence_SEZ
+.db DemoControlSequence_SEZ
 .dw DemoControlSequence_SEZ
 
 
@@ -3879,7 +3878,7 @@ DemoSequence_LoadLevel:	 ;254A
 	ld	b, $2A		;pause to load the level
 	ei
 	halt
-	djnz	-_
+	djnz	PaletteFadeOut
 	call	Engine_LoadLevel			;load the level
 	call	Engine_LoadLevelPalette
 	call	Engine_ReleaseCamera			;unlocks camera
@@ -3894,7 +3893,7 @@ LABEL_2576:
 	call	Engine_UpdatePlayerObjectState
 	ld	a, (Player.State)
 	cp	PlayerState_LostLife
-	jr	nz, +
+	jr	nz, +_
 	ld	a, ($D51D)
 	cp	$02
 	jr	nz, LABEL_2576
@@ -3946,7 +3945,8 @@ Engine_CapLifeCounterValue:	 ; $25AC
 	
 	ld	a, (LifeCounter)
 	cp	9
-	jr	c, +
+	jr	c, +_
+
 	ld	a, 9
 	
 	; calculate the sprite number to display
@@ -3981,7 +3981,7 @@ Engine_UpdateRingCounterSprites:	;$25DB
 
 	ld	a, (CurrentLevel)
 	cp	$06				;check for crystal egg act 2
-	jr	nz, +
+	jr	nz, +_
 	ld	a, (CurrentAct)
 	cp	$02
 	ret	 z
@@ -4033,7 +4033,7 @@ LABEL_2606:
 	ld	b, $0C
 	ei
 	halt
-	djnz	-_
+	djnz	LABEL_2606
 	call	TitleCard_LoadText
 	call	TitleCard_LoadActLogoMappings
 	call	TitleCard_LoadZoneText
@@ -4330,7 +4330,7 @@ ScrollingText_UpdateSprites:		;285D
 	ld	($D3BA), hl
 	ld	a, h
 	or	l				 ;is timer 0?
-	jp	nz, -_
+	jp	nz, ScrollingText_UpdateSprites
 	ret
 
 ScrollingText_LoadSATValues:		;2880
@@ -4381,7 +4381,7 @@ LABEL_28C4:
 	inc	 hl				;move to next HPOS/char
 	inc	 hl
 	inc	 de				;move to next VPOS
-	djnz	-_
+	djnz	ScrollingText_UpdateWorkingSAT
 	ret
 
 ScrollingText_UpdateSprite: 
@@ -4396,7 +4396,7 @@ LABEL_28D7:
 	ld	a, (de)		 ;get the VPOS
 	ld	c, $10
 	cp	$18			 ;vpos == $18?
-	jr	z, ++
+	jr	z, ++_
 	ld	c, $50
 	ld	a, (hl)
 	cp	c
@@ -4426,11 +4426,11 @@ Engine_UpdatePlayerObjectState:	 ; $2FA8
 	
 	; swap in the bank with the object's logic
 	; and run the update routine
-	ld	a, :Logic_Sonic
+	ld	a, Logic_Sonic
 	call	Engine_SwapFrame2
 	call	Engine_UpdatePlayerObject
 	
-	ld	a, :Logic_Sonic
+	ld	a, Logic_Sonic
 	call	Engine_SwapFrame2
 	call	LABEL_6139
 	jp	LABEL_47C9		;check monitor collisions?
@@ -5701,7 +5701,7 @@ Player_SetState_Hurt:		 ;$37B0
 	call	Engine_AllocateObjectHighPriority
 	pop	 bc
 	inc	 h
-	djnz	-_
+	djnz	Engine_AllocateObjectHighPriority
 	
 	set	 7, (ix+$03)		 ;Flash player sprite on/off
 	set	 6, (ix+$03)
@@ -5771,18 +5771,18 @@ LABEL_384E:
 #ifdef Version 2
 	ld	a, ($D501)
 	cp	PlayerState_Rolling
-	jr	z, -_
+	jr	z, LABEL_384E
 #endif
 	set	 0, (ix+$03)
 	ld	hl, $0080				 ;make player rebound down
 	ld	(Player.VelY), hl
-	jr	-_
+	jr	LABEL_384E
 
  set	 0, (ix+$03)
 	res	 1, (ix+$22)			 ;reset "bottom collision" in background flags
 	ld	hl, $FD00				 ;make player rebound up
 	ld	(Player.VelY), hl
-	jr	-_
+	jr	LABEL_384E
 
 
 ; =============================================================================
@@ -5825,7 +5825,7 @@ Player_FlashObject:		; $387B
 	xor	 a
 	ld	(Player_HurtTrigger), a
 	ld	(ix + Object.CollidingObj), a
-	jr	-_
+	jr	Player_FlashObject
 
 
 ; =============================================================================
@@ -6733,7 +6733,7 @@ Engine_LimitScreenPos_Right:	;$3CE6
 	
 	; if velocity is negative, C = $FF
 	bit	 7, d
-	jr	z, ++
+	jr	z, ++_
 	dec	 c
 
 	; update the 3-byte x-position value
@@ -7145,7 +7145,7 @@ LABEL_42B7:
 	add	 hl, de
 	sla	 e
 	rl	d
-	djnz	-_
+	djnz	LABEL_42B7
 	ld	l, h
 	ld	h, $00
 	jp	LABEL_4310
@@ -7165,7 +7165,7 @@ LABEL_42E8:
 	add	 hl, de
 	sla	 e
 	rl	d
-	djnz	-_
+	djnz	LABEL_42E8
 	ld	de, $0000
 	ex	de, hl
 	xor	 a
@@ -7202,7 +7202,7 @@ LABEL_4310:
 	add	 hl, de
 	sla	e
 	rl	d
-	djnz	-_
+	djnz	LABEL_4310
 	ld	l, h
 	ld	h, $00
 	jp	LABEL_437A
@@ -7222,7 +7222,7 @@ LABEL_4352:
 	add	 hl, de
 	sla	 e
 	rl	d
-	djnz	-_
+	djnz	LABEL_4352
 	ld	de, $0000
 	ex	de, hl
 	xor	 a
@@ -8303,7 +8303,7 @@ Engine_CalculateBgScroll:		 ;$4A7C
 	ld	de, $00E0		 ;224 (screen height)
 	xor	 a
 	sbc	 hl, de
-	jr	nc, -_
+	jr	nc, Engine_CalculateBgScroll
 	add	 hl, de
 	ld	a, l
 	ld	($D173), a		;store v-scroll
@@ -8465,12 +8465,12 @@ Engine_LoadLevelLayout:		 ;$5305
 	ld	(de), a
 	inc	 de
 	
-	djnz	--_
+	djnz	Engine_LoadLevelLayout
 
 	; move the compressed data pointer pointer
 	ld	bc, $0003
 	add	 iy, bc
-	jp	-_
+	jp	Engine_LoadLevelLayout
 
 
 Engine_LoadLevelLayout_CopyByte:
@@ -8479,7 +8479,7 @@ Engine_LoadLevelLayout_CopyByte:
 	ld	(de), a
 	inc	 de
 	inc	 iy
-	jp	-_
+	jp	Engine_LoadLevelLayout_CopyByte
 
 
 
@@ -8511,7 +8511,7 @@ Engine_LoadLevel_DrawScreen:		;$5353
 	set	 6, (ix+$00)
 	call	Engine_WaitForInterrupt
 	pop	 bc
-	djnz	-_
+	djnz	Engine_LoadLevel_DrawScreen
 	
 	ld	a, $80					;setup camera offset
 	ld	($D288), a
@@ -8534,7 +8534,7 @@ Engine_LoadLevel_DrawScreen:		;$5353
 	ld	de, $00E0
 	xor	 a
 	sbc	 hl, de
-	jr	nc, -_
+	jr	nc, Engine_LoadLevel_DrawScreen
 	add	 hl, de
 	ld	a, l
 	ld	($D173), a		;store v-scroll value
@@ -8600,8 +8600,7 @@ Engine_ClearLevelAttributes:		;$5531
 	ldir
 	ret
 
-
-Engine_LoadLevelHeader::		;$553F
+Engine_LoadLevelHeader:		;$553F
 	;load the pointer to the level header
 	ld	a, (CurrentLevel)
 	ld	l, a
@@ -8783,7 +8782,7 @@ Engine_LoadMappings32_Column:	 ;$585B
 	exx
 	
 	; loop back and copy the next tile value
-	djnz	--_
+	djnz	Engine_LoadMappings32_Column
 	
 	; move the data pointer to the next row (i.e. add level width)
 	pop	 hl
@@ -8792,7 +8791,7 @@ Engine_LoadMappings32_Column:	 ;$585B
 	
 	; restore the loop counter and copy from the next metatile
 	pop	 bc
-	djnz	 -_
+	djnz	 Engine_LoadMappings32_Column
 	
 	; flag to show that VRAM needs updating with the new tile data
 	set	 LVP_COL_UPDATE_PENDING, (ix + LevelDescriptor.ViewportFlags)
@@ -8869,7 +8868,7 @@ Engine_CopyMappingsToVRAM_Column:	 ;$58BA
 	outi	;write tile data to VRAM
 	outi
 	
-	jp	nz, -_			 ;move to next tile
+	jp	nz, Engine_CopyMappingsToVRAM_Column			 ;move to next tile
 	
 	res	 5, (ix+0)		 ;reset the "VRAM column update required" flag
 	ret
@@ -8916,7 +8915,7 @@ Engine_LoadMappings32_Row:	;$5920
 	pop	 hl
 	inc	 hl
 	pop	 bc
-	djnz	-_
+	djnz	Engine_LoadMappings32_Row
 	set	 4, (ix+0)
 	ret
 
@@ -9002,7 +9001,7 @@ Engine_CopyMappingsToVRAM_Row:		;$5966
 	ld	a, h
 	out	 ($BF), a
 	pop	 de
-	djnz	-_
+	djnz	Engine_CopyMappingsToVRAM_Row
 
 	res	 4, (ix+0)		 ;reset the "VRAM row update required" flag
 	ret
@@ -9012,7 +9011,7 @@ Engine_CopyMappingsToVRAM_Row:		;$5966
 ;*	Lookup table of off-screen buffer address offsets.	*
 ;********************************************************
 Data_OffscreenBufferOffsets:		;$59DB
-#import "\misc\offscreen_buffer_offsets.bin"
+#import "misc\offscreen_buffer_offsets.bin"
 
 
 
@@ -9225,7 +9224,7 @@ LABEL_5EE4:
 	ld	de, $0040		 ;move to next object descriptor structure
 	add	 ix, de
 	pop	 bc
-	djnz	-_
+	djnz	LABEL_5EE4
 	ret
 
 
@@ -9593,7 +9592,7 @@ Engine_AllocateObjectHighPriority:		;$6144
 	or	a
 	jr	z, LABEL_615C
 	add	 ix, de
-	djnz	-_
+	djnz	Engine_AllocateObjectHighPriority
 	pop	 ix
 	ret	
 
@@ -9612,7 +9611,7 @@ Engine_AllocateObjectLowPriority:		 ;$6165
 	or	a
 	jr	z, +_
 	add	 iy, de
-	djnz	-_
+	djnz	Engine_AllocateObjectLowPriority
 	scf
 	ret
 	xor		a
@@ -10205,7 +10204,7 @@ LABEL_64D4:
 	ld	b, (ix+$0B)
 
 	add	 hl, de
-	djnz	-_
+	djnz	LABEL_64D4
 
 	ld	a, l
 	sra	 h
@@ -10236,7 +10235,7 @@ LABEL_64D4:
 	ld	b, (ix+$0B)
 
 	add	 hl, de
-	djnz	-_
+	djnz	LABEL_64D4
 
 	ld	a, l
 	sra	 h
@@ -11145,7 +11144,7 @@ LABEL_697D:
 	ld	b, $08
 	ld	(hl), a
 	inc	 hl
-	djnz	-_
+	djnz	LABEL_697D
 	ret	
 
 LABEL_698F:
@@ -11167,7 +11166,7 @@ LABEL_698F:
 	inc	 ix
 	inc	 de
 	inc	 de
-	djnz	-_
+	djnz	LABEL_698F
 	ld	b, $08
 	ld	de, DATA_6B27+1
 	exx	
@@ -11186,7 +11185,7 @@ LABEL_698F:
 	inc	 ix
 	inc	 de
 	inc	 de
-	djnz	-_
+	djnz	LABEL_698F
 	ld	b, $08
 	ld	hl, $db99
 	ld		a, $f6
@@ -11194,7 +11193,7 @@ LABEL_698F:
 	ld	(hl), a
 	inc	 hl
 	inc	 hl
-	djnz	-_
+	djnz	LABEL_698F
 	ld	a, $02
 	ld	($D440), a
 	ld	a, $08
@@ -11223,7 +11222,7 @@ LABEL_69F5:
 	inc	 ix
 	inc	 iy
 	inc	 iy
-	djnz	-_
+	djnz	LABEL_69F5
 	jp	LABEL_6A25	;FIXME: why bother with this?
 	
 LABEL_6A25:
@@ -11244,7 +11243,7 @@ LABEL_6A25:
 	exx	
 	inc	 ix
 	inc	 ix
-	djnz	-_
+	djnz	LABEL_69F
 	ld	b, $08
 	ld	ix, $D455
 	ld	de, ($D174)
@@ -11274,7 +11273,7 @@ LABEL_6A25:
 	exx	
 	inc	 ix
 	inc	 ix
-	djnz	-_
+	djnz	LABEL_69F
 	ret	
 
 LABEL_6A7E:
@@ -13380,7 +13379,7 @@ Engine_LoadLevelTiles:		;$763F
 	; move to the next tileset header entry
 	ld	bc, $0005
 	add	 iy, bc
-	jr	-_
+	jr	Engine_LoadLevelTiles
 
 
 ; =============================================================================
@@ -13632,7 +13631,7 @@ Engine_ClearVRAM:		 ; $77F3
 	dec	 bc
 	ld	a, b
 	or	c
-	jr	nz, -_
+	jr	nz, Engine_ClearVRAM
 
 	; FIXME: use tail recursion here.
 	; turn the display on
@@ -13714,8 +13713,8 @@ Engine_HandlePLC:		 ;$783B
 	out	 ($BE), a				;...and copy to VRAM.
 	inc	 hl
 	dec	 c
-	jp	nz, -_
-	djnz	--_
+	jp	nz, Engine_HandlePLC
+	djnz	Engine_HandlePLC
 
 LABEL_7881:
 	ei
@@ -13759,14 +13758,14 @@ Engine_HandlePLC_CopyMirrored:		;$789D
 							;set up to load data from $100 onwards
 	ld	d, Engine_Data_ByteFlipLUT >> 8
 
- ld	c, $20			;loop 32 times (copy one tile)
+	ld	c, $20			;loop 32 times (copy one tile)
 
 	ld	e, (hl)			;get the index stored at HL
 	ld	a, (de)			;index into data at $100
 	out	 ($BE), a		;copy value to VRAM
 	inc	 hl				;move to next index address
 	dec	 c
-	jp	nz, -_			;copy next byte
+	jp	nz, Engine_HandlePLC_CopyMirrored		;copy next byte
 
 	djnz	Engine_HandlePLC_CopyMirrored				;copy next tile
 

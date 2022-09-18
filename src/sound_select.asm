@@ -77,7 +77,7 @@ _CheckInput:
 	jr   nz, DecreaseSoundValue
 	ld   a, ($D137)
 	and  $03						;check to see if up/down buttons are held
-	jr   z, _ResetCursorVelocity	;nothing held - reset cursor velocity
+	jr   z, - _ResetCursorVelocity	;nothing held - reset cursor velocity
 	ld   a, (HoldTime)
 	inc  a
 	ld   (HoldTime), a

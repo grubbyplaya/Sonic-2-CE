@@ -73,7 +73,7 @@ _LABEL_1AA6_22:
 	ld   (TileCount), hl
 	ld   a, l
 	or   h
-	jr   nz, -_
+	jr   nz, - _LABEL_1AA6_22
 	ret
 
 ;*************************************************************
@@ -117,7 +117,7 @@ LoadCompressedTile:		;$1B1E
    	inc  ix				;increment destination pointer
 	pop  af
 	dec  a
-	jr   nz, -_
+	jr   nz, LoadCompressedTile
 	ld   (SourcePointer), hl	;store next source pointer
 	ret
 
@@ -145,7 +145,7 @@ XORDecode:
 	
 	inc  ix
 	inc  ix				;ix += 2
-	djnz -_
+	djnz XORDecode
 	ret
 
 ;**********************************************************************
@@ -174,7 +174,7 @@ _GetCompressionType:
 	jp   m, +_			;jump if sign (<0)
 	rrca				;rotate previous compression type out
 	rrca
-	jp   -_
+	jp   - _GetCompressionType
   	and  $03
 	push af
 	ld   a, (BitFieldCount)
@@ -208,7 +208,7 @@ WriteTileToVRAM:
 	push hl
 	pop  hl
 	inc  hl
-	djnz -_
+	djnz WriteTileToVRAM
 	ret
 
 ;************************************************************
@@ -227,5 +227,5 @@ WriteMirroredTileToVRAM:
 	push hl
 	pop  hl
 	inc  hl
-	djnz -_
+	djnz WriteMirroredTileToVRAM
 	ret

@@ -38,7 +38,7 @@ LABEL_B29_B400:				;push the last 16 sprites off of the screen
 	ld      hl, $DB30
 	ld      (hl), a
 	inc     hl
-	djnz    -_
+	djnz    LABEL_B29_B400
 	ret     
 
 LABEL_B29_B40C:
@@ -73,12 +73,12 @@ LABEL_B29_B433:
 	ld      a, $9A
 	ld      (hl), a
 	inc     hl
-	djnz    -_
+	djnz    LABEL_B29_B433
 	ld      b, $08
 	ld      a, $B0
 	ld      (hl), a
 	inc     hl
-	djnz    -_
+	djnz    LABEL_B29_B433
 	ld      a, ($D46E)
 	ld      l, a
 	ld      h, $00
@@ -113,7 +113,7 @@ LABEL_B29_B433:
 	ld      (de), a			;copy char to work RAM
 	inc     de
 	inc     hl
-	djnz    -_
+	djnz    LABEL_B29_B433
 
 	ld      hl, DATA_B29_B522
 	ld      ix, DATA_B29_B542
@@ -131,7 +131,7 @@ LABEL_B29_B433:
 	ld      (de), a
 	inc     ix
 	inc     de
-	djnz    -_
+	djnz    LABEL_B29_B433
 	ld      a, ($D46E)
 	inc     a
 	ld      ($D46E), a
@@ -169,7 +169,7 @@ LABEL_B29_B4AF:
 	inc     ix
 	inc     iy
 	inc     iy
-	djnz    -_
+	djnz    LABEL_B29_B4AF
 	ld      a, c
 	or      a
 	ret     nz
@@ -216,5 +216,5 @@ DATA_B29_B542:
 #import "unknown\bank29_B542.bin"
 
 EndSequence_Data_CreditsText:
-#include "src\end_credits.asm"
+#include "end_credits.asm"
 

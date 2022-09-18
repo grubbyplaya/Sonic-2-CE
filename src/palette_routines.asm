@@ -22,7 +22,7 @@ Palette_Update:
 	ld      de, $0010
 	add     iy, de
 	pop     bc
-	djnz    -_
+	djnz    - Palette_Update
 	ret
 
 Palette_UpdateColours:	
@@ -97,7 +97,7 @@ Palette_FadeToColour:		;$8054
 	inc     iy
 	inc     hl
 	pop     bc
-	djnz    -_
+	djnz    Palette_FadeToColour
 	inc     (ix+$00)
 	ld      a, (ix+$00)
 	and     $07
@@ -129,7 +129,7 @@ Palette_FadeToBlack:		;80B8
 	and     $0C
 	or      c					;recombine with the R and B components
 	ld      (iy+$00), a			;store updated colour
-    ld      a, (iy+$00)
+	ld      a, (iy+$00)
 	and     $0F					;keep hold of the G and B 
 	ld      c, a
 	ld      a, (iy+$00)
@@ -139,8 +139,8 @@ Palette_FadeToBlack:		;80B8
 	and     $30
 	or      c					;recombine with the G and B components
 	ld      (iy+$00), a			;store updated colour
-    inc     iy
-	djnz    -_					;move to next colour
+	inc     iy
+	djnz    Palette_FadeToBlack					;move to next colour
 	inc     (ix+$00)
 	ld      a, (ix+$00)
 	and     $03
