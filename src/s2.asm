@@ -125,7 +125,9 @@ _START:
 	;set page-2 to ROM bank-2
 	inc	 a
 	ld	($FFFF), a
-	
+	;set up 8bpp mode
+	ld a,lcdBpp8
+	ld (mpLcdCtrl),a
 	; wait for the VDP
 	; read current scanline
 	in	a, (Ports_VDP_VCounter)

@@ -160,3 +160,24 @@ Palette_CalculateOffset:		;$8110
     ld      de, Palettes
     add     hl, de
     ret
+
+set1555Palette:
+   ld hl,mpLcdPalette             ; palette mem
+   ld b,0
+_cp1555loop:
+   ld d,b
+   ld a,b
+   and %11000000
+   srl d
+   rra
+   ld e,a
+   ld a,%00011111
+   and b
+   or e
+   ld (hl),a
+   inc hl
+   ld (hl),d
+   inc hl
+   inc b
+   jr nz,_cp1555loop
+   ret

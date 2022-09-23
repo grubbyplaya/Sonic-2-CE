@@ -10,9 +10,9 @@
 ; -----------------------------------------------------------------------------
 #macro wait_1s
     ld    b, Time_1Second
- _: ei
+    ei
     halt
-    djnz  -_
+    djnz  - wait_1s
 #endmacro
 
 
