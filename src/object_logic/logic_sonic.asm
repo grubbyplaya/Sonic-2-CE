@@ -165,8 +165,6 @@ Sonic_State_0E:        ;$A79C
     .dw VF_Player_HandleFalling
 .db $08, $02
     .dw VF_Player_HandleFalling
-.db $FF, $09 
-    .db SFX_Fall
 .db $08, $03
     .dw VF_Player_HandleFalling
 .db $08, $04
@@ -449,8 +447,6 @@ LABEL_B31_A972:
 
 
 DATA_B31_A987:
-.db $FF, $09
-    .db SFX_BreatheBubble
 .db $0C, $1A
     .dw LABEL_200 + $EA
 .db $FF, $05 

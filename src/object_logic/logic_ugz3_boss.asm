@@ -59,8 +59,6 @@ LABEL_B28_A3F4:
 	jr      z, LABEL_B28_A42C
 	bit     6, (ix+$04)
 	jr      nz, +_
-	ld      a, SFX_BombBounce
-	ld      ($DD04), a
 	ld      e, (ix+$18)		;get vertical velocity
 	ld      d, (ix+$19)
 	bit     7, d			;is sprite moving up?
@@ -263,8 +261,6 @@ UGZ3_Robotnik_State_01_Logic_01:		;$A54E
 	or      h
 	ret     nz					;bail out if the sprite is moving
 	ld      (ix+$02), $02		;change state to $02
-	ld      a, Music_Boss		;play the Boss music
-	ld      ($DD04), a
 	ret     
 
 UGZ_Robotnik_State_02_Logic_01		;$A57F

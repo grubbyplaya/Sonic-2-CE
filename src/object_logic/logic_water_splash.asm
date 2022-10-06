@@ -8,8 +8,6 @@ WaterSplash_State_00:		;$B4D8
 .db $FF, $00
 
 WaterSplash_State_01:		;$B4DE
-.db $FF, $09
-	.db SFX_Splash
 .db $04, $01
 	.dl WaterSplash_DoNothing
 .db $08, $02

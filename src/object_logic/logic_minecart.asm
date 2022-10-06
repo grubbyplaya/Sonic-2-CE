@@ -194,7 +194,6 @@ Minecart_State_04_Logic_01:		;$8A0B
 	cpir    
 	jp      z, LABEL_B28_895D
 LABEL_B28_8A51:
-	ld      a, SFX_MinecartCrash
 	ld      ($DD04), a
 	res     1, (ix+$22)
 	res     7, (iy+$04)
@@ -255,7 +254,6 @@ LABEL_B28_8ABD:
 	res     0, (iy+$03)
 	res     1, (iy+$03)
 	ld      (iy+$02), PlayerState_EnterMineCart	;set player state to $16
-	ld      a, SFX_EnterMinecart
 	ld      ($DD04), a
 	ret     
 

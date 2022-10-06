@@ -1,41 +1,10 @@
 Logic_AirCountdown:		;$B07A
 .dw DATA_B31_B07E
-.dw DATA_B31_B084
 
 DATA_B31_B07E:
 .db $01, $00
 	.dw AirCountdown_Init
 .db $FF, $00
-
-DATA_B31_B084:
-.db $FF, $09		;play a sound
-	.db SFX_ScoreTick
-.db $78, $06
-	.dw AirCountdown_Update
-.db $FF, $09		;play a sound
-	.db SFX_ScoreTick
-.db $78, $05
-	.dw AirCountdown_Update
-.db $FF, $09		;play a sound
-	.db SFX_ScoreTick
-.db $78, $04
-	.dw AirCountdown_Update
-.db $FF, $09		;play a sound
-	.db SFX_ScoreTick
-.db $78, $03
-	.dw AirCountdown_Update
-.db $FF, $09		;play a sound
-	.db SFX_ScoreTick
-.db $78, $02
-	.dw AirCountdown_Update
-.db $FF, $09		;play a sound
-	.db SFX_ScoreTick
-.db $78, $01
-	.dw AirCountdown_Update
-.db $02, $01
-	.dw AirCountdown_TimerExpired
-.db $FF, $01
-
 
 AirCountdown_Init:		;$B0B4
 	ld		hl, ($D511)			;copy player's hpos
@@ -99,7 +68,6 @@ AirCountdown_TimerExpired:		;$B109
 
 	res     1, (iy+$22)			;clear "collision at bottom" flag
 
-	ld      a, Music_LoseLife
 	ld      ($DD04), a
 
 	pop     iy

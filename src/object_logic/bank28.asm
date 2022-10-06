@@ -848,7 +848,6 @@ LABEL_B28_881E:
 	jp      z, +_
 	ld      a, $22
 	ld      ($d502), a
-	ld      a, SFX_RollWheel
 	ld      ($dd04), a
 	ld      hl, $0300
 	ld      ($d3c7), hl

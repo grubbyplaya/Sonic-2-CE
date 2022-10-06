@@ -176,7 +176,6 @@ LABEL_B31_B9A0:
 	ld      a, ($D298)		;add 1 life
 	inc     a
 	ld      ($D298), a
-	ld      a, SFX_ExtraLife
 	ld      ($DD04), a
 	call    LABEL_200 + $010B
 	ld      b, $05			;which signpost art?
@@ -204,7 +203,6 @@ LABEL_B31_B9C2:
 	ld      a, (LifeCounter)
 	inc     a
 	ld      (LifeCounter), a
-	ld      a, SFX_ExtraLife
 	ld      ($DD04), a
 	call    LABEL_200 + $010B
 	ld      b, $08			;which signpost art?
@@ -237,7 +235,6 @@ Signpost_State_03_Logic_03:		;$BA0C
 	ret     nz
 	ld      a, PlayerState_EndOfLevel
 	ld      ($D502), a
-	ld      a, Music_EndOfLevel
 	ld      ($DD04), a
 	ret     
 

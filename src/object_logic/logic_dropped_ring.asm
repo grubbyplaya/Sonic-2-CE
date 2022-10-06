@@ -113,7 +113,6 @@ LABEL_B31_B017:
 	ret     
 
 LABEL_B31_B06C:
-	ld      a, SFX_Ring
 	ld      ($DD04), a
 	call    VF_Engine_IncrementRingCounter
 	ld      (ix+$02), $02

@@ -10,7 +10,6 @@ DATA_B31_ACEB:
 
 DATA_B31_ACEF:
 .db $FF, $09
-	.db SFX_BreakBlock
 .db $01, $00
 	.dw BlockFragment_State_00_Logic_01
 .db $FF, $00

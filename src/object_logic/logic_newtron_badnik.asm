@@ -82,8 +82,6 @@ Newtron_State_02:		;$B32C
 
 ;State 03 - fire a fireball
 Newtron_State_03:		;$B39D
-.db $FF, $09		;play sound
-	.db SFX_BombBounce
 .db $FF, $06		;spawn a fireball
 	.db Object_Newtron_Fireball
 	.dw $0008

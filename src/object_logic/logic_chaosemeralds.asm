@@ -100,14 +100,10 @@ ChaosEmerald_CheckCollisions:       ; $B829
     jr      z, ChaosEmerald_NextLevel
     
     ; play the emerald sound
-    ld      a, Music_Emerald
-    ld      (Sound_MusicTrigger1), a
     ret     
 
 
 ChaosEmerald_NextLevel:     ; $B866
-    ld      a, Music_EndOfLevel
-    ld      (Sound_MusicTrigger1), a
     ld      hl, GlobalTriggers
     set     GT_NEXT_LEVEL_BIT, (hl)
     ret     

@@ -1,14 +1,14 @@
+.db tExtTok,tAsm84CeCmp
+.ASSUME ADL=0
 #include	"includes/defines.asm"
 #include	"includes/sms.asm"
 #include	"includes/structures.asm"
 #include	"includes/objects.asm"			;values for objects
 #include	"includes/player_states.asm"		;values for player object state
-#include	"includes/sound_values.asm"		;values for music/sfx
 #include	"includes/level_values.asm"
 #include	"includes/macros.asm"
 #include	"includes/memory_layout.asm"
 #include	"ti84pce.inc"
-.db tExtTok,tAsm84CeCmp
 
 ;=====================================================================
 ;Changing the "Version" variable will determine which version
@@ -82,31 +82,6 @@
 #define LastLevel				$07
 #define LastBankNumber		 1 << 5 -1	 ; must be 2^n-1 since it is used in AND ops
 
-.MEMORYMAP
-SLOTSIZE $7FF0
-SLOT 0 $0000
-SLOTSIZE $0010
-SLOT 1 $7FF0
-SLOTSIZE $4000
-SLOT 2 $8000
-SLOTSIZE $2000
-SLOT 3 $C000
-DEFAULTSLOT 2
-.ENDME
-
-.ROMBANKMAP
-BANKSTOTAL 32
-BANKSIZE $7FF0
-BANKS 1
-BANKSIZE $0010
-BANKS 1
-BANKSIZE $4000
-BANKS 30
-.ENDRO
-
-.EMPTYFILL $FF
-
-.BANK 0 SLOT 0
 .ORG $0000
 
 _START:
@@ -348,7 +323,6 @@ Engine_Reset:		 ; $0431
 ; -----------------------------------------------------------------------------
 Engine_Initialise:
 	call	LABEL_12A3_4		 ; VDP region/tv detection?
-	call	Sound_InitPSG
 	call	VDP_InitRegisters
 	;clear screen?
 	call	Engine_ClearPaletteRAM
@@ -722,9 +696,6 @@ GameState_EndSequence:
 	call	Engine_LoadLevelPalette
 	call	Engine_ReleaseCamera
 	
-	ld	a, Music_Ending
-	ld	(Sound_MusicTrigger1), a
-	
 	call	LABEL_6F3
 	xor	 a
 	ld	(Engine_DynPalette_0), a
@@ -792,8 +763,6 @@ GameState_Gameover:	 ; $072F
 	ld	a, ($D2BD)			;load the "Game Over" screen if bit 7 of $D2BD is reset.
 	bit	 7, a
 	jr	nz, GameState_DoContinue
-	ld	a, Music_GameOver
-	ld	(Sound_MusicTrigger1), a
 	call	GameOverScreen_DrawScreen
 
 	; wait for 2 seconds
@@ -853,11 +822,7 @@ GameState_CheckContinue:		; $0792
 	ld	(ix + Object.ObjID), Object_Sonic
 	ld	(ix + Object.State), PlayerState_ContinueScreen
 	ld	(ix + Object.StateNext), PlayerState_ContinueScreen
-	call	Engine_UpdatePlayerObjectState
-
-	ld	a, Music_Continue
-	ld	(Sound_MusicTrigger1), a
-	
+	call	Engine_UpdatePlayerObjectState	
 	
 	ld	hl, GlobalTriggers
 	set	 GT_GAMEOVER_BIT, (hl)
@@ -896,17 +861,12 @@ ContinueScreen_MainLoop:		;7DB
 	ret	 z
 
 	call	ContinueScreen_LoadNumberMappings
-	ld	a, SFX_LoseRings
-	ld	(Sound_MusicTrigger1), a
 	jr	ContinueScreen_MainLoop
 	
 	ld	hl, ContinueCounter
 	res	 7, (hl)
 	dec	 (hl)
 	set	 7, (hl)
-	
-	ld	a, SFX_ExtraLife
-	ld	(Sound_MusicTrigger1), a
 
 	; execute for 3 seconds
 	ld	b, Time_3Seconds
@@ -945,10 +905,6 @@ GameState_NextAct:		; $0820
 	ei
 	halt
 	djnz	PaletteFadeOut
-	
-	; stop music
-	ld	a, Music_Null		 ; FIXME: use XOR A
-	ld	(Sound_MusicTrigger1), a
 	
 	call	Engine_ClearWorkingVRAM		 ;clear various blocks of RAM & prepare the SAT
 	call	Engine_ClearLevelAttributes
@@ -1260,7 +1216,6 @@ LABEL_A27:
 
 
 #include "level_select.asm"
-#include "sound_select.asm"
 
 
 _Load_Intro_Level:
@@ -2598,16 +2553,12 @@ ScoreCard_UpdateScore:		;$1C12
 	and	 $01
 	jr	nz, ++_
 
-	ld	a, SFX_ScoreTick	;score 'tick' sound
-	ld	(NextMusicTrack), a
 	jr	++_
 
 	ld	a, (FrameCounter)			;get the frame counter
 	and	 $03
 	jr	nz, ++_
 
-	ld	a, SFX_ScoreTick	;score 'tick' sound
-	ld	(NextMusicTrack), a
       jr	ScoreCard_UpdateScore
 	
 	; wait a second
@@ -2644,16 +2595,12 @@ ScoreCard_UpdateScore:		;$1C12
 	and	 $01
 	jr	nz, ++_
 
-	ld	a, SFX_ScoreTick	;score tick sound
-	ld	(NextMusicTrack), a
 	jr	++_
 
 	ld	a, (FrameCounter)
 	and	 $03
 	jr	nz, ++_
 	
-	ld	a, SFX_ScoreTick	;score tick sound
-	ld	(NextMusicTrack), a
       ld	hl, $D2A2
 	ld	a, (hl)
 	inc	 hl
@@ -3899,10 +3846,6 @@ LABEL_2576:
 	ld	a, ($D51D)
 	cp	$02
 	jr	nz, LABEL_2576
-
-	; stop music
-	ld	a, Music_Null		 ; FIXME: use XOR A
-	ld	(Sound_MusicTrigger1), a
 	
 	; reset dynamic palette numbers
 	call	Engine_ClearAuxLevelHeader
@@ -3972,8 +3915,6 @@ LABEL_25C3:
 	ld	hl, LifeCounter
 	inc	 (hl)
 	call	Engine_CapLifeCounterValue
-	ld	a, SFX_ExtraLife
-	ld	(Sound_MusicTrigger1), a
 
 
 Engine_UpdateRingCounterSprites:	;$25DB
@@ -4017,8 +3958,6 @@ LABEL_2606:
 	ld	a, (GlobalTriggers)
 	bit	 2, a
 	jr	z, +_
-	ld	a, Music_TitleCard	 ;play title card music
-	ld	(Sound_MusicTrigger1), a
 	ei
 	ld	hl, BgPaletteControl	 ;trigger bg palette fade to colour.
 	ld	(hl), $00
@@ -4526,8 +4465,6 @@ Player_SetState_SkidRight:
 LABEL_307F:
 	bit	 0, (ix+$03)
 	ret	 nz
-	ld	a, SFX_Skid	 ;play "skid" sound
-	ld	(Sound_MusicTrigger1), a
 	res	 1, (ix+$03)	 ;lose rings on collision with enemy
 	ld	(ix+$02), PlayerState_SkiddingRight
 	ret	
@@ -4536,8 +4473,6 @@ Player_SetState_SkidLeft
 LABEL_3092:
 	bit	 0, (ix+$03)
 	ret	 nz
-	ld	a, SFX_Skid	 ;play "skid" sound
-	ld	(Sound_MusicTrigger1), a
 	res	 1, (ix+$03)	 ;lose rings on collision with enemy
 	ld	(ix+$02), PlayerState_SkiddingLeft
 	ret	
@@ -4553,8 +4488,6 @@ LABEL_30A5:
 	call	LABEL_48C4
 	res	 0, (ix+$03)
 	set	 1, (ix+$03)		 ;set flag to destroy enemies on collision
-	ld	a, SFX_Roll		 ;play "roll" sound
-	ld	(Sound_MusicTrigger1), a
 	ret	
 
 Player_SetState_JumpFromRamp
@@ -4576,8 +4509,6 @@ LABEL_30D8:
 	res	 1, (ix+$03)
 	res	 2, (ix+$03)
 	res	 1, (ix+$22)	 ;trigger the movement
-	ld	a, SFX_Spring	 ;play "spring bounce" sound
-	ld	(Sound_MusicTrigger1), a
 	ret	
 
 Player_SetState_DiagonalSpring:
@@ -5714,8 +5645,6 @@ Player_SetState_Hurt:		 ;$37B0
 	ld	(RingCounter), a
 	call	Engine_UpdateRingCounterSprites
 	
-	ld	a, SFX_LoseRings	;play the "Lose rings" sound effect
-	ld	(NextMusicTrack), a
 Player_PlayHurtAnimation:		 ;$37EA
 	ld	(ix+$20), $00
 	ld	(ix+$02), PlayerState_Hurt
@@ -5754,8 +5683,6 @@ Player_SetState_Dead:	;$3823
 	
 	xor	 a
 	ld	(Player_KillTrigger), a
-	ld	a, Music_LoseLife		 ;play "Lost Life" sound
-	ld	(Sound_MusicTrigger1), a
 	ret	
 
 
@@ -6242,9 +6169,6 @@ Player_SetState_Jumping:		;$3A8C
 	ld	($D289), a
 	
 	res	 1, (ix+$22)		;clear "collision at bottom" flag
-
-	ld	a, SFX_Jump		;play jump sound effect
-	ld	(Sound_MusicTrigger1), a
 	ret	
 
 ;called when jumping & colliding with horizontal spring
@@ -7307,8 +7231,6 @@ LABEL_43F3:
 	jp	LABEL_6BF2
 
 LABEL_43F9:
-	ld	a, SFX_LeaveTube
-	ld	(Sound_MusicTrigger1), a
 	xor	 a
 	ld	(Player_HurtTrigger), a
 	ld	(ix+$21), a
@@ -7891,8 +7813,6 @@ Collision_Monitor_Rings:	;4817
 	add	 a, $10		;add 10 rings to the counter (bcd)
 	daa	
 	ld	(RingCounter), a
-	ld	a, SFX_10Rings
-	ld	(Sound_MusicTrigger1), a
 
 #ifdef Version 2
 	call	Engine_UpdateRingCounterSprites
@@ -7904,8 +7824,6 @@ Collision_Monitor_Rings:	;4817
 	ld	a, (LifeCounter)
 	inc	 a
 	ld	(LifeCounter), a
-	ld	a, SFX_ExtraLife
-	ld	(Sound_MusicTrigger1), a
 	jp	Engine_CapLifeCounterValue
 #else
 	jp	Engine_UpdateRingCounterSprites
@@ -7916,8 +7834,6 @@ Collision_Monitor_Life:	 ;482A
 	ld	a, (LifeCounter)
 	inc	 a
 	ld	(LifeCounter), a
-	ld	a, SFX_ExtraLife
-	ld	(Sound_MusicTrigger1), a
 	jp	Engine_CapLifeCounterValue
 
 Collision_Monitor_Continue:
@@ -7934,8 +7850,6 @@ LABEL_4845:
 
 Collision_Monitor_Sneakers:	 ;4848
 	res	 2, (hl)
-	ld	a, Music_SpeedSneakers
-	ld	(Sound_MusicTrigger1), a
 	ld	a, $01			;power-up type = speed sneakers
 	ld	(Player.PowerUp), a
 	ld	hl, $0000		 ;timer (count up)
@@ -7948,8 +7862,6 @@ Collision_Monitor_Sneakers:	 ;4848
 
 Collision_Monitor_Invincibility:		; $4866
 	res	 3, (hl)
-	ld	a, Music_Invincibility
-	ld	(Sound_MusicTrigger1), a
 	ld	a, $02			;power-up type = invincibility
 	ld	(Player.PowerUp), a
 	ld	hl, $0000
@@ -9955,8 +9867,6 @@ LABEL_636B:
 	ld	($D518), hl
  	ld	a, PlayerState_JumpFromRamp
 	ld	($D502), a
-	ld	a, SFX_Bomb		 ;play "bomb" sound
-	ld	(Sound_MusicTrigger1), a
 	ld	bc, $0400
 	ld	hl, ($D511)	 ;get player's horizontal position into HL
 	ld	e, (ix+$11)	 ;get object's horizontal position into DE
@@ -9991,7 +9901,6 @@ LABEL_63C0:
 	ld	(ix+$1f), $40
 	dec	 (ix+$24)
 	ld	a, $aa
-	ld	(Sound_MusicTrigger1), a
 	ret	
 
 LABEL_63E5:
@@ -11588,8 +11497,6 @@ LABEL_6CAD:				 ;diagonal spring
 	cp	$03				 ;check to see if we're on GHZ
 	jr	z, +_
 	ld	hl, $F900			 
-	ld	a, SFX_Spring		 ;play spring "bounce" sound
-	ld	(Sound_MusicTrigger1), a
 	jp	Player_SetState_DiagonalSpring
 
 
@@ -11681,7 +11588,6 @@ LABEL_6D52:
 	pop	 bc
 	ret	 c
 	ld	a, $B1
-	ld	(Sound_MusicTrigger1), a
 	ld	(iy+$00), $2d
 	jp	LABEL_6D81
 
@@ -11762,8 +11668,6 @@ LABEL_6DED:
 	cpl	
 	ld	l, a
 	ld	($D518), hl
-	ld	a, SFX_Jump
-	ld	(Sound_MusicTrigger1), a
 	jp	Player_SetState_JumpFromRamp
 
 ;launch from ramp with negative velocity
@@ -11788,8 +11692,6 @@ LABEL_6E10:
 	cpl	
 	ld	l, a
 	ld	($D518), hl
-	ld	a, SFX_Jump		 ;play jump sound
-	ld	(Sound_MusicTrigger1), a
 	jp	Player_SetState_JumpFromRamp
 	
 LABEL_6E30:
@@ -11888,8 +11790,6 @@ Player_EnterPipe:		 ;$6EB7
 ;*	Player entering pipe from below.	*
 ;****************************************
 Player_EnterPipe_Bottom:		;$6ED6
-	ld	a, SFX_Roll
-	ld	(Sound_MusicTrigger1), a
 	ld	a, (ix+$01)		 ;check to see if the player
 	cp	PlayerState_InPipe	;is already in the pipe
 	jp	z, Player_EnterPipe_Return
@@ -11909,8 +11809,6 @@ Player_EnterPipe_Bottom:		;$6ED6
 ;*	Player entering pipe from above.	*
 ;****************************************
 Player_EnterPipe_Top:		 ;$6F03
-	ld	a, SFX_Roll
-	ld	(Sound_MusicTrigger1), a
 	ld	a, (ix+$01)		 ;check to see if the player
 	cp	PlayerState_InPipe	;is already in the pipe
 	jr	z, Player_EnterPipe_Return
@@ -11930,8 +11828,6 @@ Player_EnterPipe_Top:		 ;$6F03
 ;*	Player entering pipe from left. *
 ;************************************
 Player_EnterPipe_Left:		;$6F2E
-	ld	a, SFX_Roll
-	ld	(Sound_MusicTrigger1), a
 	ld	a, (ix+$01)		 ;check to see if the player
 	cp	PlayerState_InPipe	;is already in the pipe
 	jr	z, Player_EnterPipe_Return
@@ -11951,8 +11847,6 @@ Player_EnterPipe_Left:		;$6F2E
 ;*	Player entering pipe from right.	*
 ;****************************************
 Player_EnterPipe_Right:	 ;$6F59
-	ld	a, SFX_Roll
-	ld	(Sound_MusicTrigger1), a
 	ld	a, (ix+$01)		 ;check to see if the player
 	cp	PlayerState_InPipe	;is already in the pipe
 	jr	z, Player_EnterPipe_Return
@@ -12629,8 +12523,6 @@ LABEL_7314:
 Player_CollideTopVerticalSpring:	;$731B
 	ld	hl, $0780
 	ld	($D518), hl	 ;set player vertical speed
-	ld	a, SFX_Spring
-	ld	(Sound_MusicTrigger1), a
 	jp	Player_SetState_JumpFromRamp
 
 
@@ -12774,8 +12666,6 @@ Player_CollideWithRingBlock:			;$739A
 	ld	c, Object_RingSparkle	 ;display a ring "sparkle"
 	ld	h, $00
 	call	Engine_AllocateObjectHighPriority
-	ld	a, SFX_Ring		 ;play "got ring" sound
-	ld	(Sound_MusicTrigger1), a
 	jp	IncrementRingCounter
 
 
@@ -14560,11 +14450,6 @@ ROM_HEADER:				;$7FF0
 #endif
 .db $40				 ;region code/rom size
 
-
-;===========================================================================
-;	 Bank 02 - Sound Driver
-;===========================================================================
-#include "sound_driver.asm"
 
 ;===========================================================================
 ;	 Includes for remaining banks.
