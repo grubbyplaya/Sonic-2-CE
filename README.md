@@ -2,14 +2,14 @@
 
 A currently unfinished port of the Sega Master System version of Sonic 2 to the TI-84+ CE.
 
-#Controls
+# Controls
 
 Arrow keys - Move Sonic
 2nd - Jump/Start game
 Alpha - Jump
 
 
-To Do:
+# To Do
 
 Translate VDP instuctions into TI-OS system calls
 
