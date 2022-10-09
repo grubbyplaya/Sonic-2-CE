@@ -2,9 +2,15 @@
 
 A currently unfinished port of the Sega Master System version of Sonic 2 to the TI-84+ CE.
 
+#Controls
+
+Arrow keys - Move Sonic
+2nd - Jump/Start game
+Alpha - Jump
+
 
 To Do:
 
-Translate VDP instuctions & button presses into TI-OS system calls
+Translate VDP instuctions into TI-OS system calls
 
-Expand the original game's 256x224 resolution into the 84+ CE's 320x240 resolution
+(NOT NEEDED) Expand the original game's 256x224 resolution into the 84+ CE's 320x240 resolution

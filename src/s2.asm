@@ -844,7 +844,7 @@ ContinueScreen_MainLoop:		;7DB
 	
 	; check to see if button 1/2 is pressed
 	ld	a, (Engine_InputFlagsLast)
-	and	 kbd2nd | kbdAlpha
+	and	BTN_1 | BTN_2
 	jr	nz, +_
 	
 	ld	hl, ContinueScreen_Timer	;increase the timer
@@ -6451,7 +6451,7 @@ Player_CalcAccel:		 ; $3BDD
 	; check to see if the left/right buttons are being pressed
 	; (i.e. do we need to apply acceleration?)
 	ld	a, (Engine_InputFlags)
-	and	 kbdLeft | kbdRight
+	and	 BTN_LEFT_BIT | BTN_RIGHT_BIT
 	jp	z, Player_CalcAccel_NoBtnPress
 
 	; use this array if the player is moving left
@@ -6535,7 +6535,7 @@ Player_CalcAccel_UnderWater:		; $3C5F
 
 	; check to see if left/right button is pressed
 	ld	a, (Engine_InputFlags)
-	and	 kbdLeft | kbdRight
+	and	BTN_LEFT | BTN_RIGHT
 	jr	z, Player_CalcAccel_NoBtnPress
 
 	; use this array if the player is moving left
@@ -6548,7 +6548,7 @@ Player_CalcAccel_UnderWater:		; $3C5F
 	
 	; check the input flags to see if the left button is pressed.
 	ld	bc, $0000
-	bit	 kbitLeft, a
+	bit	 BTN_LEFT_BIT, a
 	jr	nz, +_
 	; right button pressed
 	ld	bc, $0002

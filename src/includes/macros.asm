@@ -9,7 +9,7 @@
 ;    None.
 ; -----------------------------------------------------------------------------
 #macro wait_1s
-    ld    b, Time_1Second
+    ld    a, Time_1Second
     ei
     halt
     djnz  - wait_1s

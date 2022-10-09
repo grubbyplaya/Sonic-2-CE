@@ -21,19 +21,23 @@
 ; =========================================================
 ;  Input Bitfield
 ; ---------------------------------------------------------
-#define    BTN_UP_BIT          0
-#define    BTN_DOWN_BIT        1
-#define    BTN_LEFT_BIT        2
-#define    BTN_RIGHT_BIT       3
-#define    BTN_1_BIT           4
-#define    BTN_2_BIT           5
+;The controls haven't been altered in any way.
+;Instead, these defines tell SPASM-ng to interpret the 
+;SMS button code as keys on the TI-84+ CE to make it way
+;easier to customize the controls.
+BTN_UP_BIT = kbitUp
+BTN_DOWN_BIT = kbitDown
+BTN_LEFT_BIT = kbitLeft
+BTN_RIGHT_BIT = kbitRight
+BTN_1_BIT = kbit2nd	
+BTN_2_BIT = kbitAlpha
 
-#define    BTN_UP              1 << BTN_UP_BIT
-#define    BTN_DOWN            1 << BTN_DOWN_BIT
-#define    BTN_LEFT            1 << BTN_LEFT_BIT
-#define    BTN_RIGHT           1 << BTN_RIGHT_BIT
-#define    BTN_1               1 << BTN_1_BIT
-#define    BTN_2               1 << BTN_2_BIT
+BTN_UP = kbdUp
+BTN_DOWN = kbdDown
+BTN_LEFT = kbdLeft
+BTN_RIGHT = kbdRight
+BTN_1 = kbd2nd
+BTN_2 = kbdAlpha
 
 
 ; =========================================================
