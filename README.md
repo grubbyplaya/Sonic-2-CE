@@ -5,7 +5,9 @@ A currently unfinished port of the Sega Master System version of Sonic 2 to the 
 # Controls
 
 Arrow keys - Move Sonic
+
 2nd - Jump/Start game
+
 Alpha - Jump
 
 
