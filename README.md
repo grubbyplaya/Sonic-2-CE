@@ -1,4 +1,4 @@
-# Sonic the Hedgehog 2 CE
+![](https://raw.githubusercontent.com/grubbyplaya/Sonic-2-CE/master/s2banner.png)
 
 A currently unfinished port of the Sega Master System version of Sonic 2 to the TI-84+ CE.
 
