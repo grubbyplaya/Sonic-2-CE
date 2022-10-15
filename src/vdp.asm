@@ -1,3 +1,6 @@
+;The bane of this project's existence. In order for this project to actually function,
+;nearly everything in this file will have to be rewritten.
+
 ; =============================================================================
 ;  VDP_InitRegisters()
 ; -----------------------------------------------------------------------------

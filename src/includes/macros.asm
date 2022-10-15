@@ -47,11 +47,11 @@
 ;    None.
 ; -----------------------------------------------------------------------------
 #macro PaletteIx args palette_addr
-    .if palette_addr <= Palettes
+    #ifdef palette_addr <= Palettes
         .printt "Specified palette address ($"
         .printv palette_addr
         .printt "is not within range.\n"
         .fail
-    .endif
+    #endif
     .db ((palette_addr - Palettes) / 16)
 #endmacro

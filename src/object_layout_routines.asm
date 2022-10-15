@@ -182,22 +182,22 @@ ObjectLayout_CheckLoadObject:        ;$804D
 
 
 DATA_80BE:
-.dw LABEL_812E
-.dw ObjectLayout_DoNothing
-.dw ObjectLayout_DoNothing
-.dw ObjectLayout_DoNothing
-.dw ObjectLayout_DoNothing
-.dw ObjectLayout_DoNothing
-.dw ObjectLayout_DoNothing
-.dw ObjectLayout_DoNothing
-.dw ObjectLayout_DoNothing
-.dw ObjectLayout_DoNothing
-.dw ObjectLayout_DoNothing
-.dw ObjectLayout_DoNothing
-.dw ObjectLayout_DoNothing
-.dw ObjectLayout_DoNothing
-.dw ObjectLayout_DoNothing
-.dw ObjectLayout_DoNothing
+.dl LABEL_812E
+.dl ObjectLayout_DoNothing
+.dl ObjectLayout_DoNothing
+.dl ObjectLayout_DoNothing
+.dl ObjectLayout_DoNothing
+.dl ObjectLayout_DoNothing
+.dl ObjectLayout_DoNothing
+.dl ObjectLayout_DoNothing
+.dl ObjectLayout_DoNothing
+.dl ObjectLayout_DoNothing
+.dl ObjectLayout_DoNothing
+.dl ObjectLayout_DoNothing
+.dl ObjectLayout_DoNothing
+.dl ObjectLayout_DoNothing
+.dl ObjectLayout_DoNothing
+.dl ObjectLayout_DoNothing
 
 
 ObjectLayout_LoadObject:    ;$80DE
@@ -282,51 +282,51 @@ LABEL_812E:
     
 
 Data_ObjectLayouts:        ;$8135
-.dw Data_ObjectLayout_UGZ 
-.dw Data_ObjectLayout_SHZ
-.dw Data_ObjectLayout_ALZ 
-.dw Data_ObjectLayout_GHZ 
-.dw Data_ObjectLayout_GMZ 
-.dw Data_ObjectLayout_SEZ 
-.dw Data_ObjectLayout_CEZ 
-.dw Data_ObjectLayout_CEZ 
-.dw Data_ObjectLayout_CEZ 
-.dw Data_ObjectLayout_CEZ
+.dl Data_ObjectLayout_UGZ 
+.dl Data_ObjectLayout_SHZ
+.dl Data_ObjectLayout_ALZ 
+.dl Data_ObjectLayout_GHZ 
+.dl Data_ObjectLayout_GMZ 
+.dl Data_ObjectLayout_SEZ 
+.dl Data_ObjectLayout_CEZ 
+.dl Data_ObjectLayout_CEZ 
+.dl Data_ObjectLayout_CEZ 
+.dl Data_ObjectLayout_CEZ
 
 Data_ObjectLayout_UGZ:    ;$8149
-.dw Data_ObjectLayout_UGZ1
-.dw Data_ObjectLayout_UGZ2 
-.dw Data_ObjectLayout_UGZ3 
+.dl Data_ObjectLayout_UGZ1
+.dl Data_ObjectLayout_UGZ2 
+.dl Data_ObjectLayout_UGZ3 
 
 Data_ObjectLayout_SHZ:    ;$814F
-.dw Data_ObjectLayout_SHZ1
-.dw Data_ObjectLayout_SHZ2
-.dw Data_ObjectLayout_SHZ3
+.dl Data_ObjectLayout_SHZ1
+.dl Data_ObjectLayout_SHZ2
+.dl Data_ObjectLayout_SHZ3
 
 Data_ObjectLayout_ALZ:    ;$8155
-.dw Data_ObjectLayout_ALZ1 
-.dw Data_ObjectLayout_ALZ2 
-.dw Data_ObjectLayout_ALZ3 
+.dl Data_ObjectLayout_ALZ1 
+.dl Data_ObjectLayout_ALZ2 
+.dl Data_ObjectLayout_ALZ3 
 
 Data_ObjectLayout_GHZ:    ;$815B
-.dw Data_ObjectLayout_GHZ1 
-.dw Data_ObjectLayout_GHZ2 
-.dw Data_ObjectLayout_GHZ3 
+.dl Data_ObjectLayout_GHZ1 
+.dl Data_ObjectLayout_GHZ2 
+.dl Data_ObjectLayout_GHZ3 
 
 Data_ObjectLayout_GMZ:    ;$8161
-.dw Data_ObjectLayout_GMZ1 
-.dw Data_ObjectLayout_GMZ2 
-.dw Data_ObjectLayout_GMZ3 
+.dl Data_ObjectLayout_GMZ1 
+.dl Data_ObjectLayout_GMZ2 
+.dl Data_ObjectLayout_GMZ3 
 
 Data_ObjectLayout_SEZ:    ;$8167
-.dw Data_ObjectLayout_SEZ1 
-.dw Data_ObjectLayout_SEZ2 
-.dw Data_ObjectLayout_SEZ3 
+.dl Data_ObjectLayout_SEZ1 
+.dl Data_ObjectLayout_SEZ2 
+.dl Data_ObjectLayout_SEZ3 
 
 Data_ObjectLayout_CEZ:    ;$816D
-.dw Data_ObjectLayout_CEZ1 
-.dw Data_ObjectLayout_CEZ2 
-.dw Data_ObjectLayout_CEZ3
+.dl Data_ObjectLayout_CEZ1 
+.dl Data_ObjectLayout_CEZ2 
+.dl Data_ObjectLayout_CEZ3
 
 
 Data_ObjectLayout_UGZ1:    ;$8173

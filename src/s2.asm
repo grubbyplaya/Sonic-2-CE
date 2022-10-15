@@ -1,5 +1,6 @@
 .db tExtTok,tAsm84CeCmp
 .ASSUME ADL=0
+#include	"includes/ti84pce.inc"
 #include	"includes/defines.asm"
 #include	"includes/sms.asm"
 #include	"includes/structures.asm"
@@ -8,7 +9,7 @@
 #include	"includes/level_values.asm"
 #include	"includes/macros.asm"
 #include	"includes/memory_layout.asm"
-#include	"ti84pce.inc"
+
 
 ;=====================================================================
 ;Changing the "Version" variable will determine which version
@@ -21,10 +22,10 @@
 #define Version		1
 
 ;some basic sense-checking on the version variable
-.IFNEQ Version 2
-	.IFNEQ Version 1
+#ifdef Version 2
+	#ifdef Version 1
 		.PRINTT "FAIL: Invalid build version!\n"
-		.FAIL 
+		ret
 	#endif
 #endif
 ;=====================================================================
@@ -61,10 +62,6 @@
 #define BgPaletteIndex		 $D4E7	;Current background palette (index into array of palettes)
 #define FgPaletteControl		 $D4E8	;Triggers foreground palette fades (bit 6 = to black, bit 7 = to colour).
 #define FgPaletteIndex		 $D4E9	;Current foreground palette (index into array of palettes)
-
-
-#define CurrentMusicTrack		$DD03
-#define NextMusicTrack		 $DD04	;Write bytes here to play music/sfx
 
 ;VDP Values
 #define ScreenMap				$3800	;location of the screen map (name table)
@@ -144,12 +141,6 @@ Engine_Interrupt:
 	; turn off hblank interrupts
 	jp	VDP_ResetPalette_DisableLineInterrupt		
 
-
-;just padding?
-.rept 32
-	.db 0
-.endr
-
 .db $00, $02, $00
 
 
@@ -205,12 +196,6 @@ _error_msg:
 	djnz	_error_msg
 	jp	$0000
 
-
-.rept 41
-	.db $00
-.endr
-
-
 .db "MS SONIC", $A5, "THE", $A5, "HEDGEHOG.2 "
 #ifdef Version 2
 	.db "Ver2.20 1992/12/09"
@@ -230,13 +215,6 @@ _error_msg:
 ;	Object Logic Jump Table
 ; -----------------------------------------------------------------------------
 #include "logic_jump_table.asm"
-
-
-
-.rept 13
-	.db $00
-.endr
-
 
 .org $0330
 DATA_330:
@@ -692,7 +670,6 @@ Engine_CheckGlobalTriggers:	 ; $0690
 ;run the ending sequence
 GameState_EndSequence:
 	call	Engine_LoadLevel		 ;load the level
-	call	Engine_ChangeLevelMusic
 	call	Engine_LoadLevelPalette
 	call	Engine_ReleaseCamera
 	
@@ -753,7 +730,6 @@ LABEL_6F3:						;ending credits sequence
 
 GameState_Gameover:	 ; $072F
 	xor	 a
-	ld	(Sound_CurrentMusic), a			;stop music
 	ei
 	halt
 	call	Engine_ClearWorkingVRAM
@@ -832,7 +808,6 @@ GameState_CheckContinue:		; $0792
 	
 	; fade out over 1 second
 	call	PaletteFadeOut
-	call	FadeMusic
 	wait_1s
 	
 	ret
@@ -1076,10 +1051,6 @@ GameState_KillPlayer:		 ; $092A
 	halt
 	djnz	GameState_KillPlayer
 
-	; stop music
-	ld	a, Music_Null
-	ld	(NextMusicTrack), a
-	
 	; reset dynamic palette numbers
 	call	Engine_ClearAuxLevelHeader
 	
@@ -1113,7 +1084,6 @@ GameState_Titlecard:		; $097F
 	
 	; fade out over 42 frames
 	call	PaletteFadeOut
-	call	FadeMusic
 	ld	b, $2A
 	ei
 	halt
@@ -1123,7 +1093,6 @@ GameState_Titlecard:		; $097F
 	call	Engine_CapLifeCounterValue
 	call	Engine_UpdateRingCounterSprites
 	call	Engine_Timer_SetSprites
-	call	Engine_ChangeLevelMusic
 	call	Engine_LoadLevelPalette
 	call	Engine_ReleaseCamera
 
@@ -1280,9 +1249,6 @@ _Load_Intro_Level:
 	
 	call	Engine_ReleaseCamera
 
-	ld	a, Music_Intro				;Play intro music
-	ld	(NextMusicTrack), a
-	
 LABEL_F41:
 	call	Engine_WaitForInterrupt
 	call	LABEL_107C
@@ -1470,46 +1436,7 @@ LABEL_107C:
 	ret	
 	
 LABEL_1084:
-Engine_ChangeLevelMusic:
-	ld	a, (CurrentLevel)
-	ld	b, a
-	add	 a, a
-	add	 a, b
-	ld	b, a
-	ld	a, (CurrentAct)
-	add	 a, b
-	ld	l, a
-	ld	h, $00
-	ld	de, ZoneMusicTracks_Start
-	add	 hl, de
-	ld	a, (hl)
-	ld	(NextMusicTrack), a
-	ret	
 
-ZoneMusicTracks_Start:
-;	|---- Act ----|
-;	| 1	| 2	| 3 |
-.db $82, $82, $82 ;Under Ground Zone
-.db $86, $86, $86 ;Sky High Zone
-.db $81, $81, $81 ;Aqua Lake	Zone
-.db $85, $85, $85 ;Green Hills Zone
-.db $83, $83, $83 ;Gimmick Mountain Zone
-.db $87, $87, $87 ;Scrambled Egg Zone
-.db $84, $84	;Crystal Egg Zone
-.db $89		;Boss/Crystal Egg Act 3
-.db $91, $91, $91 ;End Credits
-
-FadeMusic:
-LABEL_10B3:
-	ld	hl, $DD09
-	ld	(hl), $0C
-	inc	 hl
-	ld	(hl), $01
-	inc	 hl
-	ld	(hl), $02
-	ret	
-
-	
 ;loads the player sprite tiles into VRAM
 Engine_LoadPlayerTiles:	 ;$10BF
 	ld	a, ($D34E)
@@ -2757,7 +2684,7 @@ LABEL_1D7F:
 	ld	bc, $0605
 	jr	LABEL_1DAF
 
- ld	de, $D2B1
+	ld	de, $D2B1
 	ld	bc, $0403
 	jr	LABEL_1DAF
 
@@ -2849,41 +2776,41 @@ ScoreCard_Mappings_Blank:		 ;$1E2F
 
 
 ;********************************************************
-;*	Convert the BCD value stored at $D2A8 to ASCII and	*
-;*	store at $D2AE.										*
-;*														*
-;*	in	($D2B4)		Number of bytes.					*
-;*	out	HALF		Half-carry set if BCD overflow.		*
-;*	destroys		A, BC, DE, HL						*
+;*	Convert the BCD value stored at $D2A8 to ASCII and*
+;*	store at $D2AE.						  *
+;*									  *
+;*	in	($D2B4)		Number of bytes.		  *
+;*	out	HALF		Half-carry set if BCD overflow. *
+;*	destroys		A, BC, DE, HL			  *
 ;********************************************************
 Score_ConvertBCDtoASCI:		;$1E37
-	xor	 a				;clear flags
+	xor	a				;clear flags
 	ld	hl, $D2A8		;BCD representation
 	ld	de, $D2AE		;destination for ASCII representation
 	ld	a, ($D2B4)		;number of BCD bytes
 	ld	c, a
 	ld	b, a
 	cp	$04
-	ccf	 ;complement carry & half flags
-	ret	 c
-
-	ld		a, (hl)
-	and	 $0F
-	cp	$0A
-	ccf	 ;complement carry & half flags
-	ret	 c
+	ccf	;complement carry & half flags
+	ret	c
 
 	ld	a, (hl)
-	and	 $F0
-	cp	$A0
-	ccf	 ;complement carry & half flags
-	ret	 c
+	and	$0F
+	cp	$0A
+	ccf	;complement carry & half flags
+	ret	c
 
-	inc	 hl
+	ld	a, (hl)
+	and	$F0
+	cp	$A0
+	ccf	;complement carry & half flags
+	ret	c
+
+	inc	hl
 	djnz	Score_ConvertBCDtoASCI
 
 	ld	hl, $D2A8
-	xor	 a				;clear flags
+	xor	a				;clear flags
 
 	ld	b, c
 
@@ -2891,13 +2818,13 @@ Score_ConvertBCDtoASCI:		;$1E37
 	or	$30				;convert to ASCII
 	ld	(de), a			;store here
 
-	inc	 de
-	rrd	 ;rotate lo-nibble at (HL) into A
+	inc	de
+	rrd	;rotate lo-nibble at (HL) into A
 	or	$30				;convert to ASCII
 	ld	(de), a			;store here
 
-	inc	 de				;move to next BCD byte
-	inc	 hl
+	inc	de				;move to next BCD byte
+	inc	hl
 	djnz	Score_ConvertBCDtoASCI
 
 	ret
@@ -3639,7 +3566,6 @@ LABEL_243C:
 	ld	a, 0
 	ld	($D700), a
 	call	PaletteFadeOut
-	call	FadeMusic
 	ld	b, $2A
 	ei
 	halt
@@ -4527,13 +4453,11 @@ LABEL_3119:						 ; \
 	ld	(ix+$02), $09			 ; |
 	ld	(ix+$16), l				 ; |
 	ld	(ix+$17), h				 ; |
-	ld	(Player_MaxVelX), hl		; |
-	res	 0, (ix+$03)				 ; |	 Identical to subroutine below
-	set	 1, (ix+$03)				 ; |
-	res	 1, (ix+$22)				 ; |
-	ld	a, $9c					; |
-	ld	(Sound_MusicTrigger1), a	; |
-	ret							 ; /
+	ld	(Player_MaxVelX), hl		 ; |
+	res	 0, (ix+$03)			 ; |	 Identical to subroutine below
+	set	 1, (ix+$03)			 ; |
+	res	 1, (ix+$22)			 ; |
+	ret						 ; /
 
 Player_SetState_HorizontalSpring:
 LABEL_3138:
@@ -4544,8 +4468,6 @@ LABEL_3138:
 	res	 0, (ix+$03)	 ;flag no movement on the Y-axis
 	set	 1, (ix+$03)	 ;flag movement on X-axis
 	res	 1, (ix+$22)	 ;trigger movement update
-	ld	a, SFX_Spring	 ;play spring bounce sound
-	ld	(Sound_MusicTrigger1), a
 	ret	
 
 Player_SetState_Falling:		;$3157
@@ -7781,8 +7703,6 @@ LABEL_47C9:
 	cp	PlayerState_EndOfLevel
 	ret	 z
 #endif
-	jp	Engine_ChangeLevelMusic
-
 
 Collision_Monitor:			;$47F6
 	ld	hl, Engine_MonitorCllsnType
@@ -10475,7 +10395,6 @@ Logic_CommandVTable:		;$668B
 .dw LABEL_670F					;$06 - Load a new sprite.
 .dw LABEL_6791					;$07 - Run new input logic.
 .dw LABEL_67B1					;$08 - triggers loading of a monitor or chaos emerald
-.dw LABEL_67C5					;$09 - 
 .dw Logic_Cmd_ProcessLogic		;$0A - load the next animation frame
 .dw Logic_Cmd_ProcessLogic		;$0B - 
 .dw Logic_Cmd_ProcessLogic		;$0C -
@@ -10665,24 +10584,6 @@ LABEL_67B1:	 ;triggers loading tiles for a monitor or chaos emerald
 	ld	(ix+$0E), l
 	ld	(ix+$0F), h
 	ld	(PatternLoadCue), a	 ;the tiles to load
-	jp	Engine_UpdateObject_ProcessLogic
-
-LABEL_67C5:	 ;command sequence $FF $09 - play a sound
-	ld	l, (ix+$0E)
-	ld	h, (ix+$0F)
-	ld	a, (hl)		 ;the sound to play
-	inc	 hl
-	ld	(ix+$0E), l	 ;store the pointer to the next frame
-	ld	(ix+$0F), h
-	bit	 7, a			;is the sound value > $80?
-	jr	 z, +_	
-	bit	 6, (ix+$04)
-	jp	nz, Engine_UpdateObject_ProcessLogic
-	ld	(Sound_MusicTrigger1), a		;play the sound
-	jp	Engine_UpdateObject_ProcessLogic
-
-	or	$80			 ;set bit 7
-	ld	(Sound_MusicTrigger1), a
 	jp	Engine_UpdateObject_ProcessLogic
 
 
