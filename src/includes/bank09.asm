@@ -24,7 +24,7 @@ Art_UGZ_Level_Tiles:		;A0A5
 Art_SHZ_Yellow_Bird:		;B0DD
 #import "art\level\shz\art_shz_yellow_bird.bin"
 
-Art_ALZ_Spike:				;B15D
+Art_ALZ_Spike:			;B15D
 #import "art\level\alz\art_alz_spike.bin"
 
 Art_GMZ_Moving_Platform:	;B24F
@@ -33,7 +33,7 @@ Art_GMZ_Moving_Platform:	;B24F
 Art_SEZ_Moving_Platform:	;B2DF
 #import "art\level\sez\art_sez_moving_platform.bin"
 
-Art_Badnik_Newtron:			;B3E9
+Art_Badnik_Newtron:		;B3E9
 #import "art\badniks\art_badnik_newtron.bin"
 
 Art_Badnik_Bomb:			;B655
@@ -51,11 +51,11 @@ Art_ALZ_Unknown:			;BB91
 Art_ALZ_Unknown2:			;BBE1
 #import "art\level\alz\art_alz_unknown2.bin"
 
-Art_UGZ_Spikes:				;BC11
+Art_UGZ_Spikes:			;BC11
 #import "art\level\ugz\art_ugz_spikes.bin"
 
-Art_GMZ_Spikes:				;BCB1
+Art_GMZ_Spikes:			;BCB1
 #import "art\level\gmz\art_gmz_spikes.bin"
 
-Art_ALZ_Big_Bubble:			;BD51
+Art_ALZ_Big_Bubble:		;BD51
 #import "art\level\alz\art_alz_big_bubble.bin"

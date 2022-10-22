@@ -210,7 +210,7 @@ Bank22:
 
 ;===========================================================================
 ;		BANK 23 - 
-;			32x32 Mappings for CEZ3 & SEZ2. Art for GHZ. Layout for UGZ.
+;			32x32 Mappings for CEZ3 & SEZ2. Art for SHZ2. Art for GHZ. Layout for UGZ.
 ;===========================================================================
 call Bank23
 .ORG $0000

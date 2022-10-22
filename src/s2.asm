@@ -3009,64 +3009,64 @@ Score_CalculateActTimeScore_Sec:		;$1F0E
 		
 		
 DATA_1F70:
-.dw DATA_1EEB
-.dw DATA_1EE8
-.dw DATA_1EE5
-.dw DATA_1EE2
-.dw DATA_1EDF
-.dw DATA_1EDC
-.dw DATA_1ED9
-.dw DATA_1ED6
-.dw DATA_1ED3
-.dw DATA_1ED0
-.dw DATA_1E6D
-.dw DATA_1E6D
-.dw DATA_1E6D
-.dw DATA_1E6D
-.dw DATA_1E6D
-.dw DATA_1E6D
-.dw DATA_1ECD
-.dw DATA_1ECA
-.dw DATA_1EC7
-.dw DATA_1EC4
-.dw DATA_1EC1
-.dw DATA_1EBE
-.dw DATA_1EBB
-.dw DATA_1EB8
-.dw DATA_1EB5
-.dw DATA_1EB2
-.dw DATA_1E6D
-.dw DATA_1E6D
-.dw DATA_1E6D
-.dw DATA_1E6D
-.dw DATA_1E6D
-.dw DATA_1E6D
-.dw DATA_1EAF
-.dw DATA_1EAC
-.dw DATA_1EA9
-.dw DATA_1EA6
-.dw DATA_1EA3
-.dw DATA_1EA0
-.dw DATA_1E9D
-.dw DATA_1E9A
-.dw DATA_1E97
-.dw DATA_1E94
-.dw DATA_1E6D
-.dw DATA_1E6D
-.dw DATA_1E6D
-.dw DATA_1E6D
-.dw DATA_1E6D
-.dw DATA_1E6D
-.dw DATA_1E91
-.dw DATA_1E8E
-.dw DATA_1E8B
-.dw DATA_1E88
-.dw DATA_1E85
-.dw DATA_1E82
-.dw DATA_1E7F
-.dw DATA_1E7C
-.dw DATA_1E79
-.dw DATA_1E76
+.dl DATA_1EEB
+.dl DATA_1EE8
+.dl DATA_1EE5
+.dl DATA_1EE2
+.dl DATA_1EDF
+.dl DATA_1EDC
+.dl DATA_1ED9
+.dl DATA_1ED6
+.dl DATA_1ED3
+.dl DATA_1ED0
+.dl DATA_1E6D
+.dl DATA_1E6D
+.dl DATA_1E6D
+.dl DATA_1E6D
+.dl DATA_1E6D
+.dl DATA_1E6D
+.dl DATA_1ECD
+.dl DATA_1ECA
+.dl DATA_1EC7
+.dl DATA_1EC4
+.dl DATA_1EC1
+.dl DATA_1EBE
+.dl DATA_1EBB
+.dl DATA_1EB8
+.dl DATA_1EB5
+.dl DATA_1EB2
+.dl DATA_1E6D
+.dl DATA_1E6D
+.dl DATA_1E6D
+.dl DATA_1E6D
+.dl DATA_1E6D
+.dl DATA_1E6D
+.dl DATA_1EAF
+.dl DATA_1EAC
+.dl DATA_1EA9
+.dl DATA_1EA6
+.dl DATA_1EA3
+.dl DATA_1EA0
+.dl DATA_1E9D
+.dl DATA_1E9A
+.dl DATA_1E97
+.dl DATA_1E94
+.dl DATA_1E6D
+.dl DATA_1E6D
+.dl DATA_1E6D
+.dl DATA_1E6D
+.dl DATA_1E6D
+.dl DATA_1E6D
+.dl DATA_1E91
+.dl DATA_1E8E
+.dl DATA_1E8B
+.dl DATA_1E88
+.dl DATA_1E85
+.dl DATA_1E82
+.dl DATA_1E7F
+.dl DATA_1E7C
+.dl DATA_1E79
+.dl DATA_1E76
 
 
 DATA_1FE4:
@@ -3309,8 +3309,8 @@ Engine_LoadLevel:		;$21AA
 
 
 Engine_ClearWorkingVRAM:		 ;21E0
-	ld	hl, $D300	 ;clear RAM from $D300 -> $DBBF
-	ld	de, $D301
+	ld	hl, $D40000	 ;clear RAM from $D40000 -> $D7FFFF
+	ld	de, $D40001
 	ld	bc, $08BF
 	ld	(hl), $00
 	ldir
@@ -3687,42 +3687,42 @@ LevelDemoHeaders:
 ;SHZ demo
 .db $01
 .db DemoControlSequence_SHZ
-.dw DemoControlSequence_SHZ
+.dl DemoControlSequence_SHZ
 
 ;GHZ demo
 .db $03
 .db DemoControlSequence_GHZ
-.dw DemoControlSequence_GHZ
+.dl DemoControlSequence_GHZ
 
 ;ALZ demo
 .db $02
 .db DemoControlSequence_ALZ
-.dw DemoControlSequence_ALZ
+.dl DemoControlSequence_ALZ
 
 ;SEZ demo
 .db $05
 .db DemoControlSequence_SEZ
-.dw DemoControlSequence_SEZ
+.dl DemoControlSequence_SEZ
 
 ;SHZ demo
 .db $01
 .db DemoControlSequence_SHZ
-.dw DemoControlSequence_SHZ
+.dl DemoControlSequence_SHZ
 
 ;GHZ demo
 .db $03
 .db DemoControlSequence_GHZ
-.dw DemoControlSequence_GHZ
+.dl DemoControlSequence_GHZ
 
 ;ALZ demo
 .db $02
 .db DemoControlSequence_ALZ
-.dw DemoControlSequence_ALZ
+.dl DemoControlSequence_ALZ
 
 ;SEZ demo
 .db $05
 .db DemoControlSequence_SEZ
-.dw DemoControlSequence_SEZ
+.dl DemoControlSequence_SEZ
 
 
 LABEL_2530:
@@ -6623,13 +6623,13 @@ Data_AccelerationValues_Left_UnderWater:		; $3F16
 
 ;gradient delta-v values
 DATA_4016:
-.dw $0000
-.dw $FFE1
-.dw $001F
-.dw $FFE8
-.dw $0018
-.dw $FFF0
-.dw $0010
+.dl $0000
+.dl $FFE1
+.dl $001F
+.dl $FFE8
+.dl $0018
+.dl $FFF0
+.dl $0010
 
 LABEL_4024:
 	res	 0, (ix+$03)
@@ -7131,22 +7131,22 @@ LABEL_43C5:
 	jp	(hl)
 
 DATA_43D3:
-.dw LABEL_4414 
-.dw LABEL_441A 
-.dw LABEL_45A8 
-.dw LABEL_45C6 
-.dw LABEL_45E4 
-.dw LABEL_4602 
-.dw LABEL_4420 
-.dw LABEL_4482 
-.dw LABEL_4546 
-.dw LABEL_44E4 
-.dw LABEL_4620 
-.dw LABEL_4408 
-.dw LABEL_440E 
-.dw LABEL_4623 
-.dw LABEL_4629 
-.dw LABEL_4408
+.dl LABEL_4414 
+.dl LABEL_441A 
+.dl LABEL_45A8 
+.dl LABEL_45C6 
+.dl LABEL_45E4 
+.dl LABEL_4602 
+.dl LABEL_4420 
+.dl LABEL_4482 
+.dl LABEL_4546 
+.dl LABEL_44E4 
+.dl LABEL_4620 
+.dl LABEL_4408 
+.dl LABEL_440E 
+.dl LABEL_4623 
+.dl LABEL_4629 
+.dl LABEL_4408
 
 LABEL_43F3:
 	call	Engine_UpdateObjectPosition
@@ -9161,8 +9161,8 @@ DATA_5F60:
 .dl LABEL_5F80
 .dl LABEL_5F80
 .dl LABEL_5F80
-.dw LABEL_6212
-.dw Engine_DeallocateObject
+.dl LABEL_6212
+.dl Engine_DeallocateObject
 
 LABEL_5F80:
 ret
@@ -9642,38 +9642,38 @@ LABEL_62A7:
 	jp	(hl)
 	
 DATA_62BD:	;object collision type jump vectors
-.dw LABEL_62FD
-.dw LABEL_62FD	
-.dw LABEL_62FD
-.dw Score_AddBadnikValue	;badnik score value (crab)
-.dw LABEL_62FD
-.dw LABEL_62FD
-.dw LABEL_62FD
-.dw LABEL_62FD
-.dw LABEL_62FD
-.dw LABEL_62FD
-.dw LABEL_62FD
-.dw Score_AddBadnikValue	;badnik score value
-.dw LABEL_62FD
-.dw LABEL_62FD
-.dw LABEL_62FD
-.dw LABEL_62FD
-.dw LABEL_62FD
-.dw LABEL_62FD
-.dw Score_AddBadnikValue	;badnik score value
-.dw Score_AddBadnikValue	;badnik score value
-.dw Score_AddBadnikValue	;badnik score value
-.dw Score_AddBadnikValue	;badnik score value
-.dw LABEL_62FD
-.dw Score_AddBadnikValue	;badnik score value
-.dw Score_AddBadnikValue	;badnik score value
-.dw LABEL_62FD
-.dw Score_AddBadnikValue	;badnik score value
-.dw LABEL_62FD
-.dw LABEL_62FD
-.dw LABEL_62FD
-.dw LABEL_62FD
-.dw LABEL_62FD
+.dl LABEL_62FD
+.dl LABEL_62FD	
+.dl LABEL_62FD
+.dl Score_AddBadnikValue	;badnik score value (crab)
+.dl LABEL_62FD
+.dl LABEL_62FD
+.dl LABEL_62FD
+.dl LABEL_62FD
+.dl LABEL_62FD
+.dl LABEL_62FD
+.dl LABEL_62FD
+.dl Score_AddBadnikValue	;badnik score value
+.dl LABEL_62FD
+.dl LABEL_62FD
+.dl LABEL_62FD
+.dl LABEL_62FD
+.dl LABEL_62FD
+.dl LABEL_62FD
+.dl Score_AddBadnikValue	;badnik score value
+.dl Score_AddBadnikValue	;badnik score value
+.dl Score_AddBadnikValue	;badnik score value
+.dl Score_AddBadnikValue	;badnik score value
+.dl LABEL_62FD
+.dl Score_AddBadnikValue	;badnik score value
+.dl Score_AddBadnikValue	;badnik score value
+.dl LABEL_62FD
+.dl Score_AddBadnikValue	;badnik score value
+.dl LABEL_62FD
+.dl LABEL_62FD
+.dl LABEL_62FD
+.dl LABEL_62FD
+.dl LABEL_62FD
 
 LABEL_62FD:
 	ret	
@@ -9852,14 +9852,14 @@ Engine_AdjustPlayerAfterCollision:		;$63F1
 
 DATA_6404:
 .dl LABEL_6424		;$00 - no collision
-.dw LABEL_643C		;$01 - collision at top
-.dw LABEL_6425		;$02 - collision at bottom
+.dl LABEL_643C		;$01 - collision at top
+.dl LABEL_6425		;$02 - collision at bottom
 .dl LABEL_6424		;$03 - invalid (collision at top & bottom)
-.dw LABEL_6483		;$04 - collision at right
+.dl LABEL_6483		;$04 - collision at right
 .dl LABEL_6424		;$05 - invalid (collision top-right)
 .dl LABEL_6424		;$06 - invalid (collision bottom-right)
 .dl LABEL_6424		;$07 - invalid (right-top-bottom)
-.dw LABEL_6454		;$08 - collision at left
+.dl LABEL_6454		;$08 - collision at left
 .dl LABEL_6424
 .dl LABEL_6424
 .dl LABEL_6424
@@ -10386,21 +10386,21 @@ Logic_ProcessCommand:			;$6675
 	jp	(hl)
 
 Logic_CommandVTable:		;$668B
-.dw Logic_Cmd_RestartSequence	 ;$00 - load next animation
-.dw Logic_Cmd_Deallocate		;$01 - Deallocate the object
-.dw Logic_Cmd_Call				;$02 - Execute logic using following 2 bytes as function pointer.
+.dl Logic_Cmd_RestartSequence	 ;$00 - load next animation
+.dl Logic_Cmd_Deallocate		;$01 - Deallocate the object
+.dl Logic_Cmd_Call				;$02 - Execute logic using following 2 bytes as function pointer.
 .dl Logic_Cmd_DoNothing		 ;$03 - do nothing stub
-.dw Logic_Cmd_SetSpeed			;$04 - Set sprite's horizontal/vertical velocity
-.dw LABEL_66FB					;$05 - Change sprite state (e.g. write to $D502 for sonic) & load next animation frame
-.dw LABEL_670F					;$06 - Load a new sprite.
-.dw LABEL_6791					;$07 - Run new input logic.
-.dw LABEL_67B1					;$08 - triggers loading of a monitor or chaos emerald
-.dw Logic_Cmd_ProcessLogic		;$0A - load the next animation frame
-.dw Logic_Cmd_ProcessLogic		;$0B - 
-.dw Logic_Cmd_ProcessLogic		;$0C -
-.dw Logic_Cmd_ProcessLogic		;$0D - 
-.dw Logic_Cmd_ProcessLogic		;$0E - 
-.dw Logic_Cmd_ProcessLogic		;$0F - 
+.dl Logic_Cmd_SetSpeed			;$04 - Set sprite's horizontal/vertical velocity
+.dl LABEL_66FB					;$05 - Change sprite state (e.g. write to $D502 for sonic) & load next animation frame
+.dl LABEL_670F					;$06 - Load a new sprite.
+.dl LABEL_6791					;$07 - Run new input logic.
+.dl LABEL_67B1					;$08 - triggers loading of a monitor or chaos emerald
+.dl Logic_Cmd_ProcessLogic		;$0A - load the next animation frame
+.dl Logic_Cmd_ProcessLogic		;$0B - 
+.dl Logic_Cmd_ProcessLogic		;$0C -
+.dl Logic_Cmd_ProcessLogic		;$0D - 
+.dl Logic_Cmd_ProcessLogic		;$0E - 
+.dl Logic_Cmd_ProcessLogic		;$0F - 
 
 
 Logic_Cmd_ProcessLogic:		 ; $66AB
@@ -10942,10 +10942,10 @@ LABEL_6956:
 	jp	(hl)
 
 LABEL_6975:
-.dw LABEL_697D 
-.dw LABEL_698F 
-.dw LABEL_69F5
-.dw LABEL_6B47
+.dl LABEL_697D 
+.dl LABEL_698F 
+.dl LABEL_69F5
+.dl LABEL_6B47
 
 LABEL_697D: 
 	ld	a, ($DB2C)
@@ -11231,11 +11231,11 @@ LABEL_6B61:
 
 LABEL_6B85:
 .dl LABEL_6B95
-.dw LABEL_6B96
-.dw LABEL_6B9B
+.dl LABEL_6B96
+.dl LABEL_6B9B
 .dl LABEL_6B95
-.dw LABEL_6BA7
-.dw LABEL_6B95
+.dl LABEL_6BA7
+.dl LABEL_6B95
 .dl LABEL_6B95
 .dl LABEL_6B95
 
@@ -11339,27 +11339,27 @@ LABEL_6C3C:
 	jp	(hl)
 
 Cllsn_MetaTileTriggerFuncPtrs:		; $6C70
-.dw LABEL_6DAA	;$00
+.dl LABEL_6DAA	;$00
 .dl LABEL_6CA0	;$01 - solid block
 .dl LABEL_6CA1	;
 .dl LABEL_6C9C
 .dl LABEL_6C9C
-.dw LABEL_6CE2	;$05 - spikes
-.dw LABEL_6DAA	;$06 - 
-.dw LABEL_6DAA
-.dw LABEL_6D49	;$08 - ALZ slippery slope (unused?)
-.dw LABEL_6CA2	;$09 - vertical spring
-.dw LABEL_6DAA	;$0A - horizontal spring
+.dl LABEL_6CE2	;$05 - spikes
+.dl LABEL_6DAA	;$06 - 
+.dl LABEL_6DAA
+.dl LABEL_6D49	;$08 - ALZ slippery slope (unused?)
+.dl LABEL_6CA2	;$09 - vertical spring
+.dl LABEL_6DAA	;$0A - horizontal spring
 .dl LABEL_6C9C	;$0B
-.dw LABEL_6D52	;$0C - falling platform (e.g. SHZ bridge)
-.dw LABEL_6CF7	;$0D - breakable block
-.dw LABEL_6D0D	;$0E
+.dl LABEL_6D52	;$0C - falling platform (e.g. SHZ bridge)
+.dl LABEL_6CF7	;$0D - breakable block
+.dl LABEL_6D0D	;$0E
 .dl LABEL_6C9C
-.dw LABEL_6E30
+.dl LABEL_6E30
 .dl LABEL_6C9C
-.dw LABEL_6C9D
-.dw LABEL_6EB1	;$13 - SEZ pipes
-.dw LABEL_6CAD	;$14 - diagonal spring
+.dl LABEL_6C9D
+.dl LABEL_6EB1	;$13 - SEZ pipes
+.dl LABEL_6CAD	;$14 - diagonal spring
 .dl LABEL_6C9C
 
 LABEL_6C9C:
@@ -13317,21 +13317,21 @@ _DATA_7761:
 ;	 Mappings
 ;		|	 Tiles
 ;	|------|-----|
-;.dw $B806, $8000
-;.dw $B906, $89A0
-;.dw $BA06, $9410
-;.dw $BB06, $9DC0
-;.dw $BC06, $A446
-;.dw $BD06, $AC26
-;.dw $BE06, $B0A6
+;.dl $B806, $8000
+;.dl $B906, $89A0
+;.dl $BA06, $9410
+;.dl $BB06, $9DC0
+;.dl $BC06, $A446
+;.dl $BD06, $AC26
+;.dl $BE06, $B0A6
 
-.dw UGZ_Title_Pic_Mappings, UGZ_Title_Pic_Art
-.dw SHZ_Title_Pic_Mappings, SHZ_Title_Pic_Art
-.dw ALZ_Title_Pic_Mappings, ALZ_Title_Pic_Art
-.dw GHZ_Title_Pic_Mappings, GHZ_Title_Pic_Art
-.dw GMZ_Title_Pic_Mappings, GMZ_Title_Pic_Art
-.dw SEZ_Title_Pic_Mappings, SEZ_Title_Pic_Art
-.dw CEZ_Title_Pic_Mappings, CEZ_Title_Pic_Art
+.dl UGZ_Title_Pic_Mappings, UGZ_Title_Pic_Art
+.dl SHZ_Title_Pic_Mappings, SHZ_Title_Pic_Art
+.dl ALZ_Title_Pic_Mappings, ALZ_Title_Pic_Art
+.dl GHZ_Title_Pic_Mappings, GHZ_Title_Pic_Art
+.dl GMZ_Title_Pic_Mappings, GMZ_Title_Pic_Art
+.dl SEZ_Title_Pic_Mappings, SEZ_Title_Pic_Art
+.dl CEZ_Title_Pic_Mappings, CEZ_Title_Pic_Art
 
 GameOverScreen_LoadTiles:	 ;777D
 	di
@@ -13625,17 +13625,17 @@ Engine_HandlePLC_CleanUp:		 ;$7910
 
 ;PLC descriptor chains for end-of-level events
 PLC_EndOfLevelPatterns:	 ;$7924
-.dw PLC_EOL_PrisonCapsule			 ; $3A, $79	;End of boss level part1
-.dw PLC_EOL_PrisonCapsuleAnimals	; $41, $79	;End of boss level part2
-.dw PLC_EOL_SignPost				; $48, $79	;End-of-level signpost
-.dw PLC_EOL_GMZ_Boss				; $4F, $79	;GMZ Boss
-.dw PLC_EOL_SHZ_Boss				; $5C, $79	;SHZ Boss
-.dw PLC_EOL_ALZ_Boss				; $63, $79	;ALZ Boss
-.dw PLC_EOL_GHZ_Boss				; $70, $79	;GHZ boss
-.dw PLC_EOL_UGZ_Boss				; $77, $79	;UGZ boss
-.dw PLC_EOL_SEZ_Boss				; $7E, $79
-.dw PLC_EOL_Unknown_2				 ; $8B, $79
-.dw PLC_EOL_Unknown_3				 ; $8C, $79
+.dl PLC_EOL_PrisonCapsule			 ; $3A, $79	;End of boss level part1
+.dl PLC_EOL_PrisonCapsuleAnimals	; $41, $79	;End of boss level part2
+.dl PLC_EOL_SignPost				; $48, $79	;End-of-level signpost
+.dl PLC_EOL_GMZ_Boss				; $4F, $79	;GMZ Boss
+.dl PLC_EOL_SHZ_Boss				; $5C, $79	;SHZ Boss
+.dl PLC_EOL_ALZ_Boss				; $63, $79	;ALZ Boss
+.dl PLC_EOL_GHZ_Boss				; $70, $79	;GHZ boss
+.dl PLC_EOL_UGZ_Boss				; $77, $79	;UGZ boss
+.dl PLC_EOL_SEZ_Boss				; $7E, $79
+.dl PLC_EOL_Unknown_2				 ; $8B, $79
+.dl PLC_EOL_Unknown_3				 ; $8C, $79
 
 
 ;	 Bank	 VRAM Address		 Terminator
@@ -13646,76 +13646,76 @@ PLC_EndOfLevelPatterns:	 ;$7924
 PLC_EOL_PrisonCapsule:
 .db Art_Prison_Capsule
 	.db $46
-	.dw $0C40
-	.dw Art_Prison_Capsule
+	.dl $0C40
+	.dl Art_Prison_Capsule
 .db $FF ;End of boss prison capsule
 
 PLC_EOL_PrisonCapsuleAnimals:	 ;End of boss prison capsule animals
 .db Art_Animals
 	.db $30
-	.dw $1500
-	.dw Art_Animals
+	.dl $1500
+	.dl Art_Animals
 .db $FF
 
 PLC_EOL_SignPost:		 ;End-of-level signpost
 .db Art_Signpost
 	.db $64
-	.dw $0C40
-	.dw Art_Signpost
+	.dl $0C40
+	.dl Art_Signpost
 .db $FF
 
 PLC_EOL_GMZ_Boss:
 .db Art_GMZ_Boss
 	.db $4A
-	.dw $0C40
-	.dw Art_GMZ_Boss
+	.dl $0C40
+	.dl Art_GMZ_Boss
 .db Art_GMZ_Boss + $80	 ;mirror the tiles
 	.db $4A
-	.dw $1580
-	.dw Art_GMZ_Boss
+	.dl $1580
+	.dl Art_GMZ_Boss
 .db $FF ;$794A - GMZ Boss
 
 PLC_EOL_SHZ_Boss:
 .db Art_SHZ_Boss
 	.db $6E
-	.dw $0C40
-	.dw Art_SHZ_Boss	;$8940
+	.dl $0C40
+	.dl Art_SHZ_Boss	;$8940
 .db $FF	 ;$795C - SHZ Boss
 
 PLC_EOL_ALZ_Boss:
 .db Art_ALZ_Boss
 	.db $4C
-	.dw $0C40
-	.dw Art_ALZ_Boss
+	.dl $0C40
+	.dl Art_ALZ_Boss
 .db Art_ALZ_Boss + $80	 ;mirror the tiles
 	.db $4C
-	.dw $15C0
-	.dw Art_ALZ_Boss
+	.dl $15C0
+	.dl Art_ALZ_Boss
 .db $FF	 ;$7963 - ALZ Boss
 
 PLC_EOL_GHZ_Boss:		 ;$7970 - GHZ Boss
 .db Art_GHZ_Boss
 	.db $96
-	.dw $0C40
-	.dw Art_GHZ_Boss	;$A080
+	.dl $0C40
+	.dl Art_GHZ_Boss	;$A080
 .db $FF
 
 PLC_EOL_UGZ_Boss:		 ;$7977 - UGZ Boss
 .db Art_Boss_UGZ
 	.db $6A
-	.dw $0C40
-	.dw Art_Boss_UGZ	;$A102
+	.dl $0C40
+	.dl Art_Boss_UGZ	;$A102
 .db $FF
 
 PLC_EOL_SEZ_Boss:
 .db Art_SilverSonic
 	.db $44
-	.dw $0C40
-	.dw Art_SilverSonic
+	.dl $0C40
+	.dl Art_SilverSonic
 .db Art_SilverSonic + $80		;mirror the tiles
 	.db $44
-	.dw $14C0
-	.dw Art_SilverSonic
+	.dl $14C0
+	.dl Art_SilverSonic
 .db $FF
 
 PLC_EOL_Unknown_2:
@@ -13724,8 +13724,8 @@ PLC_EOL_Unknown_2:
 PLC_EOL_Unknown_3:
 .db Art_Tails
 	.db $48
-	.dw $0C40
-	.dw Art_Tails	 ;$B48A
+	.dl $0C40
+	.dl Art_Tails	 ;$B48A
 .db $FF
 
 
@@ -13782,15 +13782,15 @@ Engine_HandlePLC_MonitorArt:	;$79C7
 	jp	Engine_HandlePLC_CleanUp
 
 Monitor_Art_Pointers:		 ;$79E9
-.dw Art_Monitor_0
-.dw Art_Monitor_1	 ; rings
-.dw Art_Monitor_2
-.dw Art_Monitor_3
-.dw Art_Monitor_4
-.dw Art_Monitor_5
-.dw Art_Monitor_6
-.dw Art_Monitor_7
-.dw Art_Monitor_8
+.dl Art_Monitor_0
+.dl Art_Monitor_1	 ; rings
+.dl Art_Monitor_2
+.dl Art_Monitor_3
+.dl Art_Monitor_4
+.dl Art_Monitor_5
+.dl Art_Monitor_6
+.dl Art_Monitor_7
+.dl Art_Monitor_8
 
 
 ;/**************************************************************************
@@ -13877,22 +13877,22 @@ UpdateCyclingPaletteBank:		 ;$7D01
 
 ;Jump vectors to code that updates a specific cycling palette
 UpdateCyclingPalette_JumpVectors:
-.dw UpdateCyclingPalette_DoNothing
-.dw UpdateCyclingPalette_DoNothing2
-.dw UpdateCyclingPalette_Rain			;SHZ2 rain palette
-.dw UpdateCyclingPalette_SHZ_Lightning	;SHZ2 lightning
-.dw UpdateCyclingPalette_Lava			;UGZ lava palette
-.dw UpdateCyclingPalette_Water			;ALZ water palette
-.dw UpdateCyclingPalette_Unknown2
-.dw UpdateCyclingPalette_Conveyor		;GMZ conveyor & wheel palette
-.dw UpdateCyclingPalette_Orb			;CEZ1 orb palette
-.dw UpdateCyclingPalette_Lightning		;CEZ3 boss lightening palette
-.dw UpdateCyclingPalette_Lightning2		;CEZ3 boss lightening palette
-.dw UpdateCyclingPalette_WallLighting	;CEZ3 wall lighting
-.dw UpdateCyclingPalette_Orb			;CEZ1 orb palette
-.dw LABEL_7F46							;ending sequence
-.dw LABEL_7F7E
-.dw UpdateCyclingPalette_DoNothing
+.dl UpdateCyclingPalette_DoNothing
+.dl UpdateCyclingPalette_DoNothing2
+.dl UpdateCyclingPalette_Rain			;SHZ2 rain palette
+.dl UpdateCyclingPalette_SHZ_Lightning	;SHZ2 lightning
+.dl UpdateCyclingPalette_Lava			;UGZ lava palette
+.dl UpdateCyclingPalette_Water			;ALZ water palette
+.dl UpdateCyclingPalette_Unknown2
+.dl UpdateCyclingPalette_Conveyor		;GMZ conveyor & wheel palette
+.dl UpdateCyclingPalette_Orb			;CEZ1 orb palette
+.dl UpdateCyclingPalette_Lightning		;CEZ3 boss lightening palette
+.dl UpdateCyclingPalette_Lightning2		;CEZ3 boss lightening palette
+.dl UpdateCyclingPalette_WallLighting	;CEZ3 wall lighting
+.dl UpdateCyclingPalette_Orb			;CEZ1 orb palette
+.dl LABEL_7F46							;ending sequence
+.dl LABEL_7F7E
+.dl UpdateCyclingPalette_DoNothing
 
 UpdateCyclingPalette_DoNothing:
 	ret

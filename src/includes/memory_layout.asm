@@ -33,7 +33,7 @@
 ; ---------------------------------------------------------
 	VDP_VScroll			db
 	VDP_HScroll			db
-	VDP_ViewportX		dwh
+	VDP_ViewportX		dw
 	VDP_ViewportY		dw
 	VDP_TileColBuffer	dsb	64      ; holds a column of tile indices before copying to the VDP
 	VDP_TileRowBuffer	dsb	72      ; holds a row of tile indices before copying to the VDP
