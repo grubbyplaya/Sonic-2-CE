@@ -1,13 +1,13 @@
 ;routines to load a level's object layout
-#include "src\object_layout_routines.asm"
+#include "object_layout_routines.asm"
 
-#include "src\object_logic\bank30_logic.asm"
+#include "object_logic\bank30_logic.asm"
 
 DATA_B30_9841:
-#include "src\collision_data.asm"
+#include "collision_data.asm"
 
 
-#include "src\cycling_palette_data.asm"
+#include "cycling_palette_data.asm"
 
 
 DemoControlSequence_SEZ:

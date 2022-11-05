@@ -9,7 +9,7 @@
 ;    None.
 ; -----------------------------------------------------------------------------
 #macro wait_1s
-    ld    a, Time_1Second
+    ld    b, (Time_1Second)
     ei
     halt
     djnz  - wait_1s
@@ -48,10 +48,10 @@
 ; -----------------------------------------------------------------------------
 #macro PaletteIx args palette_addr
     #ifdef palette_addr <= Palettes
-        .printt "Specified palette address ($"
+        .echo "Specified palette address ($"
         .printv palette_addr
-        .printt "is not within range.\n"
-        .fail
+        .echo "is not within range.\n"
+        ret
     #endif
     .db ((palette_addr - Palettes) / 16)
 #endmacro

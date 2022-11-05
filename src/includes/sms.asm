@@ -21,7 +21,7 @@
 ; =========================================================
 ;  Input Bitfield
 ; ---------------------------------------------------------
-;The controls haven't been altered in any way.
+;The control code haven't been altered in any way.
 ;Instead, these defines tell SPASM-ng to interpret the 
 ;SMS button code as keys on the TI-84+ CE to make it way
 ;easier to customize the controls.

@@ -1534,7 +1534,7 @@ LABEL_B28_8FC9:
 	ld      l, a
 	ld      de, $0040
   	add     hl, de
-	djnz    -_
+	djnz    LABEL_B28_8FC9
 	ld      (ix+$19), h
 	ld      (ix+$18), l
 LABEL_B28_9014:
@@ -1854,7 +1854,7 @@ DATA_B28_95E8:
 	.db $05
 .db $08, $01
 	.dw VF_DoNothing
-.db $FF, $06,
+.db $FF, $06
 	.db $0F
 	.dw $FFFC
 	.dw $FFF6
@@ -4887,7 +4887,7 @@ LABEL_B28_B698:
 	cp      c
 	jr      z, LABEL_B28_B6AC
 	inc     de
-	djnz    -_
+	djnz    LABEL_B28_B698
 	ret     
 
 LABEL_B28_B6AC:
@@ -5800,7 +5800,7 @@ Logic_CheckBackgroundCollision:			;$BD36
 	
 							;get the mapping block type
 	ld      bc, $0008		;horizontal adjustment value if moving right
-	jr      ++
+	jr      ++_
 	
   	ld      bc, $FFF8		;horizontal adjustment value if moving left
 

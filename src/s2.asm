@@ -24,7 +24,7 @@
 ;some basic sense-checking on the version variable
 #ifdef Version 2
 	#ifdef Version 1
-		.PRINTT "FAIL: Invalid build version!\n"
+		.echo "FAIL: Invalid build version!\n"
 		ret
 	#endif
 #endif
@@ -3311,7 +3311,7 @@ Engine_LoadLevel:		;$21AA
 Engine_ClearWorkingVRAM:		 ;21E0
 	ld	hl, $D40000	 ;clear RAM from $D40000 -> $D7FFFF
 	ld	de, $D40001
-	ld	bc, $08BF
+	ld	bc, $D408BF
 	ld	(hl), $00
 	ldir
 	ret

@@ -565,11 +565,11 @@ SHZ3_Boss_StoreChildIndex:	;$9E46
 	or      a				;is element empty?
 	jr      z, +_
 	inc     de				;move to the next element
-	djnz    -_
+	djnz    SHZ3_Boss_StoreChildIndex
 	ret
 
 ;store the object index
-+:	push    iy			;HL = IY
+	push    iy			;HL = IY
 	pop     hl
 	push    de			;preserve DE
 	call    VF_Engine_GetObjectIndexFromPointer
@@ -596,7 +596,7 @@ SHZ3_Boss_ClearChildIndex		;$9E5D
 	cp      c
 	jr      z, +_		;jump if index found
 	inc     de			;move to the next element
-	djnz    -_
+	djnz    SHZ3_Boss_ClearChildIndex
 	ret
 
 ;remove the object's index from the array
@@ -651,7 +651,7 @@ SHZ3_Boss_CheckNextState:		;$9EB0
 	or      c
 	ld      c, a
 	inc     de					;move to the next element
-	djnz    -_
+	djnz    SHZ3_Boss_CheckNextState
 	
 	ld      a, c				;if C is non-zero there are child
 	or      a					;objects that the player should

@@ -1,6 +1,6 @@
-#include "src\object_animations.asm"
+#include "object_animations.asm"
 
-#include "src\object_logic\bank31_logic.asm"
+#include "object_logic\bank31_logic.asm"
 
 ;$BCCB
-#include "src\player_sprite_defs.asm"
+#include "player_sprite_defs.asm"

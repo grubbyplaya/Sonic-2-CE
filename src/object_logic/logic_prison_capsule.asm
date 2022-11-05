@@ -157,7 +157,7 @@ PrisonCapsule_State_03:		;$90C4
 
 ;sets camera position
 PrisonCapsule_State_04:		;$9122
-.db $E0, $01,
+.db $E0, $01
 	.dw PrisonCapsule_LockCamera
 .db $FF, $00
 
