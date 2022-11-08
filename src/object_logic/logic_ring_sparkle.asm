@@ -3,7 +3,7 @@ Logic_RingSparkle:		;$ABE1
 .dw RingSparkle_State_01
 
 RingSparkle_State_00:	;$ABE5
-.db $01, $00, 
+.db $01, $00
 	.dw LABEL_B31_ABFD
 .db $FF, $00
 

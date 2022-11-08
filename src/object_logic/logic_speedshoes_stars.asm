@@ -72,7 +72,7 @@ LABEL_B31_AD88:
 	inc     hl
 	ld      (hl), d
 	inc     hl
-	djnz    -_
+	djnz    LABEL_B31_AD88
 	ret     
 
 LABEL_B31_ADB3:

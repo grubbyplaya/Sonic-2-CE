@@ -1,29 +1,29 @@
-/*
-	Sprite Arrangements -
-		Two words at each position represent the vertical and horizontal
-		offsets, relative to the object's X/Y location in the level, at
-		which to draw each sprite.
-		
-		e.g. An object composed of 3x2 sprites might be arranged like 
-		this (see data at Bank 31, $9dbE which is used for sonic's 
-		sprites):
-		
-			 -12   -4   +4
-			.----.----.----.
-		-32	|    |    |    |
-			| 1  | 2  | 3  |
-			|    |    |    |
-			|----+----+----|
-		-16	|    |    |    |
-			| 4  | 5  | 6  |
-			|    |    |    |
-		0	'----'----'----'
-		           0
-		
-		You can see from the diagram that the sprite's origin is
-		bottom-centre.
 
-*/
+	;Sprite Arrangements -
+		;Two words at each position represent the vertical and horizontal
+		;offsets, relative to the object's X/Y location in the level, at
+		;which to draw each sprite.
+		
+		;e.g. An object composed of 3x2 sprites might be arranged like 
+		;this (see data at Bank 31, $9dbE which is used for sonic's 
+		;sprites):
+		
+		;	 -12   -4   +4
+		;	.----.----.----.
+		;-32	|    |    |    |
+		;	| 1  | 2  | 3  |
+		;	|    |    |    |
+		;	|----+----+----|
+		;-16	|    |    |    |
+		;	| 4  | 5  | 6  |
+		;	|    |    |    |
+		;0	'----'----'----'
+		;           0
+		
+		;You can see from the diagram that the sprite's origin is
+		;bottom-centre.
+
+
 
 SprArrange_1x1_BC:		;$9D2E
 .dl -16, -4

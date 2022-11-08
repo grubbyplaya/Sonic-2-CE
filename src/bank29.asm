@@ -1,13 +1,6 @@
 ;2 extra bytes from the ghz control sequence (unused).
 .db $08, $00
 
-DemoControlSequence_GHZ:
-#import "demo\demo_control_sequence_ghz.bin"
-
-DemoControlSequence_SHZ:
-#import "demo\demo_control_sequence_shz.bin"
-
-
 Art_Rings_UGZ:
 #import "art\rings\rings_ucmp_ugz.bin"
 
@@ -31,6 +24,13 @@ Art_Rings_SEZ:
 
 Art_Rings_CEZ:
 #import "art\rings\rings_ucmp_cez.bin"
+
+DATA_B30_9841:
+#include "collision_data.asm"
+
+
+#include "cycling_palette_data.asm"
+
 
 LABEL_B29_B400:				;push the last 16 sprites off of the screen
 	ld      b, $10			;by setting the VPOS attribute

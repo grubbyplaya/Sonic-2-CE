@@ -19,6 +19,9 @@ Art_SEZ_Moving_Platform:	;B2DF
 Art_SEZ_Block:					;BC00
 #import "art\level\sez\art_sez_block.bin"
 
+Art_SEZ_Moving_Platform:	;B2DF
+#import "art\level\sez\art_sez_moving_platform.bin"
+
 Mappings32_SEZ1_3:
 #import "mappings/sez/mappings32_sez1_3.bin"
 #include "mappings/sez/mappings32_sez1_3.asm"

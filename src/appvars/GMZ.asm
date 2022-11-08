@@ -7,6 +7,9 @@ Art_GMZ_Moving_Platform:	;B24F
 Art_GMZ_Spikes:			;BCB1
 #import "art\level\gmz\art_gmz_spikes.bin"
 
+Art_GMZ_Boss:
+#import "art\boss\art_ucmp_gmz_boss.bin"
+
 Layout_GMZ1:
 #import "layout\gmz\layout_gmz1_2.2.bin"
 

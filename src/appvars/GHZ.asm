@@ -14,8 +14,14 @@ Layout_GHZ3:
 Art_GHZ_Level_Tiles:		;$91DC
 #import "art\level\ghz\art_ghz_level_tiles.bin"
 
+Art_GHZ_Boss:
+#import "art\boss\art_ucmp_ghz_boss.bin"
+
 Palette_GHZ_Sonic:
 #import "palettes\palette_ghz_sonic.bin"
 
 Palette_GHZ:
 #import "palettes\palette_ghz.bin"
+
+DemoControlSequence_GHZ:
+#import "demo\demo_control_sequence_ghz.bin"

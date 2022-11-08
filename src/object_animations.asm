@@ -579,10 +579,10 @@ DATA_B31_8411:
 	.dl $0000
 	.dl DATA_B31_85C9
 DATA_B31_841C:
-.db $08, $04, $1C,
+.db $08, $04, $1C
 	.dl SprArrange_4x2 
 	.dl $0000
-	.dl $0000,
+	.dl $0000
 	.dl DATA_B31_85C9
 DATA_B31_8427:
 .db $08, $04, $1C
@@ -636,7 +636,7 @@ DATA_B31_847F:
 .db $08, $04, $1C
 	.dl SprArrange_4x2 
 	.dl $0000
-	.dl $0000,
+	.dl $0000
 	.dl DATA_B31_85C9
 DATA_B31_848A:
 .db $08, $04, $1C
@@ -677,7 +677,7 @@ DATA_B31_84C1:
 DATA_B31_84CC:
 .db $04, $04, $1C
 	.dl SprArrange_2x2_BC
-	.dl $0000,
+	.dl $0000
 	.dl $0000
 	.dl DATA_B31_85C9
 DATA_B31_84D7:

@@ -36,7 +36,7 @@ HideTimerRings_MoveSprites:		;$AF58
 
 	dec	  (hl)			;move the sprite up
 	inc     hl				;move to the next sprite entry
-	djnz    -_
+	djnz    HideTimerRings_MoveSprites
 
 	ld      hl, $DB38		;check the first sprite's vpos attribute
 	ld      a, (hl)

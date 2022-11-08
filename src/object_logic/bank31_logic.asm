@@ -11,13 +11,13 @@ DATA_B31_ACEB:
 DATA_B31_ACEF:
 .db $FF, $09
 .db $01, $00
-	.dw BlockFragment_State_00_Logic_01
+	.dl BlockFragment_State_00_Logic_01
 .db $FF, $00
 
 DATA_B31_ACF8:
 .db $FF, $07
 	.dw LABEL_B31_AD00
-	.dw BlockFragment_State_01_Logic_01
+	.dl BlockFragment_State_01_Logic_01
 .db $FF, $00
 
 

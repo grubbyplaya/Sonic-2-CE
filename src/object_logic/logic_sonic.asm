@@ -189,7 +189,7 @@ Sonic_State_0E:        ;$A79C
     .dw VF_Player_HandleFalling
 .db    $08, $02
     .dw VF_Player_HandleFalling
-.db $08, $03,
+.db $08, $03
     .dw VF_Player_HandleFalling
 .db $08, $04
     .dw VF_Player_HandleFalling
@@ -453,19 +453,19 @@ DATA_B31_A987:
     .db $0E
 .db $FF, $00
 
-/***************************************** */
+;/***************************************** */
 ;FIXME:
 ;    These commands will execute jumps to    ;
 ;    $1C08 and $00FF which are invalid.        ;
 ;    Check to see if these are used!!        ;
-/***************************************** */
+;/***************************************** */
 DATA_B31_A993:
 .db $08, $1B
 .db $FF, $02
     .db $08, $1C
 .db $FF, $02
     .db $FF, $00
-/***************************************** */
+;/***************************************** */
 
 DATA_B31_A99D:
 .db $08, $01

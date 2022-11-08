@@ -174,7 +174,7 @@ LABEL_B30_8F5E:
 	inc     hl
 	inc     hl
 	inc     hl
-	djnz    -_
+	djnz    LABEL_B30_8F5E
 	bit     6, (ix+$04)
 	ret     z
 	ld      a, (ix+$0b)
@@ -433,7 +433,7 @@ DATA_B30_90E5:
 .db $FF, $02
 	.dw LABEL_B30_9142
 .db $10, $01
-	.dw LABEL_B30_9326,
+	.dw LABEL_B30_9326
 .db $10, $02
 	.dw LABEL_B30_9326
 .db $10, $01
@@ -483,7 +483,7 @@ DATA_B30_914D:
 
 DATA_B30_9157:
 .db $FF, $02
-	.dw LABEL_B30_913C
+	.dl LABEL_B30_913C
 .db $FF, $02
 	.dw LABEL_200 + $120
 .db $08, $03
@@ -577,7 +577,7 @@ LABEL_B30_91F3:
 
 DATA_B30_91FD:
 .db $FF, $02
-	.dw LABEL_B30_91CF
+	.dl LABEL_B30_91CF
 .db $08, $06
 	.dw LABEL_B30_9370
 .db $08, $07
@@ -626,7 +626,7 @@ DATA_B30_9229:
 .db $08, $09
 	.dw LABEL_200 + $2A
 .db $FF, $02
-	.dw LABEL_B30_9136
+	.dl LABEL_B30_9136
 .db $FF, $02
 	.dw LABEL_B30_9260
 .db $FF, $05
@@ -654,7 +654,7 @@ DATA_B30_9270:
 .db $FF, $08
 	.db $1A
 .db $FF, $02
-	.dw LABEL_B30_913C
+	.dl LABEL_B30_913C
 .db $C0, $00
 	.dw LABEL_200 + $2A
 .db $E0, $00
@@ -1115,14 +1115,14 @@ LABEL_B30_95FE:
 
 DATA_B30_9602:
 .db $02, $01
-	.dw LABEL_B30_942E
+	.dl LABEL_B30_942E
 .db $03, $00
-	.dw LABEL_B30_942E
+	.dl LABEL_B30_942E
 .db $FF, $00
 
 DATA_B30_960C:
 .db $FF, $02
-	.dw LABEL_B30_913C
+	.dl LABEL_B30_913C
 .db $FF, $04
 	.dw $0000
 	.dw $FFC0

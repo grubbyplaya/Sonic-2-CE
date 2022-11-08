@@ -64,7 +64,7 @@ Engine_UpdateObjectLayout:            ;$8000
     
     ld    de, $0009             ;move to the next sprite header
     add   hl, de
-    jr    -_
+    jr    Engine_UpdateObjectLayout
 
     ret
 
@@ -352,7 +352,7 @@ Data_ObjectLayout_ALZ3:    ;$87BD
 
 Data_ObjectLayout_GHZ1:    ;$87F4
 ;#import "layout/ghz/object_layout_ghz1.bin"
-.include "layout/ghz/object_layout_ghz1.asm"
+#include "layout/ghz/object_layout_ghz1.asm"
 Data_ObjectLayout_GHZ2:    ;$88C4
 #import "layout/ghz/object_layout_ghz2.bin"
 Data_ObjectLayout_GHZ3:    ;$8970

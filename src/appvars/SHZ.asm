@@ -7,6 +7,18 @@ Art_SHZ2_Level_Tiles:
 Art_SHZ_Yellow_Bird:		;B0DD
 #import "art\level\shz\art_shz_yellow_bird.bin"
 
+Art_SHZ_Log:
+#import "art/level/shz/art_shz_log.bin"
+
+Art_SHZ_Rock:
+#import "art\level\shz\art_shz_rock.bin"
+
+Art_SHZ_Moving_Platform:
+#import "art/level/shz/art_shz_moving_platform.bin"
+
+Art_SHZ_Boss:
+#import "art\boss\art_ucmp_shz_boss.bin"
+
 Mappings32_SHZ1_3:
 #import "mappings\shz\mappings32_shz1_3.bin"
 #include "mappings\shz\mappings32_shz1_3.asm"
@@ -35,3 +47,6 @@ Palette_SHZ1_3:
 
 Palette_SHZ2:
 #import "palettes\palette_shz2.bin"
+
+DemoControlSequence_SHZ:
+#import "demo\demo_control_sequence_shz.bin"
