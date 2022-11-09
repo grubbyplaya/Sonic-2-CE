@@ -19,8 +19,11 @@ Art_SEZ_Moving_Platform:	;B2DF
 Art_SEZ_Block:					;BC00
 #import "art\level\sez\art_sez_block.bin"
 
-Art_SEZ_Moving_Platform:	;B2DF
-#import "art\level\sez\art_sez_moving_platform.bin"
+Art_SilverSonic:
+#import "art/boss/art_ucmp_silver_sonic.bin"
+
+Art_ChaosEmerald_Green:		;$BA60
+#import "art\items\art_ucmp_green_emerald.bin"
 
 Mappings32_SEZ1_3:
 #import "mappings/sez/mappings32_sez1_3.bin"
@@ -35,3 +38,12 @@ Palette_SEZ_Sonic:
 
 Palette_SEZ:
 #import "palettes\palette_sez.bin"
+
+DemoControlSequence_SEZ:
+#import "demo\demo_control_sequence_sez.bin"
+
+SEZ_Title_Pic_Art:
+#import "art\titlecard\sez_title_card_pic.bin"
+
+SEZ_Title_Pic_Mappings:
+#import "mappings\titlecard\sez_title_card_pic_mappings.bin"

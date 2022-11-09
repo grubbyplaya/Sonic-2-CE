@@ -6,8 +6,8 @@ Art_Sonic:				;$8000
 Art_Tails:
 #import "art\tails\art_ucmp_tails.bin"
 
-Art_ALZ_Bubble:			;B800
-#import "art/level/alz/art_alz_bubble.bin"
+Art_Title_Screen:
+#import "art\intro_title\art_title_screen.bin"
 
 Art_Badnik_Pig:			;B930
 #import "art/badniks/art_badnik_pig.bin"
@@ -67,9 +67,6 @@ Art_Monitor_8:
 Art_Rings:
 #import "art/rings/art_rings.bin"
 
-Art_GHZ_Moving_Platform:
-#import "art/level/ghz/art_ghz_moving_platform.bin"
-
 Art_SHZ_Glider:
 #import "art/level/shz/art_shz_glider.bin"
 
@@ -82,15 +79,34 @@ Art_Animals:
 Art_Scrolling_Text_Background:
 #import "art/misc/art_misc_scrolling_text_background.bin"
 
-.db $00, $00
-
 Art_Signpost:
 #import "art/misc/art_ucmp_signpost.bin"
 
 Art_Minecart:
 #import "art/misc/art_minecart.bin"
 
-.db $00, $00
+Art_Tails_Running:			;$B002
+#import "art\tails\art_tails_running.bin"
 
-Art_SilverSonic:
-#import "art/boss/art_ucmp_silver_sonic.bin"
+Art_Tails_Skid:				;$B740
+#import "art\tails\art_tails_skid.bin"
+
+;tile data for the "GAME OVER" text
+GameOverScreen_Data_GameOverTiles:		;3380
+#import "art\continue_gameover\gameover_screen_tiles.bin"
+
+;tile data for the "CONTINUE" text
+ContinueScreen_Data_ContinueTiles:		;3570
+#import "art\continue_gameover\continue_tiles.bin"
+
+ContinueScreen_Data_NumberTiles:		;375A
+#import "art\continue_gameover\continue_screen_tiles_2.bin"
+
+GameOverScreen_Data_TextMappings:		;3B7E
+#import "mappings\continue_gameover\gameover_screen_text_mappings.bin"
+
+ContinueScreen_Data_TextMappings:		;3BC6
+#import "mappings\continue_gameover\continue_screen_text_mappings.bin"
+
+ContinueScreen_Data_NumberMappings:		;3C0D
+#import "mappings\continue_gameover\continue_screen_number_mappings.bin"

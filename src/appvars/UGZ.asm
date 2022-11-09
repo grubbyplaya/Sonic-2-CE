@@ -7,6 +7,12 @@ Art_UGZ_Spikes:				;BC11
 Art_Boss_UGZ:				;$A102
 #import "art\boss\art_ucmp_ugz_boss.bin"
 
+Art_UGZ_Fireball:		;$B6C0
+#import "art\level\ugz\art_ugz_fireball.bin"
+
+Art_ChaosEmerald_Blue:		;$B9E0
+#import "art\items\art_ucmp_blue_emerald.bin"
+
 Art_UGZ_Unknown:			;B783
 #import "art\level\ugz\art_ugz_unknown.bin"
 
@@ -28,3 +34,8 @@ Palette_UGZ:
 
 Palette_UGZ_Sonic:
 #import "palettes\palette_ugz_sonic.bin"
+
+UGZ_Title_Pic_Art:
+#import "art\titlecard\ugz_title_card_pic.bin"
+UGZ_Title_Pic_Mappings:
+#import "mappings\titlecard\ugz_title_card_pic_mappings.bin"

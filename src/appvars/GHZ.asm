@@ -14,6 +14,12 @@ Layout_GHZ3:
 Art_GHZ_Level_Tiles:		;$91DC
 #import "art\level\ghz\art_ghz_level_tiles.bin"
 
+Art_GHZ_Moving_Platform:
+#import "art/level/ghz/art_ghz_moving_platform.bin"
+
+Art_ChaosEmerald_Grey:		;$B960
+#import "art\items\art_ucmp_grey_emerald.bin"
+
 Art_GHZ_Boss:
 #import "art\boss\art_ucmp_ghz_boss.bin"
 

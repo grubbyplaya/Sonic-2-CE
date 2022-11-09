@@ -30,8 +30,14 @@ Art_ALZ_Unknown:			;BB91
 Art_ALZ_Unknown2:			;BBE1
 #import "art\level\alz\art_alz_unknown2.bin"
 
+Art_ALZ_Bubble:			;B800
+#import "art/level/alz/art_alz_bubble.bin"
+
 Art_ALZ_Big_Bubble:			;BD51
 #import "art\level\alz\art_alz_big_bubble.bin"
+
+Art_ChaosEmerald_Pink:		;$BAE0
+#import "art\items\art_ucmp_pink_emerald.bin"
 
 Art_ALZ_Boss:
 #import "art\boss\art_ucmp_alz_boss.bin"
@@ -50,3 +56,9 @@ Palette_ALZ2:
 
 DemoControlSequence_ALZ:		;$B072
 #import "demo\demo_control_sequence_alz.bin"
+
+ALZ_Title_Pic_Art:
+#import "art\titlecard\alz_title_card_pic.bin"
+
+ALZ_Title_Pic_Mappings:
+#import "mappings\titlecard\alz_title_card_pic_mappings.bin"

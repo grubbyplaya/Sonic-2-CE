@@ -13,8 +13,14 @@ Art_SHZ_Log:
 Art_SHZ_Rock:
 #import "art\level\shz\art_shz_rock.bin"
 
+Art_SHZ_Leaves:		;BC50
+#import "art\level\shz\art_shz_leaves.bin"
+
 Art_SHZ_Moving_Platform:
 #import "art/level/shz/art_shz_moving_platform.bin"
+
+Art_ChaosEmerald_Yellow:		;$BBE0
+#import "art\items\art_ucmp_yellow_emerald.bin"
 
 Art_SHZ_Boss:
 #import "art\boss\art_ucmp_shz_boss.bin"
@@ -50,3 +56,9 @@ Palette_SHZ2:
 
 DemoControlSequence_SHZ:
 #import "demo\demo_control_sequence_shz.bin"
+
+SHZ_Title_Pic_Art:
+#import "art\titlecard\shz_title_card_pic.bin"
+
+SHZ_Title_Pic_Mappings:
+#import "mappings\titlecard\shz_title_card_pic_mappings.bin"

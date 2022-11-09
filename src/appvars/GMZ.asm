@@ -10,6 +10,9 @@ Art_GMZ_Spikes:			;BCB1
 Art_GMZ_Boss:
 #import "art\boss\art_ucmp_gmz_boss.bin"
 
+Art_ChaosEmerald_Red:		;$BB60
+#import "art\items\art_ucmp_red_emerald.bin"
+
 Layout_GMZ1:
 #import "layout\gmz\layout_gmz1_2.2.bin"
 
@@ -28,3 +31,9 @@ Palette_GMZ_Sonic:
 
 Palette_GMZ:
 #import "palettes\palette_gmz.bin"
+
+GMZ_Title_Pic_Art:
+#import "art\titlecard\gmz_title_card_pic.bin"
+
+GMZ_Title_Pic_Mappings:
+#import "mappings\titlecard\gmz_title_card_pic_mappings.bin"

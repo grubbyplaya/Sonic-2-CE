@@ -7,9 +7,6 @@ Bank29:
 
 #include "object_logic\bank30_logic.asm"
 
-DemoControlSequence_SEZ:
-#import "demo\demo_control_sequence_sez.bin"
-
 #include "object_animations.asm"
 
 #include "object_logic\bank31_logic.asm"
