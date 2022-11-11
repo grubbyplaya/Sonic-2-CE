@@ -9,4 +9,3 @@ spasm64 -E appvars/UGZ.asm appvars/UGZ.8xv
 spasm64 -E appvars/END.asm appvars/END.8xv
 spasm64 -E appvars/MISC1.asm appvars/MISC1.8xv
 spasm64 -E appvars/MISC2.asm appvars/MISC2.8xv
-spasm64 -E appvars/LVLPIC.asm appvars/LVLPIC.8xv

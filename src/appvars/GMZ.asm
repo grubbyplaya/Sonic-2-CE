@@ -37,3 +37,6 @@ GMZ_Title_Pic_Art:
 
 GMZ_Title_Pic_Mappings:
 #import "mappings\titlecard\gmz_title_card_pic_mappings.bin"
+
+Palette_TitleCard_GMZ:
+#import "palettes\palette_titlecard_gmz.bin"

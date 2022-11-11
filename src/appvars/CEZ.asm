@@ -34,7 +34,12 @@ CEZ_Title_Pic_Art:
 
 CEZ_Title_Pic_Mappings:
 #import "mappings\titlecard\cez_title_card_pic_mappings.bin"
+
+Palette_TitleCard_CEZ:
+#import "palettes\palette_titlecard_cez.bin"
+
 ;Act 3 data
+
 Art_CEZ3_Level_Tiles:		;AE7E
 #import "art\level\cez\art_cez3_level_tiles.bin"
 

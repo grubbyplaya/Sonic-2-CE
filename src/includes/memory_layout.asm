@@ -43,9 +43,6 @@
 ;----------------------------------------------------------
 
 	CurrentMetaTileAddr	dw
-	
-    
-    SOUND_DRIVER_START: .dw
 .ende
 
 
@@ -110,7 +107,7 @@
 
 #define  Player_UnderwaterFlag                 $D467       ; byte
 #define  Player_AirTimerLo                     $D468       ; byte
-#define  Player_AirTimerHi     				$D469		; byte - incremented when lo byte = $78 (~2 seconds)
+#define  Player_AirTimerHi                     $D469       ; byte - incremented when lo byte = $78 (~2 seconds)
 
 #define  Player_KillTrigger                    $D49F       ; byte - causes player to die, regardless of ring count.
 

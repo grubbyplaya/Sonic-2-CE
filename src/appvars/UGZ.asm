@@ -37,5 +37,9 @@ Palette_UGZ_Sonic:
 
 UGZ_Title_Pic_Art:
 #import "art\titlecard\ugz_title_card_pic.bin"
+
 UGZ_Title_Pic_Mappings:
 #import "mappings\titlecard\ugz_title_card_pic_mappings.bin"
+
+Palette_TitleCard_GHZ:
+#import "palettes\palette_titlecard_ghz.bin"

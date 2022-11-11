@@ -62,3 +62,6 @@ ALZ_Title_Pic_Art:
 
 ALZ_Title_Pic_Mappings:
 #import "mappings\titlecard\alz_title_card_pic_mappings.bin"
+
+Palette_TitleCard_ALZ:
+#import "palettes\palette_titlecard_alz.bin"

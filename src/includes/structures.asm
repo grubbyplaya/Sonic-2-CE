@@ -1,8 +1,4 @@
-/*
-    These structures are used by the level loading routines to
-    load the locate the compressed art for each zone.
-*/
-
+;These structures are used by the level loading routines to;load the locate the compressed art for each zone.
 
 .struct TilesetHeader
     BankNum            db        ;ROM bank to load tiles from

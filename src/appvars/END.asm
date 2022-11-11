@@ -22,3 +22,16 @@ DATA_B29_B522:
 
 DATA_B29_B542:
 #import "unknown/bank29_B542.bin"
+
+Palette_Ending_Sequence:
+#import "palettes\palette_ending_1.bin"
+#import "palettes\palette_ending_2.bin"
+#import "palettes\palette_ending_3.bin"
+#import "palettes\palette_ending_4.bin"
+#import "palettes\palette_ending_5.bin"
+#import "palettes\palette_ending_6.bin"
+#import "palettes\palette_ending_7.bin"
+#import "palettes\palette_ending_8.bin"
+
+Palette_Ending_Sonic:
+#import "palettes\palette_ending_sonic.bin"

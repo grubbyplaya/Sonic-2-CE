@@ -62,3 +62,6 @@ SHZ_Title_Pic_Art:
 
 SHZ_Title_Pic_Mappings:
 #import "mappings\titlecard\shz_title_card_pic_mappings.bin"
+
+Palette_TitleCard_SHZ:
+#import "palettes\palette_titlecard_shz.bin"

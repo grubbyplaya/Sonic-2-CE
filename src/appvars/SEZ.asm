@@ -47,3 +47,6 @@ SEZ_Title_Pic_Art:
 
 SEZ_Title_Pic_Mappings:
 #import "mappings\titlecard\sez_title_card_pic_mappings.bin"
+
+Palette_TitleCard_SEZ:
+#import "palettes\palette_titlecard_sez.bin"
