@@ -65,3 +65,15 @@ SHZ_Title_Pic_Mappings:
 
 Palette_TitleCard_SHZ:
 #import "palettes\palette_titlecard_shz.bin"
+
+Data_ObjectLayout_SHZ:    ;$814F
+.dl Data_ObjectLayout_SHZ1
+.dl Data_ObjectLayout_SHZ2
+.dl Data_ObjectLayout_SHZ3
+
+Data_ObjectLayout_SHZ1:    ;$848E
+#import "layout/shz/object_layout_shz1.bin"
+Data_ObjectLayout_SHZ2:    ;$84E9
+#import "layout/shz/object_layout_shz2.bin"
+Data_ObjectLayout_SHZ3:    ;$8568
+#import "layout/shz/object_layout_shz3.bin"

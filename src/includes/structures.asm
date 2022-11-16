@@ -1,150 +1,151 @@
-;These structures are used by the level loading routines to;load the locate the compressed art for each zone.
+;These structures are used by the level loading routines to
+;load the locate the compressed art for each zone.
 
-.struct TilesetHeader
-    BankNum            db        ;ROM bank to load tiles from
-    VRAMAddress        dw        ;Address to copy tiles to
-    SourceAddress    dw
-    Entries            dw        ;pointer to the chain of tileset entries
-.endst
+#macro TilesetHeader
+	call BankNum		;ROM bank to load tiles from
+	call VRAMAddress		;Address to copy tiles to
+	call SourceAddress
+	call Entries		;pointer to the chain of tileset entries
+#endmacro
 
-.struct TilesetEntry
-    BankNum            db        ;ROM Bank to load from. Bit 7 is the indexed tiles flag that is passed to the LoadTiles routine.
-    VRAMAddress        dw        ;Address to copy tiles to
-    SourceAddress    dw
-.endst
+#macro TilesetEntry
+	call BankNum		;ROM Bank to load from. Bit 7 is the indexed tiles flag that is passed to the LoadTiles routine.
+	call VRAMAddress		;Address to copy tiles to
+	call SourceAddress
+#endmacro
 
-/*
-    Used by the sprite loading routine at $10BF to load the player
-    sprites into VRAM at $0000.
-*/
-.struct SpriteDef
-    BankNum            db
-    SourceAddress    dw
-    LineCount        db        ;LineCount = TileCount/2 (two tiles are copied for each line).
-.endst
+
+;Used by the sprite loading routine at $10BF to load the player
+;sprites into VRAM at $0000.
+
+#macro SpriteDef
+	call BankNum	
+	call SourceAddress
+	call LineCount		;LineCount = TileCount/2 (two tiles are copied for each line).
+#endmacro
 
 
 ; =============================================================================
 ;  LEVEL STRUCTURE & FLAGS
 ; -----------------------------------------------------------------------------
-.struct LevelDescriptor
-    ViewportFlags   db
-    ix01            db
-    MetaTileX       db  ; x-index of metatile (see: Engine_Mappings_GetBlockXY)
-    MetaTileY       db  ; y-index of metatile (see: Engine_Mappings_GetBlockXY)
-    MetaTileBank    db
-    LayoutBank      db
-    MetaTilePtr     dw
-    LayoutPtr       dw
-    StrideTable     dw
-    WidthNeg        dw
-    Width           dw
-    DataOffset      dw
-.endst
+#macro LevelDescriptor
+	call  ViewportFlags
+	call ix01
+	call MetaTileX	; x-index of metatile (see: Engine_Mappings_GetBlockXY)
+	call MetaTileY	; y-index of metatile (see: Engine_Mappings_GetBlockXY)
+	call MetaTileBank
+	call LayoutBank
+	call MetaTilePtr
+	call LayoutPtr
+	call StrideTable
+	call WidthNeg
+	call Width
+	call DataOffset
+#endmacro
 
 ; Viewport Flag bits
-#define LVP_SCROLL_UP              0
-#define LVP_SCROLL_DOWN            1
-#define LVP_SCROLL_LEFT            2
-#define LVP_SCROLL_RIGHT           3
-#define LVP_ROW_UPDATE_PENDING     4
-#define LVP_COL_UPDATE_PENDING     5
-#define LVP_CAMERA_UPDATE_RQD      6
-#define LVP_CAMERA_LOCKED          7
+#define LVP_SCROLL_UP			  0
+#define LVP_SCROLL_DOWN			1
+#define LVP_SCROLL_LEFT			2
+#define LVP_SCROLL_RIGHT		   3
+#define LVP_ROW_UPDATE_PENDING	 4
+#define LVP_COL_UPDATE_PENDING	 5
+#define LVP_CAMERA_UPDATE_RQD	  6
+#define LVP_CAMERA_LOCKED		  7
 
 
 ; =============================================================================
 ;  OBJECT STRUCTURE & FLAGS
 ; -----------------------------------------------------------------------------
-.struct Object
-    ObjID           db      ; $00 - object number
-    State           db      ; $01
-    StateNext       db      ; $02
-    Flags03         db      ; $03
-    Flags04         db      ; $04
-    SpriteCount     db      ; $05
-    AnimFrame       db      ; $06
-    FrameCounter    db      ; $07
-    RightFacingIdx  db      ; $08
-    LeftFacingIdx   db      ; $09
-    ix0A            db      ; movement flags?
-    ix0B            db
-    LogicPtr        dw      ; $0C - Pointer to logic subroutine.
-    LogicSeqPtr     dw      ; $0E - Pointer to logic sequence data
-    SubPixelX       db      ; $10 - fractional part of xpos
-    X               dw      ; $11 - x pos in level
-    SubPixelY       db      ; $13 - fractional part of ypos
-    Y               dw      ; $14 - y pos in level
-    VelX            dw      ; $16 - x velocity (Q8.8)
-    VelY            dw      ; $18 - y velocity (Q8.8)
-    ScreenX         dw      ; $1A - x offset on screen
-    ScreenY         dw      ; $1C - y offset on screen
-    ix1E            db
-    ix1F            db
-    CollidingObj    db      ; $20 - index of colliding object
-    SprColFlags     db      ; $21 - background collision flags
-    BgColFlags      db      ; $22 - sprite collision flags
-    ix23            db      ; $23 - bg + obj collision flags?
-    ix24            db
-    ix25            db
-    ix26            db
-    ix27            db
-    SprMappgPtr     dw      ; $28 - pointer to sprite mapping data for current anim frame
-    SprOffsets      dw      ; $2A - pointer to sprite SAT offsets (2 words in object anim data)
-    Width           db      ; $2C
-    Height          db      ; $2D
-    FlashCounter    db      ; $2E - counter used to toggle sprite visibility
-    ix2F            db
-    D530            db
-    D531            db
-    PowerUp         db      ; $32 - current power-up 
-    D533            db
-    D534            db
-    D535            db
-    D536            db
-    D537            db
-    D538            db
-    D539            db
-    InitialX        dw      ; $3A - initial x coordinate
-    InitialY        dw      ; $3C - initial y coordinate
-    ActvObjIdx      db      ; $3E - index of object within active objects array
-    ix3F            db
-.endst
+#macro Object
+	call ObjID			; $00 - object number
+	call State			; $01
+	call StateNext		; $02
+	call Flags03		; $03
+	call Flags04		; $04
+	call SpriteCount		; $05
+	call AnimFrame	   	; $06
+	call FrameCounter	; $07
+	call RightFacingIdx  	; $08
+	call LeftFacingIdx  	; $09
+	call ix0A		  	; movement flags?
+	call ix0B	
+	call LogicPtr	 	; $0C - Pointer to logic subroutine.
+	call LogicSeqPtr		; $0E - Pointer to logic sequence data
+	call SubPixelX		; $10 - fractional part of xpos
+	call X			; $11 - x pos in level
+	call SubPixelY	   	; $13 - fractional part of ypos
+	call Y			; $14 - y pos in level
+	call VelX		  	; $16 - x velocity (Q8.8)
+	call VelY			; $18 - y velocity (Q8.8)
+	call ScreenX		; $1A - x offset on screen
+	call ScreenY		; $1C - y offset on screen
+	call ix1E	
+	call ix1F
+	call CollidingObj	; $20 - index of colliding object
+	call SprColFlags	 	; $21 - background collision flags
+	call BgColFlags	  	; $22 - sprite collision flags
+	call ix23			; $23 - bg + obj collision flags?
+	call ix24	
+	call ix25	
+	call ix26	
+	call ix27	
+	call SprMappgPtr		; $28 - pointer to sprite mapping data for current anim frame
+	call SprOffsets	  	; $2A - pointer to sprite SAT offsets (2 words in object anim data)
+	call Width		   	; $2C
+	call Height		; $2D
+	call FlashCounter	; $2E - counter used to toggle sprite visibility
+	call ix2F	
+	call D530	
+	call D531	
+	call PowerUp		; $32 - current power-up 
+	call D533	
+	call D534	
+	call D535	
+	call D536	
+	call D537	
+	call D538	
+	call D539	
+	call InitialX	  	; $3A - initial x coordinate
+	call InitialY	 	; $3C - initial y coordinate
+	call ActvObjIdx	  	; $3E - index of object within active objects array
+	call ix3F	
+#endmacro
 
 
 ; ---------------------------------------------------------
 ;  Object Flag Byte F3 bits
 ; ---------------------------------------------------------
-#define OBJ_F3_IN_AIR      0
-#define OBJ_F3_BIT1        1
-#define OBJ_F3_BIT2        2
-#define OBJ_F3_BIT3        3
-#define OBJ_F3_BIT4        4
-#define OBJ_F3_BIT5        5
-#define OBJ_F3_BIT6        6
-#define OBJ_F3_BIT7        7
+#define OBJ_F3_IN_AIR	  0
+#define OBJ_F3_BIT1		1
+#define OBJ_F3_BIT2		2
+#define OBJ_F3_BIT3		3
+#define OBJ_F3_BIT4		4
+#define OBJ_F3_BIT5		5
+#define OBJ_F3_BIT6		6
+#define OBJ_F3_BIT7		7
 
 ; ---------------------------------------------------------
 ;  Object Flag Byte F4 bits
 ; ---------------------------------------------------------
-#define OBJ_F4_BIT0        0
-#define OBJ_F4_BIT1        1
-#define OBJ_F4_BIT2        2
-#define OBJ_F4_BIT3        3
+#define OBJ_F4_BIT0		0
+#define OBJ_F4_BIT1		1
+#define OBJ_F4_BIT2		2
+#define OBJ_F4_BIT3		3
 #define OBJ_F4_FACING_LEFT 4
-#define OBJ_F4_FLASHING    5
-#define OBJ_F4_BIT6        6
-#define OBJ_F4_VISIBLE     7
+#define OBJ_F4_FLASHING	5
+#define OBJ_F4_BIT6		6
+#define OBJ_F4_VISIBLE	 7
 
 ; ---------------------------------------------------------
 ;  Collision flags (SprColFlags)
 ; ---------------------------------------------------------
-#define OBJ_COL_TOP        0
-#define OBJ_COL_BOTTOM     1
-#define OBJ_COL_RIGHT      2
-#define OBJ_COL_LEFT       3
+#define OBJ_COL_TOP		0
+#define OBJ_COL_BOTTOM	 1
+#define OBJ_COL_RIGHT	  2
+#define OBJ_COL_LEFT	   3
 
 ; ---------------------------------------------------------
 ;  Object Flag Byte ix23 bits
 ; ---------------------------------------------------------
-#define OBJ_F23_BIT0       0
+#define OBJ_F23_BIT0	   0

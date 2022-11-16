@@ -43,3 +43,15 @@ UGZ_Title_Pic_Mappings:
 
 Palette_TitleCard_GHZ:
 #import "palettes\palette_titlecard_ghz.bin"
+
+Data_ObjectLayout_UGZ:    ;$8149
+.dl Data_ObjectLayout_UGZ1
+.dl Data_ObjectLayout_UGZ2 
+.dl Data_ObjectLayout_UGZ3 
+
+Data_ObjectLayout_UGZ1:    ;$8173
+#import "layout/ugz/object_layout_ugz1.bin"
+Data_ObjectLayout_UGZ2:    ;$82C1
+#import "layout/ugz/object_layout_ugz2.bin"
+Data_ObjectLayout_UGZ3:    ;$840F
+#import "layout/ugz/object_layout_ugz3.bin"

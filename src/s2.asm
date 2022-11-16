@@ -9,6 +9,9 @@
 #include	"includes/level_values.asm"
 #include	"includes/macros.asm"
 #include	"includes/memory_layout.asm"
+#include	"object_layout_routines.asm"
+#include	"object_logic/bank30_logic.asm"
+#include	"object_animations.asm"
 
 
 ;=====================================================================
@@ -30,51 +33,51 @@
 #endif
 ;=====================================================================
 
-#define LevelDataStart		 $C001
+#define LevelDataStart			$C001
 
 #define BackgroundXScroll		$D172
 #define BackgroundYScroll		$D173
 
 #define CameraOffsetX			$D288
-#define CameraOffsetY			$D289	;used for moving the camera when looking up or down
+#define CameraOffsetY			$D289		;used for moving the camera when looking up or down
 
-#define Score					$D29C	;score stored in 3-byte BCD
+#define Score				$D29C		;score stored in 3-byte BCD
 
-#define LevelTimerTrigger		$D2B8	;level timer update trigger
-#define LevelTimer			 $D2B9
+#define LevelTimerTrigger		$D2B8		;level timer update trigger
+#define LevelTimer			$D2B9
 
 #define IdleTimer				$D3B4
 
 ;Variables used by the continue screen
-#define ContinueScreen_Count	 $D2C4
-#define ContinueScreen_Timer	 $D2C3	;when this fires the countdown is decreased
+#define ContinueScreen_Count	 	$D2C4
+#define ContinueScreen_Timer	 	$D2C3		;when this fires the countdown is decreased
 
 ;Variables used by demo levels
-#define ControlByte			$D2D2	;holds a pointer to the controller byte to be copied into Engine_InputFlags
-#define DemoNumber			 $D2D7
-#define DemoBank				 $D2D8	;holds the bank number that $D2D2 points into. This should be paged in before dereferencing the pointer.
-#define NextControlByte		$D2D9	;holds a pointer to the next controller byte to be copied into $D2D2
+#define ControlByte			$D2D2		;holds a pointer to the controller byte to be copied into Engine_InputFlags
+#define DemoNumber			$D2D7
+#define DemoBank				$D2D8		;holds the bank number that $D2D2 points into. This should be paged in before dereferencing the pointer.
+#define NextControlByte			$D2D9		;holds a pointer to the next controller byte to be copied into $D2D2
 
 
 ;Variables used by palette control/update routines
-#define PaletteFadeTime		$D2C8	;TODO: Check this one
-#define BgPaletteControl		 $D4E6	;Triggers background palette fades (bit 6 = to black, bit 7 = to colour).
-#define BgPaletteIndex		 $D4E7	;Current background palette (index into array of palettes)
-#define FgPaletteControl		 $D4E8	;Triggers foreground palette fades (bit 6 = to black, bit 7 = to colour).
-#define FgPaletteIndex		 $D4E9	;Current foreground palette (index into array of palettes)
+#define PaletteFadeTime		$D2C8		;TODO: Check this one
+#define BgPaletteControl	$D400E6	;Triggers background palette fades (bit 6 = to black, bit 7 = to colour).
+#define BgPaletteIndex		$D400E7	;Current background palette (index into array of palettes)
+#define FgPaletteControl	$D400E8	;Triggers foreground palette fades (bit 6 = to black, bit 7 = to colour).
+#define FgPaletteIndex		$D400E9	;Current foreground palette (index into array of palettes)
 
 ;VDP Values
 #define ScreenMap				$3800	;location of the screen map (name table)
 #define SAT					$3F00	;location of the Sprite Attribute Table
-#define VDPRegister0			 $D11E	;copies of the VDP registers stored in RAM
-#define VDPRegister1			 $D11F
-#define VDPRegister2			 $D120
-#define VDPRegister3			 $D121
-#define VDPRegister4			 $D122
-#define VDPRegister5			 $D123
-#define VDPRegister6			 $D124
+#define VDPRegister0			$D11E	;copies of the VDP registers stored in RAM
+#define VDPRegister1			$D11F
+#define VDPRegister2			$D120
+#define VDPRegister3			$D121
+#define VDPRegister4			$D122
+#define VDPRegister5			$D123
+#define VDPRegister6			$D124
 
-#define WorkingCRAM			$D4C6	;copy of Colour RAM maintained in work RAM.
+#define WorkingCRAM			$D40C60	;copy of Colour RAM maintained in work RAM.
 
 #define LastLevel				$07
 #define LastBankNumber		 1 << 5 -1	 ; must be 2^n-1 since it is used in AND ops
@@ -139,6 +142,8 @@ _START:
 	jp	Engine_Initialise
 
 
+
+
 ; =============================================================================
 ; Engine_Interrupt()
 ; -----------------------------------------------------------------------------
@@ -201,7 +206,7 @@ Engine_ErrorTrap:		;$0073
 	call	VDP_ClearScreen
 	ld	a, $01
 	ld	(VDP_DefaultTileAttribs), a
-	ld	hl, $3A4C		 ;scribble to this vram address
+	ld	hl, $D43A4C		 ;scribble to this vram address
 	ld	de, _error_msg
 	ld	bc, $0005
 	call	VDP_DrawText
@@ -362,7 +367,6 @@ LevelSelectCheck:
 	ret	 nz
 	ld	(LevelSelectTrg), a
 	ret
-
 
 ; =============================================================================
 ;	Engine_HandleVBlank()
@@ -619,7 +623,7 @@ VDP_ResetPalette_DisableLineInterrupt:	;$5B2
 
 	ld	(Palette_UpdateTrig), a
 
- pop	 hl
+ 	pop	 hl
 	pop	 af
 	ei
 	ret
@@ -1412,7 +1416,7 @@ LABEL_FB9:
 	dec	 bc
 	ld	a, b
 	or	c
-	jr	nz, - LABEL_FB9
+	jr	nz, LABEL_FB9
 	
 	ld	bc, $04B0
 	call	LABEL_107C
@@ -1424,7 +1428,7 @@ LABEL_FB9:
 	dec	 bc	
 	ld	a, b
 	or	c
-	jr	nz, - LABEL_FB9
+	jr	nz, LABEL_FB9
 
 	ret	
 
@@ -1998,7 +2002,7 @@ Engine_UpdateObjectHPOS:		;$1896
 	exx
 	
 	; update the next sprite
-	djnz - Engine_UpdateObjectHPOS
+	djnz Engine_UpdateObjectHPOS
 	
 	; store the h-pos entry pointer
 	ld	(Engine_UpdateSpriteAttribs_hpos_ptr), iy
@@ -10885,14 +10889,14 @@ Engine_CheckCollision_UpdateObjectFlags:	;$68E7
 
 	; get the object's collision axis flags
 	ld	a, (ix + Object.SprColFlags)
-	and	 %00001111
+	and	$0F
 	ld	b, a
 	
 	; invert the collision flags
-	and	 %00000011
-	ld	c, %00001100
+	and	$03
+	ld	c, $0C
 	jr	z, +_
-	ld	c, %00000011
+	ld	c, $03
 	ld	a, b
 	xor	 c
 	
@@ -10904,7 +10908,7 @@ Engine_CheckCollision_UpdateObjectFlags:	;$68E7
 	rlca	 
 	ld	b, a
 	ld	a, (Player.SprColFlags)
-	and	 %00001111
+	and	$0F
 	or	b
 	ld	(Player.SprColFlags), a
 	ret	
@@ -10912,7 +10916,7 @@ Engine_CheckCollision_UpdateObjectFlags:	;$68E7
 
 Engine_CheckCollision_Return:		 ;$692F
 	ld	a, (ix + Object.SprColFlags)
-	and	 %11110000
+	and	$F0
 	ld	(ix + Object.SprColFlags), a
 	ret	
 
@@ -13432,9 +13436,9 @@ Engine_ClearVRAM:		 ; $77F3
 	call	VDP_SetMode2Reg_DisplayOff
 	
 	; prep the counter & set the VRAM address pointer
-	ld	hl, $0000
-	ld	de, $0000
-	ld	bc, $0400
+	ld	hl, $D40000
+	ld	de, $D40000
+	ld	bc, $D40400
 	call	VDP_SetAddress
 
 	; write 0s to VRAM
@@ -13466,7 +13470,7 @@ Engine_ClearVRAM:		 ; $77F3
 Engine_ClearPaletteRAM:	 ; $782D
 	di
 	;write to VRAM at address $C000
-	ld	hl, $C000
+	ld	hl, $D4C000
 	;write $0 to VRAM
 	ld	de, $0000
 	;loop 32 times
@@ -13481,9 +13485,9 @@ Engine_ClearPaletteRAM:	 ; $782D
 ;***************************************************************************/
 #define PatternLoadCue	 $D3AB	 ;PLC index
 #define PLC_BankNumber	 $D3AC	 ;Bank number to load tile data from
-#define PLC_VRAMAddr		 $D3B0	 ;Destination VRAM address
+#define PLC_VRAMAddr	 $D43B00	 ;Destination VRAM address
 #define PLC_SourceAddr	 $D3AE	 ;Source ROM address (in bank 2 - i.e. >$8000)
-#define PLC_ByteCount		$D3AD	 ;Number of bytes to copy
+#define PLC_ByteCount	 $D3AD	 ;Number of bytes to copy
 #define PLC_Descriptor	 $D3B2	 ;pointer to current PLC descriptor
 
 
@@ -13522,11 +13526,11 @@ Engine_HandlePLC:		 ;$783B
 	jr	c, +_
 	ld	a, $04					;copy 4 bitplanes
 	ld	b, a
- ld	c, $20					;do this 32 times
+	ld	c, $20					;do this 32 times
 	ld	a, (hl)					;get a byte from the source...
-	out	 ($BE), a				;...and copy to VRAM.
-	inc	 hl
-	dec	 c
+	out	($BE), a				;...and copy to VRAM.
+	inc	hl
+	dec	c
 	jp	nz, Engine_HandlePLC
 	djnz	Engine_HandlePLC
 
@@ -14022,7 +14026,7 @@ UpdateCyclingPalette_Lava:		;$7DA7
 	ld	hl, DATA_B30_AF41
 #endif
 	add	 hl, de
-	ld	de, $D4D3	;update 3 colours in CRAM
+	ld	de, $D4C0D3	;update 3 colours in CRAM
 	ld	bc, $0003
 	ldir	 
 	ld	a, $FF
@@ -14072,7 +14076,7 @@ UpdateCyclingPalette_Conveyor:		;$7E0B
 	add	 a, (iy+$02)
 	ld	e, a
 	ld	d, $00
-	ld	hl, DATA_B30_AF5C
+	ld	hl, Alt_Palette_GMZ_Conveyor
 	add	 hl, de
 	ld	de, $D4D3
 	ld	bc, $0003

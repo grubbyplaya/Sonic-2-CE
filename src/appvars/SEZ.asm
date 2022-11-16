@@ -50,3 +50,15 @@ SEZ_Title_Pic_Mappings:
 
 Palette_TitleCard_SEZ:
 #import "palettes\palette_titlecard_sez.bin"
+
+Data_ObjectLayout_SEZ:    ;$8167
+.dl Data_ObjectLayout_SEZ1 
+.dl Data_ObjectLayout_SEZ2 
+.dl Data_ObjectLayout_SEZ3 
+
+Data_ObjectLayout_SEZ1:    ;$8B24
+#import "layout/sez/object_layout_sez1.bin"
+Data_ObjectLayout_SEZ2:    ;$8BE2
+#import "layout/sez/object_layout_sez2.bin"
+Data_ObjectLayout_SEZ3:    ;$8C7C
+#import "layout/sez/object_layout_sez3.bin"

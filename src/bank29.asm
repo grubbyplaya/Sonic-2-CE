@@ -28,9 +28,7 @@ Art_Rings_CEZ:
 DATA_B30_9841:
 #include "collision_data.asm"
 
-
 #include "cycling_palette_data.asm"
-
 
 LABEL_B29_B400:				;push the last 16 sprites off of the screen
 	ld      b, $10			;by setting the VPOS attribute

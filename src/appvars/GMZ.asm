@@ -40,3 +40,14 @@ GMZ_Title_Pic_Mappings:
 
 Palette_TitleCard_GMZ:
 #import "palettes\palette_titlecard_gmz.bin"
+Data_ObjectLayout_GMZ:    ;$8161
+.dl Data_ObjectLayout_GMZ1 
+.dl Data_ObjectLayout_GMZ2 
+.dl Data_ObjectLayout_GMZ3 
+
+Data_ObjectLayout_GMZ1:    ;$8983
+#import "layout/gmz/object_layout_gmz1.bin"
+Data_ObjectLayout_GMZ2:    ;$8A4A
+#import "layout/gmz/object_layout_gmz2.bin"
+Data_ObjectLayout_GMZ3:    ;$8AFF
+#import "layout/gmz/object_layout_gmz3.bin"

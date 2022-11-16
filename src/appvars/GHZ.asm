@@ -1,3 +1,9 @@
+#define	Object_Crab				$23
+#define	Object_Motobug              	$34   ;motobug badnik
+#define	Object_Newtron			$35	;newtron badnik
+#define	Object_Monitor			$10
+#define	Object_Signpost             $18
+
 Mappings32_GHZ:
 #import "mappings\ghz\mappings32_ghz.bin"
 #include "mappings\ghz\mappings32_ghz.asm"
@@ -31,3 +37,16 @@ Palette_GHZ:
 
 DemoControlSequence_GHZ:
 #import "demo\demo_control_sequence_ghz.bin"
+
+Data_ObjectLayout_GHZ:    ;$815B
+.dl Data_ObjectLayout_GHZ1 
+.dl Data_ObjectLayout_GHZ2 
+.dl Data_ObjectLayout_GHZ3 
+
+Data_ObjectLayout_GHZ1:    ;$87F4
+;#import "layout/ghz/object_layout_ghz1.bin"
+#include "layout/ghz/object_layout_ghz1.asm"
+Data_ObjectLayout_GHZ2:    ;$88C4
+#import "layout/ghz/object_layout_ghz2.bin"
+Data_ObjectLayout_GHZ3:    ;$8970
+#import "layout/ghz/object_layout_ghz3.bin"

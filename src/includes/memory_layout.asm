@@ -4,47 +4,31 @@
 ;  This file contains memory address definitions for variables.
 ; -----------------------------------------------------------------------------
 
-.enum $C001
-	LevelLayout			dsb $1000
-;----------------------------------------------------------
-	unk_01				dsb $0129	;//////////////////////
-;----------------------------------------------------------
-    Frame1Page          db
-    Frame2Page          db
-	LevelSelectTrg		db
-;----------------------------------------------------------
-	unk_02				dsb 2		;//////////////////////
-;----------------------------------------------------------
-	FrameCounter		db
-;----------------------------------------------------------
-	unk_03				db			;//////////////////////
-;----------------------------------------------------------
-	PaletteResetTrg		db
-;----------------------------------------------------------
-	unk_04				dsb $2C		;//////////////////////
-;----------------------------------------------------------
-	LevelAttributes		instanceof LevelDescriptor
-;----------------------------------------------------------
-	unk_05				dsb 2		;//////////////////////
+	#define LevelLayout	$1000
+	#define unk_01		$0129
+	call Frame1Page 
+	call Frame2Page
+	call LevelSelectTrg
+	call unk_02
+	call FrameCounter
+	call unk_03
+	call PaletteResetTrg
+	#define unk_04				$2C
+	call LevelAttributes
+	call unk_05
 ;----------------------------------------------------------
 	
 ; =========================================================
 ;  VDP Variables
 ; ---------------------------------------------------------
-	VDP_VScroll			db
-	VDP_HScroll			db
-	VDP_ViewportX		dw
-	VDP_ViewportY		dw
-	VDP_TileColBuffer	dsb	64      ; holds a column of tile indices before copying to the VDP
-	VDP_TileRowBuffer	dsb	72      ; holds a row of tile indices before copying to the VDP
-
-;----------------------------------------------------------
-	unk_06				dsb 58		;//////////////////////
-;----------------------------------------------------------
-
-	CurrentMetaTileAddr	dw
-.ende
-
+	call VDP_VScroll
+	call VDP_HScroll
+	call VDP_ViewportX
+	call VDP_ViewportY
+	call VDP_TileColBuffer    ; holds a column of tile indices before copying to the VDP
+	call VDP_TileRowBuffer    ; holds a row of tile indices before copying to the VDP
+	call unk_06
+	call CurrentMetaTileAddr
 
 #define  Engine_ObjCharCodePtr                 $D110
 
@@ -98,7 +82,7 @@
 
 #define  Engine_UpdateSpriteAttribs_adj_pos    $D393       ; word
 #define  Engine_RingArt_Src                    $D395       ; word - pointer to uncompressed ring art data.
-#define  Engine_RingArt_Dest                   $D397       ; word - vram destination pointer for ring art tiles.
+#define  Engine_RingArt_Dest                   $D40397       ; word - vram destination pointer for ring art tiles.
 
 #define  Player_HurtTrigger                    $D3A8       ; byte - trigger causes player to lose rings or die
 #define  Player_FlashCounter                   $D3A9       ; byte
@@ -125,10 +109,8 @@
 ; ---------------------------------------------------------
 #define  Engine_ObjectSlots                    $D500
 
-.enum Engine_ObjectSlots
-PlayerObj:              .dw
-    Player              instanceof Object
-.ende
+PlayerObj:
+	call    Player
 ; ---------------------------------------------------------
 
 

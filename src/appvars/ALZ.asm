@@ -65,3 +65,15 @@ ALZ_Title_Pic_Mappings:
 
 Palette_TitleCard_ALZ:
 #import "palettes\palette_titlecard_alz.bin"
+
+Data_ObjectLayout_ALZ:    ;$8155
+.dl Data_ObjectLayout_ALZ1 
+.dl Data_ObjectLayout_ALZ2 
+.dl Data_ObjectLayout_ALZ3 
+
+Data_ObjectLayout_ALZ1:    ;$8584
+#import "layout/alz/object_layout_alz1.bin"
+Data_ObjectLayout_ALZ2:    ;$8666
+#import "layout/alz/object_layout_alz2.bin"
+Data_ObjectLayout_ALZ3:    ;$87BD
+#import "layout/alz/object_layout_alz3.bin"

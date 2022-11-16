@@ -38,6 +38,16 @@ CEZ_Title_Pic_Mappings:
 Palette_TitleCard_CEZ:
 #import "palettes\palette_titlecard_cez.bin"
 
+Data_ObjectLayout_CEZ:    ;$816D
+.dl Data_ObjectLayout_CEZ1 
+.dl Data_ObjectLayout_CEZ2 
+.dl Data_ObjectLayout_CEZ3
+
+Data_ObjectLayout_CEZ1:    ;$8C8F
+#import "layout/cez/object_layout_cez1.bin"
+Data_ObjectLayout_CEZ2:    ;$8D20
+#import "layout/cez/object_layout_cez2.bin"
+
 ;Act 3 data
 
 Art_CEZ3_Level_Tiles:		;AE7E
@@ -55,6 +65,9 @@ Mappings32_CEZ3:
 
 Layout_CEZ3:
 #import "layout\cez\layout_cez3.bin"
+
+Data_ObjectLayout_CEZ3: ;$8D8D
+#import "layout/cez/object_layout_cez3.bin"
 
 Palette_CEZ3_Sonic:
 #import "palettes\palette_cez3_sonic.bin"
