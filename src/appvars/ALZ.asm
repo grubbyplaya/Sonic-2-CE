@@ -1,3 +1,6 @@
+LevelName:
+  .db AppVarObj,"Aqua Lake"
+
 Layout_ALZ1:
 #import "layout\alz\layout_alz1.bin"
 

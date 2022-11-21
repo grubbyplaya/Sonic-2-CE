@@ -611,7 +611,6 @@ VDP_ResetPalette_DisableLineInterrupt:	;$5B2
 	;write the 16 colours to VRAM
 	ld	hl, DATA_65A
 
-.REPEAT 16
 	ld	a, (hl)
 	out	 (Ports_VDP_Data), a
 	inc	 hl
@@ -619,7 +618,126 @@ VDP_ResetPalette_DisableLineInterrupt:	;$5B2
 	nop
 	nop
 	nop
-.ENDR
+
+	ld	a, (hl)
+	out	 (Ports_VDP_Data), a
+	inc	 hl
+	nop
+	nop
+	nop
+	nop
+
+	ld	a, (hl)
+	out	 (Ports_VDP_Data), a
+	inc	 hl
+	nop
+	nop
+	nop
+	nop
+
+	ld	a, (hl)
+	out	 (Ports_VDP_Data), a
+	inc	 hl
+	nop
+	nop
+	nop
+	nop
+
+	ld	a, (hl)
+	out	 (Ports_VDP_Data), a
+	inc	 hl
+	nop
+	nop
+	nop
+	nop
+
+	ld	a, (hl)
+	out	 (Ports_VDP_Data), a
+	inc	 hl
+	nop
+	nop
+	nop
+	nop
+
+	ld	a, (hl)
+	out	 (Ports_VDP_Data), a
+	inc	 hl
+	nop
+	nop
+	nop
+	nop
+
+	ld	a, (hl)
+	out	 (Ports_VDP_Data), a
+	inc	 hl
+	nop
+	nop
+	nop
+	nop
+
+	ld	a, (hl)
+	out	 (Ports_VDP_Data), a
+	inc	 hl
+	nop
+	nop
+	nop
+	nop
+
+	ld	a, (hl)
+	out	 (Ports_VDP_Data), a
+	inc	 hl
+	nop
+	nop
+	nop
+	nop
+
+	ld	a, (hl)
+	out	 (Ports_VDP_Data), a
+	inc	 hl
+	nop
+	nop
+	nop
+	nop
+
+	ld	a, (hl)
+	out	 (Ports_VDP_Data), a
+	inc	 hl
+	nop
+	nop
+	nop
+	nop
+
+	ld	a, (hl)
+	out	 (Ports_VDP_Data), a
+	inc	 hl
+	nop
+	nop
+	nop
+	nop
+
+	ld	a, (hl)
+	out	 (Ports_VDP_Data), a
+	inc	 hl
+	nop
+	nop
+	nop
+	nop
+
+	ld	a, (hl)
+	out	 (Ports_VDP_Data), a
+	inc	 hl
+	nop
+	nop
+	nop
+	nop
+
+	ld	a, (hl)
+	out	 (Ports_VDP_Data), a
+	inc	 hl
+	nop
+	nop
+	nop
+	nop
 
 	ld	(Palette_UpdateTrig), a
 
@@ -748,7 +866,7 @@ LABEL_6F3:						;ending credits sequence
 	call	LABEL_B29_B40C
 	ld	a, ($D701)
 	cp	$06
-	jr	nz, $EB
+	jr	nz, $723
 	ret
 
 
@@ -1416,7 +1534,7 @@ LABEL_FB9:
 	dec	 bc
 	ld	a, b
 	or	c
-	jr	nz, LABEL_FB9
+	jr	nz, $119C
 	
 	ld	bc, $04B0
 	call	LABEL_107C
@@ -1428,7 +1546,7 @@ LABEL_FB9:
 	dec	 bc	
 	ld	a, b
 	or	c
-	jr	nz, LABEL_FB9
+	jr	nz, $122F
 
 	ret	
 
@@ -1498,12 +1616,325 @@ Engine_LoadPlayerTiles:	 ;$10BF
 	or	$40
 	out	 ($BF), a
 Engine_LoadPlayerTiles_CopyTiles:	 ;copy 2 tiles (64 bytes) to vram
-.REPEAT 64
 	ld	a, (de)
 	out	 ($BE), a
 	inc	 de
 	nop
-.ENDR
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
+
+	ld	a, (de)
+	out	 ($BE), a
+	inc	 de
+	nop
 
 	dec	 b
 	jp	nz, Engine_LoadPlayerTiles_CopyTiles
@@ -2002,7 +2433,7 @@ Engine_UpdateObjectHPOS:		;$1896
 	exx
 	
 	; update the next sprite
-	djnz Engine_UpdateObjectHPOS
+	djnz $1B21
 	
 	; store the h-pos entry pointer
 	ld	(Engine_UpdateSpriteAttribs_hpos_ptr), iy
@@ -2265,7 +2696,7 @@ LABEL_19D7:
 	add	 hl, bc
 	ld	a, h
 	cp	$3F
-	jr	c, 6
+	jr	c, $1C1C
 	or	a
 	ld	bc, $0700
 	sbc	 hl, bc
@@ -2557,9 +2988,9 @@ ScoreCard_UpdateScore:		;$1C12
 	ld	a, (hl)
 	inc	 hl
 	or	(hl)
-	jr	nz, ScoreCard_UpdateScore
+	jr	nz, $1F10
 
-	ld	hl, $3C2A		 ;vram address
+	ld	hl, $D43C2A		 ;vram address
 	ld	de, ScoreCard_Mappings_Blank	;mapping source
 	ld	bc, $0202		 ;rows,cols
 	call	Engine_LoadCardMappings
@@ -2718,7 +3149,7 @@ LABEL_1D7F:
 	jr	LABEL_1DAF	;FIXME: pointless
 
 
-c:
+LABEL_1DAF:
 	ld	($D11C), hl
 	ld		a, c
 	or	a
@@ -2776,7 +3207,7 @@ c:
 	pop	 de
 	dec	 de
 	pop	 bc
-	djnz   Engine_UpdateObjectHPOS
+	djnz   LABEL_1DAF
 	ret
 
 ;mappings for scorecard digits 0-9
@@ -3281,7 +3712,7 @@ LABEL_20FB:
 	ld	de, ($D100)
 	add	 hl, de
 	ld	($D104), hl
-	djnz	LABEL_20FB
+	djnz	$24B1
 
 	push	ix
 	pop	 hl
@@ -3594,7 +4025,7 @@ LABEL_243C:
 	ld	b, $2A
 	ei
 	halt
-	djnz	PaletteFadeOut
+	djnz	$2849
 	ld	hl, $D292
 	res	 5, (hl)	 ;clear load intro flag
 	res	 7, (hl)	 ;clear load level flag
@@ -3608,7 +4039,7 @@ LABEL_2459_51:
 	ld	b, $2A
 	ei
 	halt	 
-	djnz	PaletteFadeOut
+	djnz	$2865
 	ld	hl, $D292
 	res	 4, (hl)	;clear load title screen flag
 	set	 3, (hl)	;set load demo flag
@@ -3665,7 +4096,7 @@ LABEL_24BE_48:
 	ld	b, $2A
 	ei
 	halt
-	djnz	PaletteFadeOut
+	djnz	$28EE
 	xor	 a
 	ld	($D292), a
 	ld	(GlobalTriggers), a
@@ -3778,7 +4209,7 @@ DemoSequence_LoadLevel:	 ;254A
 	ld	b, $2A		;pause to load the level
 	ei
 	halt
-	djnz	PaletteFadeOut
+	djnz	$2997
 	call	Engine_LoadLevel			;load the level
 	call	Engine_LoadLevelPalette
 	call	Engine_ReleaseCamera			;unlocks camera
@@ -4972,7 +5403,7 @@ LABEL_33B7:
 	jp	nz, Player_SetState_Jumping
 	ld	hl, ($D516)
 	bit	 7, h
-	jr	z, $07
+	jr	z, $3929
 	dec	 hl
 	ld	a, h
 	cpl	
@@ -5128,7 +5559,7 @@ LABEL_34E1:
 	ld	hl, $0080
 	ld	a, ($D51C)
 	cp	$D8
-	jr	c, $08
+	jr	c, $3A70
 	ld	hl, GlobalTriggers
 	set	 3, (hl)
 	ld	hl, $1000
@@ -5298,18 +5729,18 @@ LABEL_359B:
 	ld	(ix+$12), h
 	ld	hl, ($D39A)
 	xor	 a
-	ld	de, $00b0
+	ld	de, $00B0
 	sbc	 hl, de
-	jr	nc, $16
+	jr	nc, $3B98
 	ld	l, (ix+$16)	 ;get horizontal speed
 	ld	h, (ix+$17)
 	ld	de, $0007
 	xor	 a
 	sbc	 hl, de
-	jr	c, $38
+	jr	c, $3BA7
 	ld	(ix+$16), l	 ;set horizontal speed
 	ld	(ix+$17), h
-	jr	$10
+	jr	$3BAF
 	ld	l, (ix+$16)
 	ld	h, (ix+$17)
 	ld	de, $000c
@@ -5337,7 +5768,7 @@ LABEL_3638:
 	ld	d, (ix+$12)
 	xor	 a
 	sbc	 hl, de
-	jr	c, $13
+	jr	c, $3BF6
 	ld	l, (ix+$11)
 	ld	h, (ix+$12)
 	ld	de, $0008
@@ -5432,18 +5863,18 @@ LABEL_36E1:
 	ld	de, $0F3E
 	xor	 a
 	sbc	 hl, de
-	jr	c, $17
+	jr	c, $3CAF
 	ld	a, h
 	or	a
-	jr	nz, $13
+	jr	nz, $3CB3
 	ld	a, l
 	and	 $F8
-	jr	nz, $0E
+	jr	nz, $3CB8
 	ld	hl, ($D514)	 ;vertical pos in level
 	ld	de, $0160
 	xor	 a
 	sbc	 hl, de
-	jr	c, $03
+	jr	c, $3CC5
 	jp	LABEL_3725
 	
 LABEL_3702:
@@ -8896,7 +9327,7 @@ LABEL_5D93:				 ;updates current position in level
 
 	ld	a, l
 	cp	b
-	jr	c, $1E
+	jr	c, $654F
 	
 	ld	a, ($D28B)
 	ld	b, a
@@ -8943,7 +9374,7 @@ LABEL_5D93:				 ;updates current position in level
 
 	ld	a, l
 	cp	b
-	jr	c, $1C
+	jr	c, $65A7
 	ld	a, ($D28E)
 	ld	b, a
 	ld	a, l
@@ -13443,9 +13874,24 @@ Engine_ClearVRAM:		 ; $77F3
 
 	; write 0s to VRAM
 	ld	a, e
-.rept 16
+
 	out	 (Ports_VDP_Data), a
-.endr
+	out	 (Ports_VDP_Data), a
+	out	 (Ports_VDP_Data), a
+	out	 (Ports_VDP_Data), a
+	out	 (Ports_VDP_Data), a
+	out	 (Ports_VDP_Data), a
+	out	 (Ports_VDP_Data), a
+	out	 (Ports_VDP_Data), a
+	out	 (Ports_VDP_Data), a
+	out	 (Ports_VDP_Data), a
+	out	 (Ports_VDP_Data), a
+	out	 (Ports_VDP_Data), a
+	out	 (Ports_VDP_Data), a
+	out	 (Ports_VDP_Data), a
+	out	 (Ports_VDP_Data), a
+	out	 (Ports_VDP_Data), a
+
 	dec	 bc
 	ld	a, b
 	or	c
@@ -13959,7 +14405,7 @@ UpdateCyclingPalette_Rain:		;$7D41
 	ld	a, (iy+$02)
 	inc	 a
 	cp	$03
-	jr	c, $01
+	jr	c, $89F6
 	xor	 a
 	ld	(iy+$02), a
 	add	 a, a
@@ -13989,7 +14435,7 @@ UpdateCyclingPalette_SHZ_Lightning:	 ;$7D73
 	ld	a, $3C
 	ld	bc, $330F
 	bit	 1, (iy+$02)
-	jr	nz, $02
+	jr	nz, $8A2F
 	ld	a, $10
 	ld	bc, $1010
 	ld	hl, $D4D1
@@ -14043,7 +14489,7 @@ UpdateCyclingPalette_Water:	 ;$7DD9
 	ld	a, (iy+$02)
 	inc	 a
 	cp	$03
-	jr	c, $01
+	jr	c, $8A9A
 	xor	 a
 	ld	(iy+$02), a
 	add	 a,a
@@ -14069,7 +14515,7 @@ UpdateCyclingPalette_Conveyor:		;$7E0B
 	ld	a, (iy+$02)
 	inc	 a
 	cp	$03
-	jr	c, $01
+	jr	c, $8AD0
 	xor	 a
 	ld	(iy+$02), a
 	add	 a,a
@@ -14094,7 +14540,7 @@ UpdateCyclingPalette_Unknown2:		;$7E3D
 	ld	a, (iy+$02)
 	inc	 a
 	cp	$0C
-	jr	c, $01
+	jr	c, $8B06
 	xor	 a
 	ld	(iy+$02), a
 	add	 a, a
@@ -14119,7 +14565,7 @@ UpdateCyclingPalette_WallLighting:		;$7E6C
 	ld	a, (iy+$02)
 	inc	 a
 	cp	$06
-	jr	c, $01
+	jr	c, $8B39
 	xor	 a
 	ld	(iy+$02), a
 	ld	e, a
@@ -14143,7 +14589,7 @@ UpdateCyclingPalette_Orb:		 ;$7E97
 	ld	a, (iy+$02)
 	inc	 a
 	cp	$0e
-	jr	c, $01
+	jr	c, $8B67
 	xor	 a
 	ld	(iy+$02), a
 	add	 a, a
@@ -14168,7 +14614,7 @@ UpdateCyclingPalette_Lightning:	 ;$7EC6
 	ld	a, (iy+$02)
 	inc	 a
 	cp	$03
-	jr	c, $01
+	jr	c, $8B9A
 	xor	 a
 	ld	(iy+$02), a
 	add	 a, a
@@ -14267,7 +14713,7 @@ LABEL_7F7E:
 	ld	a, (iy + $02)
 	inc	 a
 	cp	$06
-	jr	c, $01
+	jr	c, $8C69
 	xor	 a
 	ld	(iy + $02), a
 	add	 a, a

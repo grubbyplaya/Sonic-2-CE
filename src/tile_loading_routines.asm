@@ -73,7 +73,7 @@ _LABEL_1AA6_22:
 	ld   (TileCount), hl
 	ld   a, l
 	or   h
-	jr   nz, - _LABEL_1AA6_22
+	jr   nz, _LABEL_1AA6_22
 	ret
 
 ;*************************************************************

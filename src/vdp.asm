@@ -551,9 +551,70 @@ VDP_UpdateSAT:	  ; $1409
 	; copy 64 v-pos attributes to the VDP
 	ld		hl, VDP_WorkingSAT_VPOS	   ;copy 64 VPOS bytes.
 	ld		c, Ports_VDP_Data
-.rept 64
 	outi
-.endr
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
 
 	;set VRAM pointer to SAT + $80
 	ld		a, $80
@@ -565,9 +626,135 @@ VDP_UpdateSAT:	  ; $1409
 	; copy 64 h-pos and char code attributes to the VDP
 	ld		hl, VDP_WorkingSAT_HPOS
 	ld		c, Ports_VDP_Data
-.rept 128
 	outi
-.endr
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+
 
 	ret
 
@@ -584,16 +771,74 @@ VDP_UpdateSAT_Descending:	;$15B7
 	; appear on top).
 	ld		hl, VDP_WorkingSAT_VPOS
 	ld		c, Ports_VDP_Data
-.rept 8
 	outi
-.endr
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
 
 	; copy the remaining 56 sprites in descending order
 	ld		hl, VDP_WorkingSAT_VPOS + $3F
 	ld		c, Ports_VDP_Data			   ; FIXME - opcode not required
-.rept 56
 	outd
-.endr
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
+	outd
 
 	; set VDP address pointer to SAT + $80
 	ld		a, $80
@@ -605,19 +850,252 @@ VDP_UpdateSAT_Descending:	;$15B7
 	; copy hpos and char codes for the 8 player sprites
 	ld		hl, VDP_WorkingSAT_HPOS
 	ld		c, Ports_VDP_Data
-.rept 16
+
 	outi
-.endr
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
+	outi
 
 	; copy the remaining 56 hpos and char codes in descending order
 	ld		hl, VDP_WorkingSAT_HPOS + $7E
 	ld		de, -4
 	ld		c, Ports_VDP_Data
-.REPEAT 56
+
 	outi
 	outi
 	add		hl, de
-.ENDR
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
+
+	outi
+	outi
+	add		hl, de
 
 	ret
 
