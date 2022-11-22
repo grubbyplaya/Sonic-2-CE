@@ -6,5 +6,6 @@ spasm64 -E appvars/SEZ.asm appvars/SEZ.8xv
 spasm64 -E appvars/SHZ.asm appvars/SHZ.8xv
 spasm64 -E appvars/UGZ.asm appvars/UGZ.8xv
 spasm64 -E appvars/END.asm appvars/END.8xv
-spasm64 -E appvars/MISC1.asm appvars/MISC1.8xv
-spasm64 -E appvars/MISC2.asm appvars/MISC2.8xv
+spasm64 -E appvars/MISC.asm appvars/MISC.8xv
+spasm64 -E appvars/MAIN.asm appvars/MAIN.8xv
+spasm64 -E appvars/INTRO.asm appvars/INTRO.8xv

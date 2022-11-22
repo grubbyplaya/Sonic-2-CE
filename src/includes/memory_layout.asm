@@ -6,6 +6,7 @@
 
 	#define LevelLayout	$1000
 	#define unk_01		$0129
+	#define unk_04		$2C
 	call Frame1Page 
 	call Frame2Page
 	call LevelSelectTrg
@@ -13,7 +14,6 @@
 	call FrameCounter
 	call unk_03
 	call PaletteResetTrg
-	#define unk_04				$2C
 	call LevelAttributes
 	call unk_05
 ;----------------------------------------------------------

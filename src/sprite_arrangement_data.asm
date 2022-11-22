@@ -1,12 +1,12 @@
 
 	;Sprite Arrangements -
-		;Two words at each position represent the vertical and horizontal
-		;offsets, relative to the object's X/Y location in the level, at
-		;which to draw each sprite.
+	;Two words at each position represent the vertical and horizontal
+	;offsets, relative to the object's X/Y location in the level, at
+	;which to draw each sprite.
 		
-		;e.g. An object composed of 3x2 sprites might be arranged like 
-		;this (see data at Bank 31, $9dbE which is used for sonic's 
-		;sprites):
+	;e.g. An object composed of 3x2 sprites might be arranged like 
+	;this (see data at Bank 31, $9dbE which is used for sonic's 
+	;sprites):
 		
 		;	 -12   -4   +4
 		;	.----.----.----.

@@ -42,6 +42,9 @@ Art_ALZ_Big_Bubble:			;BD51
 Art_ChaosEmerald_Pink:		;$BAE0
 #import "art\items\art_ucmp_pink_emerald.bin"
 
+Art_Badnik_Lobster:		;$B740
+#import "art\badniks\art_badnik_alz_lobster.bin"
+
 Art_ALZ_Boss:
 #import "art\boss\art_ucmp_alz_boss.bin"
 

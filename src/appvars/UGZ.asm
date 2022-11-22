@@ -10,6 +10,9 @@ Art_Boss_UGZ:				;$A102
 Art_UGZ_Fireball:		;$B6C0
 #import "art\level\ugz\art_ugz_fireball.bin"
 
+Art_Minecart:
+#import "art/misc/art_minecart.bin"
+
 Art_ChaosEmerald_Blue:		;$B9E0
 #import "art\items\art_ucmp_blue_emerald.bin"
 

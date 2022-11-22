@@ -19,6 +19,9 @@ Art_CEZ_Block:		;BE60
 Art_CEZ_Rock:					;BD48
 #import "art\level\cez\art_cez_rock.bin"
 
+Art_Badnik_Fish:		;$BE28
+#import "art\badniks\art_badnik_fish.bin"
+
 Mappings32_CEZ1_2:
 #import "mappings\cez\mappings32_cez1_2.bin"
 #include "mappings\cez\mappings32_cez1_2.asm"

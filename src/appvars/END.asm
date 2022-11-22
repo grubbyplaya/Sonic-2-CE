@@ -1,3 +1,4 @@
+;credits
 Art_Ending_Tiles:
 #import "art/ending/art_ending_tiles.bin"
 
@@ -6,6 +7,12 @@ Art_Ending_Text:			;$B2E2
 
 Art_End:					;$AE42
 #import "art\ending\art_end.bin"
+
+Art_Tails_Running:			;$B002
+#import "art\tails\art_tails_running.bin"
+
+Art_Tails_Skid:				;$B740
+#import "art\tails\art_tails_skid.bin"
 
 Mappings32_Ending:
 #import "mappings/ending/mappings32_ending.bin"
@@ -35,3 +42,25 @@ Palette_Ending_Sequence:
 
 Palette_Ending_Sonic:
 #import "palettes\palette_ending_sonic.bin"
+
+;game over
+
+;tile data for the "GAME OVER" text
+GameOverScreen_Data_GameOverTiles:		;3380
+#import "art\continue_gameover\gameover_screen_tiles.bin"
+
+;tile data for the "CONTINUE" text
+ContinueScreen_Data_ContinueTiles:		;3570
+#import "art\continue_gameover\continue_tiles.bin"
+
+ContinueScreen_Data_NumberTiles:		;375A
+#import "art\continue_gameover\continue_screen_tiles_2.bin"
+
+GameOverScreen_Data_TextMappings:		;3B7E
+#import "mappings\continue_gameover\gameover_screen_text_mappings.bin"
+
+ContinueScreen_Data_TextMappings:		;3BC6
+#import "mappings\continue_gameover\continue_screen_text_mappings.bin"
+
+ContinueScreen_Data_NumberMappings:		;3C0D
+#import "mappings\continue_gameover\continue_screen_number_mappings.bin"

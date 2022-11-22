@@ -152,8 +152,6 @@ VF_Engine_UpdateRingCounterSprites:             ;$30E
     jp  Engine_UpdateRingCounterSprites         ;$30E
 VF_Engine_RemoveBreakableBlock:                 ;$311
     jp  Engine_RemoveBreakableBlock
-VF_Engine_ChangeLevelMusic:
-    jp  Engine_ChangeLevelMusic                 ;$314
 VF_Score_AddBadnikValue:
     jp  Score_AddBadnikValue                    ;$317
 VF_Score_AddBossValue:

@@ -8,13 +8,13 @@
 ;  Out:
 ;    None.
 ; -----------------------------------------------------------------------------
+
 #macro wait_1s
     ld    b, Time_1Second
     ei
     halt
     djnz  - wait_1s
 #endmacro
-
 
 ; =============================================================================
 ;  MACRO: Engine_FillMemory(uint8 value)

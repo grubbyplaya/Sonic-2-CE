@@ -338,7 +338,7 @@ VDP_SetMode2Reg_DisplayOff:
 	ld		a, (hl)
 	; set each of the flags except for the "Display Visible" bit
 	; i.e. leave the display turned off
-	and		VDP_DisplayVisibleBit ~ $FF
+	and		VDP_DisplayVisibleBit = $FF
 	ld		(hl), a
 	
 	out		(Ports_VDP_Control), a
@@ -384,7 +384,7 @@ VDP_EnableFrameInterrupt:
 VDP_DisableFrameInterrupt:	  ; $13AA
 	ld		hl, VDPRegister1
 	ld		a, (hl)
-	and		VDP_FrameInterruptsBit ~ $FF
+	and		VDP_FrameInterruptsBit = $FF
 	ld		(hl), a
 	out		(Ports_VDP_Control), a
 	ld		a, $81

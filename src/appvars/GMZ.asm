@@ -7,6 +7,15 @@ Art_GMZ_Moving_Platform:	;B24F
 Art_GMZ_Spikes:			;BCB1
 #import "art\level\gmz\art_gmz_spikes.bin"
 
+Art_Minecart:
+#import "art/misc/art_minecart.bin"
+
+Art_Badnik_Pig:			
+#import "art/badniks/art_badnik_pig.bin"
+
+Art_Badnik_Burrobot:	;$B9A0
+#import "art\badniks\art_badnik_gmz_burrobot.bin"
+
 Art_GMZ_Boss:
 #import "art\boss\art_ucmp_gmz_boss.bin"
 
