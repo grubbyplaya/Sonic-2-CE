@@ -1,3 +1,8 @@
+AppVarObj	.equ $15	;application variable
+
+GimmickMtZone: 
+.db	AppVarObj, "GMZ", 0 
+
 Art_GMZ_Level_Tiles:		;$A2AC
 #import "art\level\gmz\art_gmz_level_tiles.bin"
 
@@ -43,6 +48,12 @@ Palette_GMZ:
 
 GMZ_Title_Pic_Art:
 #import "art\titlecard\gmz_title_card_pic.bin"
+
+DATA_2B14:	;mappings for "GIMMICK MT."
+#import "mappings/titlecard/titlecard_mappings_2B14.bin"
+
+DATA_2B84:	;unused "MOUNTAIN" mappings
+#import "mappings/titlecard/titlecard_mappings_2B84.bin"
 
 GMZ_Title_Pic_Mappings:
 #import "mappings\titlecard\gmz_title_card_pic_mappings.bin"

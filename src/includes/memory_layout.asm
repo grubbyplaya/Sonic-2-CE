@@ -7,28 +7,27 @@
 	#define LevelLayout	$1000
 	#define unk_01		$0129
 	#define unk_04		$2C
-	call Frame1Page 
-	call Frame2Page
-	call LevelSelectTrg
-	call unk_02
-	call FrameCounter
-	call unk_03
-	call PaletteResetTrg
-	call LevelAttributes
-	call unk_05
+	#define Frame1Page 	0
+	#define Frame2Page	0
+	#define LevelSelectTrg	0
+	#define unk_02		0
+	#define FrameCounter	0
+	#define unk_03		0
+	#define PaletteResetTrg	0
+	#define LevelAttributes	0
+	#define unk_05		0
 ;----------------------------------------------------------
-	
 ; =========================================================
 ;  VDP Variables
-; ---------------------------------------------------------
-	call VDP_VScroll
-	call VDP_HScroll
-	call VDP_ViewportX
-	call VDP_ViewportY
-	call VDP_TileColBuffer    ; holds a column of tile indices before copying to the VDP
-	call VDP_TileRowBuffer    ; holds a row of tile indices before copying to the VDP
-	call unk_06
-	call CurrentMetaTileAddr
+;----------------------------------------------------------
+	#define VDP_VScroll	0
+	#define VDP_HScroll 	0
+	#define VDP_ViewportX	0
+	#define VDP_ViewportY	0
+	#define VDP_TileColBuffer 0    ; holds a column of tile indices before copying to the VDP
+	#define VDP_TileRowBuffer 0    ; holds a row of tile indices before copying to the VDP
+	#define unk_06		0
+	#define CurrentMetaTileAddr 0
 
 #define  Engine_ObjCharCodePtr                 $D110
 

@@ -1,21 +1,21 @@
 Logic_RingSparkle:		;$ABE1
-.dw RingSparkle_State_00
-.dw RingSparkle_State_01
+.dl RingSparkle_State_00
+.dl RingSparkle_State_01
 
 RingSparkle_State_00:	;$ABE5
 .db $01, $00
-	.dw LABEL_B31_ABFD
+	.dl LABEL_B31_ABFD
 .db $FF, $00
 
 RingSparkle_State_01:	;$ABEB:
 .db $04, $01
-	.dw LABEL_B31_AC20
+	.dl LABEL_B31_AC20
 .db $04, $02
-	.dw LABEL_B31_AC20
+	.dl LABEL_B31_AC20
 .db $04, $01
-	.dw LABEL_B31_AC20
+	.dl LABEL_B31_AC20
 .db $04, $02
-	.dw LABEL_B31_AC20
+	.dl LABEL_B31_AC20
 .db $FF, $01
 
 

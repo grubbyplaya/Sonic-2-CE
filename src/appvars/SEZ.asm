@@ -1,3 +1,8 @@
+AppVarObj	.equ $15	;application variable
+
+ScrambledEggZone: 
+.db	AppVarObj, "SEZ", 0 
+
 Layout_SEZ1:
 #import "layout\sez\layout_sez1.bin"
 
@@ -44,6 +49,9 @@ DemoControlSequence_SEZ:
 
 SEZ_Title_Pic_Art:
 #import "art\titlecard\sez_title_card_pic.bin"
+
+DATA_2BF4:	;mappings for "SCRAMBLED EGG"
+#import "mappings/titlecard/titlecard_mappings_2BF4.bin"
 
 SEZ_Title_Pic_Mappings:
 #import "mappings\titlecard\sez_title_card_pic_mappings.bin"

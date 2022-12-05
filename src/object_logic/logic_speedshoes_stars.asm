@@ -3,51 +3,51 @@
 ;*	speed shoes power-up.							*
 ;****************************************************
 Logic_SpeedShoesStars:				;$AD38
-.dw Logic_SpeedShoesStars_State0
-.dw Logic_SpeedShoesStars_State1
-.dw Logic_SpeedShoesStars_State2
+.dl Logic_SpeedShoesStars_State0
+.dl Logic_SpeedShoesStars_State1
+.dl Logic_SpeedShoesStars_State2
 
 Logic_SpeedShoesStars_State0:		;$AD3E
 .db $01, $00
-	.dw LABEL_B31_AD88
+	.dl LABEL_B31_AD88
 .db $FF, $00
 
 Logic_SpeedShoesStars_State1:		;$AD44
 .db $02, $01
-	.dw LABEL_B31_ADB3
+	.dl LABEL_B31_ADB3
 .db $02, $02
-	.dw LABEL_B31_ADB3
+	.dl LABEL_B31_ADB3
 .db $02, $03
-	.dw LABEL_B31_ADB3
+	.dl LABEL_B31_ADB3
 .db $02, $04
-	.dw LABEL_B31_ADB3
+	.dl LABEL_B31_ADB3
 .db $02, $05
-	.dw LABEL_B31_ADB3
+	.dl LABEL_B31_ADB3
 .db $02, $06
-	.dw LABEL_B31_ADB3
+	.dl LABEL_B31_ADB3
 .db $02, $07
-	.dw LABEL_B31_ADB3
+	.dl LABEL_B31_ADB3
 .db $02, $08
-	.dw LABEL_B31_ADB3
+	.dl LABEL_B31_ADB3
 .db $FF, $00
 
 Logic_SpeedShoesStars_State2:		;$AD66
 .db $02, $05
-	.dw LABEL_B31_ADB3
+	.dl LABEL_B31_ADB3
 .db $02, $06
-	.dw LABEL_B31_ADB3
+	.dl LABEL_B31_ADB3
 .db $02, $07
-	.dw LABEL_B31_ADB3
+	.dl LABEL_B31_ADB3
 .db $02, $08
-	.dw LABEL_B31_ADB3
+	.dl LABEL_B31_ADB3
 .db $02, $01
-	.dw LABEL_B31_ADB3
+	.dl LABEL_B31_ADB3
 .db $02, $02
-	.dw LABEL_B31_ADB3
+	.dl LABEL_B31_ADB3
 .db $02, $03
-	.dw LABEL_B31_ADB3
+	.dl LABEL_B31_ADB3
 .db $02, $04
-	.dw LABEL_B31_ADB3
+	.dl LABEL_B31_ADB3
 .db $FF, $00
 
 
@@ -78,7 +78,7 @@ LABEL_B31_AD88:
 LABEL_B31_ADB3:
 	ld      a, ($D532)		;check for speed shoes power-up
 	cp      $01
-	jr      nz, +_
+	jp	  nz, +_
 	ld      a, (ix+$3F)
 	or      a
 	jp      nz, ++_
@@ -117,5 +117,5 @@ LABEL_B31_ADB3:
 	ret     
 
 DATA_B31_AE00:
-.dw $D37F
-.dw $D38F
+.dl $D37F
+.dl $D38F

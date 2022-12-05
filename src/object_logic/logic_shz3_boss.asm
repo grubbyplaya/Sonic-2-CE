@@ -64,7 +64,7 @@ SHZ3_BirdRobot2_SetAnimation_3:		;$9B50
 ;sets the current animation frame number and display timer
 SHZ3_BirdRobot2_SetAnimationAttribs:	;$9B54
 	bit     7, (ix+$17)		;check object's direction
-	jr      z, +_			;jump if object is moving right
+	jp      z, +_			;jump if object is moving right
 	
 	ld      b, c			;object moving left - use alternate anim
 	
@@ -113,7 +113,7 @@ SHZ3_BirdRobot2_MainLogic:	;$9B79
 	ld      bc, $0080		;bird's h-vel if bird is to player's left
 	xor     a
 	sbc     hl, de
-	jr      nc, +_			;jump if bird is to left of player
+	jp      nc, +_			;jump if bird is to left of player
 	ld      bc, $FF80		;bird's h-vel if bird is to player's right
 	
 _:	ld      (ix+$16), c		;set the bird's horizontal velocity
@@ -124,7 +124,7 @@ _:	ld      (ix+$16), c		;set the bird's horizontal velocity
 	ld      de, $FD00
 	xor     a
 	sbc     hl, de
-	jr      nc, ++_
+	jp      nc, ++_
 	ld      (ix+$19), d
 	ld      (ix+$18), e
 
@@ -180,7 +180,7 @@ SHZ3_EggCapsule_State_02:	;$9BF9
 SHZ3_EggCapsule_Init:		;$9BFF
 	ld      a, (ix+$3F)
 	or      a
-	jr      nz, +_
+	jp      nz, +_
 	ld      (ix+$02), $01		;set state = 1
 	set     7, (ix+$03)
 	ret     
@@ -563,7 +563,7 @@ SHZ3_Boss_StoreChildIndex:	;$9E46
 	ld      de, $D3BC		;$D3BC for an empty slot
 	ld      a, (de)
 	or      a				;is element empty?
-	jr      z, +_
+	jp      z, +_
 	inc     de				;move to the next element
 	djnz    SHZ3_Boss_StoreChildIndex
 	ret
@@ -594,7 +594,7 @@ SHZ3_Boss_ClearChildIndex		;$9E5D
 	ld      de, $D3BC	;object's index
 	ld      a, (de)
 	cp      c
-	jr      z, +_		;jump if index found
+	jp      z, +_		;jump if index found
 	inc     de			;move to the next element
 	djnz    SHZ3_Boss_ClearChildIndex
 	ret
@@ -613,7 +613,7 @@ SHZ3_Boss_Init:				;$9E74
 	
 	ld      a, (ix+$3F)			;if the option byte is set in
 	or      a					;the sprite layout the game will
-	jr      nz, +_				;jump here and crash!
+	jp      nz, +_				;jump here and crash!
 	
 	ld      (ix+$02), $01		;set state = $01
 	ld      (ix+$24), $06		;set the hit counter
@@ -715,7 +715,7 @@ SHZ3_Boss_SetVelocities:		;$9F0A
 	ld      bc, $0070			;move down
 	ld      a, (ix+$1E)
 	and     $40
-	jr      nz, +_	
+	jp      nz, +_	
 	ld      bc, $FF90			;move up
 	ld      (ix+$18), c			;set vertical speed
 	ld      (ix+$19), b
@@ -734,7 +734,7 @@ SHZ3_Boss_CollisionWithPlayer:	;$9F31
 	res     5, (ix+$04)
 	res     7, (ix+$04)
 	dec     (ix+$24)			;decrement the hit counter
-	jr      z, +_				;jump if hit counter == 0
+	jp      z, +_				;jump if hit counter == 0
 	
 	ld      (ix+$02), $0A		;set state = $0A
 	ret     
@@ -782,7 +782,7 @@ SHZ3_Fireball_MainLogic:	;$9F7E
 	call    VF_Engine_CheckCollision
 	ld      a, (ix+$21)
 	and     $0F
-	jr      z, +_			;jump if there were no collisions
+	jp      z, +_			;jump if there were no collisions
 	
 	ld      a, $FF			;set the "player hurt" trigger
 	ld      ($D3A8), a

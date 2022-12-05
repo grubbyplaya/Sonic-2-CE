@@ -48,22 +48,22 @@ _LABEL_1AA6_22:
   	call _GetCompressionType	;select the correct decompression method
 								
 	cp   $00					;$00 - blank tile
-	jr   nz, +_
+	jr   nz, _LABEL_1AA6_22
 	call WriteBlankTile			;write a blank tile to VRAM
-	jr   ++_
+	jr   _LABEL_1AA6_22 ;++
 	
   	cp   $02					;$02 - compressed tile
-	jr   nz, +_
+	jr   nz, _LABEL_1AA6_22
 	call LoadCompressedTile
 	call WriteTileToVRAM
-	jr   ++_
+	jr   _LABEL_1AA6_22	;++
 	
   	cp   $03					;$03 - xor compressed tile
-	jr   nz, +_
+	jr   nz, _LABEL_1AA6_22
 	call LoadCompressedTile
 	call XORDecode
 	call WriteTileToVRAM
-	jr   ++_
+	jr   _LABEL_1AA6_22 ;++
 	
   	call LoadUncompressedTile	;$01 - uncompressed tile
 	call WriteTileToVRAM
@@ -108,9 +108,9 @@ LoadCompressedTile:		;$1B1E
 	rr   c
 	rr   d
 	rr   e
-	jr   c, +_			;if previous lsb was 0, read a byte from (hl)
+	jr   c, LoadCompressedTile			;if previous lsb was 0, read a byte from (hl)
 	ld   (ix+0), $00	;previous lsb was 0 - write $00 to (ix)
-	jr   ++_
+	jr   LoadCompressedTile	;++
   	ld   a, (hl)		;read byte from (hl) and write to (ix)
 	ld   (ix+0), a
 	inc  hl				;increment source pointer
@@ -159,7 +159,7 @@ XORDecode:
 _GetCompressionType:
 	ld   a, (BitFieldCount)		;get counter value (4 flags per byte)
 	cp   $04			;do we need to increment flag-byte pointer?
-	jr   nz, +_
+	jr   nz, _GetCompressionType
 	
 	ld   hl, (FlagPointer)	;increment the flag-byte pointer
 	inc  hl
@@ -171,7 +171,7 @@ _GetCompressionType:
 	ld   hl, (FlagPointer)	;read flag pointer
 	ld   a, (hl)
   	dec  b
-	jp   m, +_			;jump if sign (<0)
+	jp   m, _GetCompressionType		;jump if sign (<0)
 	rrca				;rotate previous compression type out
 	rrca
 	jp   - _GetCompressionType
@@ -198,7 +198,7 @@ WriteBlankTile:
 ;*	Write the decompressed tile data (at $D300) to VRAM
 ;*************************************************************
 WriteTileToVRAM:
-	ld   a, ($D34C)
+	ld   a, ($D4034C)
 	or   a
 	jp   nz, WriteMirroredTileToVRAM
 	ld   hl, $D300		;copy 32 bytes from $D300 to VRAM

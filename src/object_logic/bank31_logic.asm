@@ -5,8 +5,8 @@
 #include "object_logic/logic_block_fragment.asm"
 
 DATA_B31_ACEB:
-.dw DATA_B31_ACEF
-.dw DATA_B31_ACF8
+.dl DATA_B31_ACEF
+.dl DATA_B31_ACF8
 
 DATA_B31_ACEF:
 .db $FF, $09
@@ -16,7 +16,7 @@ DATA_B31_ACEF:
 
 DATA_B31_ACF8:
 .db $FF, $07
-	.dw LABEL_B31_AD00
+	.dl LABEL_B31_AD00
 	.dl BlockFragment_State_01_Logic_01
 .db $FF, $00
 
@@ -24,7 +24,7 @@ DATA_B31_ACF8:
 LABEL_B31_AD00:
 	ld      a, (CurrentLevel)
 	or      a
-	jr      nz, +_
+	jp      nz, +_
 	ld      a, $88			;tile index
 	ld      (ix+$08), a		;set tile index for right-facing sprite
 	ld      (ix+$09), a		;set tile index for left-facing sprite
@@ -35,7 +35,7 @@ LABEL_B31_AD00:
 
 	ld      a, (CurrentLevel)		;$AD19
 	cp      $04
-	jr      nz, +_
+	jp      nz, +_
 	ld      a, $F6
 	ld      (ix+$08), a
 	ld      (ix+$09), a
@@ -71,17 +71,17 @@ LABEL_B31_AD00:
 
 
 DATA_B31_B513:
-.dw DATA_B31_B517
-.dw DATA_B31_B51D
+.dl DATA_B31_B517
+.dl DATA_B31_B51D
 
 DATA_B31_B517:
 .db $01, $00
-	.dw LABEL_B31_B523
+	.dl LABEL_B31_B523
 .db $FF, $00
 
 DATA_B31_B51D:
 .db $80, $01
-	.dw LABEL_B31_B53E
+	.dl LABEL_B31_B53E
 .db $FF, $00
 
 
@@ -127,7 +127,7 @@ LABEL_B31_B53E:
 	ld      de, ($D4A4)			;compare with act's water level
 	xor     a
 	sbc     hl, de
-	jr      nc, LABEL_B31_B584	;jump if camera below water level
+	jp      nc, LABEL_B31_B584	;jump if camera below water level
 	
 	dec     hl
 	ld      a, h
@@ -139,7 +139,7 @@ LABEL_B31_B53E:
 	
 	ld      a, h
 	or      a
-	jr      nz, LABEL_B31_B58A		
+	jp      nz, LABEL_B31_B58A		
 	ld      a, l
 	ld      ($D132), a
 	ret     
@@ -183,24 +183,25 @@ DATA_B31_B590:
 
 Logic_FallingSpike:		;$BA7A
 DATA_B31_BA7A:
-.dw FallingSpike_State_00
-.dw FallingSpike_State_01
-.dw FallingSpike_State_02
-.dw FallingSpike_State_03
-.dw FallingSpike_State_04
-.dw FallingSpike_State_05
+.dl FallingSpike_State_00
+.dl FallingSpike_State_01
+.dl FallingSpike_State_02
+.dl FallingSpike_State_03
+.dl FallingSpike_State_04
+.dl FallingSpike_State_05
+
 DATA_B31_BA86:
-.dw DATA_B31_BA8A
-.dw DATA_B31_BA90
+.dl DATA_B31_BA8A
+.dl DATA_B31_BA90
 
 DATA_B31_BA8A:
 .db $01, $00
-	.dw LABEL_B31_BA96
+	.dl LABEL_B31_BA96
 .db $FF, $00
 
 DATA_B31_BA90:
 .db $E0, $02
-	.dw LABEL_B31_BB40
+	.dl LABEL_B31_BB40
 .db $FF, $00
 
 
@@ -217,47 +218,47 @@ LABEL_B31_BA96:
 
 FallingSpike_State_00:		;$BAAD
 .db $01, $00
-	.dw FallingSpike_Init
+	.dl FallingSpike_Init
 .db $FF, $00
 
 FallingSpike_State_01:		;$BAB3
 .db $E0, $01
-	.dw LABEL_B31_BB61
+	.dl LABEL_B31_BB61
 .db $FF, $00
 
 FallingSpike_State_02:		;$BAB9
 .db $02, $01
-	.dw FallingSpike_CheckCollision
+	.dl FallingSpike_CheckCollision
 .db $02, $04
-	.dw FallingSpike_CheckCollision
+	.dl FallingSpike_CheckCollision
 .db $02, $01
-	.dw FallingSpike_CheckCollision
+	.dl FallingSpike_CheckCollision
 .db $02, $04
-	.dw FallingSpike_CheckCollision
+	.dl FallingSpike_CheckCollision
 .db $02, $01
-	.dw FallingSpike_CheckCollision
+	.dl FallingSpike_CheckCollision
 .db $02, $04
-	.dw FallingSpike_CheckCollision
+	.dl FallingSpike_CheckCollision
 .db $02, $01
-	.dw FallingSpike_CheckCollision
+	.dl FallingSpike_CheckCollision
 .db $02, $04
-	.dw FallingSpike_CheckCollision
+	.dl FallingSpike_CheckCollision
 .db $FF, $05
 	.db $03
 .db $FF, $00
 
 FallingSpike_State_03:		;$BADE
 .db $04, $01
-	.dw LABEL_B31_BB0B
+	.dl LABEL_B31_BB0B
 .db $FF, $00
 
 FallingSpike_State_04:		;$BAE4
 .db $04, $03
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $06
 	.db $1A
-	.dw $0000
-	.dw	$0000
+	.dl $0000
+	.dl	$0000
 	.db $00
 .db $FF, $05
 	.db $05
@@ -265,7 +266,7 @@ FallingSpike_State_04:		;$BAE4
 
 FallingSpike_State_05:		;$BAF5
 .db $E0, $03
-	.dw LABEL_B31_BB40
+	.dl LABEL_B31_BB40
 .db $FF, $00
 
 
@@ -287,7 +288,7 @@ LABEL_B31_BB0B:
 	call    VF_Engine_CheckCollision
 	ld      a, (ix+$21)
 	and     $0F					;jump if a collision has occurred
-	jr      nz, LABEL_B31_BB29
+	jp      nz, LABEL_B31_BB29
 
 	ld      de, $0050
 	ld      bc, $0600
@@ -318,7 +319,7 @@ LABEL_B31_BB40:
 	ret     z
 	ld      a, (ix+$3e)
 	or      a
-	jr      nz, LABEL_B31_BB5C
+	jp      nz, LABEL_B31_BB5C
 	ld      (ix+$00), $ff
 	ret     
 
@@ -347,7 +348,7 @@ LABEL_B31_BB61:
 	ld      de, ($D516)		;get player's horizontal speed
 
 	bit     7, d
-	jr      z, +_
+	jp      z, LABEL_B31_BB61
 	dec     de
 	ld      a, d
 	cpl     
@@ -358,25 +359,25 @@ LABEL_B31_BB61:
   	ld      hl, $0180
 	xor     a
 	sbc     hl, de
-	jr      nc, +_
+	jp      nc, LABEL_B31_BB61
 	ld      a, b
 	add     a, a
 	ld      b, a
 	ld      hl, $0380
 	xor     a
 	sbc     hl, de
-	jr      nc, +_
+	jp      nc, LABEL_B31_BB61
 	ld      a, b
 	add     a, b
 	ld      b, a
-	jr      nc, +_
+	jp      nc, LABEL_B31_BB61
 	ld      b, $ff
   	ld      hl, ($d511)
 	ld      e, (ix+$11)
 	ld      d, (ix+$12)
 	xor     a
 	sbc     hl, de
-	jr      nc, +_
+	jp      nc, LABEL_B31_BB61
 	ex      de, hl
 	ld      hl, $0000
 	xor     a
@@ -392,17 +393,17 @@ LABEL_B31_BB61:
 	ret     
 
 DATA_B31_BBC6:
-.dw DATA_B31_BBCA
-.dw DATA_B31_BBD0
+.dl DATA_B31_BBCA
+.dl DATA_B31_BBD0
 
 DATA_B31_BBCA:
 .db $01, $00
-	.dw LABEL_B31_BBD6
+	.dl LABEL_B31_BBD6
 .db $FF, $00
 
 DATA_B31_BBD0:
 .db $10, $01
-	.dw LABEL_B31_BBF9
+	.dl LABEL_B31_BBF9
 .db $FF, $00
 
 LABEL_B31_BBD6:
@@ -432,7 +433,7 @@ LABEL_B31_BBF9:
 	
 	ld      a, ($D12F)		;get frame counter value
 	and     $01
-	jr      nz, +_			;jump if frame counter % 2 != 0
+	jp      nz, LABEL_B31_BBF9	;jump if frame counter % 2 != 0
 	
 	dec     hl
 	
@@ -442,17 +443,17 @@ LABEL_B31_BBF9:
 
 
 Logic_IntroCloudsAndPalette:		;$BC12
-.dw IntroCloudsAndPalette_State_00
-.dw IntroCloudsAndPalette_State_01
+.dl IntroCloudsAndPalette_State_00
+.dl IntroCloudsAndPalette_State_01
 
 IntroCloudsAndPalette_State_00:		;$BC16
 .db $01, $00
-	.dw IntroCloudsAndPalette_Init
+	.dl IntroCloudsAndPalette_Init
 .db $FF, $00
 
 IntroCloudsAndPalette_State_01:		;$BC1C
 .db $10, $01
-	.dw LABEL_B31_BC45
+	.dl LABEL_B31_BC45
 .db $FF, $00
 
 
@@ -489,7 +490,7 @@ LABEL_B31_BC45:
 	dec     hl
 	ld      a, ($D12F)
 	and     $07
-	jr      nz, +_
+	jp      nz, LABEL_B31_BC45
 	dec     hl
   	ld      (ix+$11), l
 	ld      (ix+$12), h
@@ -498,17 +499,17 @@ LABEL_B31_BC45:
 
 ;logic for the intro screen tree
 Logic_IntroTree:		;$BC61
-.dw IntroTree_State_00
-.dw IntroTree_State_01
+.dl IntroTree_State_00
+.dl IntroTree_State_01
 
 IntroTree_State_00:		;$BC65
 .db $01, $00
-	.dw IntroTree_Init
+	.dl IntroTree_Init
 .db $FF, $00
 
 IntroTree_State_01:		;$BC6B
 .db $10, $01
-	.dw IntroTree_AdjustHpos
+	.dl IntroTree_AdjustHpos
 .db $FF, $00
 
 

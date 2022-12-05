@@ -1,3 +1,5 @@
+pushd	C:\Users\kobia\OneDrive\Documents\GitHub\Sonic-2-CE\src
+
 spasm64 -E appvars/ALZ.asm appvars/ALZ.8xv
 spasm64 -E appvars/CEZ.asm appvars/CEZ.8xv
 spasm64 -E appvars/GHZ.asm appvars/GHZ.8xv

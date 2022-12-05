@@ -2,65 +2,59 @@
 ;*	Logic for the end-of-act signpost.	*
 ;****************************************
 Logic_Signpost:		;$B899
-.dw Signpost_State_00
-.dw Signpost_State_01
-.dw Signpost_State_02
-.dw Signpost_State_03
-.dw Signpost_State_04
-.dw Signpost_State_05
+.dl Signpost_State_00
+.dl Signpost_State_01
+.dl Signpost_State_02
+.dl Signpost_State_03
+.dl Signpost_State_04
+.dl Signpost_State_05
 
 Signpost_State_00:		;$B8A5
 .db $01, $00
-	.dw Signpost_State_00_Logic_01
+	.dl Signpost_State_00_Logic_01
 .db $FF, $05
 	.db $04
 .db $FF, $00
 
 Signpost_State_01:		;$B8AE
 .db $E0, $01
-	.dw Signpost_State_01_Logic_01
+	.dl Signpost_State_01_Logic_01
 .db $FF, $00
 
 Signpost_State_02:		;$B8B4
 .db $02, $01
-	.dw Signpost_State_02_Logic_01		;calculate which signpost to display
-.db $FF, $09
-	.db SFX_Tick
+	.dl Signpost_State_02_Logic_01		;calculate which signpost to display
 .db $02, $02
-	.dw Signpost_State_02_Logic_01
+	.dl Signpost_State_02_Logic_01
 .db $02, $03
-	.dw Signpost_State_02_Logic_01
-.db $FF, $09
-	.db SFX_Tick
+	.dl Signpost_State_02_Logic_01
 .db $02, $04
-	.dw Signpost_State_02_Logic_01
+	.dl Signpost_State_02_Logic_01
 .db $02, $03
-	.dw Signpost_State_02_Logic_01
-.db $FF, $09
-	.db SFX_Tick
+	.dl Signpost_State_02_Logic_01
 .db $02, $02
-	.dw Signpost_State_02_Logic_01
+	.dl Signpost_State_02_Logic_01
 .db $FF, $00
 
 Signpost_State_03:		;$B8D7
 .db $FF, $07
-	.dw Signpost_State_03_Logic_01	;set frame display count to 7 & copy state from (ix+$1E)
-	.dw VF_DoNothing		;does nothing
+	.dl Signpost_State_03_Logic_01	;set frame display count to 7 & copy state from (ix+$1E)
+	.dl VF_DoNothing		;does nothing
 .db $FF, $07
-	.dw Signpost_State_03_Logic_02	;set frame display count to $E0 & copy state from (ix+$1E)
-	.dw Signpost_State_03_Logic_03	;Set the player's state & play end of level music
+	.dl Signpost_State_03_Logic_02	;set frame display count to $E0 & copy state from (ix+$1E)
+	.dl Signpost_State_03_Logic_03	;Set the player's state & play end of level music
 .db $FF, $00
 
 Signpost_State_04:		;$B8E5
 .db $01, $00
-	.dw Signpost_State_04_Logic_01
+	.dl Signpost_State_04_Logic_01
 .db $FF, $00
 
 Signpost_State_05:		;B8EB
 .db $FF, $08
 	.db $12
 .db $01, $00
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $05		;set state = $01
 	.db $01
 .db $FF, $00
@@ -126,11 +120,11 @@ Signpost_State_02_Logic_01:		;$B937
 	ld      a, $A9
 	ld      ($DD04), a
 	call    LABEL_B31_B981		;Should we show the Tails signpost?
-	jr      c, +_
+	jr      c, Signpost_State_02_Logic_01
 	call    LABEL_B31_B9A0		;Should we show the Sonic signpost?
-	jr      c, +_
+	jr      c, Signpost_State_02_Logic_01
 	call    LABEL_B31_B9C2		;Should we show the ring signpost?
-	jr      c, +_
+	jr      c, Signpost_State_02_Logic_01
 	ld      b, $06				;signpost art
 	ld      (ix+$1E), b
 	ret     
@@ -194,12 +188,11 @@ LABEL_B31_B9C2:
 	add     a, $10
 	daa     
 	ld      (RingCounter), a
-	ld      a, SFX_Ring
 	ld      ($DD04), a
 	call    LABEL_200 + $010E
 	ld      a, (RingCounter)		;if the ring count wrapped past 99
 	or      a				;add 1 life.
-	jr      nz, +_
+	jr      nz, LABEL_B31_B9C2
 	ld      a, (LifeCounter)
 	inc     a
 	ld      (LifeCounter), a

@@ -1,3 +1,4 @@
+Bank29:
 ;2 extra bytes from the ghz control sequence (unused).
 .db $08, $00
 
@@ -25,10 +26,6 @@ Art_Rings_SEZ:
 Art_Rings_CEZ:
 #import "art\rings\rings_ucmp_cez.bin"
 
-DATA_B30_9841:
-#include "collision_data.asm"
-
-#include "cycling_palette_data.asm"
 
 LABEL_B29_B400:				;push the last 16 sprites off of the screen
 	ld      b, $10			;by setting the VPOS attribute
@@ -42,7 +39,7 @@ LABEL_B29_B400:				;push the last 16 sprites off of the screen
 LABEL_B29_B40C:
 	ld      a, ($D46D)
 	or      a
-	jr      nz, LABEL_B29_B422
+	jp      nz, LABEL_B29_B422
 	ld      hl, ($D46F)
 	dec     hl
 	ld      ($D46F), hl
@@ -99,13 +96,13 @@ LABEL_B29_B433:
 	add     a, a
 	add     a, $12
 	cp      $45
-	jr      c, +_
+	jp      c, +_
 	ld      c, $46
 	cp      $E8
-	jr      z, ++_
+	jp      z, ++_
 	ld      c, $48
 	cp      $EA
-	jr      z, ++_
+	jp      z, ++_
 	ld      c, $4A
 	ld      a, c
 	ld      (de), a			;copy char to work RAM
@@ -148,15 +145,15 @@ LABEL_B29_B4AF:
 	ld      ix, $D46F
 	ld      iy, $DBA0
 	bit     7, (ix+$01)
-	jr      z, +_
+	jp      z, +_
 	ld      a, (ix+$02)
 	ld      h, (iy+$00)
 	sub     h
-	jr      c, +_
+	jp      c, +_
 	ld      a, (ix+$02)
 	ld      (iy+$00), a
 	xor     a
-	jr      ++_
+	jp      ++_
 	call    LABEL_B29_B4F5
 	xor     a
 	dec     a
@@ -196,7 +193,7 @@ LABEL_B29_B510:
 	dec     hl
 	ld      a, h
 	or      l
-	jr      z, LABEL_B29_B51C
+	jp	  z, LABEL_B29_B51C
 	ld      ($D46F), hl
 	ret     
 
@@ -215,4 +212,3 @@ DATA_B29_B542:
 
 EndSequence_Data_CreditsText:
 #include "end_credits.asm"
-

@@ -13,7 +13,7 @@ LABEL_A2C:
     call VDP_ClearScreen
     ld   a, $01					;tile attributes
     ld   ($D2C7), a
-    ld   hl, $3808				;VRAM destination
+    ld   hl, $D43808				;VRAM destination
     ld   de, LevelSelect_Title	;source data
     ld   bc, LevelSelect_DrawEntry1 - LevelSelect_Title	;char count
     call VDP_DrawText

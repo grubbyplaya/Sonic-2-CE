@@ -56,17 +56,17 @@ LABEL_B28_A3F4:
 	ld      bc, $0600		;maximum velocity
 	call    VF_Engine_SetObjectVerticalSpeed
 	bit     1, (ix+$22)
-	jr      z, LABEL_B28_A42C
+	jp      z, LABEL_B28_A42C
 	bit     6, (ix+$04)
-	jr      nz, +_
+	jp      nz, +_
 	ld      e, (ix+$18)		;get vertical velocity
 	ld      d, (ix+$19)
 	bit     7, d			;is sprite moving up?
-	jr      nz, +_
+	jp      nz, +_
 	ld      hl, $0080
 	xor     a
 	sbc     hl, de
-	jr      c, ++_
+	jp      c, ++_
 	ld      hl, $0000
 	ld      (ix+$18), l		;set vertical velocity
 	ld      (ix+$19), h
@@ -92,10 +92,10 @@ LABEL_B28_A42C:
 	jp      z, VF_Engine_DisplayExplosionObject
 	ld      a, (iy+$02)
 	cp      $03
-	jr      z, +_
+	jp      z, +_
 	ld      a, (ix+$01)
 	cp      $03
-	jr      z, +_
+	jp      z, +_
 	ld      (iy+$02), $02
 	ld      (iy+$1e), $40
 	dec     (iy+$24)
@@ -416,7 +416,7 @@ UGZ3_Robotnik_State_07_Logic_01:		;$A6CA
 	ld      (ix+$19), h
 	ld      hl, $0000
 	bit     1, (ix+$22)
-	jr      z, +_
+	jp      z, +_
 	ld      hl, $0280
 	ld      (ix+$16), l		;set horizontal velocity
 	ld      (ix+$17), h
@@ -445,7 +445,7 @@ UGZ3_Robotnik_State_09_Logic_01:		;$A711
 	rlca    
 	sub     $08
 	add     a, b
-	jr      nz, +_
+	jp      nz, +_
 	dec     (ix+$1F)
 	ld      (ix+$1E), a
 	ld      l, a

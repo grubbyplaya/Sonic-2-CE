@@ -39,7 +39,3 @@
 #define  MonitorType_None0         0
 #define  MonitorType_None1         1
 #define  MonitorType_Rings         2
-
-
-Bank29:
-#include "bank29.asm"

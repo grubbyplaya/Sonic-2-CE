@@ -1,9 +1,9 @@
 Logic_AirCountdown:		;$B07A
-.dw DATA_B31_B07E
+.dl DATA_B31_B07E
 
 DATA_B31_B07E:
 .db $01, $00
-	.dw AirCountdown_Init
+	.dl AirCountdown_Init
 .db $FF, $00
 
 AirCountdown_Init:		;$B0B4
@@ -39,7 +39,7 @@ AirCountdown_Update:		;$B0DB
 	
 	res     7, (ix+$04)			;toggle the object's visibility
 	bit     2, (ix+$07)
-	jr      z, +_
+	jp      z, +_
 	set     7, (ix+$04)
 
 	ld      a, ($D469)			;check the air timer

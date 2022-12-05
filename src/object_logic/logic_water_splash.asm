@@ -1,10 +1,10 @@
 Logic_WaterSplash:			;$B4D4
-.dw WaterSplash_State_00
-.dw WaterSplash_State_01
+.dl WaterSplash_State_00
+.dl WaterSplash_State_01
 
 WaterSplash_State_00:		;$B4D8
 .db $01, $00
-	.dw WaterSplash_Init
+	.dl WaterSplash_Init
 .db $FF, $00
 
 WaterSplash_State_01:		;$B4DE

@@ -1,8 +1,13 @@
+AppVarObj	.equ $15	;application variable
+
+GreenHillsZone: 
+.db	AppVarObj, "GHZ", 0 
+
 #define	Object_Crab				$23
 #define	Object_Motobug              	$34   ;motobug badnik
 #define	Object_Newtron			$35	;newtron badnik
 #define	Object_Monitor			$10
-#define	Object_Signpost             $18
+#define	Object_Signpost			$18
 
 Mappings32_GHZ:
 #import "mappings\ghz\mappings32_ghz.bin"
@@ -37,6 +42,15 @@ Palette_GHZ:
 
 DemoControlSequence_GHZ:
 #import "demo\demo_control_sequence_ghz.bin"
+
+GHZ_Title_Pic_Art:
+#import "art\titlecard\ghz_title_card_pic.bin"
+
+GHZ_Title_Pic_Mappings:
+#import "mappings\titlecard\ghz_title_card_pic_mappings.bin"
+
+DATA_2904:	;mappings for "GREEN HILLS"
+#import "mappings/titlecard/titlecard_mappings_2904.bin"
 
 Data_ObjectLayout_GHZ:    ;$815B
 .dl Data_ObjectLayout_GHZ1 

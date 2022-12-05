@@ -1,6 +1,7 @@
-.db tExtTok,tAsm84CeCmp
-.ASSUME ADL=0
 #include	"includes/ti84pce.inc"
+.db tExtTok,tAsm84CeCmp
+.assume ADL=0
+#include	"appvars.asm"
 #include	"includes/defines.asm"
 #include	"includes/sms.asm"
 #include	"includes/structures.asm"
@@ -9,10 +10,8 @@
 #include	"includes/level_values.asm"
 #include	"includes/macros.asm"
 #include	"includes/memory_layout.asm"
-#include	"object_layout_routines.asm"
-#include	"object_logic/bank30_logic.asm"
-#include	"object_animations.asm"
-
+#include	"object_logic/bank28.asm"
+#include	"bank29.asm"
 
 ;=====================================================================
 ;Changing the "Version" variable will determine which version
@@ -22,7 +21,7 @@
 ;
 ; NOTE: all addresses listed in this dissassembly refer to ver. 1.0
 ;
-#define Version		1
+#define Version = 1
 
 ;some basic sense-checking on the version variable
 #ifdef Version 2
@@ -106,6 +105,10 @@ PROGRAM_HEADER:
 	.db	$19, $19, $9D, $9D, $9D, $9D, $9D, $9D, $9D, $9D, $9D, $9D, $9D, $9D, $9D, $19
 	.db	"A port of 8-bit Sonic 2 to the Ti-84+ CE", 0
 _START:
+	ld	hl, S2MAIN ;copy main game data to RAM
+	call	Mov9ToOP1
+	call	ChkFindSym
+	jp	nc, DataFound
 	di
 	im	1
 	ld	sp, $DFF0
@@ -129,7 +132,7 @@ _START:
 	in	a, (Ports_VDP_VCounter)
 	; wait for scanline to = 176
 	cp	$B0
-	jr	nz, _START
+	jp	nz, _START
 	
 	;Clear a work ram ($C001 to $DFF0)
 	Engine_FillMemory	$00
@@ -141,7 +144,16 @@ _START:
 	ld	(Frame2Page), a
 	jp	Engine_Initialise
 
+Bank30:
+#include "object_layout_routines.asm"
+#include "object_logic/bank30_logic.asm"
+DATA_B30_9841:
+#include "collision_data.asm"
+#include "cycling_palette_data.asm"
 
+Bank31:
+#include "object_animations.asm"
+#include "object_logic/bank31_logic.asm"
 
 
 ; =============================================================================
@@ -210,7 +222,7 @@ Engine_ErrorTrap:		;$0073
 	ld	de, _error_msg
 	ld	bc, $0005
 	call	VDP_DrawText
-	jr	+_
+	jp	Engine_ErrorTrap
 
 _error_msg:
 .db "ERROR"
@@ -405,7 +417,7 @@ Engine_HandleVBlank:		; $04A5
 	ld	bc, $0000
 	ld	a, ($D290)			;do we need to adjust the background scroll values?
 	or	a
-	jp	z, +_
+	jp	z, Engine_HandleVBlank
 	
 	dec	a
 	ld	($D290), a
@@ -439,7 +451,7 @@ Engine_HandleVBlank:		; $04A5
 	
 	; check to see if camera viewport update is required
 	bit	LVP_CAMERA_UPDATE_RQD, a
-	jr	z, +_
+	jp	z, Engine_HandleVBlank
 	
 	; clear the "Update" bit
 	res	LVP_CAMERA_UPDATE_RQD, a
@@ -471,7 +483,7 @@ Engine_HandleVBlank:		; $04A5
 	
 	ld	a, (GlobalTriggers)
 	bit	1, a				;check whether game is paused
-	jr	nz, Engine_HandleVBlank_UpdateSound
+	jp	nz, Engine_HandleVBlank_UpdateSound
 	
 	;load ROM bank-9 into frame-2 and call the palette update code
 	ld	a, Palette_Update
@@ -485,12 +497,12 @@ Engine_HandleVBlank:		; $04A5
 	ld	a, (GlobalTriggers)
 	bit	GT_TITLECARD_BIT, a
 
-	ld	a, (Bank31)
+	ld	bc, Bank31
 	ld	($FFFF), a
 	call	Engine_UpdateSpriteAttribs
 	call	Engine_UpdateSpriteAttribsArt
 	
-	ld	a, (Bank30)					;page in the bank with the cycling palette data
+	ld	bc, Bank30					;page in the bank with the cycling palette data
 	ld	($FFFF), a
 	call	Engine_UpdateCyclingPalettes
 
@@ -533,7 +545,7 @@ Engine_WaitForInterrupt:		; $0593
 	ld	hl, Engine_InterruptServiced
 	ld	a, (hl)
 	or	a
-	jr	z, Engine_WaitForInterrupt
+	jp	z, Engine_WaitForInterrupt
 	
 	ld	(hl), $00
 	ret
@@ -567,11 +579,11 @@ VDP_ResetPalette_DisableLineInterrupt:	;$5B2
 	
 	ld	a, ($D132)			;is palette reset required?
 	inc	a
-	jr	nz, +_
+	jp	nz, VDP_ResetPalette_DisableLineInterrupt
 	
 	ld	a, (Player_UnderwaterFlag)	;check underwater flag
 	or	a						;jump if player not under water
-	jp	z, ++_	
+	jp	z, VDP_ResetPalette_DisableLineInterrupt	
 	
 	push	hl
 	;set up the VDP to write to palette RAM at address $0
@@ -727,16 +739,16 @@ Engine_PauseHandler:
 	push	af
 	ld	a, (BgPaletteControl)
 	or	a
-	jr	nz, +_
+	jp	nz, Engine_PauseHandler
 	
 	ld	a, ($D292)
 	or	a
-	jr	nz, +_
+	jp	nz, Engine_PauseHandler
 	
 	ld	a, (GlobalTriggers)
 	and	$FF = GT_1
 	cp	GT_GAMEOVER
-	jr	nz, +_
+	jp	nz, Engine_PauseHandler
 	
 	ld	a, $01
 	ld	($D12E), a
@@ -778,7 +790,7 @@ Engine_CheckGlobalTriggers:	; $0690
 	
 	call	Engine_UpdateLevelState
 	call	LABEL_A13
-	jr	Engine_CheckGlobalTriggers
+	jp	Engine_CheckGlobalTriggers
 
 
 ;run the ending sequence
@@ -797,7 +809,7 @@ GameState_EndSequence:
  	ld    b, Time_1Second
    	ei
    	halt
-   	djnz  - PaletteFadeOut
+   	djnz  $06FB
 	
 	; clear continues & emerald count
 	xor	a
@@ -828,19 +840,19 @@ LABEL_6F3:						;ending credits sequence
 	ld	a, $0D	;set up the cycling palette
 	ld	(Engine_DynPalette_0), a
 
-	ld	a, (Bank29)
+	ld	bc, Bank29
 	call	Engine_SwapFrame2
 	call	LABEL_B29_B400		;move the last 16 sprites in the SAT off of the screen.
 	ld	hl, $012C
 	ld	($D46F), hl
 	call	Engine_WaitForInterrupt
 	call	Engine_UpdateLevelState
-	ld	a, (Bank29)
+	ld	bc, Bank29
 	call	Engine_SwapFrame2
 	call	LABEL_B29_B40C
 	ld	a, ($D701)
 	cp	$06
-	jr	nz, $723
+	jp	nz, $723
 	ret
 
 
@@ -855,7 +867,7 @@ GameState_Gameover:	; $072F
 	call	GameState_CheckContinue ;load the continue screen if required
 	ld	a, ($D2BD)			;load the "Game Over" screen if bit 7 of $D2BD is reset.
 	bit	7, a
-	jr	nz, GameState_DoContinue
+	jp	nz, GameState_DoContinue
 	call	GameOverScreen_DrawScreen
 
 	; wait for 2 seconds
@@ -868,18 +880,18 @@ GameState_Gameover:	; $072F
 	call	Engine_WaitForInterrupt
 	ld	a, (Engine_InputFlags)			;check to see if button 1/2 is pressed
 	and	$30
-	jr	nz, +_
+	jp	nz, GameState_Gameover
 	dec	bc
 	ld	a, b
 	or	c
-	jr	nz, GameState_Gameover
+	jp	nz, GameState_Gameover
 	
 	; fade out over 1 second
 	call	PaletteFadeOut
  	ld    b, Time_1Second
    	ei
    	halt
-   	djnz  - PaletteFadeOut
+   	djnz  $07A6
 	
 	jp	LABEL_472
 
@@ -930,7 +942,7 @@ GameState_CheckContinue:		; $0792
  	ld    b, Time_1Second
    	ei
    	halt
-   	djnz  - PaletteFadeOut
+   	djnz  $0894
 	
 	ret
 
@@ -942,13 +954,13 @@ ContinueScreen_MainLoop:		;7DB
 	; check to see if button 1/2 is pressed
 	ld	a, (Engine_InputFlagsLast)
 	and	BTN_1 | BTN_2
-	jr	nz, +_
+	jp	nz, ContinueScreen_MainLoop
 	
 	ld	hl, ContinueScreen_Timer	;increase the timer
 	inc	(hl)
 	ld	a, (hl)
 	cp	$5A			;if the timer = $5A, decrement the countdown
-	jr	c, ContinueScreen_MainLoop
+	jp	c, ContinueScreen_MainLoop
 
 	ld	(hl), $00
 	inc	hl
@@ -958,7 +970,7 @@ ContinueScreen_MainLoop:		;7DB
 	ret	z
 
 	call	ContinueScreen_LoadNumberMappings
-	jr	ContinueScreen_MainLoop
+	jp	ContinueScreen_MainLoop
 	
 	ld	hl, ContinueCounter
 	res	7, (hl)
@@ -1001,7 +1013,7 @@ GameState_NextAct:		; $0820
 	ld	b, $1E
 	ei
 	halt
-	djnz	PaletteFadeOut
+	djnz	$087F
 	
 	call	Engine_ClearWorkingVRAM		;clear various blocks of RAM & prepare the SAT
 	call	Engine_ClearLevelAttributes
@@ -1021,7 +1033,7 @@ GameState_NextAct:		; $0820
 	ld    b, Time_1Second
    	ei
    	halt
-   	djnz  - PaletteFadeOut
+   	djnz  GameState_NextAct
 	
 	ld	hl, GlobalTriggers
 	res	GT_NEXT_ACT_BIT, (hl)
@@ -1100,7 +1112,7 @@ LABEL_8A4:
 	ld	b, $1E
 	ei
 	halt
-	djnz	PaletteFadeOut
+	djnz	LABEL_8A4
 	call	Engine_ClearWorkingVRAM
 	call	Engine_ClearLevelAttributes
 	call	VDP_ClearScreen
@@ -1119,7 +1131,7 @@ LABEL_8A4:
  	ld    b, Time_1Second
    	ei
    	halt
-   	djnz  - PaletteFadeOut
+   	djnz  LABEL_8A4
 	
 	;reset the act counter & increment level counter
 	xor	a
@@ -1129,12 +1141,12 @@ LABEL_8A4:
 	inc	a
 	ld	(CurrentLevel), a
 	cp	$06
-	jr	c, +_
-	jr	z, ++_
+	jp	c, LABEL_8A4
+	jp	z, LABEL_8A4
 	ld	a, ($D2C5)
 	and	$3F
 	cp	$3F
-	jr	nz, LABEL_91B
+	jp	nz, LABEL_91B
 	ld	a, $01
 	ld	(CurrentAct), a
 	jp	LABEL_91B
@@ -1142,7 +1154,7 @@ LABEL_8A4:
 	ld	a, ($D2C5)
 	and	$1F
 	cp	$1F
-	jr	nz, LABEL_91B
+	jp	nz, LABEL_91B
 	
 	ld	hl, GlobalTriggers	;play ending sequence
 	res	GT_NEXT_LEVEL_BIT, (hl)
@@ -1170,14 +1182,14 @@ GameState_KillPlayer:		; $092A
 	; make sure that the player object is in the correct state
 	ld	a, (Player.StateNext)
 	cp	PlayerState_LostLife
-	jr	z, +_
+	jp	z, GameState_KillPlayer
 	ld	a, PlayerState_LostLife
 	ld	(Player.StateNext), a
 	
 	; check player's onscreen position
 	ld	a, (Player.ScreenY + 1)
 	cp	2
-	jr	nz, GameState_KillPlayer
+	jp	nz, GameState_KillPlayer
 
 	; wait for 2 seconds
 	ld	b, Time_2Seconds
@@ -1193,11 +1205,11 @@ GameState_KillPlayer:		; $092A
  	ld    b, Time_1Second
    	ei
    	halt
-   	djnz  - PaletteFadeOut
+   	djnz  GameState_KillPlayer
 	
 	ld	a, (LifeCounter)
 	or	a
-	jr	z, +_
+	jp	z, GameState_KillPlayer
 
 	; FIXME: remove this: it's pointless
 	ld	(LifeCounter), a
@@ -1224,7 +1236,7 @@ GameState_Titlecard:		; $097F
 	ld	b, $2A
 	ei
 	halt
-	djnz	PaletteFadeOut
+	djnz	GameState_Titlecard
 	
 	call	Engine_LoadLevel
 	call	Engine_CapLifeCounterValue
@@ -1235,11 +1247,11 @@ GameState_Titlecard:		; $097F
 
 	ld	a, (CurrentLevel)	;check to see if we're on ALZ-2 and set the water level
 	cp	Level_ALZ
-	jr	nz, +_
+	jp	nz, GameState_Titlecard
 
 	ld	a, (CurrentAct)
 	dec	a
-	jr	nz, +_
+	jp	nz, GameState_Titlecard
 	ld	hl, $0100			;set water level
 	ld	($D4A4), hl
 
@@ -1254,7 +1266,7 @@ LABEL_9C4:
 	ld	(LevelTimerTrigger), a
 	ld	a, ($D12E)
 	or	a
-	jr	z, LABEL_9C4
+	jp	z, LABEL_9C4
 	xor	a
 	ld	($D12E), a
 	xor	a
@@ -1288,7 +1300,7 @@ Engine_UpdateLevelState:			;$9E4
 	
 	ld	a, ($D2D6)
 	and	$0B
-	jp	nz, +_			;update object layout every 11th frame
+	jp	nz, Engine_UpdateLevelState			;update object layout every 11th frame
 
 	ld	a, (Bank30)			;load the level's sprite layout
 	call	Engine_SwapFrame2
@@ -1320,6 +1332,10 @@ LABEL_A27:
 
 _Load_Intro_Level:
 	di
+	ld	hl, Intro
+	call	Mov9ToOP1
+	call	ChkFindSym
+	jp	nc, DataFound
 	call	Engine_ClearLevelAttributes
 	ld	a, Level_Intro
 	ld	(CurrentLevel), a
@@ -1336,7 +1352,7 @@ _Load_Intro_Level:
 	call	Engine_CalculateCameraBounds		;setup screen offsets
 	di
 	
-	ld	a, (Bank08)			;load background scenery
+	ld	a, Art_Intro_Scenery			;load background scenery
 	call	Engine_SwapFrame2
 	ld	hl, $0200
 	call	VDP_SetAddress
@@ -1344,7 +1360,7 @@ _Load_Intro_Level:
 	xor	a
 	call	LoadTiles
 	
-	ld	a, (Bank19)			;load tails tiles
+	ld	a, Art_Intro_Tails			;load tails tiles
 	call	Engine_SwapFrame2
 	ld	hl, $0800
 	call	VDP_SetAddress
@@ -1353,7 +1369,7 @@ _Load_Intro_Level:
 	call	LoadTiles
 	
 	
-	ld	a, (Bank19)			;load robotnik tiles
+	ld	a, Art_Intro_Tails_Eggman			;load robotnik tiles
 	call	Engine_SwapFrame2
 	ld	hl, $0B40
 	call	VDP_SetAddress
@@ -1406,7 +1422,7 @@ LABEL_F41:
 	dec	bc
 	ld	a, b
 	or	c
-	jr	nz, LABEL_F41
+	jp	nz, LABEL_F41
 
 	ld	a, PlayerState_16
 	ld	(Player.StateNext), a
@@ -1421,7 +1437,7 @@ LABEL_F41:
 	dec	bc
 	ld	a, b
 	or	c
-	jr	nz, LABEL_F41
+	jp	nz, LABEL_F41
 
 	ld	bc, $003C
 	call	LABEL_107C
@@ -1432,7 +1448,7 @@ LABEL_F41:
 	dec	bc
 	ld	a, b
 	or	c
-	jr	nz, LABEL_F41
+	jp	nz, LABEL_F41
 
 	xor	a
 	ld	($D700), a
@@ -1452,14 +1468,17 @@ _Load_Title_Level:
 LABEL_FB9:
 	di	
 	call	VDP_ClearScreen
-	ld	a, (Bank24)				;page in bank 24
+	ld	hl, Intro ;put in intro data
+	call	Mov9ToOP1
+	call	ChkFindSym
+	jp	nc, DataFound
 	call	Engine_SwapFrame2
 	ld	hl, $2000
 	call	VDP_SetAddress
 	ld	hl, Art_Title_Screen	;title screen compressed art
 	xor	a
 	call	LoadTiles				;load the tiles into VRAM
-	ld	a, $08					;page in bank 08
+	;ld	a, $08: page in bank 08. not needed, due to being merged with bank 24 into one appvar.
 	call	Engine_SwapFrame2
 	ld	hl, $38CC				;destination
 	ld	de, Mappings_Title		;source
@@ -1482,7 +1501,7 @@ LABEL_FB9:
 	ld	a, 0
 	ld	(Player.ObjID), a
 	
-	ld	a, (Bank08)				;swap in bank 8 
+	;ld	a, (Bank08)	swap in bank 8, which was merged with bank 24
 	call	Engine_SwapFrame2
 	ld	hl, $0200
 	call	VDP_SetAddress
@@ -1522,7 +1541,7 @@ LABEL_FB9:
 	dec	bc
 	ld	a, b
 	or	c
-	jr	nz, $119C
+	jp	nz, $119C
 	
 	ld	bc, $04B0
 	call	LABEL_107C
@@ -1534,14 +1553,14 @@ LABEL_FB9:
 	dec	bc	
 	ld	a, b
 	or	c
-	jr	nz, $122F
+	jp	nz, $122F
 
 	ret	
 
 
 TitleScreen_ChangePressStartText:		; $1060
 	;page in the bank containing the mappings
-	ld	a, (Bank08)
+	;ld	a, (Bank08) not needed.
 	call	Engine_SwapFrame2
 	
 	ld	a, ($D12F)				;get the frame counter value
@@ -1549,7 +1568,7 @@ TitleScreen_ChangePressStartText:		; $1060
 	ld	de, Mappings_Title + $258	;"Press Start Button" text mappings
 	
 	and	$20					;alternate between "Press Start Button" and blank
-	jr	z, +_					;row every 32nd frame
+	jp	z, TitleScreen_ChangePressStartText				;row every 32nd frame
 
 	ld	de, Mappings_Title		;title screen mappings
 	
@@ -1584,7 +1603,7 @@ Engine_LoadPlayerTiles:	;$10BF
 	ld	de, Data_PlayerSprites - $04
 	ld	a, ($D34E)
 	bit	6, a			;if bit 6 is set the sprite is facing left
-	jr	z, +_
+	jp	z, Engine_LoadPlayerTiles
 	ld	de, Data_PlayerSprites_Mirrored - $04
 	add		hl, de
 	ld	a, Data_PlayerSprites
@@ -1973,7 +1992,7 @@ Engine_UpdateSpriteAttribsArt:			;$1274
 	ld	(hl), a
 	ld	a, ($D350)
 	cp	(hl)
-	jr	z, +_
+	jp	z, Engine_UpdateSpriteAttribsArt
 	ld	a, (hl)
 	ld	($D350), a
 	set	7, (hl)
@@ -2110,12 +2129,12 @@ Engine_UpdateSpriteAttribs:	;$17DF
 	; check that the object is active (i.e. state != 0)
 	xor	a
 	or	(ix + Object.State)
-	jr	z, +_
+	jp	z, Engine_UpdateSpriteAttribsArt
 
 	ld	a, (ix + Object.ObjID)		;get object type
 	dec	a
 	cp	$EF
-	jr	nc, +_
+	jp	nc, Engine_UpdateSpriteAttribs
 	
 	push	bc
 
@@ -2126,10 +2145,10 @@ Engine_UpdateSpriteAttribs:	;$17DF
 	call	nz, Engine_ToggleSpriteVisible
 	
 	bit	OBJ_F4_VISIBLE, c			;set = object not drawn
-	jr	nz, ++_
+	jp	nz, Engine_UpdateSpriteAttribs ;++
 	
 	bit	OBJ_F4_BIT6, c			;set = object not drawn
-	jr	nz, ++_
+	jp	nz, Engine_UpdateSpriteAttribs ;++
 	
 	call	Engine_GetObjectScreenPos
 	call	Engine_UpdateObjectVPOS
@@ -2147,7 +2166,7 @@ Engine_UpdateSpriteAttribs:	;$17DF
 	ld	hl, (Engine_UpdateSpriteAttribs_vpos_ptr)
 	ld	a, $32
 	sub	l
-	jr	c, +_
+	jp	c, Engine_UpdateSpriteAttribs
 
 	; we have inactive sprites that werent updated.
 	; move them offscreen
@@ -2241,17 +2260,17 @@ Engine_UpdateObjectVPOS:		;$1842
 	ld	a, 64
 	add	a, l
 	ld	l, a
-	jr	nc, +_
+	jp	nc, Engine_UpdateObjectVPOS
 		
 	inc	h
 		
 		ld	a, h
 	or	a
-	jr	nz, +_
+	jp	nz, Engine_UpdateObjectVPOS
 		
 	ld	a, l
 	cp	48
-	jr	nc, ++_
+	jp	nc, Engine_UpdateObjectVPOS ;++
 		
 		; push the sprite offscreen
 	ld	(iy + 0), 224
@@ -2301,7 +2320,7 @@ Engine_UpdateObjectHPOS:		;$1896
 	; check which direction the object is facing
 	; if it's facing left we need to negate the offset value
 	bit	OBJ_F4_FACING_LEFT, (ix + Object.Flags04)
-	jr	z, +_
+	jp	z, Engine_UpdateObjectHPOS
 	
 	; facing left - 2's comp the offset
 	dec	de
@@ -2343,11 +2362,11 @@ Engine_UpdateObjectHPOS:		;$1896
 		; player object
 	ld	a, (ix + Object.ObjID)
 	dec	a
-	jr	z, +_
+	jp	z, Engine_UpdateObjectHPOS
 		
 		; check which direction the object is facing
 	bit	OBJ_F4_FACING_LEFT, (ix + Object.Flags04)
-	jr	z, +_
+	jp	z, Engine_UpdateObjectHPOS
 		
 		; object is facing left. update the pointer
 	ld	hl, $046C
@@ -2382,7 +2401,7 @@ Engine_UpdateObjectHPOS:		;$1896
 		
 	ld	a, h
 	or	a
-	jr	z, +_
+	jp	z, Engine_UpdateObjectHPOS
 		
 		; move the sprite offscreen
 	ld	(iy+0), $00
@@ -2400,11 +2419,11 @@ Engine_UpdateObjectHPOS:		;$1896
 	
 		; check which direction the object is facing
 	bit	OBJ_F4_FACING_LEFT, (ix + Object.Flags04)
-	jr	z, +_
+	jp	z, Engine_UpdateObjectHPOS
 		
 		; object is facing left - add the VRAM index value
 	add	a, (ix + Object.LeftFacingIdx)
-	jr	++_
+	jp	Engine_UpdateObjectHPOS ;++
 		
 		; object is facing right - add the VRAM index value
 	add	a, (ix + Object.RightFacingIdx)
@@ -2446,7 +2465,7 @@ Engine_ToggleSpriteVisible:	;$1923
 	rrca
 	
 	; hide sprite when bit 1 != 0
-	jr	c, +_
+	jp	c, Engine_ToggleSpriteVisible
 	
 	res	OBJ_F4_VISIBLE, (ix + Object.Flags04)
 	ret
@@ -2485,13 +2504,13 @@ Engine_UpdateSpriteAttribs_NoClear:		;$1937
 	xor	a
 	or	(ix + Object.State)
 	; dont update if the object is inactive
-	jr	z, ++_
+	jp	z, Engine_UpdateSpriteAttribs_NoClear ;++
 
 	ld	a, (ix + Object.ObjID)		;check object ID
 	dec	a
 	cp	$EF
 	;dont update if object ID >= $F0
-	jr	nc, ++_
+	jp	nc, Engine_UpdateSpriteAttribs_NoClear ;++
 
 	push	bc
 
@@ -2500,10 +2519,10 @@ Engine_UpdateSpriteAttribs_NoClear:		;$1937
 	call	nz, Engine_ToggleSpriteVisible
 	
 	bit	OBJ_F4_VISIBLE, c
-	jr	nz, +_
+	jp	nz, Engine_UpdateSpriteAttribs_NoClear
 	
 	bit	OBJ_F4_BIT6, c
-	jr	nz, +_
+	jp	nz, Engine_UpdateSpriteAttribs_NoClear
 	
 	call	Engine_GetObjectScreenPos
 	call	Engine_UpdateObjectVPOS
@@ -2564,7 +2583,7 @@ Engine_LoadMappings:		;$1982
 	; loop back to the first
 	ld	a, l
 	and	$3F
-	jp	nz, +_
+	jp	nz, Engine_LoadMappings
 	
 	push	de
 	ld	de, $0040
@@ -2583,7 +2602,7 @@ Engine_LoadMappings:		;$1982
 	; make sure we dont overwrite the SAT
 	ld	a, h
 	cp	$3F
-	jp	nz, +_
+	jp	nz, Engine_LoadMappings
 	ld	h, $38
 	
 	pop	bc				;move to the next row
@@ -2684,7 +2703,7 @@ LABEL_19D7:
 	add	hl, bc
 	ld	a, h
 	cp	$3F
-	jr	c, $1C1C
+	jp	c, $1C1C
 	or	a
 	ld	bc, $0700
 	sbc	hl, bc
@@ -2771,7 +2790,7 @@ _Port1_Input:	;$1A7A
 	ld	b, a
 	ld	c, $80
 	and	$30		;check buttons 1 & 2
-	jr	nz, +_		;jump if buttons not pressed
+	jp	nz, _Port1_Input		;jump if buttons not pressed
 	ld	c, $00
 	ld	a, c
 	or	b
@@ -2831,7 +2850,7 @@ Engine_Multiply_8_by_8u:	;$1BDD
 	
 	ld	b, $08		;loop 8 times	
 	add	hl, hl
-	jr	nc, +_
+	jp	nc, Engine_Multiply_8_by_8u
 	
 	add	hl, de
 	djnz	Engine_Multiply_8_by_8u
@@ -2863,7 +2882,7 @@ Engine_Divide_16_by_u8:		;$1BE9
 	rla
 	
 	cp	e
-	jr	c, +_
+	jp	c, Engine_Divide_16_by_u8
 	
 	sub	e
 	set	0, l
@@ -2878,35 +2897,35 @@ LABEL_1BF7:
 	sla	e
 	rl	d
 	adc	hl, hl
-	jr	c, +_
+	jp	c, LABEL_1BF7
 	
 	sbc	hl, bc
-	jr	nc, ++_
+	jp	nc, LABEL_1BF7 ;++
 	
 	add	hl, bc
 	dec	a
-	jr	nz, LABEL_1BF7
+	jp	nz, LABEL_1BF7
 	ret
 
 	or	a
 	sbc	hl, bc
       inc	e
 	dec	a
-	jr	nz, LABEL_1BF7
+	jp	nz, LABEL_1BF7
 	ret
 
 
 ScoreCard_UpdateScore:		;$1C12
 	ld	a, (Engine_InputFlags)		;check for button press
 	and	$30
-	jr	nz, +_			;if not pressing a button, wait for 1 frame
+	jp	nz, ScoreCard_UpdateScore	;if not pressing a button, wait for 1 frame
 	
 	ei
 	halt
 	
 	ld	a, (RingCounter)
 	or	a
-	jr	z, +++_
+	jp	z, ScoreCard_UpdateScore	;+++
 
 	sub	$01				;decrement ring counter
 	daa
@@ -2918,19 +2937,19 @@ ScoreCard_UpdateScore:		;$1C12
 	call	LABEL_1D6F
 	ld	a, (Engine_InputFlags)		;check for button press
 	and	$30
-	jr	z, +_
+	jp	z, ScoreCard_UpdateScore
 
 	ld	a, (FrameCounter)		;jump if framecount is odd
 	and	$01
-	jr	nz, ++_
+	jp	nz, ScoreCard_UpdateScore ;++
 
-	jr	++_
+	jp	ScoreCard_UpdateScore ;++
 
 	ld	a, (FrameCounter)			;get the frame counter
 	and	$03
-	jr	nz, ++_
+	jp	nz, ScoreCard_UpdateScore ;++
 
-      jr	ScoreCard_UpdateScore
+      jp	ScoreCard_UpdateScore
 	
 	; wait a second
  	ld    b, Time_1Second
@@ -2940,7 +2959,7 @@ ScoreCard_UpdateScore:		;$1C12
 	
 	ld	a, (Engine_InputFlags)		;check for button press
 	and	$30
-	jr	nz, +_
+	jp	nz, ScoreCard_UpdateScore
 
 	ei
 	halt
@@ -2963,23 +2982,23 @@ ScoreCard_UpdateScore:		;$1C12
 	call	LABEL_1D6F
 	ld	a, (Engine_InputFlags)		;check for button press
 	and	$30
-	jr	z, +_
+	jp	z, ScoreCard_UpdateScore
 
 	ld	a, ($D12F)		;jump if frame count is odd
 	and	$01
-	jr	nz, ++_
+	jp	nz, ScoreCard_UpdateScore ;++
 
-	jr	++_
+	jp	ScoreCard_UpdateScore ;++
 
 	ld	a, (FrameCounter)
 	and	$03
-	jr	nz, ++_
+	jp	nz, ScoreCard_UpdateScore ;++
 	
       ld	hl, $D2A2
 	ld	a, (hl)
 	inc	hl
 	or	(hl)
-	jr	nz, $1F10
+	jp	nz, $1F10
 
 	ld	hl, $D43C2A		;vram address
 	ld	de, ScoreCard_Mappings_Blank	;mapping source
@@ -3028,7 +3047,7 @@ LABEL_1CD0:
 	daa
 	ld	(de), a	;update third BCD byte
 	
-	jr	nc, +_		;score overflow. cap at 999,990
+	jp	nc, LABEL_1CD0		;score overflow. cap at 999,990
 	ld	hl, $D29F
 	ld	(hl), $90
 	inc	hl
@@ -3036,7 +3055,7 @@ LABEL_1CD0:
 	inc	hl
 	ld	(hl), $99
 	ld	a, $02
-	jr	++_
+	jp	LABEL_1CD0 ;++
 	ld	a, $01
  	ld	($D2B5), a
 	call	LABEL_1D05
@@ -3049,21 +3068,21 @@ LABEL_1D05: ;BCD subtraction subroutine
 	ld	a, (de)
 	sub	(hl)
 	ret	c
-	jr	z, +_
-	jr	++_
+	jp	z, LABEL_1D05
+	jp	LABEL_1D05 ;++
 	dec	hl
 	dec	de
 	ld	a, (de)
 	sub	(hl)
 	ret	c
-	jr	z, +_
-	jr	++_
+	jp	z, LABEL_1D05
+	jp	LABEL_1D05 ;++
 	dec	hl
 	dec	de
 	ld	a, (de)
 	sub	(hl)
 	ret	c
-	jr	nc, ++_
+	jp	nc, LABEL_1D05 ;++
  	ld	hl, Score
 	ld	de, $D29F
 	ld	bc, $0003
@@ -3125,32 +3144,32 @@ LABEL_1D7F:
 	pop	hl
 	ld	a, ($D2B4)
 	cp	$02
-	jr	c, +_
-	jr	z, ++_
+	jp	c, LABEL_1D7F
+	jp	z, LABEL_1D7F ;++
 	ld	de, $D2B3
 	ld	bc, $0605
-	jr	LABEL_1DAF
+	jp	LABEL_1DAF
 
 	ld	de, $D2B1
 	ld	bc, $0403
-	jr	LABEL_1DAF
+	jp	LABEL_1DAF
 
 	ld	de, $D2AF
 	ld	bc, $0201
-	jr	LABEL_1DAF	;FIXME: pointless
+	jp	LABEL_1DAF	;FIXME: pointless
 
 
 LABEL_1DAF:
 	ld	($D11C), hl
 	ld		a, c
 	or	a
-	jr	z, +_
+	jp	z, LABEL_1DAF
 	dec	c
 	ld	a, (de)
 	cp	$30
-	jr	nz, +_
+	jp	nz, LABEL_1DAF
 	ld	a, $3A
-	jr	++_
+	jp	LABEL_1DAF ;++
 	ld	c, $00
 	ld	a, (de)
 	push	bc
@@ -3373,11 +3392,11 @@ DATA_1EEB:
 Score_CalculateActTimeScore:		;$1EEE
 	ld	a, (LevelTimer + 1)	;check minutes
 	or	a					;jump if level completed >= 1min
-	jr	nz, Score_CalculateActTimeScore_Sec
+	jp	nz, Score_CalculateActTimeScore_Sec
 
 	ld	a, (LevelTimer)		;get seconds
 	cp	$20					;if(seconds < 20) seconds = 20
-	jr	nc, ++_
+	jp	nc, Score_CalculateActTimeScore ;++
 	ld	a, $20
 
 	sub		$20					;subtract 20 seconds and use as
@@ -3409,7 +3428,7 @@ Score_CalculateActTimeScore_Sec:		;$1F0E
 	ld	de, $0959			;subtract 9mins 59sec
 	xor	a
 	sbc	hl, de
-	jr	z, +_				;jump if timer == 09'59"
+	jp	z, Score_CalculateActTimeScore_Sec		;jump if timer == 09'59"
 
 	ld	hl, (LevelTimer)
 	srl	h		;hl /= 2
@@ -3422,7 +3441,7 @@ Score_CalculateActTimeScore_Sec:		;$1F0E
 	rr	l
 	ld	a, l
 	sub	$10
-	jr	nc, ++_
+	jp	nc, Score_CalculateActTimeScore_Sec ;++
 
 	xor	a
 
@@ -3435,11 +3454,11 @@ Score_CalculateActTimeScore_Sec:		;$1F0E
 	ld	a, (LevelTimer)
 	and	$0F
 	cp	$05
-	jr	c, ++_
+	jp	c, Score_CalculateActTimeScore_Sec ;++
 
 	ld	a, ($D2A5)
 	cp	$01
-	jr	z, ++_
+	jp	z, Score_CalculateActTimeScore_Sec ;++
 
 	sub	$01
 	daa	
@@ -3635,13 +3654,13 @@ LABEL_20FB:
 	add	hl, de
 	ld	a, (hl)
 	and	a
-	jp	p, ++_
+	jp	p, LABEL_20FB ;++
 
 	ld	($D100), a
 	ld	a, $FF
 	ld	($D101), a
 	ld	($D106), a
-	jr	+_
+	jp	LABEL_20FB
 
 	ld	($D100), a
 	xor	a
@@ -3682,13 +3701,13 @@ LABEL_20FB:
 	add	hl, de
 	ld	a, (hl)
 	and	a
-	jp	p, ++_
+	jp	p, LABEL_20FB
 
 	ld	($D100), a
 	ld	a, $FF
 	ld	($D101), a
 	ld	($D106), a
-	jr	+_
+	jp	LABEL_20FB
 
 	ld	($D100), a
 	xor	a
@@ -3703,7 +3722,7 @@ LABEL_20FB:
 	ld	de, ($D100)
 	add	hl, de
 	ld	($D104), hl
-	djnz	$24B1
+	djnz	LABEL_330
 
 	push	ix
 	pop	hl
@@ -3733,14 +3752,14 @@ Engine_LoadLevel:		;$21AA
 	call	Engine_InitStatusIcons
 	ld	ix, LevelAttributes
 	call	Engine_ClearLevelAttributes		;clear level header
-	call	Engine_LoadLevelHeader:
+	call	Engine_LoadLevelHeader
 	call	Engine_LoadLevelLayout
 	call	Engine_LoadAuxLevelHeader
 	ld	a, Object_Sonic					;set up the sonic object
 	ld	($D500), a
 	ld	a, ($D2B7)
 	or	a
-	jr	nz, +_
+	jp	nz, Engine_LoadLevel
 	xor	a
 	ld	(LevelTimer), a
 	ld	(LevelTimer+1), a
@@ -3795,11 +3814,11 @@ Engine_InitStatusIcons:	;$21EE
 	; then push 2 sprites offscreen (vpos = 224).
 	ld	a, (CurrentLevel)
 	cp	Level_CEZ
-	jr	nz, +_
+	jp	nz, Engine_InitStatusIcons
 	
 	ld	a, (CurrentAct)
 	cp	Act3
-	jr	nz, +_
+	jp	nz, Engine_InitStatusIcons
 	
 	ld	a, 224
 	ld	(VDP_WorkingSAT_VPOS + $38), a
@@ -3988,7 +4007,7 @@ ChangeGameMode:
 	rlca
 	jp	c, LABEL_24BE_48		;Load a level - jump if bit 7 is set
 	rlca
-	jr	c, LABEL_242F_49
+	jp	c, LABEL_242F_49
 	rlca
 	jp	c, LABEL_2439_50		;load the Intro level - jump if bit 5 is set
 	rlca
@@ -4016,7 +4035,7 @@ LABEL_243C:
 	ld	b, $2A
 	ei
 	halt
-	djnz	$2849
+	djnz	Label_243C
 	ld	hl, $D292
 	res	5, (hl)	;clear load intro flag
 	res	7, (hl)	;clear load level flag
@@ -4030,7 +4049,7 @@ LABEL_2459_51:
 	ld	b, $2A
 	ei
 	halt	
-	djnz	$2865
+	djnz	LABEL_2459_51
 	ld	hl, $D292
 	res	4, (hl)	;clear load title screen flag
 	set	3, (hl)	;set load demo flag
@@ -4061,7 +4080,7 @@ LABEL_247B:
 	ld	(CurrentAct), a
 	ld	hl, $D292
 	bit	7, (hl)
-	jr	z, +_
+	jp	z, LABEL_247B
 
 	ld	hl, $D292
 	res	7, (hl)
@@ -4079,7 +4098,7 @@ LABEL_24BE_48:
 	;check for level select trigger
 	ld	a, (LevelSelectTrg)
 	cp	$0D
-	jr	nz, +_
+	jp	nz, LABEL_24BE_48
 	xor	a
 	ld	($D294), a
 	call	LevelSelectMenu	;run the level select
@@ -4087,7 +4106,7 @@ LABEL_24BE_48:
 	ld	b, $2A
 	ei
 	halt
-	djnz	$28EE
+	djnz	LABEL_24BE_48
 	xor	a
 	ld	($D292), a
 	ld	(GlobalTriggers), a
@@ -4186,7 +4205,7 @@ LABEL_2530:
 	dec	bc				;decrement the demo timer
 	ld	a, b
 	or	c
-	jr	nz, LABEL_2530
+	jp	nz, LABEL_2530
 	ret
 
 DemoSequence_LoadLevel:	;254A
@@ -4200,7 +4219,7 @@ DemoSequence_LoadLevel:	;254A
 	ld	b, $2A		;pause to load the level
 	ei
 	halt
-	djnz	$2997
+	djnz	DemoSequence_LoadLevel
 	call	Engine_LoadLevel			;load the level
 	call	Engine_LoadLevelPalette
 	call	Engine_ReleaseCamera			;unlocks camera
@@ -4215,10 +4234,10 @@ LABEL_2576:
 	call	Engine_UpdatePlayerObjectState
 	ld	a, (Player.State)
 	cp	PlayerState_LostLife
-	jr	nz, +_
+	jp	nz, LABEL_2576
 	ld	a, ($D51D)
 	cp	$02
-	jr	nz, LABEL_2576
+	jp	nz, LABEL_2576
 	
 	; reset dynamic palette numbers
 	call	Engine_ClearAuxLevelHeader
@@ -4228,7 +4247,7 @@ LABEL_2576:
  	ld    b, Time_1Second
    	ei
    	halt
-   	djnz  $29D6
+   	djnz  LABEL_2576
 	
 	ret
 	
@@ -4245,7 +4264,7 @@ LABEL_259C:
 	ld	a, h
 	or	l
 	ret	z
-	jr	LABEL_259C	;$F0
+	jp	LABEL_259C	;$F0
 
 
 ; =============================================================================
@@ -4266,7 +4285,7 @@ Engine_CapLifeCounterValue:	; $25AC
 	
 	ld	a, (LifeCounter)
 	cp	9
-	jr	c, +_
+	jp	c, Engine_CapLifeCounterValue
 
 	ld	a, 9
 	
@@ -4286,7 +4305,7 @@ LABEL_25C3:
 	ld	(RingCounter), a
 	;check for 100 rings
 	or	a
-	jr	nz, Engine_UpdateRingCounterSprites
+	jp	nz, Engine_UpdateRingCounterSprites
 	;we have 100 rings; increment life counter
 	ld	hl, LifeCounter
 	inc	(hl)
@@ -4300,7 +4319,7 @@ Engine_UpdateRingCounterSprites:	;$25DB
 
 	ld	a, (CurrentLevel)
 	cp	$06				;check for crystal egg act 2
-	jr	nz, +_
+	jp	nz, Engine_UpdateRingCounterSprites
 	ld	a, (CurrentAct)
 	cp	$02
 	ret	z
@@ -4333,7 +4352,7 @@ LABEL_2606:
 ;FIXME: potential optimisations here.
 	ld	a, (GlobalTriggers)
 	bit	2, a
-	jr	z, +_
+	jp	z, LABEL_2606
 	ei
 	ld	hl, BgPaletteControl	;trigger bg palette fade to colour.
 	ld	(hl), $00
@@ -4380,7 +4399,7 @@ LABEL_264E:
 	ex	de, hl
 	ld	a, (GlobalTriggers)
 	bit	2, a
-	jr	nz, +_
+	jp	nz, LABEL_264E
 	ld	de, DATA_2D0C
 	ld	($D11A), de
 	ld	hl, $3900
@@ -4408,7 +4427,7 @@ TitleCard_LoadActLogoMappings:	;$2688
 	inc	hl
 	ld	d, (hl)
 	ld	($D11A), de		;source address
-	ld	hl, $39FE			;VRAM destination
+	ld	hl, $D439FE			;VRAM destination
 	ld	($D11C), hl
 	ld	b, $0E			;count
 	call	TitleCard_ScrollActLogo
@@ -4425,17 +4444,17 @@ TitleCard_LoadZoneText:		;$26B3
 	ld	de, DATA_299C		;"Zone" text mappings
 	ld	a, (GlobalTriggers)
 	bit	GT_NEXT_ACT_BIT, a
-	jr	nz, +_
+	jp	nz, TitleCard_LoadZoneText
 
 	bit	GT_NEXT_LEVEL_BIT, a
-	jr	z, ++_
+	jp	z, TitleCard_LoadZoneText ;++
 
 	ld	de, DATA_2D6C
 
- ld	hl, $39C0
+	ld	hl, $39C0
 	ld	($D118), bc	;rows/cols
 	ld	($D11A), de	;pointer to mappings
-	ld	($D11C), hl	;VRAM address
+	ld	($D4011C), hl	;VRAM address
 	ld	b, $14
 	call	TitleCard_ScrollTextFromLeft
 	ret
@@ -4446,7 +4465,7 @@ TitleCard_ScrollTextFromLeft:		;$26E1
 	halt
 	ld	bc, ($D118)	;rows/cols
 	ld	de, ($D11A)	;pointer to mappigns
-	ld	hl, ($D11C)	;VRAM address
+	ld	hl, ($D4011C)	;VRAM address
 	call	Engine_LoadCardMappings
 	ld	bc, ($D118)
 	ld	de, ($D11A)
@@ -4547,8 +4566,12 @@ GameOverScreen_DrawScreen:		;27B4
 	ld	hl, ScreenMap
 	ld	bc, $0380
 	call	VDP_Write
+	ld	hl, Ending
+	call	Mov9ToOP1
+	call	ChkFindSym
+	jp	nc, DataFound
 	call	GameOverScreen_LoadTiles		;load the "Game Over" text	
-	ld	a, (Bank15)	
+	;ld	a, (Bank15)	kept for debugging.
 	call	Engine_SwapFrame2	;FIXME: this is probably unnecessary since the call to GameOverScreen_LoadTiles pages this in anyway
 	ld	hl, $3AD0
 	ld	de, GameOverScreen_Data_TextMappings
@@ -4576,7 +4599,11 @@ ContinueScreen_DrawScreen:		;27EE
 	call	VDP_Write
 	call	ContinueScreen_LoadTiles
 	call	ContinueScreen_LoadNumberTiles
-	ld	a, (Bank15)
+	ld	hl, Ending
+	call	Mov9ToOP1
+	call	ChkFindSym
+	jp	nc, DataFound
+	ld	a, Continue
 	call	Engine_SwapFrame2
 	ld	hl, $3A50
 	ld	de, ContinueScreen_Data_TextMappings
@@ -4673,7 +4700,7 @@ ScrollingText_LoadSATValues:		;2880
 	ld	a, $82			;set HPOS = $82
 	dec	b
 	bit	2, b
-	jr	nz, +_
+	jp	nz, ScrollingText_LoadSATValues
 	ld	a, $80			;set HPOS = $80
 	inc	b
 	ld	(hl), a
@@ -4708,12 +4735,12 @@ LABEL_28D7:
 	dec	hl				
 	dec	(hl)
 	cp	$82			;sprite char $82?
-	jr	nz, +_
+	jp	nz, LABEL_28D7
 	dec	(hl)			;move the sprite left.
 	ld	a, (de)		;get the VPOS
 	ld	c, $10
 	cp	$18			;vpos == $18?
-	jr	z, ++_
+	jp	z, LABEL_28D7 	;++
 	ld	c, $50
 	ld	a, (hl)
 	cp	c
@@ -4743,11 +4770,11 @@ Engine_UpdatePlayerObjectState:	; $2FA8
 	
 	; swap in the bank with the object's logic
 	; and run the update routine
-	ld	a, Logic_Sonic
+	ld	bc, Logic_Sonic
 	call	Engine_SwapFrame2
 	call	Engine_UpdatePlayerObject
 	
-	ld	a, Logic_Sonic
+	ld	bc, Logic_Sonic
 	call	Engine_SwapFrame2
 	call	LABEL_6139
 	jp	LABEL_47C9		;check monitor collisions?
@@ -4757,7 +4784,7 @@ LABEL_2FCB:
 	;check to see if we're on the intro screen
 	ld	a, (CurrentLevel)
 	cp	Level_Intro
-	jp	z, +_
+	jp	z, LABEL_2FCB
 	
 	; FIXME: reduce code duplication - move this before the compare
 	push	iy
@@ -5099,16 +5126,16 @@ Player_HandleWalk:		; $3283
 	ld	a, (ix + Object.VelX + 1)				;increase horizontal velocity
 	inc	a
 	cp	$02
-	jr	c, +_
+	jp	c, Player_HandleWalk
 	ld	hl, Engine_InputFlags
 	bit	1, (hl)			;check for down button
 	jp	nz, Player_SetState_Roll
 	ld	a, (Player_UnderwaterFlag)
 	or	a
-	jr	nz, +_
+	jp	nz, Player_HandleWalk
 	ld	hl, (Player.VelX)
 	bit	7, h		;if Player.VelX is negative we need to 
-	jr	z, ++_		;2's comp the value.
+	jp	z, Player_HandleWalk		;++. 2's comp the value.
 	dec	hl
 	ld	a, h
 	cpl	
@@ -5141,7 +5168,7 @@ Player_CheckFinishSkid:	; $32C8
 	; calculate absolute velocity
 	ld	hl, (Player.VelX)
 	bit	7, h
-	jr	z, +_
+	jp	z, Player_CheckFinishSkid
 	dec	hl
 	ld	a, h
 	cpl	
@@ -5181,18 +5208,18 @@ Player_RollingCheckSkid:		; $32E4
 	
 	; jump if the player is moving left (MSB set
 	bit	7, a
-	jr	nz, +_
+	jp	nz, Player_RollingCheckSkid
 	
 	; player moving right. check the left button in the input flags
 	bit	2, (hl)
-	jr	z, ++_
+	jp	z, Player_RollingCheckSkid ;++
 	; player moving right & left button pressed - skid to a stop
 	jp	Player_SetState_SkidRight
 
 
 	; player is moving left. check the right button in the input flags
 	bit	3, (hl)
-	jr	z, ++_
+	jp	z, Player_RollingCheckSkid ;++
 	; player moving left & right button pressed - skid
 	jp	Player_SetState_SkidLeft
 
@@ -5200,14 +5227,14 @@ Player_RollingCheckSkid:		; $32E4
  ; dont change if velocity adjustment value is non-zero
 	ld	a, ($D363)
 	or	a
-	jr	nz, +_
+	jp	nz, Player_RollingCheckSkid
 
 	; get the player's x velocity
 	ld	hl, (Player.VelX)
 	
 	; if the player is moving left (MSB set) 2's comp the value
 	bit	7, h
-	jr	z, ++_
+	jp	z, Player_RollingCheckSkid ;++
 
 	dec	hl
 	ld	a, h
@@ -5265,7 +5292,7 @@ Player_CheckSkid:		; $3321
 	bit	7, (ix + Object.VelX + 1)
 	
 	; jump if player moving left
-	jr	nz, +_
+	jp	nz, Player_CheckSkid
 	
 	; skid if player moving right + left button pressed
 	bit	BTN_LEFT_BIT, (hl)
@@ -5309,7 +5336,7 @@ Player_HandleRunning:		;$333D
 	; the "walking" state
 	ld	a, (Player.VelX+1)
 	bit	7, a
-	jr	z, +_
+	jp	z, Player_HandleRunning
 	neg
 	cp	$04
 	jp	c, Player_SetState_Walking
@@ -5397,7 +5424,7 @@ LABEL_33B7:
 	jp	nz, Player_SetState_Jumping
 	ld	hl, ($D516)
 	bit	7, h
-	jr	z, $3929
+	jp	z, LABEL_33B7
 	dec	hl
 	ld	a, h
 	cpl	
@@ -5416,17 +5443,17 @@ LABEL_33EA:
 	ld	hl, $D3AA		;increase D3AA as long as button 1/2 is held.
 	ld	a, (Engine_InputFlags)
 	and	$30
-	jr	nz, +_
+	jp	nz, LABEL_33EA
 	ld	(hl), $20
-	jr	++_
+	jp	LABEL_33EA ;++
 	inc	(hl)
 	ld	a, (hl)
 	cp	$0E
-	jr	nc, ++_
+	jp	nc, LABEL_33EA ;++
 	ld	hl, $FBC0
 	ld	a, (Player_UnderwaterFlag)
 	or	a
-	jr	z, +_
+	jp	z, LABEL_33EA
 	ld	hl, $FCC0
 	ld	($D518), hl
  call	LABEL_3A62
@@ -5524,18 +5551,18 @@ LABEL_34A9:
 	ld	b, $04
 	ld	a, ($d365)
 	cp	$07
-	jr	c, +_
+	jp	c, LABEL_34A9
 	ld	b, $08
 	cp	$10
-	jr	c, ++_
+	jp	c, LABEL_34A9 ;++
 	cp	$17
-	jr	nc, ++_
+	jp	nc, LABEL_34A9 ;++
 	ld	a, b
 	ld	(Engine_InputFlags), a
 	xor	a
 	ld	(Engine_InputFlagsLast), a
 	call	CalculatePlayerDirection
- call	LABEL_3A62
+	call	LABEL_3A62
 	ld	a, ($D366)
 	cp	$00
 	jp	z, Player_SetState_Falling
@@ -5553,7 +5580,7 @@ LABEL_34E1:
 	ld	hl, $0080
 	ld	a, ($D51C)
 	cp	$D8
-	jr	c, $3A70
+	jp	c, LABEL_34E1
 	ld	hl, GlobalTriggers
 	set	3, (hl)
 	ld	hl, $1000
@@ -5565,11 +5592,11 @@ Player_HandleEndOfLevel:		; $34FD
 	; check for GMZ act 1	(zone exit to left)
 	ld	a, (CurrentLevel)
 	cp	Level_GMZ
-	jr	nz, +_
+	jp	nz, Player_HandleEndOfLevel
 
 	ld	a, (CurrentAct)
 	or	a
-	jr	z, Player_HandleEndOfLevel_ExitLeft
+	jp	z, Player_HandleEndOfLevel_ExitLeft
 
 	; reset the object's Y velocity
 
@@ -5595,7 +5622,7 @@ Player_HandleEndOfLevel:		; $34FD
 	sbc	hl, de
 	
 	; if object is still on screen increase velocity
-	jr	c, Player_HandleEndOfLevel_ExitRight
+	jp	c, Player_HandleEndOfLevel_ExitRight
 	
 	; object is offscreen
 	; FALLTHROUGH
@@ -5607,7 +5634,7 @@ Player_HandleEndOfLevel_IncLevel:		; $352A
 	
 	ld	a, (CurrentAct)
 	cp	Act3
-	jr	nc, +_
+	jp	nc, Player_HandleEndOfLevel_IncLevel
 	
 	ld	hl, GlobalTriggers
 	set	GT_NEXT_ACT_BIT, (hl)
@@ -5623,7 +5650,7 @@ Player_HandleEndOfLevel_ExitRight:		; $3544
 	; i.e. "velocity = max(velocity, 0);"
 	ld	hl, (Player.VelX)
 	bit	7, h
-	jr	z, +_
+	jp	z, Player_HandleEndOfLevel_ExitRight
 	
 	ld	hl, $0000
 	ld	(Player.VelX), hl
@@ -5631,7 +5658,7 @@ Player_HandleEndOfLevel_ExitRight:		; $3544
 	; increase the velocity by 16 until velocity == $0600
 	ld	a, h
 	cp	$06
-	jr	nc, +_
+	jp	nc, Player_HandleEndOfLevel_ExitRight
 
 	ld	de, $0010
 	add	hl, de
@@ -5656,7 +5683,7 @@ Player_HandleEndOfLevel_ExitLeft:		; $3563
 	ld	d, (ix + Object.X + 1)
 	xor	a
 	sbc	hl, de
-	jr	c, +_
+	jp	c, Player_HandleEndOfLevel_ExitLeft
 	
 	; object is offscreen
 	jp	Player_HandleEndOfLevel_IncLevel
@@ -5665,14 +5692,14 @@ Player_HandleEndOfLevel_ExitLeft:		; $3563
 	; object is still onscreen. increase negative velocity.
 	ld	hl, (Player.VelX)
 	bit	7, h
-	jr	nz, +_
+	jp	nz, Player_HandleEndOfLevel_ExitLeft
 
 	ld	hl, -64
 	ld	(Player.VelX), hl
 
 	ld	a, h
 	cp	$FB
-	jr	c, +_
+	jp	c, Player_HandleEndOfLevel_ExitLeft
 
 	ld	de, -16
 	add	hl, de
@@ -5684,14 +5711,18 @@ Player_HandleEndOfLevel_ExitLeft:		; $3563
 ;*	Loads loop motion data.	*
 ;********************************
 LABEL_359B:
-	ld	a, (Bank09)
+	ld	hl, Misc
+	call	Mov9ToOP1
+	call	ChkFindSym
+	jp	nc, DataFound
+	ld	a, LoopMotionData
 	call	Engine_SwapFrame2
 	ld	l, (ix+$16)	;get horizontal velocity
 	ld	h, (ix+$17)
 	ld	de, ($D399)
 	ld	a, ($D39B)
 	add	hl, de
-	jr	nc, +_
+	jp	nc, LABEL_359B
 	inc	a
 	
 	ld	($D399), hl
@@ -5723,18 +5754,18 @@ LABEL_359B:
 	ld	(ix+$12), h
 	ld	hl, ($D39A)
 	xor	a
-	ld	de, $00B0
+	ld	de, $B0
 	sbc	hl, de
-	jr	nc, $3B98
+	jp	nc, LABEL_359B
 	ld	l, (ix+$16)	;get horizontal speed
 	ld	h, (ix+$17)
 	ld	de, $0007
 	xor	a
 	sbc	hl, de
-	jr	c, $3BA7
+	jp	c, LABEL_359B
 	ld	(ix+$16), l	;set horizontal speed
 	ld	(ix+$17), h
-	jr	$3BAF
+	jp	LABEL_359B
 	ld	l, (ix+$16)
 	ld	h, (ix+$17)
 	ld	de, $000c
@@ -5762,7 +5793,7 @@ LABEL_3638:
 	ld	d, (ix+$12)
 	xor	a
 	sbc	hl, de
-	jr	c, $3BF6
+	jp	c, LABEL_3638
 	ld	l, (ix+$11)
 	ld	h, (ix+$12)
 	ld	de, $0008
@@ -5791,7 +5822,7 @@ Player_SetState_MoveBack:	;$366F
 LABEL_3676:
 	ld	a, ($D39C)
 	or	a
-	jr	z, LABEL_3681
+	jp	z, LABEL_3681
 	dec	a
 	ld	($D39C), a
 	ret	
@@ -5799,7 +5830,7 @@ LABEL_3676:
 LABEL_3681:	;collide with ALZ-1 loop
 	ld	a, (CurrentLevel)	;check for ALZ
 	cp	$02
-	jr	nz, LABEL_36B2
+	jp	nz, LABEL_36B2
 	ld	a, (CurrentAct)	;check for ACT 1
 	or	a
 	ret	nz
@@ -5833,23 +5864,23 @@ LABEL_36B2:	;collide with GHZ-1 loop
 	ret	nz
 	ld	a, (CurrentAct)	;check for ACT 1
 	or	a
-	jr	nz, LABEL_3703		;check for ACT 2
+	jp	nz, LABEL_3703		;check for ACT 2
 	ld	hl, ($D511)	;horizontal pos in level
 	ld	de, $0D5E
 	xor	a
 	sbc	hl, de
-	jr	c, LABEL_36E1
+	jp	c, LABEL_36E1
 	ld	a, h
 	or	a
-	jr	nz, LABEL_36E1
+	jp	nz, LABEL_36E1
 	ld	a, l
 	and	$F8
-	jr	nz, LABEL_36E1
+	jp	nz, LABEL_36E1
 	ld	hl, ($D514)	;vertical pos in level
 	ld	de, $0140
 	xor	a
 	sbc	hl, de
-	jr	c, LABEL_36E1
+	jp	c, LABEL_36E1
 	jp	LABEL_3725
 
 LABEL_36E1:
@@ -5857,18 +5888,18 @@ LABEL_36E1:
 	ld	de, $0F3E
 	xor	a
 	sbc	hl, de
-	jr	c, $3CAF
+	jp	c, LABEL_36E1
 	ld	a, h
 	or	a
-	jr	nz, $3CB3
+	jp	nz, LABEL_36E1
 	ld	a, l
 	and	$F8
-	jr	nz, $3CB8
+	jp	nz, LABEL_36E1
 	ld	hl, ($D514)	;vertical pos in level
 	ld	de, $0160
 	xor	a
 	sbc	hl, de
-	jr	c, $3CC5
+	jp	c, LABEL_36E1
 	jp	LABEL_3725
 	
 LABEL_3702:
@@ -5894,13 +5925,13 @@ LABEL_3703:
 	xor	a
 	sbc	hl, de
 	ret	c
-	jr	LABEL_3725			;FIXME: why bother?
+	jp	LABEL_3725			;FIXME: why bother?
 
 ;load loop motion data?
 LABEL_3725:
 	ld	a, (ix+$0A)
 	cp	$80
-	jr	nc, +_
+	jp	nc, LABEL_3725
 	ld	(ix+$02), PlayerState_OnLoop
 	
 	ld	l, (ix+$11)	;store copy of object h-pos
@@ -5943,8 +5974,8 @@ LABEL_376E:
 	; check to see if the player has the invincibility power-up
 	ld	a, (Player.PowerUp)
 	cp	$02
-	jr	nz, +_
-	
+	jp	nz, LABEL_376E
+
 	; player is invincible - clear the "hurt" trigger &
 	; any colliding object values
 	xor	a
@@ -5997,7 +6028,7 @@ Player_SetState_Hurt:		;$37B0
 	and	$0F
 	inc	a		
 	cp	$08	
-	jr	c, +_
+	jp	c, Player_SetState_Hurt
 	ld	a, $07	;drop up to 7 rings
 	ld	b, a
 	ld	c, Object_DroppedRing	
@@ -6006,7 +6037,7 @@ Player_SetState_Hurt:		;$37B0
 	call	Engine_AllocateObjectHighPriority
 	pop	bc
 	inc	h
-	djnz	Engine_AllocateObjectHighPriority
+	djnz	Player_SetState_Hurt
 	
 	set	7, (ix+$03)		;Flash player sprite on/off
 	set	6, (ix+$03)
@@ -6025,12 +6056,12 @@ Player_PlayHurtAnimation:		;$37EA
 	res	1, (ix+$22)
 	ld	hl, $FC00		;make player sprite "bounce" out of the way
 	bit	0, (ix+$22)
-	jr	z, +_
+	jp	z, Player_PlayHurtAnimation
 	ld	hl, $0000
 	ld	($D518), hl	;move sprite up
 	ld	hl, $0100
 	bit	3, (ix+$23)
-	jr	nz, +_
+	jp	nz, Player_PlayHurtAnimation
 	ld	hl, $FF00
 	ld	($D516), hl	;move sprite back
 	ld	hl, $0000
@@ -6060,9 +6091,9 @@ Player_SetState_Dead:	;$3823
 
 LABEL_384E:
 	bit	4, (ix+$21)		;collision occurred at bottom of other object
-	jr	nz, +_
+	jp	nz, LABEL_384E
 	bit	5, (ix+$21)		;collision occurred at top of other object
-	jr	nz, ++_
+	jp	nz, LABEL_384E ;++
 	
 	xor	a
 	ld	(Player.CollidingObj), a				;reset colliding object index
@@ -6072,18 +6103,18 @@ LABEL_384E:
 #ifdef Version 2
 	ld	a, ($D501)
 	cp	PlayerState_Rolling
-	jr	z, LABEL_384E
+	jp	z, LABEL_384E
 #endif
 	set	0, (ix+$03)
 	ld	hl, $0080				;make player rebound down
 	ld	(Player.VelY), hl
-	jr	LABEL_384E
+	jp	LABEL_384E
 
- set	0, (ix+$03)
+	set	0, (ix+$03)
 	res	1, (ix+$22)			;reset "bottom collision" in background flags
 	ld	hl, $FD00				;make player rebound up
 	ld	(Player.VelY), hl
-	jr	LABEL_384E
+	jp	LABEL_384E
 
 
 ; =============================================================================
@@ -6100,14 +6131,14 @@ Player_FlashObject:		; $387B
 	; check to see if the counter is zero
 	ld	a, (Player_FlashCounter)
 	or	a
-	jr	z, ++_
+	jp	z, Player_FlashObject
 	
 	; decrement the counter
 	dec	a
 	ld	(Player_FlashCounter), a
 	rrca
 	rrca
-	jr	c, +_
+	jp	c, Player_FlashObject
 	
 	; set object invisible
 	res	OBJ_F4_VISIBLE, (ix + Object.Flags04)
@@ -6126,7 +6157,7 @@ Player_FlashObject:		; $387B
 	xor	a
 	ld	(Player_HurtTrigger), a
 	ld	(ix + Object.CollidingObj), a
-	jr	Player_FlashObject
+	jp	Player_FlashObject
 
 
 ; =============================================================================
@@ -6184,7 +6215,7 @@ Player_CalculateBalance:		;$38AD
 	sub	b
 	
 	; jump if difference is positive (i.e. left value <= right value)
-	jr	nc, +_
+	jp	nc, Player_CalculateBalance
 	
 	; difference is negative (right value is > left).
 	; negate the value
@@ -6199,10 +6230,10 @@ Player_CalculateBalance:		;$38AD
 	cp	b
 	
 	; jump if they are equal
-	jr	z, Player_CalculateBalance_None
+	jp	z, Player_CalculateBalance_None
 	
 	; jump if left > right
-	jr	c, Player_CalculateBalance_Right
+	jp	c, Player_CalculateBalance_Right
 
 Player_CalculateBalance_Left:
 	; set the object's state and position flags to show that 
@@ -6242,7 +6273,7 @@ Player_ChangeFrameDisplayTime:	;$38EE
 	inc	(hl)
 	ld	a, (hl)
 	cp	$06
-	jr	c, +_			;jump if $D52F < 6
+	jp	c, Player_ChangeFrameDisplayTime			;jump if $D52F < 6
 
 	; counter value >= 6. reset to 0.
 	xor	a
@@ -6257,7 +6288,7 @@ Player_ChangeFrameDisplayTime:	;$38EE
 	ld	a, (Player.VelX + 1)
 	; check the sign bit (i.e. moving left or right)
 	and	a
-	jp	p, +_
+	jp	p, Player_ChangeFrameDisplayTime
 	
 	; if the player is moving left negate the value
 	neg
@@ -6295,7 +6326,7 @@ Player_Anim_CalcBalanceFrame:		; $3923
 	inc	(hl)
 	ld	a, (hl)
 	cp	$14
-	jr	c, +_
+	jp	c, Player_Anim_CalcBalanceFrame
 	xor	a
 	ld	(hl), a
 
@@ -6313,7 +6344,7 @@ Player_Anim_CalcBalanceFrame:		; $3923
 	; if there is no collision at the bottom edge of the object
 	; we need to use the collision flags for calculation
 	bit	OBJ_COL_BOTTOM, (ix + Object.BgColFlags)	
-	jr	z, Player_Anim_CalcBalanceFrame_UseInputFlags
+	jp	z, Player_Anim_CalcBalanceFrame_UseInputFlags
 
 
 	; clear the "facing left" bit
@@ -6322,7 +6353,7 @@ Player_Anim_CalcBalanceFrame:		; $3923
 	; get the player's horizontal velocity
 	ld	a, (Player.VelX + 1)
 	and	a
-	jp	p, +_
+	jp	p, Player_Anim_CalcBalanceFrame
 
 	; if the player is moving left negate the value and
 	; set the "facing left" flag
@@ -6361,15 +6392,15 @@ Player_Anim_CalcBalanceFrame_UseInputFlags:		;$3980
 	
 	; jump if the right button is not pressed
 	bit	3, a
-	jr	z, +_
+	jp	z, Player_Anim_CalcBalanceFrame_UseInputFlags
 
 	; flag player balancing at right-edge
 	res	OBJ_F4_FACING_LEFT, (ix + Object.Flags04)
-	jr	++_
+	jp	Player_Anim_CalcBalanceFrame_UseInputFlags ;++
 
 	; jump if the left button is not pressed
 	bit	2, a
-	jr	z, ++_
+	jp	z, Player_Anim_CalcBalanceFrame_UseInputFlags ;++
 
 	; flag player balancing at left-edge
 	set	OBJ_F4_FACING_LEFT, (ix + Object.Flags04)
@@ -6398,7 +6429,7 @@ Player_CalculateLoopFallFrame:		;$399B
 	add	hl, de
 	ld	a, (hl)
 	cp	(ix+$06)
-	jr	nz, +_
+	jp	nz, Player_CalculateLoopFallFrame
 	
 	inc	hl
 
@@ -6428,7 +6459,7 @@ Player_CalculateLoopFrame:		;$39E8
 
 	ld	a, (hl)				;compare with current frame
 	cp	(ix+$06)
-	jr	nz, +_
+	jp	nz, Player_CalculateLoopFrame
 
 	inc	hl					;move to next frame
 
@@ -6494,7 +6525,7 @@ LABEL_3A62:
 	; if( playerState < Walking ) MetaTileDeltaVX = 0
 	ld	a, (ix + Object.State)
 	cp	PlayerState_Walking
-	jr	nc, +_
+	jp	nc, LABEL_3A62
 	ld	hl, $0000
 	ld	(Player_MetaTileDeltaVX), hl
 	
@@ -6531,7 +6562,7 @@ Player_SetState_Jumping:		;$3A8C
 	
 	ld	a, (Player_UnderwaterFlag)
 	or	a				;if player is under water use increased
-	jr	z, +_			;jump velocity
+	jp	z, Player_SetState_Jumping		;jump velocity
 	
 	ld	hl, $FCC0		;set jump velocity (normal)
 	
@@ -6579,12 +6610,12 @@ Player_UpdatePositionX:		;$3AE1
 	; check the sign bit of the calculated value
 	; if it's negative the player is moving left
 	bit	7, h
-	jr	nz, +_
+	jp	nz, Player_UpdatePositionX
 	
 	; player moving right - check speed against maximum
 	; test for collision at right edge & stop if required
 	bit	2, (ix + Object.ix23)
-	jr	nz, Player_UpdatePositionX_SetZero
+	jp	nz, Player_UpdatePositionX_SetZero
 
 	ld	(ix + Object.ix0A), $40
 	
@@ -6593,15 +6624,15 @@ Player_UpdatePositionX:		;$3AE1
 	ld	b, a
 	ld	a, h
 	cp	b
-	jr	c, ++_
+	jp	c, Player_UpdatePositionX ;++
 	
 	ld	hl, (Player_MaxVelX)
-	jr	++_
+	jp	Player_UpdatePositionX ;++
 
 
 	; test for collision at left edge & stop if required
 	bit	3, (ix + Object.ix23)
-	jr	nz, Player_UpdatePositionX_SetZero
+	jp	nz, Player_UpdatePositionX_SetZero
 	
 	ld	(ix + Object.ix0A), $C0	
 	
@@ -6612,7 +6643,7 @@ Player_UpdatePositionX:		;$3AE1
 	ld	b, a
 	ld	a, h
 	cp	b
-	jr	nc, ++_
+	jp	nc, Player_UpdatePositionX ;++
 	
 	; enforce the limit. 2's comp the maximum value and set
 	; it as the object's X velocity
@@ -6632,7 +6663,7 @@ Player_UpdatePositionX:		;$3AE1
 	
 	; check the velocity sign bit
 	bit	7, h
-	jr	z, +_
+	jp	z, Player_UpdatePositionX
 	
 	; sign is negative. set C = $FF
 	dec	c
@@ -6661,7 +6692,7 @@ Player_UpdatePositionX_SetZero:		;$3B44
 Player_UpdatePlayer.VelY:		;$3B4E
 	; check to see if the object is standing on ground
 	bit	OBJ_F3_IN_AIR, (ix + Object.Flags03)
-	jr	nz, Player_CalcGravity
+	jp	nz, Player_CalcGravity
 	
 	ld	a, ($D3B9)
 	or	a
@@ -6685,7 +6716,7 @@ Player_UpdatePlayer.VelY:		;$3B4E
 	ld	a, l
 	cpl	
 	ld	l, a
-	jr	Player_UpdateVPOS
+	jp	Player_UpdateVPOS
 
 
 ;********************************************************
@@ -6696,17 +6727,17 @@ Player_CalcGravity:		;$3B6A
 	ld	hl, (Player.VelY)
 	ld	a, (Player_UnderwaterFlag)			;check to see if player is underwater
 	or	a
-	jr	nz, Player_CalcGravity_Underwater
+	jp	nz, Player_CalcGravity_Underwater
 	
 	ld	a, (ix + Object.State)
 	
 	ld	de, $0018						;deceleration from vertical spring
 	cp	PlayerState_VerticalSpring
-	jr	z, +_
+	jp	z, Player_CalcGravity
 	
 	ld	de, $0024						;deceleration from ramp jump
 	cp	PlayerState_JumpFromRamp
-	jr	z, +_
+	jp	z, Player_CalcGravity
 	
 	ld	de, $0030						;deceleration from normal jump
 	
@@ -6715,9 +6746,9 @@ Player_CalcGravity:		;$3B6A
 	and	a
 	jp	m, Player_UpdateVPOS	;jump if resulting velocity is negative
 	cp	$07
-	jr	c, +_
+	jp	c, Player_CalcGravity
 	ld	hl, $0700						;cap gravity at $700
-	jr	Player_UpdateVPOS
+	jp	Player_UpdateVPOS
 
 
 ;********************************************************
@@ -6729,11 +6760,11 @@ Player_CalcGravity_Underwater:		;$3B96
 	
 	ld	de, $000C					;deceleration after collision with spring
 	cp	PlayerState_VerticalSpring
-	jr	z, +_
+	jp	z, Player_CalcGravity_Underwater
 	
 	ld	de, $0012					;deceleration after ramp jump
 	cp	PlayerState_JumpFromRamp
-	jr	z, +_
+	jp	z, Player_CalcGravity_Underwater
 	
 	ld	de, $0018					;deceleration for other conditions
 
@@ -6742,20 +6773,20 @@ Player_CalcGravity_Underwater:		;$3B96
 	and	a
 	jp	m, Player_UpdateVPOS		;jump if negative
 	cp	$04
-	jr	c, Player_UpdateVPOS		;jump if HL < $400
+	jp	c, Player_UpdateVPOS		;jump if HL < $400
 	ld	hl, $0400					;cap gravity at $400
 
 
 Player_UpdateVPOS:		;$3BB7
 	bit	1, (ix+$22)		;is there a collision at the bottom edge?
-	jr	z, +_			;jump if there isn't
+	jp	z, Player_UpdateVPOS		;jump if there isn't
 	
 	ld	hl, $0700
 	
 	ld	(Player.VelY), hl
 	ld	c, $00
 	bit	7, h			;is velocity negative?
-	jr	z, +_
+	jp	z, Player_UpdateVPOS
 	
 	dec	c
 
@@ -6829,7 +6860,7 @@ Player_CalcAccel:		; $3BDD
 	; use this array if the player is moving left
 	ld	de, Data_AccelerationValues_Left
 	bit	7, (ix + Object.VelX + 1)
-	jr	nz, +_
+	jp	nz, Player_CalcAccel
 	
 	; use this array if the player is moving right
 	ld	de, Data_AccelerationValues_Right
@@ -6838,7 +6869,7 @@ Player_CalcAccel:		; $3BDD
 
 	; check the input flags to see if the left button is pressed.
 	bit	BTN_LEFT_BIT, a
-	jr	nz, Player_CalcAccel_GetValue
+	jp	nz, Player_CalcAccel_GetValue
 	
 	; left button not pressed
 	ld	bc, $0002
@@ -6858,7 +6889,7 @@ Player_CalcAccel_GetValue:		; $3C2B
 	
 	; make sure that the velocity value is positive
 	bit	7, h
-	jr	z, +_
+	jp	z, Player_CalcAccel_GetValue
 	dec	hl
 	ld	a, h
 	cpl	
@@ -6872,7 +6903,7 @@ Player_CalcAccel_GetValue:		; $3C2B
 	add	hl, bc
 	ld	a, h
 	or	a
-	jr	nz, +_
+	jp	nz, Player_CalcAccel_GetValue
 	ex	de, hl		;de *= 2
 	add	hl, hl
 	ex	de, hl
@@ -6908,12 +6939,12 @@ Player_CalcAccel_UnderWater:		; $3C5F
 	; check to see if left/right button is pressed
 	ld	a, (Engine_InputFlags)
 	and	BTN_LEFT | BTN_RIGHT
-	jr	z, Player_CalcAccel_NoBtnPress
+	jp	z, Player_CalcAccel_NoBtnPress
 
 	; use this array if the player is moving left
 	ld	de, Data_AccelerationValues_Left_UnderWater
 	bit	7, (ix + Object.VelX + 1)
-	jr	nz, +_
+	jp	nz, Player_CalcAccel_UnderWater
 	
 	; use this array if the player is moving right
 	ld	de, Data_AccelerationValues_Right_UnderWater
@@ -6921,7 +6952,7 @@ Player_CalcAccel_UnderWater:		; $3C5F
 	; check the input flags to see if the left button is pressed.
 	ld	bc, $0000
 	bit	BTN_LEFT_BIT, a
-	jr	nz, +_
+	jp	nz, Player_CalcAccel_UnderWater
 	; right button pressed
 	ld	bc, $0002
 
@@ -6941,7 +6972,7 @@ Player_CalcAccel_UnderWater:		; $3C5F
 	
 	; make sure that velocity value is positive
 	bit	7, h
-	jr	z, +_
+	jp	z, Player_CalcAccel_UnderWater
 	dec	hl
 	ld	a, h
 	cpl	
@@ -6955,7 +6986,7 @@ Player_CalcAccel_UnderWater:		; $3C5F
 	add	hl, bc
 	ld	a, h
 	or	a
-	jr	nz, +_
+	jp	nz, Player_CalcAccel_UnderWater
 	ex	de, hl
 	add	hl, hl
 	ex	de, hl
@@ -7015,7 +7046,7 @@ Engine_LimitScreenPos_Left:	;$3CD9
 	ld	(Player.X), hl
 	xor	a
 	ld	(Player.SubPixelX), a
-	jr	+_
+	jp	Engine_LimitScreenPos_Left
 
 Engine_LimitScreenPos_Right:	;$3CE6
 	ld	hl, (Camera_X)		;horizontal cam offset
@@ -7031,7 +7062,7 @@ Engine_LimitScreenPos_Right:	;$3CE6
 	
 	; if velocity is negative, C = $FF
 	bit	7, d
-	jr	z, ++_
+	jp	z, Engine_LimitScreenPos_Right ;++
 	dec	c
 
 	; update the 3-byte x-position value
@@ -7097,7 +7128,7 @@ LABEL_4037:
 
 LABEL_4044:	
 	bit	1, (ix+$22)
-	jr	nz, LABEL_404F
+	jp	nz, LABEL_404F
 	ld	(ix+$02), $13
 	ret
 
@@ -7130,7 +7161,7 @@ LABEL_408E:
 	call	LABEL_3A62
 	ld	hl, ($D516)
 	bit	7, h
-	jr	z, +_
+	jp	z, LABEL_408E
 	dec	hl
 	ld	a, h
 	cpl	
@@ -7153,7 +7184,7 @@ LABEL_40B2:
 	jp	z, LABEL_4044
 	ld	hl, ($D516)
 	bit	7, h
-	jr	z, +_
+	jp	z, LABEL_40B2
 	dec	hl
 	ld	a, h
 	cpl	
@@ -7174,16 +7205,16 @@ LABEL_40D6:
 LABEL_40E0:
 	call	LABEL_376E
 	bit	1, (ix+$22)
-	jr	z, LABEL_40F0
+	jp	z, LABEL_40F0
 	res	2, (ix+$03)
 	jp	LABEL_3032
 
 LABEL_40F0:
 	ld	a, (ix+$22)
 	and	$0F
-	jr	nz, +_
+	jp	nz, LABEL_40F0
 	call	LABEL_4109
-	jr	c, +_
+	jp	c, LABEL_40F0
 	ld	a, (Engine_InputFlagsLast)
 	and	$30
 	ret	z
@@ -7219,7 +7250,7 @@ LABEL_4109:
 	sbc	hl, de
 	
 #ifdef Version 2
-	jp	nc, +_
+	jp	nc, LABEL_4109
 	ld	($D514), de
 
 #else
@@ -7243,9 +7274,9 @@ LABEL_4137:
 	call	Engine_UpdateObjectPosition
 	ld	a, (Engine_InputFlags)
 	bit	2, a
-	jr	nz, LABEL_415F
+	jp	nz, LABEL_415F
 	bit	3, a
-	jr	nz, LABEL_415A
+	jp	nz, LABEL_415A
 	ld	a, ($D440)
 	cp	$02
 	jp	z, LABEL_415F
@@ -7263,7 +7294,7 @@ LABEL_415F:
 	ld	bc, $01C0
 	xor	a
 	sbc	hl, bc
-	jr	c, +_
+	jp	c, LABEL_415F
 	ld	de, $01C0
 	ld	l, (ix+$18)
 	ld	h, (ix+$19)
@@ -7271,14 +7302,14 @@ LABEL_415F:
 	srl	h
 	rr	l
 	bit	7, h
-	jr	nz, +_
+	jp	nz, LABEL_415F
 	ex	de, hl
 	ld	hl, $0000
 	xor	a
 	sbc	hl, de
 	ld	de, $0080
 	add	hl, de
-	jr	c, +_
+	jp	c, LABEL_415F
 	ld	(ix+$18), l
 	ld	(ix+$19), h
 	ld	(ix+$02), $14
@@ -7295,7 +7326,7 @@ LABEL_41A6:
 	call	LABEL_4226
 	ld	a, (Engine_InputFlags)
 	bit	3, a
-	jr	nz, +_
+	jp	nz, LABEL_41A6
 	ld	a, ($D440)
 	cp	$02
 	ret	z
@@ -7307,7 +7338,7 @@ LABEL_41A6:
 	ret	nz
 	ld	a, (ix+$19)
 	bit	7, a
-	jr	z, +_
+	jp	z, LABEL_41A6
 	ld	hl, $0000
 	ld	(ix+$18), l
 	ld	(ix+$19), h
@@ -7340,11 +7371,11 @@ LABEL_4204:
 	ld	e, l
 	ld	d, h
 	bit	7, h
-	jr	nz, +_
+	jp	nz, LABEL_4204
 	ld	bc, $0280
 	xor	a
 	sbc	hl, bc
-	jr	c, +_
+	jp	c, LABEL_4204
 	ld	de, $0280
 	ld	(ix+$16), e
 	ld	(ix+$17), d
@@ -7359,13 +7390,13 @@ LABEL_4226:
 	ld	e, l
 	ld	d, h
 	bit	7, h
-	jr	nz, +_
+	jp	nz, LABEL_4226
 	ld	bc, $0060
 	xor	a
 	sbc	hl, bc
-	jr	nc, ++_
+	jp	nc, LABEL_4226 ;++
 	ld	de, $0060
- ld	(ix+$16), e
+	ld	(ix+$16), e
 	ld	(ix+$17), d
 	ret
 
@@ -7374,28 +7405,28 @@ LABEL_424A:
 	res	7, (ix + Object.Flags04)
 	ld	a, (Engine_InputFlags)
 	and	$0C
-	jr	z, +_
+	jp	z, LABEL_424A
 	ld	de, $0010
 	and	$08
-	jr	nz, ++_
+	jp	nz, LABEL_424A ;++
 	ld	de, $FFF0
- ld	hl, ($D3C7)
+	ld	hl, ($D3C7)
 	add	hl, de
 	ld	e, l
 	ld	d, h
 	ld	bc, $0300
 	xor	a
 	sbc	hl, bc
-	jr	nc, ++_
+	jp	nc, LABEL_424A ;++
 	ld	de, $0300
- ld	l, e
+	ld	l, e
 	ld	h, d
 	ld	bc, $07FF
 	xor	a
 	sbc	hl, bc
-	jr	c, ++_
+	jp	c, LABEL_424A ;++
 	ld	de, $07FF
- ld	($D3C7), de
+	ld	($D3C7), de
 	ld	a, ($D3C6)
 	ld	b, a
 	ld	a, ($D3C8)
@@ -7433,13 +7464,13 @@ LABEL_42B7:
 	ld	e, $50
 	ld	hl, $D3CA
 	bit	7, (hl)
-	jr	z, +_
+	jp	z, LABEL_42B7
 	ld	e, $38
 	ld	hl, $0000
 	ld	d, $00
 	ld	b, $08
 	rrca	
-	jr	nc, +_
+	jp	nc, LABEL_42B7
 	add	hl, de
 	sla	e
 	rl	d
@@ -7453,13 +7484,13 @@ LABEL_42E8:
 	ld	e, $50
 	ld	hl, $D3CA
 	bit	7, (hl)
-	jr	z, +_
+	jp	z, LABEL_42E8
 	ld	e, $38
 	ld	hl, $0000
 	ld	d, $00
 	ld	b, $08
 	rrca	
-	jr	nc, +_
+	jp	nc, LABEL_42E8
 	add	hl, de
 	sla	e
 	rl	d
@@ -7490,13 +7521,13 @@ LABEL_4310:
 	ld	e, $50
 	ld	hl, $D3CA
 	bit	7, (hl)
-	jr	z, +_
+	jp	z, LABEL_4310
 	ld	e, $38
 	ld	hl, $0000
 	ld	d, $00
 	ld	b, $08
 	rrca
-	jr	nc, +_
+	jp	nc, LABEL_4310
 	add	hl, de
 	sla	e
 	rl	d
@@ -7510,13 +7541,13 @@ LABEL_4352:
 	ld	e, $50
 	ld	hl, $D3CA
 	bit	7, (hl)
-	jr	z, +_
+	jp	z, LABEL_4352
 	ld	e, $38
 	ld	hl, $0000
 	ld	d, $00
 	ld	b, $08
 	rrca
-	jr	nc, +_
+	jp	nc, LABEL_4352
 	add	hl, de
 	sla	e
 	rl	d
@@ -7543,7 +7574,7 @@ LABEL_438A:
 	ld	a, ($D365)
 	ld	($D3C4), a
 	cp	b
-	jr	z, +_
+	jp	z, LABEL_438A
 	xor	a
 	ld	($D3C5), a
 	ld	a, ($D365)
@@ -7551,7 +7582,7 @@ LABEL_438A:
 	ld	b, a
 	jp	c, LABEL_43AF
 	cp	$10
-	jr	nc, LABEL_43AF
+	jp	nc, LABEL_43AF
 	jp	LABEL_43BF
 
 LABEL_43AF:
@@ -7560,13 +7591,13 @@ LABEL_43AF:
 	ld	b, a
 	jp	c, LABEL_43F9
 	cp	$10
-	jr	nc, LABEL_43F9
+	jp	nc, LABEL_43F9
 	jp	LABEL_43C5
 
 LABEL_43BF:
 	ld	a, ($D3C5)
 	or	a
-	jr	nz, LABEL_43F3
+	jp	nz, LABEL_43F3
 LABEL_43C5:
 	ld	a, b
 	add	a, a
@@ -7627,14 +7658,14 @@ LABEL_441A:
 LABEL_4420:
 	ld	a, (ix+$17)
 	or	a
-	jr	z, LABEL_445F
+	jp	z, LABEL_445F
 	bit	7, (ix+$17)
 	jp	z, LABEL_4446
 	call	LABEL_462F
 	jp	nc, LABEL_43F3
 	ld	a, (Engine_InputFlags)
 	bit	0, a
-	jr	nz, LABEL_4440
+	jp	nz, LABEL_4440
 	call	LABEL_465D
 	jp	LABEL_43F3
 
@@ -7647,7 +7678,7 @@ LABEL_4446:
 	jp	nc, LABEL_43F3
 	ld	a, (Engine_InputFlags)
 	bit	0, a
-	jr	nz, LABEL_4459
+	jp	nz, LABEL_4459
 	call	LABEL_464D
 	jp	LABEL_43F3
 
@@ -7660,9 +7691,9 @@ LABEL_445F:
 	jp	nc, LABEL_43F3
 	ld	a, (Engine_InputFlags)
 	bit	3, a			;right button
-	jr	nz, LABEL_4476
+	jp	nz, LABEL_4476
 	bit	2, a			;left button
-	jr	nz, LABEL_447C
+	jp	nz, LABEL_447C
 	call	LABEL_467D
 	jp	LABEL_43F3
 
@@ -7678,14 +7709,14 @@ LABEL_447C:
 LABEL_4482:
 	ld	a, (ix+$17)
 	or	a
-	jr	z, LABEL_44C1
+	jp	z, LABEL_44C1
 	bit	7, (ix+$17)
 	jp	z, LABEL_44A8
 	call	LABEL_462F
 	jp	nc, LABEL_43F3
 	ld	a, (Engine_InputFlags)
 	bit	1, a
-	jr	nz, LABEL_44A2
+	jp	nz, LABEL_44A2
 	call	LABEL_465D
 	jp	LABEL_43F3
 
@@ -7698,7 +7729,7 @@ LABEL_44A8:
 	jp	nc, LABEL_43F3
 	ld	a, (Engine_InputFlags)
 	bit	1, a
-	jr	nz, LABEL_44BB
+	jp	nz, LABEL_44BB
 	call	LABEL_464D
 	jp	LABEL_43F3
 
@@ -7710,9 +7741,9 @@ LABEL_44C1:
 	jp	nc, LABEL_43F3
 	ld	a, (Engine_InputFlags)
 	bit	3, a
-	jr	nz, LABEL_44D8
+	jp	nz, LABEL_44D8
 	bit	2, a
-	jr	nz, LABEL_44DE
+	jp	nz, LABEL_44DE
 	call	LABEL_466D
 	jp	LABEL_43F3
 
@@ -7727,14 +7758,14 @@ LABEL_44DE:
 LABEL_44E4:
 	ld	a, (ix+$17)
 	or	a
-	jr	nz, LABEL_4523
+	jp	nz, LABEL_4523
 	bit	7, (ix+$19)
 	jp	z, LABEL_450A
 	call	LABEL_464B
 	jp	nc, LABEL_43F3
 	ld	a, (Engine_InputFlags)
 	bit	2, a
-	jr	nz, LABEL_4504
+	jp	nz, LABEL_4504
 	call	LABEL_467D
 	jp	LABEL_43F3
 	
@@ -7747,7 +7778,7 @@ LABEL_450A:
 	jp	nc, LABEL_43F3
 	ld	a, (Engine_InputFlags)
 	bit	2, a
-	jr	nz, LABEL_451D
+	jp	nz, LABEL_451D
 	call	LABEL_466D
 	jp	LABEL_43F3
 
@@ -7760,9 +7791,9 @@ LABEL_4523:
 	jp	nc, LABEL_43F3
 	ld	a, (Engine_InputFlags)
 	bit	0, a
-	jr	nz, LABEL_453A
+	jp	nz, LABEL_453A
 	bit	1, a
-	jr	nz, LABEL_4540
+	jp	nz, LABEL_4540
 	call	LABEL_465D
 	jp	LABEL_43F3
 
@@ -7777,14 +7808,14 @@ LABEL_4540:
 LABEL_4546:
 	ld	a, (ix+$17)
 	or	a
-	jr	nz, LABEL_4585
+	jp	nz, LABEL_4585
 	bit	7, (ix+$19)
 	jp	z, LABEL_456C
 	call	LABEL_464B
 	jp	nc, LABEL_43F3
 	ld	a, (Engine_InputFlags)
 	bit	3, a
-	jr	nz, LABEL_4566
+	jp	nz, LABEL_4566
 	call	LABEL_467D
 	jp	LABEL_43F3
 
@@ -7797,7 +7828,7 @@ LABEL_456C:
 	jp	nc, LABEL_43F3
 	ld	a, (Engine_InputFlags)
 	bit	3, a
-	jr	nz, LABEL_457F
+	jp	nz, LABEL_457F
 	call	LABEL_466D
 	jp	LABEL_43F3
 
@@ -7810,9 +7841,9 @@ LABEL_4585:
 	jp	nc, LABEL_43F3
 	ld	a, (Engine_InputFlags)
 	bit	0, a
-	jr	nz, LABEL_459C
+	jp	nz, LABEL_459C
 	bit	1, a
-	jr	nz, LABEL_45A2
+	jp	nz, LABEL_45A2
 	call	LABEL_464D
 	jp	LABEL_43F3
 
@@ -7827,7 +7858,7 @@ LABEL_45A2:
 LABEL_45A8:
 	ld	a, (ix+$17)
 	or	a
-	jr	nz, LABEL_45BA
+	jp	nz, LABEL_45BA
 	call	LABEL_464B
 	jp	nc, LABEL_43F3
 	call	LABEL_464D
@@ -7842,7 +7873,7 @@ LABEL_45BA:
 LABEL_45C6:
 	ld	a, (ix+$17)
 	or	a
-	jr	nz, LABEL_45D8
+	jp	nz, LABEL_45D8
 	call	LABEL_464B
 	jp	nc, LABEL_43F3
 	call	LABEL_465D
@@ -7857,7 +7888,7 @@ LABEL_45D8:
 LABEL_45E4:
 	ld	a, (ix+$17)
 	or	a
-	jr	nz, LABEL_45F6
+	jp	nz, LABEL_45F6
 	call	LABEL_4640
 	jp	nc, LABEL_43F3
 	call	LABEL_464D
@@ -7872,7 +7903,7 @@ LABEL_45F6:
 LABEL_4602:
 	ld	a, (ix+$17)
 	or	a
-	jr	nz, LABEL_4614
+	jp	nz, LABEL_4614
 	call	LABEL_4640
 	jp	nc, LABEL_43F3
 	call	LABEL_465D
@@ -8014,7 +8045,7 @@ LABEL_46EA:
 	call	LABEL_376E
 	ld	a, (ix+$02)
 	cp	$1E
-	jr	z, +_
+	jp	z, LABEL_46EA
 	res	0, (ix+$03)
 	ld	a, (Engine_InputFlags)
 	and	$30
@@ -8047,7 +8078,7 @@ LABEL_4727:
 	call	Player_CheckHorizontalLevelCollision
 	ld	a, (iy+$3F)
 	cp	$02
-	jr	z, LABEL_475F
+	jp	z, LABEL_475F
 	set	4, (ix+$04)
 	ret
 
@@ -8063,16 +8094,16 @@ LABEL_4764:
 	ld	a, (Engine_InputFlags)
 	ld	de, MineCart_LookingUp
 	bit	0, a			;check for up button
-	jr	nz, +_
+	jp	nz, LABEL_4764
 	ld	de, MineCart_LookingDown
 	bit	1, a			;check for down button
-	jr	nz, +_
+	jp	nz, LABEL_4764
 	ld	de, MineCart_LookingAhead
 	ld	a, (ix+$1E)	;frame number
 	bit	7, (ix+$17)
-	jr	nz, MineCart_UpdateAnimation
+	jp	nz, MineCart_UpdateAnimation
 	inc	a
-	jr	MineCart_SetSprite
+	jp	MineCart_SetSprite
 
 MineCart_UpdateAnimation:		;4784
 	dec	a				;next frame
@@ -8123,7 +8154,7 @@ MineCart_LookingDown:
 LABEL_47C9:
 	ld	a, (Player.PowerUp)		;check for power-up
 	or	a
-	jr	z, Collision_Monitor
+	jp	z, Collision_Monitor
 
 	ld	hl, (Engine_PowerUpTimer)	;increment counter
 	inc	hl
@@ -8132,7 +8163,7 @@ LABEL_47C9:
 	ld	bc, $04B0		;check to see if timer has expired
 	xor	a
 	sbc	hl, bc
-	jr	c, Collision_Monitor	;jump if timer hasn't expired
+	jp	c, Collision_Monitor	;jump if timer hasn't expired
 
 	xor	a				;reset power-up
 	ld	(Player.PowerUp), a
@@ -8158,22 +8189,22 @@ Collision_Monitor:			;$47F6
 	ld	hl, Engine_MonitorCllsnType
 	ld	a, (hl)
 	bit	0, a
-	jr	nz, Collision_Monitor_Rings
+	jp	nz, Collision_Monitor_Rings
 	bit	1, a
-	jr	nz, Collision_Monitor_Life
+	jp	nz, Collision_Monitor_Life
 	bit	4, a
-	jr	nz, Collision_Monitor_Continue
+	jp	nz, Collision_Monitor_Continue
 	bit	5, a
-	jr	nz, LABEL_4845
+	jp	nz, LABEL_4845
 	bit	2, a
-	jr	nz, Collision_Monitor_Sneakers
+	jp	nz, Collision_Monitor_Sneakers
 	bit	3, a
-	jr	nz, Collision_Monitor_Invincibility
+	jp	nz, Collision_Monitor_Invincibility
 	bit	6, a
 #ifdef Version 2
 	jp	nz, LABEL_4884
 #else
-	jr	nz, LABEL_4884
+	jp	nz, LABEL_4884
 #endif
 	ret
 
@@ -8253,7 +8284,7 @@ LABEL_4887:
 	; check to see if the player is under water
 	ld	a, (Player_UnderwaterFlag)
 	or	a
-	jr	nz, Engine_WaterLevel_IncAirTimer
+	jp	nz, Engine_WaterLevel_IncAirTimer
 	
 	; player is not under water - clear the air timer
 	xor	a
@@ -8283,10 +8314,10 @@ Engine_WaterLevel_IncAirTimer:		; $4895
 
 	; create the counter object after 22 seconds
 	cp	11
-	jr	z, Engine_WaterLevel_SpawnCountObj
+	jp	z, Engine_WaterLevel_SpawnCountObj
 	
-	cp	17					; FIXME: this CP and JR are pointless
-	jr	z, Engine_WaterLevel_DoNothing
+	cp	17					; FIXME: this CP and jp are pointless
+	jp	z, Engine_WaterLevel_DoNothing
 	ret
 
 
@@ -8348,20 +8379,20 @@ LABEL_48F0:
 	
 	ld	a, (CurrentAct)
 	or	a
-	jr	z, LABEL_4944
+	jp	z, LABEL_4944
 	dec	a
-	jr	z, Engine_UpdateUnderWaterFlag		;update for ALZ-2
+	jp	z, Engine_UpdateUnderWaterFlag		;update for ALZ-2
 	ld	hl, (Player.X)
 	ld	bc, $0880
 	xor	a
 	sbc	hl, bc
-	jr	c, LABEL_4917		;update for ALZ-3 (part 1)
+	jp	c, LABEL_4917		;update for ALZ-3 (part 1)
 	ld	hl, (Player.X)
 	ld	bc, $0900
 	xor	a
 	sbc	hl, bc
-	jr	c, LABEL_4926		;update for ALZ-3 (part 2)
-	jr	LABEL_4935			;update for ALZ-3 (part 3)
+	jp	c, LABEL_4926		;update for ALZ-3 (part 2)
+	jp	LABEL_4935			;update for ALZ-3 (part 3)
 
 
 LABEL_4917:
@@ -8393,8 +8424,8 @@ LABEL_4944:	;handle water level for ALZ-1
 	ld	bc, $0650
 	xor	a
 	sbc	hl, bc
-	jr	c, LABEL_4951
-	jr	LABEL_4960
+	jp	c, LABEL_4951
+	jp	LABEL_4960
 
 LABEL_4951:
 	ld	hl, (Player.Y)
@@ -8509,14 +8540,14 @@ Engine_UpdateCameraXPos:	;$49FA
 	ld	de, ($D280)		;minimum camera X pos
 	xor	a
 	sbc	hl, de
-	jr	c, Engine_UpdateCameraXPos_Limit		;limit camera to minimum x pos
+	jp	c, Engine_UpdateCameraXPos_Limit		;limit camera to minimum x pos
 	ld	hl, ($D284)
 	ld	de, ($D282)		;level width
 	xor	a
 	sbc	hl, de
-	jr	nc, Engine_UpdateCameraXPos_Limit		;limit camera to level width
+	jp	nc, Engine_UpdateCameraXPos_Limit		;limit camera to level width
 	bit	3, (ix+$00)
-	jr	nz, +_		;FIXME: this seems a bit pointless. This subroutine is identical.
+	jp	nz, Engine_UpdateCameraXPos		;FIXME: this seems a bit pointless. This subroutine is identical.
 	
 	ld	a, ($D174)
 	ld	b, a
@@ -8544,14 +8575,14 @@ Engine_UpdateCameraYPos:		;$4A37
 	ld	de, ($D27C)		;minimum camera y pos
 	xor	a
 	sbc	hl, de
-	jr	c, Engine_UpdateCameraYPos_Limit		;limit camera to minimum y position
+	jp	c, Engine_UpdateCameraYPos_Limit		;limit camera to minimum y position
 	ld	hl, ($D286)
 	ld	de, ($D27E)		;level height
 	xor	a
 	sbc	hl, de
-	jr	nc, Engine_UpdateCameraYPos_Limit		;limit camera to level height
+	jp	nc, Engine_UpdateCameraYPos_Limit		;limit camera to level height
 	bit	1, (ix+$00)
-	jr	nz, +_				;FIXME: subroutine identical to below. required?
+	jp	nz, Engine_UpdateCameraYPos				;FIXME: subroutine identical to below. required?
 	ld	a, ($D176)
 	and	$F8
 	ld	b, a
@@ -8587,7 +8618,7 @@ Engine_CalculateBgScroll:		;$4A7C
 	ld	de, $00E0		;224 (screen height)
 	xor	a
 	sbc	hl, de
-	jr	nc, Engine_CalculateBgScroll
+	jp	nc, Engine_CalculateBgScroll
 	add	hl, de
 	ld	a, l
 	ld	($D173), a		;store v-scroll
@@ -8622,7 +8653,7 @@ Engine_Mappings_GetBlockXY:	;$4A9B
 	
 	; if the level is scrolling right add 8 to the coordinate
 	bit	LVP_SCROLL_LEFT, (ix + LevelDescriptor.ViewportFlags)
-	jr	z, +_
+	jp	z, Engine_Mappings_GetBlockXY
 	ld	bc, 8
 	add	hl, bc
 	
@@ -8718,7 +8749,7 @@ Engine_LoadLevelLayout:		;$5305
 	ld	a, d
 	and	$F0
 	cp	LevelLayout >> 8
-	jr	nz, Engine_LoadLevel_DrawScreen
+	jp	nz, Engine_LoadLevel_DrawScreen
 	
 	; read a byte from the compressed stream
 	ld	a, (iy + 0)
@@ -8741,7 +8772,7 @@ Engine_LoadLevelLayout:		;$5305
 	ld	a, d
 	and	$F0
 	cp	LevelLayout >> 8
-	jr	nz, Engine_LoadLevel_DrawScreen
+	jp	nz, Engine_LoadLevel_DrawScreen
 	
 	; read the data byte and copy it into RAM
 	; FIXME: optimise this by using a register rather than a memory read.
@@ -8818,7 +8849,7 @@ Engine_LoadLevel_DrawScreen:		;$5353
 	ld	de, $00E0
 	xor	a
 	sbc	hl, de
-	jr	nc, Engine_LoadLevel_DrawScreen
+	jp	nc, Engine_LoadLevel_DrawScreen
 	add	hl, de
 	ld	a, l
 	ld	($D173), a		;store v-scroll value
@@ -8995,7 +9026,7 @@ Engine_LoadMappings32_Column:	;$585B
 	; scrolling or right
 	ld	de, $0008
 	bit	LVP_SCROLL_RIGHT, (ix + LevelDescriptor.ViewportFlags)
-	jr	nz, +_
+	jp	nz, Engine_LoadMappings32_Column
 	ld	de, $0000
 	add	hl, de
 
@@ -9030,7 +9061,7 @@ Engine_LoadMappings32_Column:	;$585B
 	; for the viewport scroll direction)
 	ld	a, (Camera_X)
 	bit	LVP_SCROLL_LEFT, (ix + LevelDescriptor.ViewportFlags)
-	jr	z, +_
+	jp	z, Engine_LoadMappings32_Column
 	add	a, 8
 	
 	; adjust the pointer to the correct column
@@ -9103,7 +9134,7 @@ Engine_CopyMappingsToVRAM_Column:	;$58BA
 	ld	a, ($D174)		;get lo-byte of camera hpos
 	
 	bit	2, (ix+0)		;is level scrolling left?
-	jr	z,  +_		;jump if level scrolling right
+	jp	z,  Engine_CopyMappingsToVRAM_Column		;jump if level scrolling right
 	
 	add	a, $08			;adjust camera hpos
 	
@@ -9143,7 +9174,7 @@ Engine_CopyMappingsToVRAM_Column:	;$58BA
 	add	hl, bc			;increment the VRAM address pointer
 	ld	a, h
 	cp	d				;check that the VRAM address pointer 
-	jp	c, +_			;is within bounds
+	jp	c, Engine_CopyMappingsToVRAM_Column			;is within bounds
 	
 	sub	e				;pointer not within bounds - adjust value
 	ld	h, a
@@ -9164,7 +9195,7 @@ Engine_LoadMappings32_Row:	;$5920
 	
 	ld	de, ($D16E)		;get vertical offset value
 	bit	1, (ix+0)		;is level scrolling down?
-	jr	nz, +_		;jump if it is
+	jp	nz, Engine_LoadMappings32_Row	;jump if it is
 	
 	ld	de, $0000		;level is scrolling up
 	
@@ -9211,7 +9242,7 @@ Engine_LoadMappings32_Row:	;$5920
 Engine_CopyMappingsToVRAM_Row:		;$5966
 	ld	a, ($D174)		;camera hpos
 	bit	2, (ix+0)		;is level scrolling left?
-	jr	z, +_			;jump if level scrolling right
+	jp	z, Engine_CopyMappingsToVRAM_Row			;jump if level scrolling right
 	
 	add	a, $08			;adjust camera hpos
 	
@@ -9242,7 +9273,7 @@ Engine_CopyMappingsToVRAM_Row:		;$5966
 
 	ld	a, ($D174)		;A = lo-byte of camera vpos
 	bit	2, (ix+0)		;is level scrolling left?
-	jr	z, +_			;jump if level scrolling right
+	jp	z, Engine_CopyMappingsToVRAM_Row		;jump if level scrolling right
 	
 	add	a, $08			;adjust vpos
 	
@@ -9255,7 +9286,7 @@ Engine_CopyMappingsToVRAM_Row:		;$5966
 
 	ld	b, $21			;number of tile values to copy
 	bit	2, (ix+0)		;is level scrolling left?
-	jr	z, +_			;jump if scrolling right
+	jp	z, Engine_CopyMappingsToVRAM_Row		;jump if scrolling right
 	
 	dec	b				;scrolling left - decrement tile count
 	
@@ -9274,7 +9305,7 @@ Engine_CopyMappingsToVRAM_Row:		;$5966
 	inc	hl
 	ld	a, l
 	and	$3F
-	jp	nz, +_
+	jp	nz, Engine_CopyMappingsToVRAM_Row
 	
 	push	de
 	ld	de, $0040
@@ -9292,7 +9323,7 @@ Engine_CopyMappingsToVRAM_Row:		;$5966
 
 
 ;********************************************************
-;*	Lookup table of off-screen buffer address offsets.	*
+;*	Lookup table of off-screen buffer address offsets.*
 ;********************************************************
 Data_OffscreenBufferOffsets:		;$59DB
 #import "misc\offscreen_buffer_offsets.bin"
@@ -9317,21 +9348,21 @@ LABEL_5D93:				;updates current position in level
 	ld	de, (Camera_X)
 	xor	a
 	sbc	hl, de
-	jr	z, +_
+	jp	z, LABEL_5D93
 
 	ld	a, l
 	cp	b
-	jr	c, $654F
+	jp	c, $654F
 	
 	ld	a, ($D28B)
 	ld	b, a
 	ld	a, l
 	cp	b
-	jr	c, +_
+	jp	c, LABEL_5D93
 	
 	sub	b
 	cp	9
-	jr	c, ++_
+	jp	c, LABEL_5D93 ;++
 	ld	a, 8
 	ld	l,a
 
@@ -9339,17 +9370,17 @@ LABEL_5D93:				;updates current position in level
 	add	hl, de
 	ld	($D284), hl
 	set	LVP_SCROLL_RIGHT, (ix + LevelDescriptor.ViewportFlags)
-	jr	+_
+	jp	LABEL_5D93
 
 	ld	a, ($D28C)
 	ld	b, a
 	ld	a, l
 	cp	b
-	jr	nc, +_
+	jp	nc, LABEL_5D93
 
 	sub	b
 	cp	$F7
-	jr	nc, ++_
+	jp	nc, LABEL_5D93 ;++
 	ld	a, $F8
  	ld	l, a
 	ld	h, $FF
@@ -9368,7 +9399,7 @@ LABEL_5D93:				;updates current position in level
 
 	ld	a, l
 	cp	b
-	jr	c, $65A7
+	jp	c, $65A7
 	ld	a, ($D28E)
 	ld	b, a
 	ld	a, l
@@ -9377,7 +9408,7 @@ LABEL_5D93:				;updates current position in level
 	
 	sub	b
 	cp	9
-	jr	c, ++_
+	jp	c, LABEL_5D93 ;++
 	ld	a, 8
  	ld	l, a
 	ld	de, (Camera_Y)
@@ -9394,7 +9425,7 @@ LABEL_5E24:
 	ret	nc
 	sub	b
 	cp	$F7
-	jr	nc, +_
+	jp	nc, LABEL_5E24
 	ld	a, $F8
 	ld	l, a
 	ld	h, $FF
@@ -9415,11 +9446,11 @@ LABEL_5E42:
 	ld	b, a
 	ld	a, ($D288)		;horizontal cam adjustment
 	cp	b
-	jr	z, LABEL_5E62
-	jr	c, +_			;is adjustment < D28A?
+	jp	z, LABEL_5E62
+	jp	c, LABEL_5E42	;is adjustment < D28A?
 	inc	b
 	inc	b
-	jr	++_
+	jp	LABEL_5E42 ;++
 	dec	b
 	dec	b
 	ld	a, b			;set camera bounds
@@ -9434,9 +9465,9 @@ LABEL_5E62:
 	ld	a, ($D289)
 	cp	b
 	ret	z
-	jr	c, +_			;is adjustment < $D28D?
+	jp	c, LABEL_5E62	;is adjustment < $D28D?
 	inc	b
-	jr	++_
+	jp	LABEL_5E62
 	dec	b
  	ld	a, b
 	ld	($D28D), a		;set camera bounds
@@ -9466,13 +9497,13 @@ LABEL_5EA1:
 	ld	de, ($D174)	;camera hpos
 	xor	a
 	sbc	hl, de
-	jr	z, +_			;jump if cam hpos == lock hpos
-	jr	c, ++_		;jump if cam hpos > lock hpos
+	jp	z, LABEL_5EA1		;jump if cam hpos == lock hpos
+	jp	c, LABEL_5EA1		;++. jump if cam hpos > lock hpos
 	
 	inc	de
 	ld	($D284), de
 	set	3, (ix+$00)	;set "level scrolling right" flag
-	jr	+_
+	jp	LABEL_5EA1
 	
  	dec	de
 	ld	($D284), de
@@ -9484,7 +9515,7 @@ LABEL_5EA1:
 	sbc	hl, de
 	ret	z				;return if lock vpos == camera vpos
 	
-	jr	c, +_			;jump if cam vpod > lock vpos
+	jp	c, LABEL_5EA1		;jump if cam vpod > lock vpos
 	inc	de
 	ld	($D286), de
 	set	1, (ix+$00)
@@ -9526,24 +9557,24 @@ LABEL_5EFD:
 
 	cp	$F0					;jump if object >= $F0
 #ifdef Version 2
-	jr	nc, LABEL_5F73
+	jp	nc, LABEL_5F73
 #else
-	jr	nc, LABEL_5F51
+	jp	nc, LABEL_5F51
 #endif
 	
 	;FIXME: surplus op
 	ld	a, (ix + Object.ObjID)
 	
 	cp	$50
-	jr	nc, LABEL_5F3D		;object types >= 80 are in bank 30
+	jp	nc, LABEL_5F3D		;object types >= 80 are in bank 30
 	
 	cp	$20
-	jr	nc, LABEL_5F29		;object types >= 32 < 80 are in bank 28
+	jp	nc, LABEL_5F29		;object types >= 32 < 80 are in bank 28
 	
-	ld	a, (Bank31)			;object types >= 0 < 32 are in bank 31
+	ld	bc, Bank31		;object types >= 0 < 32 are in bank 31
 	call	Engine_SwapFrame2
 	call	Engine_UpdateObject
-	ld	a, (Bank31)
+	ld	bc, Bank31
 	call	Engine_SwapFrame2
 	call	LABEL_6139
 	
@@ -9553,20 +9584,20 @@ LABEL_5EFD:
 	ret	
 
 LABEL_5F29: ;badniks & minecart
-	ld	a, (Bank28)
+	ld	a, Bank28
 	call	Engine_SwapFrame2
 	call	Engine_UpdateObject
-	ld	a, (Bank28)
+	ld	a, Bank28
 	call	Engine_SwapFrame2
 	call	LABEL_6139
 	call	LABEL_617C
 	ret	
 
 LABEL_5F3D:
-	ld	a, (Bank30)
+	ld	bc, Bank30
 	call	Engine_SwapFrame2
 	call	Engine_UpdateObject
-	ld	a, (Bank30)
+	ld	bc, Bank30
 	call	Engine_SwapFrame2
 	call	LABEL_6139
 	call	LABEL_617C
@@ -9615,7 +9646,7 @@ DATA_5F60:
 .dl Engine_DeallocateObject
 
 LABEL_5F80:
-ret
+	ret
 
 #endif
 
@@ -9638,9 +9669,9 @@ Engine_UpdatePlayerObject:		;$603F
 	; dont run any state update logic if the player is dead
 	ld	a, (Player.State)
 	cp	PlayerState_LostLife
-	jr	z, +_
+	jp	z, Engine_UpdatePlayerObject
 	cp	PlayerState_Drowning
-	jr	z, +_
+	jp	z, Engine_UpdatePlayerObject
 	; FALL THROUGH
 
 
@@ -9660,13 +9691,13 @@ Engine_UpdateObject:		;$604A
 	or	(ix + Object.LogicSeqPtr + 1)
 	; if the pointer is zero fetch the value from the object's
 	; logic pointer array
-	jr	z, Engine_UpdateObject_GetLogicPtr
+	jp	z, Engine_UpdateObject_GetLogicPtr
 
 	; check to see if the state has changed
 	ld	a, (ix + Object.StateNext)
 	cp	(ix + Object.State)
 	; if the state has changed process the logic sequence data
-	jr	nz, Engine_UpdateObject_State
+	jp	nz, Engine_UpdateObject_State
 	
 	; decrement the frame counter and update the animation variables
 	; if it is zero
@@ -9755,7 +9786,7 @@ Engine_UpdateObject_Animation:		;$60AC
 	; update the object's animation-related variables
 	
 	; swap in the bank with the frame mapping data
-	ld	a, Object_AnimFrameMappings
+	ld	bc, Object_AnimFrameMappings
 	call	Engine_SwapFrame2
 	
 	; calculate a pointer to the object's frame mapping pointers
@@ -9783,25 +9814,25 @@ Engine_UpdateObject_Animation:		;$60AC
 	
 	; read & store the sprite count
 	ld	a, (hl)
-	ld	(ix + Object.SpriteCount), a
+	ld	(ix + Object.SpriteCount), bc
 
 	; read & store object width in tiles
 	inc	hl
 	ld	a, (hl)
-	ld	(ix + Object.Width), a
+	ld	(ix + Object.Width), bc
 	
 	; read & store object height in tiles
 	inc	hl
 	ld	a, (hl)
-	ld	(ix + Object.Height), a
+	ld	(ix + Object.Height), bc
 
 	; read & store the sprite arrangement data pointer
 	inc	hl
 	ld	a, (hl)
-	ld	(ix + Object.SprMappgPtr), a
+	ld	(ix + Object.SprMappgPtr), bc
 	inc	hl
 	ld	a, (hl)
-	ld	(ix + Object.SprMappgPtr + 1), a
+	ld	(ix + Object.SprMappgPtr + 1), bc
 
 	; store the resulting sprite attribute pointer 
 	; (pointer to horiz/vert offsets & char codes)
@@ -9820,16 +9851,16 @@ LABEL_60E9:
 	ld	($D34F), a		;set the pattern load trigger (see $1274)
 	
 	cp	$11
-	jr	c, +_
+	jp	c, LABEL_60E9
 	
 	cp	$16
-	jr	c, LABEL_6131
+	jp	c, LABEL_6131
 	
 	ld	hl, Engine_InputFlags
 	bit	2, (hl)		;check for left button
-	jr	nz, LABEL_6127
+	jp	nz, LABEL_6127
 	bit	3, (hl)		;check for right button
-	jr	nz, LABEL_611D
+	jp	nz, LABEL_611D
 	res	4, (ix+$04)
 	ld	a, ($D350)
 	and	$40
@@ -9854,8 +9885,8 @@ LABEL_6127:
 
 LABEL_6131:	
 	bit	7, (ix+$17)
-	jr	z, LABEL_611D
-	jr	LABEL_6127
+	jp	z, LABEL_611D
+	jp	LABEL_6127
 
 LABEL_6139:
 	ld	l, (ix+$0C)
@@ -9874,7 +9905,7 @@ Engine_AllocateObjectHighPriority:		;$6144
 	ld	de, $0040
 	ld		a, (ix+$00)
 	or	a
-	jr	z, LABEL_615C
+	jp	z, LABEL_615C
 	add	ix, de
 	djnz	Engine_AllocateObjectHighPriority
 	pop	ix
@@ -9893,7 +9924,7 @@ Engine_AllocateObjectLowPriority:		;$6165
 	ld	b, $0B
 	ld		a, (iy+$00)
 	or	a
-	jr	z, +_
+	jp	z, Engine_AllocateObjectLowPriority
 	add	iy, de
 	djnz	Engine_AllocateObjectLowPriority
 	scf
@@ -9928,7 +9959,7 @@ LABEL_617C:
 	
 	ld	a, l
 	cp	$50
-	jr	nc, LABEL_61C2
+	jp	nc, LABEL_61C2
 	
 	ld	l, (ix+$14)
 	ld	h, (ix+$15)
@@ -9943,7 +9974,7 @@ LABEL_617C:
 	rr	l
 	ld	a, l
 	cp	$50
-	jr	nc, LABEL_61C2
+	jp	nc, LABEL_61C2
 	ret	
 
 LABEL_61C2:
@@ -9959,7 +9990,7 @@ LABEL_61C2:
 	sbc	hl, bc
 	ld	a, h
 	cp	$04
-	jr	nc, LABEL_61FA
+	jp	nc, LABEL_61FA
 	ld	l, (ix+$14)
 	ld	h, (ix+$15)
 	ld	bc, $0180
@@ -9969,13 +10000,13 @@ LABEL_61C2:
 	sbc	hl, bc
 	ld	a, h
 	cp	$04
-	jr	nc, LABEL_61FA
+	jp	nc, LABEL_61FA
 	ret	
 
 LABEL_61FA:
 	ld	a, (ix+$3e)
 	or	a
-	jr	z, +_
+	jp	z, LABEL_61FA
 	ld	(ix+$00), $fe
 	ld	(ix+$01), $00
 	ret	
@@ -9994,7 +10025,7 @@ LABEL_6212:
 	sbc	hl, bc
 	ld	a, h
 	cp	$04
-	jr	nc, LABEL_623F
+	jp	nc, LABEL_623F
 	ld	l, (ix+$3c)
 	ld	h, (ix+$3d)
 	ld	bc, $0180
@@ -10004,7 +10035,7 @@ LABEL_6212:
 	sbc	hl, bc
 	ld	a, h
 	cp	$04
-	jr	nc, LABEL_623F
+	jp	nc, LABEL_623F
 	ret	
 
 LABEL_623F:
@@ -10016,7 +10047,7 @@ LABEL_623F:
 Engine_DeallocateObject:		;$6248
 	ld	a, (ix+$3E)		;get the index of this object
 	or	a				;in the active objects array
-	jp	z, +_
+	jp	z, Engine_DeallocateObject
 
 	dec	a
 	ld	e, a
@@ -10144,10 +10175,10 @@ Engine_SetObjectVerticalSpeed:		;$62FE
 	ld	e, l
 	ld	d, h
 	bit	7, h
-	jr	nz, LABEL_6313	;jump if object is moving up
+	jp	nz, LABEL_6313	;jump if object is moving up
 	xor	a
 	sbc	hl, bc			;set velocity if below threshold
-	jr	c, LABEL_6313
+	jp	c, LABEL_6313
 	ret	
 
 LABEL_6311:
@@ -10170,16 +10201,16 @@ LABEL_631A:
 	pop	hl
 	
 	bit	7, a				;is block value >= $80?
-	jr	z, LABEL_634C		;if not, clear Z flag and return
+	jp	z, LABEL_634C		;if not, clear Z flag and return
 	
 	ld	e, (ix+$18)			;DE = object's vertical speed
 	ld	d, (ix+$19)
 	bit	7, d
-	jr	nz, LABEL_634C		;jump if object moving up (clear Z flag)
+	jp	nz, LABEL_634C		;jump if object moving up (clear Z flag)
 	
 	xor	a					;this part makes the object bounce
 	sbc	hl, de				;HL -= DE
-	jr	c, LABEL_6344		;jump if object now moving up
+	jp	c, LABEL_6344		;jump if object now moving up
 	
 	ld	hl, $0000			;object still moving down - set vertical
 	ld	(ix+$18), l			;velocity to 0
@@ -10214,11 +10245,11 @@ LABEL_6355:
 LABEL_635B:
 	ld	a, ($D501)				;check for jumps/rolls
 	cp	PlayerState_Jumping
-	jr	z, LABEL_636B
+	jp	z, LABEL_636B
 	cp	PlayerState_Rolling
-	jr	z, LABEL_636B
+	jp	z, LABEL_636B
 	cp	PlayerState_JumpFromRamp
-	jr	z, LABEL_636B
+	jp	z, LABEL_636B
 	ret	
 
 LABEL_636B:
@@ -10226,13 +10257,13 @@ LABEL_636B:
 	and	$0F
 	ret	z
 	bit	0, a
-	jr	nz, +_
+	jp	nz, LABEL_636B
 	bit	1, a
-	jr	nz, ++_
+	jp	nz, LABEL_636B ;++
 	ld	hl, ($D518)
 	ld	a, l
 	or	h
-	jr	z, ++_
+	jp	z, LABEL_636B ;++
 	ld	hl, $FC00		;set vertical speed
 	ld	($D518), hl
  	ld	a, PlayerState_JumpFromRamp
@@ -10243,7 +10274,7 @@ LABEL_636B:
 	ld	d, (ix+$12)
 	xor	a
 	sbc	hl, de
-	jr	nc, +_			;jump if object is behind player
+	jp	nc, LABEL_636B			;jump if object is behind player
 	ld	bc, $FC00
 	ld	($D516), bc	;horizonal velocity
 	ret	
@@ -10538,7 +10569,7 @@ LABEL_6544:
 	ld	l, (ix+$2C)
 	ld	h, $00
 	bit	7, (ix+$17)
-	jr	z, +_
+	jp	z, LABEL_6544
 	ex	de, hl
 	ld	hl, $0000
 	xor	a
@@ -10548,14 +10579,14 @@ LABEL_6544:
 	ld	de, $FFEF
 	call	Engine_GetCollisionValueForBlock		;collide with background tiles
 	cp	$81
-	jr	z, LABEL_656B
+	jp	z, LABEL_656B
 	cp	$8D
-	jr	z, LABEL_656B
+	jp	z, LABEL_656B
 	ret	
 
 LABEL_656B:
 	bit	7, (ix+$17)
-	jr	nz, LABEL_6576
+	jp	nz, LABEL_6576
 	set	2, (ix+$22)
 	ret
 LABEL_6576:
@@ -10563,10 +10594,10 @@ LABEL_6576:
 	ret	
 
 ;********************************************************
-;*	Change an object's direction flags based on the	*
-;*	current horizontal velocity.						*
-;*														*
-;*	destroys	A, H									*
+;*	Change an object's direction flags based on the   *
+;*	current horizontal velocity.				  *
+;*									  *
+;*	destroys	A, H						  *
 ;********************************************************
 Logic_UpdateObjectDirectionFlag:	;$657B
 	ld	h, (ix+$17)	;test object's horizontal velocity
@@ -10575,7 +10606,7 @@ Logic_UpdateObjectDirectionFlag:	;$657B
 	ret	z				;return if velocity is 0
 	ld	a, h
 	and	$80			;which direction is the object moving?
-	jr	nz, +_			;jump if object moving left
+	jp	nz, Logic_UpdateObjectDirectionFlag			;jump if object moving left
 	
 	res	4, (ix+$04)	;flag object moving right
 	ret
@@ -10586,7 +10617,7 @@ Logic_UpdateObjectDirectionFlag:	;$657B
 
 ;********************************************************
 ;*	Change an object's direction flags so that the next *
-;*	update will move the object towards the player.	*
+;*	update will move the object towards the player.	   *
 ;*														*
 ;*	destroys	A, DE, HL								*
 ;********************************************************
@@ -10596,9 +10627,9 @@ Logic_ChangeDirectionTowardsPlayer:	;$6592
 ;********************************************************
 ;*	Change an object's direction flags so that the next *
 ;*	update will move the object towards another object. *
-;*														*
-;*	in	DE		The other object's hpos				*
-;*	destroys	A, HL									*
+;*									    *
+;*	in	DE		The other object's hpos		    *
+;*	destroys	A, HL						    *
 ;********************************************************
 Logic_ChangeDirectionTowardsObject:	;$6596
 	ld	l, (ix+$11)	;HL = object's hpos
@@ -10608,7 +10639,7 @@ Logic_ChangeDirectionTowardsObject:	;$6596
 	sbc	hl, de			;compare both objects' hpos
 	ret	z				;return if objects are overlapping
 
-	jr	nc, +_			;jump if DE < HL
+	jp	nc, Logic_ChangeDirectionTowardsObject			;jump if DE < HL
 
 	res	4, (ix+$04)	;flag object moving right
 	ret
@@ -10644,7 +10675,7 @@ Logic_MoveHorizontalTowardsPlayerAt0400:	;$65AC
 ;****************************************************************
 Logic_MoveHorizontalTowardsObject:		;$65B5
 	bit	4, (ix+$04)	;which direction is the object facing
-	jr	z, +_			;jump if facing right
+	jp	z, Logic_MoveHorizontalTowardsObject		;jump if facing right
 	
 	dec	de				;2's comp DE
 	ld	a, d
@@ -10666,7 +10697,7 @@ Logic_MoveHorizontalTowardsObject:		;$65B5
 	xor	a
 	sbc	hl, de			;subtract object hpos from other
 							;object's adjusted hpos
-	jr	nc, +_			;jump if object is to left of other object
+	jp	nc, Logic_MoveHorizontalTowardsObject		;jump if object is to left of other object
 	
 	dec	bc				;2's comp bc (i.e. move in reverse)
 	ld	a, b
@@ -10678,7 +10709,7 @@ Logic_MoveHorizontalTowardsObject:		;$65B5
 	
 	ld	a, l
 	or	h
-	jr	nz, +_			;jump if HL != 0 (i.e. objects are not on
+	jp	nz, Logic_MoveHorizontalTowardsObject			;jump if HL != 0 (i.e. objects are not on
 							;top of each other).
 	ld	bc, $0000		;set horizontal velocity to 0
 	
@@ -10712,7 +10743,7 @@ Logic_MoveVerticalTowardsObject:		;$65EB
 	
 	xor	a
 	sbc	hl, de			;compare A's vpos with B's
-	jr	nc, +_			;jump if A is above B
+	jp	nc, Logic_MoveVerticalTowardsObject			;jump if A is above B
 	
 	dec	bc				;2's comp desired velocity
 	ld	a, b
@@ -10724,7 +10755,7 @@ Logic_MoveVerticalTowardsObject:		;$65EB
 
 	ld	a, l			;if objects are overlapping
 	or	h				;set object A's speed to 0
-	jr	nz, +_
+	jp	nz, Logic_MoveVerticalTowardsObject
 	ld	bc, $0000
 	
 	ld	(ix+$19), b	;set A's vertical velocity
@@ -10797,7 +10828,7 @@ Engine_RemoveBreakableBlock:		;$6614
 	; check the breakable block's metatile number
 	ld	a, (Cllsn_MetatileIndex)
 	cp	$F7
-	jr	nz, +_
+	jp	nz, Engine_RemoveBreakableBlock
 
 	ld	c, Object_BlockFragment2
 
@@ -10919,7 +10950,7 @@ Logic_Cmd_SetSpeed:	; $66CB
 	; if the object is facing left we need to 
 	; invert the horizontal speed value
 	bit	OBJ_F4_FACING_LEFT, (ix + Object.Flags04)
-	jr	z, +_
+	jp	z, Logic_Cmd_SetSpeed
 	
 	ld	hl, $0000
 	xor	a
@@ -10945,7 +10976,7 @@ LABEL_66FB:
 
 LABEL_670F:	;command sequence $FF $06 - load a sprite
 	call	Engine_AllocateObjectLowPriority
-	jr	c, LABEL_677C	;if no sprite slots
+	jp	c, LABEL_677C	;if no sprite slots
 	ld	l, (ix+$0E)
 	ld	h, (ix+$0F)
 	ld	a, (hl)
@@ -10965,7 +10996,7 @@ LABEL_670F:	;command sequence $FF $06 - load a sprite
 	ld	(ix+$0E), l
 	ld	(ix+$0F), h
 	bit	4, (ix+$04)
-	jr	z, +_
+	jp	z, LABEL_670F
 	ld	hl, $0000
 	xor	a
 	sbc	hl, de
@@ -11153,7 +11184,7 @@ Engine_CheckCollision:		;$6840
 	; check for invincibility power up
 	ld	a, (Player.PowerUp)
 	cp	$02
-	jr	nz, +_
+	jp	nz, Engine_CheckCollision
 
 	; flag player as invulnerable
 	ld	hl, Player.Flags03
@@ -11179,7 +11210,7 @@ Engine_CheckCollision:		;$6840
 	ret	nz
 	
 	bit	OBJ_F3_BIT7, (ix + Object.Flags03)
-	jr	nz, +_
+	jp	nz, Engine_CheckCollision
 
 	ld	a, (Player.Flags03)
 	bit	OBJ_F3_BIT6, a
@@ -11193,7 +11224,7 @@ Engine_CheckCollision:		;$6840
 	sbc	hl, de
 	
 	; is the player to the left?
-	jr	c, Engine_CheckCollision_Left
+	jp	c, Engine_CheckCollision_Left
 	
 	; player is to the right of the object
 	; test proximity (i.e. difference < 256)
@@ -11244,16 +11275,16 @@ Engine_CheckCollision_Bottom:	;$68B4
 	sbc	hl, de
 
 	; jump if player is above object
-	jr	c, Engine_CheckCollision_Top
+	jp	c, Engine_CheckCollision_Top
 	
 	ld	a, h
 	or	a
-	jr	nz, Engine_CheckCollision_Return
+	jp	nz, Engine_CheckCollision_Return
 	
 	; test proximity
 	ld	a, (Player.Height)
 	cp	l
-	jr	c, Engine_CheckCollision_Return
+	jp	c, Engine_CheckCollision_Return
 	
 	; flag the collision
 	set	OBJ_COL_BOTTOM, (ix + Object.SprColFlags)
@@ -11263,10 +11294,10 @@ Engine_CheckCollision_Bottom:	;$68B4
 Engine_CheckCollision_Top:		;$68D3
 	ld	a, h
 	inc	a
-	jr	nz, Engine_CheckCollision_Return
+	jp	nz, Engine_CheckCollision_Return
 	ld	a, l
 	neg	
-	jr	z, Engine_CheckCollision_Return
+	jp	z, Engine_CheckCollision_Return
 	
 	; store the overlap value in L
 	ld	l, a
@@ -11274,7 +11305,7 @@ Engine_CheckCollision_Top:		;$68D3
 	; test proximity
 	ld	a, (ix + Object.Height)
 	cp	l
-	jr	c, Engine_CheckCollision_Return
+	jp	c, Engine_CheckCollision_Return
 	
 	; Flag the collision
 	set	OBJ_COL_TOP, (ix + Object.SprColFlags)
@@ -11287,7 +11318,7 @@ Engine_CheckCollision_UpdateObjectFlags:	;$68E7
 	
 	; keep the flag bits corresponding to the deepest collision
 	ld	b, (1 << OBJ_COL_RIGHT) | ( 1 << OBJ_COL_LEFT)
-	jr	c, +_
+	jp	c, Engine_CheckCollision_UpdateObjectFlags
 	ld	b, (1 << OBJ_COL_BOTTOM) | ( 1 << OBJ_COL_TOP)
 	ld	a, (ix + Object.SprColFlags)
 	and	b
@@ -11296,13 +11327,13 @@ Engine_CheckCollision_UpdateObjectFlags:	;$68E7
 	; is player collidable?
 	ld	a, (Player.Flags03)
 	bit	OBJ_F3_BIT7, a
-	jr	nz, +_
+	jp	nz, Engine_CheckCollision_UpdateObjectFlags
 	
 	; record a collision with the player object
 	ld	(ix + Object.CollidingObj), 1
 	
 	bit	OBJ_F3_BIT7, (ix + Object.Flags03)
-	jr	nz, +_
+	jp	nz, Engine_CheckCollision_UpdateObjectFlags
 
 	; calculate the object's index and store in the player object
 	; structure as the colliding object
@@ -11320,7 +11351,7 @@ Engine_CheckCollision_UpdateObjectFlags:	;$68E7
 	; invert the collision flags
 	and	$03
 	ld	c, $0C
-	jr	z, +_
+	jp	z, Engine_CheckCollision_UpdateObjectFlags
 	ld	c, $03
 	ld	a, b
 	xor	c
@@ -11351,9 +11382,9 @@ LABEL_6938:
 	ld	b, (ix+$22)	;b = background collision flags
 	ld	a, ($D3B9)
 	or	a
-	jr	nz, +_
+	jp	nz, LABEL_6938
 	bit	1, (ix+$03)
-	jr	nz, ++_
+	jp	nz, LABEL_6938 ;++
 	
 	ld	a, (ix+$21)	;a = object collision flags
 	rrca
@@ -11523,10 +11554,10 @@ LABEL_6A25:
 	inc	de
 	exx	
 	cp	$08
-	jr	nc, +_
+	jp	nc, LABEL_6A25
 	ld	a, ($D444)
 	cp	b
-	jr	nc, +_
+	jp	nc, LABEL_6A25
 	exx	
 	dec	de
 	ld	a, $FE
@@ -11622,10 +11653,10 @@ LABEL_6B17:
 	inc	hl
 	ld	a, (hl)
 	cp	$FE
-	jr	z, +_
+	jp	z, LABEL_6B17
 	inc	a
 	cp	$F9
-	jr	c, ++_
+	jp	c, LABEL_6B17 ;++
 	ld	a, $F6
 	ld	(hl), a
 	dec	hl
@@ -11645,7 +11676,7 @@ LABEL_6B47:
 	ld	($D442), hl
 	ld	a, h
 	and	$80
-	jr	nz, +_
+	jp	nz, LABEL_6B47
 	ld	a, h
 	or	l
 	jp	nz, LABEL_69F5
@@ -11733,12 +11764,12 @@ LABEL_6BF2: ;collision with ring object?
 LABEL_6C01:
 	ld	a, (Player_MaxVelX)
 	and	a
-	jp	p, +_
+	jp	p, LABEL_6C01
 	neg	
 	cp	$04
 	jp	nc, LABEL_6C2D
 	bit	0, (ix+$07)
-	jr	z, LABEL_6C21
+	jp	z, LABEL_6C21
 	call	LABEL_6C3C
 	call	Player_CheckTopLevelCollision
 	call	LABEL_7378
@@ -11838,7 +11869,7 @@ LABEL_6CAD:				;diagonal spring
 	set	4, (ix+$04)
 	ld	a, ($d365)
 	cp	$80
-	jr	nc, +_
+	jp	nc, LABEL_6CAD
 	ld	hl, $0780
 	res	4, (ix+$04)
 	ld	(ix+$16), l		;horizontal velocity
@@ -11846,7 +11877,7 @@ LABEL_6CAD:				;diagonal spring
 	ld	hl, $FAF0
 	ld	a, (CurrentLevel)
 	cp	$03				;check to see if we're on GHZ
-	jr	z, +_
+	jp	z, LABEL_6CAD
 	ld	hl, $F900			
 	jp	Player_SetState_DiagonalSpring
 
@@ -11884,16 +11915,16 @@ LABEL_6D0D:	; GMZ rotating discs
 	cpir 
 	; if the metatile is in the array load hl with -256
 	; otherwise load hl with +256
-	jr	z, +_
+	jp	z, LABEL_6D0D
 	ld	hl, 256
-	jr	++_
+	jp	LABEL_6D0D ;++
 	ld	hl, -256
 
  ; FIXME: do this after the CPIR so that we dont have
 	;		to compare again here
 	ld	c, $00
 	bit	7, h
-	jr	z, +_
+	jp	z, LABEL_6D0D
 	dec	c
 
 	; clear the carry flag
@@ -11927,11 +11958,11 @@ LABEL_6D52:
 	ld	a, ($D365)
 	ld	c, $FF
 	cp	$EF
-	jr	nz, +_
+	jp	nz, LABEL_6D52
 	ld	a, ($D511)		;get player h-pos
 	ld	c, $ED
 	and	$10
-	jr	z, +_
+	jp	z, LABEL_6D52
 	inc	c
 	push	bc
 	res	1, (ix+$22)
@@ -11970,22 +12001,22 @@ LABEL_6DAA:
 	res	1, (ix+$22)
 	ld	a, ($D501)
 	cp	PlayerState_Rolling
-	jr	z, +_
+	jp	z, LABEL_6DAA
 	cp	PlayerState_JumpFromRamp
-	jr	z, +_
-	jr	LABEL_6DD5
+	jp	z, LABEL_6DAA
+	jp	LABEL_6DD5
 	ld	a, ($D364)
 	or	a
-	jr	z, LABEL_6DD5
+	jp	z, LABEL_6DD5
 	bit	7, (ix+$17)
-	jr	nz, LABEL_6DCC
+	jp	nz, LABEL_6DCC
 	bit	1, a
-	jr	z, LABEL_6DD5
+	jp	z, LABEL_6DD5
 	jp	Player_RampLaunch
 
 LABEL_6DCC:
 	bit	1, a
-	jr	nz, LABEL_6DD5
+	jp	nz, LABEL_6DD5
 	jp	Player_RampLaunch
 
 LABEL_6DD5: 
@@ -12005,7 +12036,7 @@ LABEL_6DED:
 	ld	l, (ix+$16)
 	ld	h, (ix+$17)
 	bit	7, h				;is horizontal velocity negative?
-	jr	nz, LABEL_6E10
+	jp	nz, LABEL_6E10
 	ld	d, h			;take horizontal velocity, divide by 2 and add to vertical velocity
 	ld	e, l
 	srl	h
@@ -12070,7 +12101,7 @@ LABEL_6E30:
 LABEL_6E56:
 	ld	a, (Cllsn_CollisionValueX)
 	bit	6, a
-	jr	nz, LABEL_6E8B
+	jp	nz, LABEL_6E8B
 	and	$3F
 	ld	b, a
 	ld	a, (Cllsn_AdjustedY)
@@ -12127,11 +12158,11 @@ Player_EnterPipe:		;$6EB7
 	set	0, (ix+$03)
 	ld	a, (Cllsn_MetatileIndex)		;get current mapping index
 	cp	$3B
-	jr	z, Player_EnterPipe_Top	;vertical entrance - top
+	jp	z, Player_EnterPipe_Top	;vertical entrance - top
 	cp	$3C
-	jr	z, Player_EnterPipe_Bottom	;vertical entrance - bottom
+	jp	z, Player_EnterPipe_Bottom	;vertical entrance - bottom
 	cp	$3D
-	jr	z, Player_EnterPipe_Left	;horizontal entrance - left
+	jp	z, Player_EnterPipe_Left	;horizontal entrance - left
 	cp	$3E
 	jp	z, Player_EnterPipe_Right	;horizontal entrance - right
 	jp	Player_EnterPipe_Return
@@ -12162,9 +12193,9 @@ Player_EnterPipe_Bottom:		;$6ED6
 Player_EnterPipe_Top:		;$6F03
 	ld	a, (ix+$01)		;check to see if the player
 	cp	PlayerState_InPipe	;is already in the pipe
-	jr	z, Player_EnterPipe_Return
+	jp	z, Player_EnterPipe_Return
 	bit	7, (ix+$19)
-	jr	nz, Player_EnterPipe_Return	;bail out if player is moving up	
+	jp	nz, Player_EnterPipe_Return	;bail out if player is moving up	
 	ld	(ix+$02), PlayerState_InPipe	;set player state
 	ld	hl, $0600			;set vertical speed
 	ld	(ix+$18), l
@@ -12181,9 +12212,9 @@ Player_EnterPipe_Top:		;$6F03
 Player_EnterPipe_Left:		;$6F2E
 	ld	a, (ix+$01)		;check to see if the player
 	cp	PlayerState_InPipe	;is already in the pipe
-	jr	z, Player_EnterPipe_Return
+	jp	z, Player_EnterPipe_Return
 	bit	7, (ix+$17)
-	jr	nz, Player_EnterPipe_Return	;bail out if player is moving left
+	jp	nz, Player_EnterPipe_Return	;bail out if player is moving left
 	ld	(ix+$02), PlayerState_InPipe	;set player state
 	ld	hl, $0600			;set horizontal speed
 	ld	(ix+$16), l
@@ -12200,9 +12231,9 @@ Player_EnterPipe_Left:		;$6F2E
 Player_EnterPipe_Right:	;$6F59
 	ld	a, (ix+$01)		;check to see if the player
 	cp	PlayerState_InPipe	;is already in the pipe
-	jr	z, Player_EnterPipe_Return
+	jp	z, Player_EnterPipe_Return
 	bit	7, (ix+$17)
-	jr	z, Player_EnterPipe_Return		;bail out if player is moving right
+	jp	z, Player_EnterPipe_Return		;bail out if player is moving right
 	ld	(ix+$02), PlayerState_InPipe	;set player state
 	ld	hl, $FA00			;set horizontal speed
 	ld	(ix+$16), l
@@ -12218,16 +12249,16 @@ Player_EnterPipe_Return:	;$6F81
 ;A == mapping number
 LABEL_6F82:
 	cp	$F2
-	jr	nc, +_			;jump if mapping >= $F2 (ugz lava block)
+	jp	nc, LABEL_6F82			;jump if mapping >= $F2 (ugz lava block)
 	
 	cp	$DF				;jump if mapping >= $DF & < $F2
-	jr	nc, LABEL_6FCE	;i.e. the GMZ conveyor belts
+	jp	nc, LABEL_6FCE	;i.e. the GMZ conveyor belts
 	
 	cp	$88				;return if mapping >= $88 & < $DF
 	ret	nc
 
 	cp	$78				;jump if mapping >= $78 & < $88
-	jr	nc, ++_			;e.g. springs & spikes
+	jp	nc, LABEL_6F82 ;++			;e.g. springs & spikes
 
 	cp	$70				;return if mapping >= $70 & < $78
 	ret	nc				;i.e. ring blocks
@@ -12315,7 +12346,7 @@ Cllsn_ProjectVertical:		; $7010
 	push	af
 	
 	; swap in the bank with the collision data
-	ld	a, (Bank30)
+	ld	bc, Bank30
 	ld	(Frame2Page), a
 	ld	($FFFF), a
 	
@@ -12345,12 +12376,12 @@ Cllsn_ProjectVertical:		; $7010
 	; if collision value == $82 calculate the projection value and
 	; store in memory but dont apply it to the object's position.
 	cp	$82
-	jr	z, Cllsn_ProjectVertical_NoAlter
+	jp	z, Cllsn_ProjectVertical_NoAlter
 	
 	
 	; if the MSB is zero, don't bother projecting out
 	bit	7, a
-	jr	z, Cllsn_ProjectVertical_Epilogue
+	jp	z, Cllsn_ProjectVertical_Epilogue
 	
 	inc	hl				;get speed modifier value
 	ld	a, (hl)
@@ -12374,7 +12405,7 @@ Cllsn_ProjectVertical:		; $7010
 	ld	a, (hl)
 	
 	and	$3F
-	jr	z, Cllsn_ProjectVertical_Epilogue
+	jp	z, Cllsn_ProjectVertical_Epilogue
 
 	; project out of the collision
 	ld	c, a
@@ -12418,7 +12449,7 @@ Cllsn_ProjectVertical_NoAlter:		; $706F
 	ld	a, (hl)
 	
 	and	$3F
-	jr	z, Cllsn_ProjectVertical_Epilogue
+	jp	z, Cllsn_ProjectVertical_Epilogue
 
 	; add 32 to the projection value and store
 	ld	b, a
@@ -12517,9 +12548,9 @@ Player_CheckHorizontalLevelCollision:		;$7102
 	call	Engine_GetCollisionDataForBlock
 	ld	a, (Cllsn_MetaTileSurfaceType)
 	cp	$81	;solid block
-	jr	z, Player_CollideRightWithSolidBlock
+	jp	z, Player_CollideRightWithSolidBlock
 	cp	$0A	;horizontal spring
-	jr	z, Player_CollideRightWithSolidBlock
+	jp	z, Player_CollideRightWithSolidBlock
 	cp	$05	;spikes
 	jp	z, Player_CollideRightWithSpikeBlock
 	cp	$8D	;breakable block
@@ -12550,7 +12581,7 @@ Player_CollideRightWithSolidBlock:	;$7139
 	and	$3F
 	ret	z				;return if collision value == 0
 	cp	$20
-	jr	z, +_
+	jp	z, Player_CollideRightWithSolidBlock
 	bit	6, b
 	ret	z				;return if value < $40
 	add		a, c			;collision value += position on block
@@ -12583,13 +12614,13 @@ LABEL_7172:
 	call	Engine_GetCollisionDataForBlock
 	ld	a, (Cllsn_MetaTileSurfaceType)		;get block type
 	cp	$81	;solid block
-	jr	z, Player_CollideLeftSolidBlock
+	jp	z, Player_CollideLeftSolidBlock
 	cp	$0A	;horizontal spring
-	jr	z, Player_CollideLeftSolidBlock
+	jp	z, Player_CollideLeftSolidBlock
 	cp	$05	;spikes
 	jp	z, Player_CollideLeftWithSpikeBlock
 	cp	$8D	;breakable block
-	jr	z, Player_CollideLeftBreakableBlock
+	jp	z, Player_CollideLeftBreakableBlock
 	cp	$13
 	jp	z, Player_CollideHorizontalWithPipeBlock
 	ret
@@ -12608,7 +12639,7 @@ Player_CollideLeftSolidBlock:		;$7195
 	and	$3F
 	ret	z
 	cp	$20
-	jr	z, +_
+	jp	z, Player_CollideLeftSolidBlock
 	bit	6, b
 	ret	nz
 	cp	c
@@ -12637,18 +12668,18 @@ Player_CollideRightBreakableBlock:		;$71C9
 	jp	z, Player_CollideRightWithSolidBlock
 	ld	a, ($D517)
 	bit	7, a
-	jr	z, +_
+	jp	z, Player_CollideRightBreakableBlock
 	neg	
 	cp	$03
 	jp	c, Player_CollideRightWithSolidBlock
 	ld	hl, ($D516)
 	ld	a, h
 	cp	$07
-	jr	nc, +_
+	jp	nc, Player_CollideRightBreakableBlock
 	ld	bc, $0040
 	add	hl, bc
 	ld	($D516), hl
-	jr	Player_CollideBreakableBlock_UpdateMappings
+	jp	Player_CollideBreakableBlock_UpdateMappings
 
 
 ;****************************************************
@@ -12661,7 +12692,7 @@ Player_CollideLeftBreakableBlock:		;$71EF
 	
 	ld	a, ($D517)
 	bit	7, a			;check player's direction
-	jr	z, _
+	jp	z, Player_CollideLeftBreakableBlockB
 	neg	;negate value if player moving left
 	cp	$03			;check player's speed
 	jp	c, Player_CollideLeftSolidBlock	;not fast enough - act as solid
@@ -12669,15 +12700,15 @@ Player_CollideLeftBreakableBlock:		;$71EF
 	ld	a, h
 	neg	
 	cp	$07
-	jr	nc, Player_CollideBreakableBlock_UpdateMappings
+	jp	nc, Player_CollideBreakableBlock_UpdateMappings
 	ld	bc, $FFC0
 	add	hl, bc
 	ld	($D516), hl
 
 
 ;****************************************************
-;*	Updates the level layout mappings after a		*
-;*	collision with a breakable block.				*
+;*	Updates the level layout mappings after a	    *
+;*	collision with a breakable block.		    *
 ;****************************************************
 Player_CollideBreakableBlock_UpdateMappings:	;$7215
 	ld	a, ($D162)		;load bank with 32x32 mappings
@@ -12716,15 +12747,15 @@ Player_CollideBreakableBlock_UpdateMappings:	;$7215
 
 
 ;****************************************************
-;*	Create the block fragment objects that are		*
+;*	Create the block fragment objects that are	*
 ;*	displayed after a collision with a breakable	*
-;*	block.											*
+;*	block.							*
 ;****************************************************
 Engine_CreateBlockFragmentObjects:		;$7248
 	ld	c, $04
 	ld	a, (Cllsn_MetatileIndex)		;get block type
 	cp	$F7
-	jr	nz, +_
+	jp	nz, Engine_CreateBlockFragmentObjects
 	ld	c, Object_BlockFragment2		;create the block fragment objects
 	ld	h, $00
 	call	Engine_AllocateObjectHighPriority
@@ -12744,7 +12775,7 @@ Player_CollideRightWithSpikeBlock		;$7267
 	ld	a, (Cllsn_MetatileIndex)		;get the block type
 	and	$FE
 	cp	$F2
-	jr	z, +_
+	jp	z, Player_CollideRightWithSpikeBlock
 	;check to see if the player is riding the mine cart.
 	;the spike blocks act as breakable blocks if the
 	;collision occurred while riding the minecart.
@@ -12772,7 +12803,7 @@ Player_CollideLeftWithSpikeBlock:		;$728A
 	ld	a, (Cllsn_MetatileIndex)		;get the block type
 	and	$FE
 	cp	$F2
-	jr	z, +_
+	jp	z, Player_CollideLeftWithSpikeBlock
 	;check to see if the player is riding the mine cart.
 	;the spike blocks act as breakable blocks if the
 	;collision occurred while riding the minecart.
@@ -12816,7 +12847,7 @@ Player_CheckTopLevelCollision:			;$72B8
 	
 	ld	a, (Cllsn_MetaTileSurfaceType)		;get block type
 	cp	$81		;solid block
-	jr	z, Player_CollideTopSolidBlock
+	jp	z, Player_CollideTopSolidBlock
 	cp	$8D		;breakable block
 	jp	z, Player_CollideBreakableBlock_UpdateMappings
 	cp	$15		;vertical spring on ceiling
@@ -12842,7 +12873,7 @@ Player_CollideTopSolidBlock:	;$72E6
 	ret	z
 	
 	cp	$20
-	jr	z, +_
+	jp	z, Player_CollideTopSolidBlock
 
 	bit	6, b
 	ret	nz
@@ -12892,7 +12923,7 @@ Player_CollideTopWithSpikeBlock:		;$7329
 	ret	z
 	
 	cp	$20
-	jr	z, +_
+	jp	z, Player_CollideTopWithSpikeBlock
 	bit	6, b
 	ret	z
 	cp	c
@@ -12936,14 +12967,14 @@ LABEL_7378:
 	ld	bc, $0000
 	ld	de, $FFE6
 	bit	0, (ix+$07)
-	jr	z, +_
+	jp	z, LABEL_7378
 	ld	de, $FFF0
 	ld	a, ($D465)			;copy the previous collision value.
 	ld	($D466), a
 	call	Engine_GetCollisionValueForBlock	;collide with background tiles
 	ld	($D465), a			;store block collision value here
 	cp	$07				;was the collision with a block of rings?
-	jr	z, Player_CollideWithRingBlock
+	jp	z, Player_CollideWithRingBlock
 	jp	Player_ALZ_WaterBounce
 
 
@@ -13073,7 +13104,7 @@ Player_ALZ_WaterBounce:	;$7447
 	; check to see if the player is moving up or down
 	ld	a, (Player.VelY + 1)
 	bit	7, a					; FIXME: might be more efficient to use	OR A; JP M +
-	jr	nz, +_		
+	jp	nz, Player_ALZ_WaterBounce		
 	
 	; the player is moving down - create a "splash" object
 	ld	c, Object_WaterSplash
@@ -13087,7 +13118,7 @@ Player_ALZ_WaterBounce:	;$7447
 	; check to see if the player is moving left or right
 	ld	a, (Player.VelX + 1)
 	bit	7, a					; FIXME: might be more efficient to use OR A; JP P +
-	jr	z, +_
+	jp	z, Player_ALZ_WaterBounce
 	
 	neg	
 
@@ -13127,7 +13158,7 @@ Engine_GetCollisionDataForBlock:		;$7481
 	push	af
 	
 	; swap in the bank with the collision data
-	ld	a, (Bank30)
+	ld	bc, Bank30
 	ld	(Frame2Page), a
 	ld	($FFFF), a
 	
@@ -13311,7 +13342,7 @@ Engine_GetCollisionValueForBlock:		;$752E
 	push	af
 	
 	; swap in the bank with the collision data
-	ld	a, (Bank30)
+	ld	bc, Bank30
 	ld	(Frame2Page), a
 	ld	($FFFF), a
 	
@@ -13506,7 +13537,7 @@ LABEL_761E:	;seems to be unused
 	
 	; is this metatile a conveyor belt block?
 	cp	$F0 
-	jr	z, +_
+	jp	z, LABEL_761E
 
 	; the block is not a conveyor belt. load HL with +256
 	ld	hl, 256
@@ -13622,7 +13653,7 @@ Engine_LoadLevelTiles:		;$763F
 	; move to the next tileset header entry
 	ld	bc, $0005
 	add	iy, bc
-	jr	Engine_LoadLevelTiles
+	jp	Engine_LoadLevelTiles
 
 
 ; =============================================================================
@@ -13701,28 +13732,81 @@ LevelSelect_LoadFont:		; $76D7
 
 	ret
 
-
+Bank25:
+#ifdef CurrentLevel = Level_UGZ
+	ld	hl, UndergroundZone
+	call	Mov9ToOP1
+	call	ChkFindSym
+	jp	nc, DataFound
+	ld	a, UGZ_Title_Pic_Art
+#endif
+#ifdef CurrentLevel = Level_SHZ
+	ld	hl, SkyHighZone
+	call	Mov9ToOP1
+	call	ChkFindSym
+	jp	nc, DataFound
+	ld	a, SHZ_Title_Pic_Art
+#endif
+#ifdef CurrentLevel = Level_ALZ
+	ld	hl, AquaLakeZone
+	call	Mov9ToOP1
+	call	ChkFindSym
+	jp	nc, DataFound
+	ld	a, ALZ_Title_Pic_Art
+#endif
+#ifdef CurrentLevel = Level_GHZ
+	ld	hl, GreenHillsZone
+	call	Mov9ToOP1
+	call	ChkFindSym
+	jp	nc, DataFound
+	ld	a, GHZ_Title_Pic_Art
+#endif
+#ifdef CurrentLevel = Level_GMZ
+	ld	hl, GimmickMtZone
+	call	Mov9ToOP1
+	call	ChkFindSym
+	jp	nc, DataFound
+	ld	a, GMZ_Title_Pic_Art
+#endif
+#ifdef CurrentLevel = Level_SEZ
+	ld	hl, ScrambledEggZone
+	call	Mov9ToOP1
+	call	ChkFindSym
+	jp	nc, DataFound
+	ld	a, SEZ_Title_Pic_Art
+#endif
+#ifdef CurrentLevel = Level_CEZ
+	ld	hl, CrystalEggZone
+	call	Mov9ToOP1
+	call	ChkFindSym
+	jp	nc, DataFound
+	ld	a, CEZ_Title_Pic_Art
+#endif
+	ret
 
 TitleCard_LoadTiles:		;76EB
 	di
-	ld	a, (Bank09)
+	ld	hl, Intro
+	call	Mov9ToOP1
+	call	ChkFindSym
+	jp	nc, DataFound
 	call	Engine_SwapFrame2
-	ld	hl, $2000		;set up to write to VRAM at $2000
+	ld	hl, $D42000		;set up to write to VRAM at $D42000
 	call	VDP_SetAddress
 	ld	hl, Art_TitleCard_Text_Tiles
 	xor	a
 	call	LoadTiles
-	ld	hl, $3020		;set up to write to VRAM at $3020
+	ld	hl, $D43020		;set up to write to VRAM at $D43020
 	call	VDP_SetAddress
 	ld	hl, Art_TitleCard_Unknown
 	xor	a
 	call	LoadTiles
-	ld	hl, $30C0		;set up to write to VRAM at $30C0
+	ld	hl, $D430C0		;set up to write to VRAM at $D430C0
 	call	VDP_SetAddress
 	ld	hl, Art_TitleCard_Unknown2
 	xor	a
 	call	LoadTiles
-	ld	a, (Bank07)
+	;ld	a, Art_Scrolling_Text_Background
 	call	Engine_SwapFrame2
 	ld	hl, $1000
 	call	VDP_SetAddress
@@ -13732,7 +13816,7 @@ TitleCard_LoadTiles:		;76EB
 	ld	a, (GlobalTriggers)		;check to see if we need to display the score card
 	bit	2, a
 	jp	z, ScoreCard_LoadMappings
-	ld	a, (Bank25)			;load the level picture
+	ld	bc, Bank25		;load the level picture
 	call	Engine_SwapFrame2
 	ld	hl, $0000
 	call	VDP_SetAddress
@@ -13785,7 +13869,11 @@ _DATA_7761:
 
 GameOverScreen_LoadTiles:	;777D
 	di
-	ld	a, (Bank15)				;switch to bank 15
+	;ld	a, (Bank15)	switch to bank 15. kept for debugging
+	ld	hl, Ending
+	call	Mov9ToOP1
+	call	ChkFindSym
+	jp	nc, DataFound
 	call	Engine_SwapFrame2
 	ld	hl, $2000					;write to VRAM at $2000
 	call	VDP_SetAddress
@@ -13798,7 +13886,11 @@ GameOverScreen_LoadTiles:	;777D
 ;Used by end of game sequence?
 ContinueScreen_LoadTiles:	;7791
 	di
-	ld	a, (Bank15)
+	;ld	a, (Bank15) kept for debugging
+	ld	hl, Ending
+	call	Mov9ToOP1
+	call	ChkFindSym
+	jp	nc, DataFound
 	call	Engine_SwapFrame2
 	ld	hl, $2000
 	call	VDP_SetAddress
@@ -13889,7 +13981,7 @@ Engine_ClearVRAM:		; $77F3
 	dec	bc
 	ld	a, b
 	or	c
-	jr	nz, Engine_ClearVRAM
+	jp	nz, Engine_ClearVRAM
 
 	; FIXME: use tail recursion here.
 	; turn the display on
@@ -13952,7 +14044,7 @@ Engine_HandlePLC:		;$783B
 
 	ld	a, (PLC_BankNumber)		;if the msb of the bank number is set we 
 	bit	7, a					;need to mirror the tile horizontally
-	jr	nz, Engine_HandlePLC_CopyMirrored
+	jp	nz, Engine_HandlePLC_CopyMirrored
 
 
 	call	Engine_SwapFrame2		;swap the correct bank into page 2
@@ -13963,7 +14055,7 @@ Engine_HandlePLC:		;$783B
 	or	a
 	jp	z, Engine_HandlePLC_CleanUp ;bail out if nothing to do
 	cp	$04
-	jr	c, +_
+	jp	c, Engine_HandlePLC
 	ld	a, $04					;copy 4 bitplanes
 	ld	b, a
 	ld	c, $20					;do this 32 times
@@ -14005,10 +14097,10 @@ Engine_HandlePLC_CopyMirrored:		;$789D
 
 	ld	a, (PLC_ByteCount)		;make sure that bytecount > 0
 	or	a
-	jr	z, Engine_HandlePLC_CleanUp
+	jp	z, Engine_HandlePLC_CleanUp
 
 	cp	$04				;loop a minimum of 4 times
-	jr	c, +_
+	jp	c, Engine_HandlePLC_CopyMirrored
 	ld	a, $04
 
 	ld	b, a			;b = number of tiles to copy
@@ -14058,7 +14150,7 @@ Engine_HandlePLC_ParseDescriptor:	;$78EB
 
 	ld	a, (hl)				;check for the $FF terminator byte
 	cp	$FF
-	jr	z, Engine_HandlePLC_CleanUp
+	jp	z, Engine_HandlePLC_CleanUp
 
 	ld	(PLC_BankNumber), a	;Store bank number
 	inc	hl
@@ -14197,8 +14289,8 @@ PLC_EOL_Unknown_3:
 Engine_HandlePLC_ChaosEmerald:	;$7993
 	di	;Disable interrupts - we're accessing VRAM
 
-	ld	a, (Bank20)
-	call	Engine_SwapFrame2		;swap in bnak 20
+	ld	bc, Bank20
+	call	Engine_SwapFrame2		;swap in bank 20
 
 	ld	a, (PatternLoadCue)	;subract $20 from PLC value and calculate
 	sub	$20					;an offset into the pointer array
@@ -14399,7 +14491,7 @@ UpdateCyclingPalette_Rain:		;$7D41
 	ld	a, (iy+$02)
 	inc	a
 	cp	$03
-	jr	c, $89F6
+	jp	c, $89F6
 	xor	a
 	ld	(iy+$02), a
 	add	a, a
@@ -14429,7 +14521,7 @@ UpdateCyclingPalette_SHZ_Lightning:	;$7D73
 	ld	a, $3C
 	ld	bc, $330F
 	bit	1, (iy+$02)
-	jr	nz, $8A2F
+	jp	nz, $8A2F
 	ld	a, $10
 	ld	bc, $1010
 	ld	hl, $D4D1
@@ -14453,7 +14545,7 @@ UpdateCyclingPalette_Lava:		;$7DA7
 	ld	a, (iy+$02)
 	inc	a
 	cp	$03
-	jr	c, +_
+	jp	c, UpdateCyclingPalette_Lava
 	xor	a		;reset counter
 	ld	(iy+$02), a
 	add	a, a
@@ -14483,7 +14575,7 @@ UpdateCyclingPalette_Water:	;$7DD9
 	ld	a, (iy+$02)
 	inc	a
 	cp	$03
-	jr	c, $8A9A
+	jp	c, $8A9A
 	xor	a
 	ld	(iy+$02), a
 	add	a,a
@@ -14509,7 +14601,7 @@ UpdateCyclingPalette_Conveyor:		;$7E0B
 	ld	a, (iy+$02)
 	inc	a
 	cp	$03
-	jr	c, $8AD0
+	jp	c, $8AD0
 	xor	a
 	ld	(iy+$02), a
 	add	a,a
@@ -14534,7 +14626,7 @@ UpdateCyclingPalette_Unknown2:		;$7E3D
 	ld	a, (iy+$02)
 	inc	a
 	cp	$0C
-	jr	c, $8B06
+	jp	c, $8B06
 	xor	a
 	ld	(iy+$02), a
 	add	a, a
@@ -14559,7 +14651,7 @@ UpdateCyclingPalette_WallLighting:		;$7E6C
 	ld	a, (iy+$02)
 	inc	a
 	cp	$06
-	jr	c, $8B39
+	jp	c, $8B39
 	xor	a
 	ld	(iy+$02), a
 	ld	e, a
@@ -14583,7 +14675,7 @@ UpdateCyclingPalette_Orb:		;$7E97
 	ld	a, (iy+$02)
 	inc	a
 	cp	$0e
-	jr	c, $8B67
+	jp	c, $8B67
 	xor	a
 	ld	(iy+$02), a
 	add	a, a
@@ -14608,7 +14700,7 @@ UpdateCyclingPalette_Lightning:	;$7EC6
 	ld	a, (iy+$02)
 	inc	a
 	cp	$03
-	jr	c, $8B9A
+	jp	c, $8B9A
 	xor	a
 	ld	(iy+$02), a
 	add	a, a
@@ -14646,14 +14738,14 @@ UpdateCyclingPalette_ScrollingText:	;$7F15
 
 	ld	a, (Frame2Page)		;save current bank so that we can swap it back in later
 	push	af
-	ld	a, (Bank30)
+	ld	bc, Bank30
 	call	Engine_SwapFrame2
 
 	ld	hl, DATA_B30_AFCF
 
 	ld	a, ($D12F)			;use the frame counter to alternate
 	bit	2, a				;the palettes
-	jr	z, +_
+	jp	z, UpdateCyclingPalette_ScrollingText
 
 	ld	hl, DATA_B30_AFD5	;copy the palette to working copy of CRAM
 
@@ -14684,7 +14776,7 @@ LABEL_7F46:	;update the palette for the end sequence
 	inc	(iy+$02)
 	ld	a, (iy+$02)
 	cp	$0A
-	jr	c, LABEL_7F74
+	jp	c, LABEL_7F74
 	xor	a
 	ld	(iy+$00), a
 	ld	(iy+$02), a
@@ -14707,7 +14799,7 @@ LABEL_7F7E:
 	ld	a, (iy + $02)
 	inc	a
 	cp	$06
-	jr	c, $8C69
+	jp	c, $8C69
 	xor	a
 	ld	(iy + $02), a
 	add	a, a
@@ -14748,7 +14840,7 @@ Engine_AnimateRingArt:		;$7FAE
 	ld	a, (Engine_RingAnimFrame)
 	inc	a
 	cp	$06
-	jr	c, +_
+	jp	c, Engine_AnimateRingArt
 	xor	a 
 	; store the updated counter value
 	ld	(Engine_RingAnimFrame), a
@@ -14778,7 +14870,7 @@ Engine_AnimateRingArt:		;$7FAE
 	ret	z
 
 	; swap in the bank with the ring art
-	ld	a, (Bank29)
+	ld	bc, Bank29
 	ld	($FFFF), a
 	
 	; set the VRAM pointer to the destination address

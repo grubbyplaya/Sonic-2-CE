@@ -110,8 +110,6 @@ Crab_State_03:			;$84D8
 	.dw $0000
 .db $40, $03
 	.dw Crab_State_03_Logic_01
-.db $FF, $09
-	.db SFX_BombBounce
 .db $FF, $06		;spawn a fireball projectile
 	.db Object_CrabProjectile
 	.dw $0000
@@ -168,7 +166,7 @@ Crab_State_01_Logic_02:		;$853C
 	call    VF_Engine_CheckCollision
 	call    Logic_CheckBackgroundCollision
 	bit     0, a
-	jr      z, LABEL_B28_8558
+	jp      z, LABEL_B28_8558
 	ld      (ix+$02), $02		;set state to $02
 	jp      LABEL_B28_8594
 
@@ -188,7 +186,7 @@ Crab_State_02_Logic_02:		;$8568
 	call    VF_Engine_CheckCollision
 	call    Logic_CheckBackgroundCollision
 	bit     0, a
-	jr      z, +_
+	jp      z, +_
 	ld      (ix+$02), $01
 	jp      LABEL_B28_8594
 
@@ -220,7 +218,7 @@ CrabProjectile_State_00_Logic_01:	;$85A7
 	ld      hl, $0080		;set horizontal speed to 128
 	ld      a, (ix+$3F)
 	or      a
-	jr      z, +_			;if this is the first projectile
+	jp      z, +_			;if this is the first projectile
 	ld      hl, $FF80		;set horizontal speed to -128
 	ld      (ix+$16), l
 	ld      (ix+$17), h
@@ -239,7 +237,7 @@ CrabProjectile_State_01_Logic_01:	;$85C7
 	ld      (ix+$18), l			;set vertical speed
 	ld      (ix+$19), h
 	bit     6, (ix+$04)
-	jr      z, +_
+	jp      z, +_
 	ld      (ix+$00), $FF		;destroy the object
 	call    VF_Engine_CheckCollision
 	ld      a, (ix+$21)

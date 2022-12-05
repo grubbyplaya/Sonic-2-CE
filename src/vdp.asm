@@ -1,6 +1,3 @@
-;The bane of this project's existence. In order for this project to actually function,
-;nearly everything in this file will have to be rewritten.
-
 ; =============================================================================
 ;  VDP_InitRegisters()
 ; -----------------------------------------------------------------------------
@@ -461,7 +458,7 @@ LABEL_13D2:
 	
 	ld		a, ($D292)
 	bit		7, a
-	jr		nz, +_
+	jr		nz, LABEL_13D2
 
 	di
 	
@@ -490,7 +487,7 @@ LABEL_13D2:
 	halt
 	ld		a, ($D137)
 	and		$80
-	jr		nz, ++_
+	jr		nz, LABEL_13D2	;++
 
 	djnz  LABEL_13D2
 

@@ -1,17 +1,15 @@
 Logic_BlockFragment:
-.dw BlockFragment_State_00
-.dw BlockFragment_State_01
+.dl BlockFragment_State_00
+.dl BlockFragment_State_01
 
 BlockFragment_State_00:		;$AC25
-.db $FF, $09		;play the "break block" sound
-	.db SFX_BreakBlock
 .db $01, $00
-	.dw BlockFragment_State_00_Logic_01
+	.dl BlockFragment_State_00_Logic_01
 .db $FF, $00
 
 BlockFragment_State_01		;$AC2E	
 .db $80, $01
-	.dw BlockFragment_State_01_Logic_01
+	.dl BlockFragment_State_01_Logic_01
 .db $FF, $00
 
 
@@ -70,15 +68,15 @@ BlockFragment_State_00_Logic_01:		;$AC34
 	ret     
 
 DATA_B31_AC98:
-.dw $0004, $0000, $FE00, $FC00
-.dw $0014, $0000, $0080, $FD00
-.dw $0004, $0014, $FE00, $FF00
-.dw $0014, $0014, $0080, $FE00
+.dl $0004, $0000, $FE00, $FC00
+.dl $0014, $0000, $0080, $FD00
+.dl $0004, $0014, $FE00, $FF00
+.dl $0014, $0014, $0080, $FE00
 DATA_B31_ACB8:
-.dw $0004, $0000, $FF80, $FD00
-.dw $0014, $0000, $0200, $FC00
-.dw $0004, $0014, $FF80, $FE00
-.dw $0014, $0014, $0200, $FF00
+.dl $0004, $0000, $FF80, $FD00
+.dl $0014, $0000, $0200, $FC00
+.dl $0004, $0014, $FF80, $FE00
+.dl $0014, $0014, $0200, $FF00
 
 
 BlockFragment_State_01_Logic_01:		;$ACD8

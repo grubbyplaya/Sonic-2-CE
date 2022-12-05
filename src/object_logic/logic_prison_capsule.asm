@@ -229,7 +229,7 @@ PrisonCapsule_LockCamera:		;$916E
 	xor     a
 
 	sbc     hl, de				;compare object's hpos with camera hpos
-	jr      c, +_				;jump if object to left of camera
+	jp      c, +_				;jump if object to left of camera
 
 	ld      a, h				;return if the object is too far offscreen
 	or      a
@@ -278,7 +278,7 @@ PrisonCapsule_SetEndOfLevel:	;$91D7
 	
 	ld      a, ($D501)			;check player state
 	cp      PlayerState_EndOfLevel
-	jr      z, +_
+	jp      z, +_
 
 	ld      a, ($D503)			;check to see if player is jumping
 	bit     0, a
@@ -286,9 +286,6 @@ PrisonCapsule_SetEndOfLevel:	;$91D7
 
 	ld      a, PlayerState_EndOfLevel
 	ld      ($D502), a			;set player state
-	
-	ld      a, Music_EndOfLevel
-	ld      ($DD04), a			;play end of level music
 
 
 	ld      a, (ix+$1E)			;make the capsule vibrate
@@ -366,7 +363,6 @@ PrisonCapsule_CheckCollision_SetState2:		;$924F
 	
 	ld      (ix+$02), $02		;set object state = $02
 	
-	ld      a, SFX_Bomb			;play Bomb sound
 	ld      ($DD04), a
 	ret     
 

@@ -1,3 +1,8 @@
+AppVarObj	.equ 15h	;application variable
+
+S2MAIN: 
+.db	AppVarObj, "S2MAIN", 0 
+
 Art_Sonic:				
 #import "art/sonic/art_ucmp_sonic.bin"
 
@@ -53,6 +58,9 @@ Art_Monitor_8:
 Art_Rings:
 #import "art/rings/art_rings.bin"
 
+Art_SHZ_Glider:
+#import "art/level/shz/art_shz_glider.bin"
+
 Art_Badnik_Turtle:		
 #import "art/badniks/art_badnik_turtle.bin"
 
@@ -65,11 +73,8 @@ Art_Badnik_Bomb:			;B655
 Art_Badnik_Crab:			;B871
 #import "art/badniks/art_badnik_crab.bin"
 
-Art_SHZ_Glider:
-#import "art/level/shz/art_shz_glider.bin"
+Art_Badnik_Motobug:		;$BC82
+#import "art/badniks/art_badnik_motobug.bin"
 
 Art_Signpost:
 #import "art/misc/art_ucmp_signpost.bin"
-
-Art_Badnik_Motobug:		;$BC82
-#import "art/badniks/art_badnik_motobug.bin"

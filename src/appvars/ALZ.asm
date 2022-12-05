@@ -1,5 +1,7 @@
-LevelName:
-  .db AppVarObj,"Aqua Lake"
+AppVarObj	.equ $15	;application variable
+
+AquaLakeZone: 
+.db	AppVarObj, "ALZ", 0 
 
 Layout_ALZ1:
 #import "layout\alz\layout_alz1.bin"
@@ -65,6 +67,9 @@ DemoControlSequence_ALZ:		;$B072
 
 ALZ_Title_Pic_Art:
 #import "art\titlecard\alz_title_card_pic.bin"
+
+DATA_29C4:	;mappings for "AQUA LAKE"
+#import "mappings/titlecard/titlecard_mappings_29C4.bin"
 
 ALZ_Title_Pic_Mappings:
 #import "mappings\titlecard\alz_title_card_pic_mappings.bin"
