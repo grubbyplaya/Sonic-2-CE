@@ -109,7 +109,7 @@
 #define  Engine_ObjectSlots                    $D500
 
 PlayerObj:
-	call    Player
+#define Player 0
 ; ---------------------------------------------------------
 
 

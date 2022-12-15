@@ -26,7 +26,6 @@ Art_Rings_SEZ:
 Art_Rings_CEZ:
 #import "art\rings\rings_ucmp_cez.bin"
 
-
 LABEL_B29_B400:				;push the last 16 sprites off of the screen
 	ld      b, $10			;by setting the VPOS attribute
 	ld      a, $E0

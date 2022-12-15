@@ -17,7 +17,7 @@
 #define	Object_WaterSplash		$0B	;ALZ water splash
 
 ;#define    Object_Fireball?            	$0D   ; same logic as $0E
-#define    Object_UGZFireball          	$0E
+#define	Object_UGZFireball          	$0E
 #define	Object_Explosion			$0F
 #define	Object_Monitor			$10
 #define    Object_ChaosEmerald1        	$11

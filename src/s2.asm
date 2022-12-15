@@ -4,6 +4,7 @@
 #include	"appvars.asm"
 #include	"includes/defines.asm"
 #include	"includes/sms.asm"
+#include	"palette_routines.asm"
 #include	"includes/structures.asm"
 #include	"includes/objects.asm"			;values for objects
 #include	"includes/player_states.asm"		;values for player object state
@@ -9584,10 +9585,10 @@ LABEL_5EFD:
 	ret	
 
 LABEL_5F29: ;badniks & minecart
-	ld	a, Bank28
+	ld	de, Bank28
 	call	Engine_SwapFrame2
 	call	Engine_UpdateObject
-	ld	a, Bank28
+	ld	de, Bank28
 	call	Engine_SwapFrame2
 	call	LABEL_6139
 	call	LABEL_617C
@@ -11536,7 +11537,7 @@ LABEL_6A25:
 	exx	
 	inc	ix
 	inc	ix
-	djnz	LABEL_69F
+	djnz	LABEL_69F5
 	ld	b, $08
 	ld	ix, $D455
 	ld	de, ($D174)
@@ -11566,7 +11567,7 @@ LABEL_6A25:
 	exx	
 	inc	ix
 	inc	ix
-	djnz	LABEL_69F
+	djnz	LABEL_69F5
 	ret	
 
 LABEL_6A7E:
@@ -12692,7 +12693,7 @@ Player_CollideLeftBreakableBlock:		;$71EF
 	
 	ld	a, ($D517)
 	bit	7, a			;check player's direction
-	jp	z, Player_CollideLeftBreakableBlockB
+	jp	z, Player_CollideLeftBreakableBlock
 	neg	;negate value if player moving left
 	cp	$03			;check player's speed
 	jp	c, Player_CollideLeftSolidBlock	;not fast enough - act as solid
@@ -13902,7 +13903,11 @@ ContinueScreen_LoadTiles:	;7791
 
 ContinueScreen_LoadNumberTiles:	;77A5
 	di
-	ld	a, (Bank15)
+	;ld	a, (Bank15)
+	ld	hl, Ending
+	call	Mov9ToOP1
+	call	ChkFindSym
+	jp	nc, DataFound
 	call	Engine_SwapFrame2
 	ld	hl, $2240
 	call	VDP_SetAddress

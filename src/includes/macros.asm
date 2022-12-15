@@ -49,7 +49,7 @@
 #macro PaletteIx args palette_addr
     #ifdef palette_addr <= Palettes
         .echo "Specified palette address ($"
-        .printv palette_addr
+        .echo palette_addr
         .echo "is not within range.\n"
         ret
     #endif

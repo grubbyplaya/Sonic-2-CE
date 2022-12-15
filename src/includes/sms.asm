@@ -21,10 +21,10 @@
 ; =========================================================
 ;  Input Bitfield
 ; ---------------------------------------------------------
-;The control code haven't been altered in any way.
-;Instead, these defines tell SPASM-ng to interpret the 
-;SMS button code as keys on the TI-84+ CE to make it way
-;easier to customize the controls.
+;The control code haven't been altered in any way. Instead, 
+;these defines tell SPASM-ng to interpret the SMS button code
+;as keys on the TI-84+ CE to make it a lot easier to customize
+;the controls.
 BTN_UP_BIT = kbitUp
 BTN_DOWN_BIT = kbitDown
 BTN_LEFT_BIT = kbitLeft
