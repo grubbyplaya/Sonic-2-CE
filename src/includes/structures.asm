@@ -1,45 +1,39 @@
-;These structures are used by the level loading routines 
+;These defines are used by the level loading routines 
 ;to load the locate the compressed art for each zone.
 
-#macro TilesetHeader
-	#define BankNum		;ROM bank to load tiles from
-	#define VRAMAddress	;Address to copy tiles to
-	#define SourceAddress
-	#define Entries		;pointer to the chain of tileset entries
-#endmacro
+	#define TilesetHeader.BankNum		$00		;ROM bank to load tiles from
+	#define TilesetHeader.VRAMAddress	 	$01		;Address to copy tiles to
+	#define TilesetHeader.SourceAddress	$03
+	#define TilesetHeader.Entries		$05	;pointer to the chain of tileset entries
 
-#macro TilesetEntry
-	#define BankNum		;ROM Bank to load from. Bit 7 is the indexed tiles flag that is passed to the LoadTiles routine.
-	#define VRAMAddress	;Address to copy tiles to
-	#define SourceAddress
-#endmacro
-
+	#define TilesetEntry.BankNum		$00	;ROM Bank to load from. Bit 7 is the indexed tiles flag that is passed to the LoadTiles routine.
+	#define TilesetEntry.VRAMAddress		$01	;Address to copy tiles to
+	#define TilesetEntry.SourceAddress	$03
 
 ;Used by the sprite loading routine at $10BF  
 ;to load the playersprites into VRAM at $0000.
 
-#macro SpriteDef
-	#define BankNum	
-	#define SourceAddress
-	#define LineCount		;LineCount = TileCount/2 (two tiles are copied for each line).
-#endmacro
-
+	#define SpriteDef.BankNum			$00
+	#define SpriteDef.SourceAddress		$01
+	#define SpriteDef.LineCount			$03	;LineCount = TileCount/2 (two tiles are copied for each line).
 
 ; =============================================================================
 ;  LEVEL STRUCTURE & FLAGS
 ; -----------------------------------------------------------------------------
-	#define LevelDescriptor.ViewportFlags	0
-	#define LevelDescriptor.ix01			1
-	#define LevelDescriptor.MetaTileX		2 ; x-index of metatile (see: Engine_Mappings_GetBlockXY)
-	#define LevelDescriptor.MetaTileY		3 ; y-index of metatile (see: Engine_Mappings_GetBlockXY)
-	#define LevelDescriptor.MetaTileBank	4
-	#define LevelDescriptor.LayoutBank		5
-	#define LevelDescriptor.MetaTilePtr		6
-	#define LevelDescriptor.LayoutPtr		7
-	#define LevelDescriptor.StrideTable		8
-	#define LevelDescriptor.WidthNeg		9
-	#define LevelDescriptor.Width			10
-	#define LevelDescriptor.DataOffset		11
+	#define LevelDescriptor.ViewportFlags	$00
+	#define LevelDescriptor.ix01		$01
+	#define LevelDescriptor.MetaTileX		$02 ; x-index of metatile (see: Engine_Mappings_GetBlockXY)
+	#define LevelDescriptor.MetaTileY		$03 ; y-index of metatile (see: Engine_Mappings_GetBlockXY)
+	#define LevelDescriptor.MetaTileBank	$04
+	#define LevelDescriptor.LayoutBank	$05
+	#define LevelDescriptor.MetaTilePtr	$06
+	#define LevelDescriptor.LayoutPtr		$08
+	#define LevelDescriptor.StrideTable	$0A
+	#define LevelDescriptor.WidthNeg		$0C
+	#define LevelDescriptor.Width		$0E
+	#define LevelDescriptor.DataOffset	$10
+
+
 
 ; Viewport Flag bits
 #define LVP_SCROLL_UP			0
@@ -55,59 +49,58 @@
 ; =============================================================================
 ;  OBJECT STRUCTURE & FLAGS
 ; -----------------------------------------------------------------------------
-	#define Object.ObjID		0	; $00 - object number
-	#define Object.State		1	; $01
-	#define Object.StateNext	2	; $02
-	#define Object.Flags03		3	; $03
-	#define Object.Flags04		4	; $04
-	#define Object.SpriteCount	5	; $05
-	#define Object.AnimFrame	6   	; $06
-	#define Object.FrameCounter	7	; $07
-	#define Object.RightFacingIdx	8	; $08
-	#define Object.LeftFacingIdx 	9	; $09
-	#define Object.ix0A		10  	; movement flags?
-	#define Object.ix0B		11
-	#define Object.LogicPtr		12 	; $0C - Pointer to logic subroutine.
-	#define Object.LogicSeqPtr	13	; $0E - Pointer to logic sequence data
-	#define Object.SubPixelX	14	; $10 - fractional part of xpos
-	#define Object.X			15	; $11 - x pos in level
-	#define Object.SubPixelY	16	; $13 - fractional part of ypos
-	#define Object.Y			17	; $14 - y pos in level
-	#define Object.VelX		18  	; $16 - x velocity (Q8.8)
-	#define Object.VelY		19	; $18 - y velocity (Q8.8)
-	#define Object.ScreenX		20	; $1A - x offset on screen
-	#define Object.ScreenY		21	; $1C - y offset on screen
-	#define Object.ix1E		22
-	#define Object.ix1F		23
-	#define Object.CollidingObj	24	; $20 - index of colliding object
-	#define Object.SprColFlags	25 	; $21 - background collision flags
-	#define Object.BgColFlags	26  	; $22 - sprite collision flags
-	#define Object.ix23		27	; $23 - bg + obj collision flags?
-	#define Object.ix24		28
-	#define Object.ix25		29
-	#define Object.ix26		30
-	#define Object.ix27		31
-	#define Object.SprMappgPtr	32	; $28 - pointer to sprite mapping data for current anim frame
-	#define Object.SprOffsets	33  	; $2A - pointer to sprite SAT offsets (2 words in object anim data)
-	#define Object.Width		34   	; $2C
-	#define Object.Height		35	; $2D
-	#define Object.FlashCounter	36	; $2E - counter used to toggle sprite visibility
-	#define Object.ix2F		37
-	#define Object.D530		38
-	#define Object.D531		39
-	#define Object.PowerUp		40	; $32 - current power-up 
-	#define Object.D533		41
-	#define Object.D534		42
-	#define Object.D535		43
-	#define Object.D536		44
-	#define Object.D537		45
-	#define Object.D538		46
-	#define Object.D539		47
-	#define Object.InitialX	  	48	; $3A - initial x coordinate
-	#define Object.InitialY	 	49	; $3C - initial y coordinate
-	#define Object.ActvObjIdx	50  	; $3E - index of object within active objects array
-	#define Object.ix3F		51
-
+	#define Object.ObjID		$00	; $00 - object number
+	#define Object.State		$01	; $01
+	#define Object.StateNext	$02	; $02
+	#define Object.Flags03		$03	; $03
+	#define Object.Flags04		$04	; $04
+	#define Object.SpriteCount	$05	; $05
+	#define Object.AnimFrame	$06   	; $06
+	#define Object.FrameCounter	$07	; $07
+	#define Object.RightFacingIdx	$08	; $08
+	#define Object.LeftFacingIdx 	$09	; $09
+	#define Object.ix0A		$0A  	; movement flags?
+	#define Object.ix0B		$0B
+	#define Object.LogicPtr	$0C 	; $0C - Pointer to logic subroutine.
+	#define Object.LogicSeqPtr	$0E	; $0E - Pointer to logic sequence data
+	#define Object.SubPixelX	$10	; $10 - fractional part of xpos
+	#define Object.X			$11	; $11 - x pos in level
+	#define Object.SubPixelY	$13	; $13 - fractional part of ypos
+	#define Object.Y			$14	; $14 - y pos in level
+	#define Object.VelX		$16 	; $16 - x velocity (Q8.8)
+	#define Object.VelY		$18	; $18 - y velocity (Q8.8)
+	#define Object.ScreenX		$1A	; $1A - x offset on screen
+	#define Object.ScreenY		$1C	; $1C - y offset on screen
+	#define Object.ix1E		$1E
+	#define Object.ix1F		$1F
+	#define Object.CollidingObj	$20	; $20 - index of colliding object
+	#define Object.SprColFlags	$21	; $21 - background collision flags
+	#define Object.BgColFlags	$22  	; $22 - sprite collision flags
+	#define Object.ix23		$23	; $23 - bg + obj collision flags?
+	#define Object.ix24		$24
+	#define Object.ix25		$25
+	#define Object.ix26		$26
+	#define Object.ix27		$27
+	#define Object.SprMappgPtr	$28	; $28 - pointer to sprite mapping data for current anim frame
+	#define Object.SprOffsets	$2A  	; $2A - pointer to sprite SAT offsets (2 words in object anim data)
+	#define Object.Width		$2C   	; $2C
+	#define Object.Height		$2D	; $2D
+	#define Object.FlashCounter	$2E	; $2E - counter used to toggle sprite visibility
+	#define Object.ix2F		#2F
+	#define Object.D530		$30
+	#define Object.D531		$31
+	#define Object.PowerUp		$32	; $32 - current power-up 
+	#define Object.D533		$33
+	#define Object.D534		$34
+	#define Object.D535		$35
+	#define Object.D536		$36
+	#define Object.D537		$37
+	#define Object.D538		$38
+	#define Object.D539		$39
+	#define Object.InitialX	$3A	; $3A - initial x coordinate
+	#define Object.InitialY	$3C	; $3C - initial y coordinate
+	#define Object.ActvObjIdx	$3E  	; $3E - index of object within active objects array
+	#define Object.ix3F		$3F
 
 ; ---------------------------------------------------------
 ;  Object Flag Byte F3 bits
@@ -145,3 +138,4 @@
 ;  Object Flag Byte ix23 bits
 ; ---------------------------------------------------------
 #define OBJ_F23_BIT0	   	0
+

@@ -2,52 +2,52 @@
 ;*	Logic for the end-of-act signpost.	*
 ;****************************************
 Logic_Signpost:		;$B899
-.dl Signpost_State_00
-.dl Signpost_State_01
-.dl Signpost_State_02
-.dl Signpost_State_03
-.dl Signpost_State_04
-.dl Signpost_State_05
+.dw Signpost_State_00
+.dw Signpost_State_01
+.dw Signpost_State_02
+.dw Signpost_State_03
+.dw Signpost_State_04
+.dw Signpost_State_05
 
 Signpost_State_00:		;$B8A5
 .db $01, $00
-	.dl Signpost_State_00_Logic_01
+	.dw Signpost_State_00_Logic_01
 .db $FF, $05
 	.db $04
 .db $FF, $00
 
 Signpost_State_01:		;$B8AE
 .db $E0, $01
-	.dl Signpost_State_01_Logic_01
+	.dw Signpost_State_01_Logic_01
 .db $FF, $00
 
 Signpost_State_02:		;$B8B4
 .db $02, $01
-	.dl Signpost_State_02_Logic_01		;calculate which signpost to display
+	.dw Signpost_State_02_Logic_01		;calculate which signpost to display
 .db $02, $02
-	.dl Signpost_State_02_Logic_01
+	.dw Signpost_State_02_Logic_01
 .db $02, $03
-	.dl Signpost_State_02_Logic_01
+	.dw Signpost_State_02_Logic_01
 .db $02, $04
-	.dl Signpost_State_02_Logic_01
+	.dw Signpost_State_02_Logic_01
 .db $02, $03
-	.dl Signpost_State_02_Logic_01
+	.dw Signpost_State_02_Logic_01
 .db $02, $02
-	.dl Signpost_State_02_Logic_01
+	.dw Signpost_State_02_Logic_01
 .db $FF, $00
 
 Signpost_State_03:		;$B8D7
 .db $FF, $07
-	.dl Signpost_State_03_Logic_01	;set frame display count to 7 & copy state from (ix+$1E)
+	.dw Signpost_State_03_Logic_01	;set frame display count to 7 & copy state from (ix+$1E)
 	.dl VF_DoNothing		;does nothing
 .db $FF, $07
-	.dl Signpost_State_03_Logic_02	;set frame display count to $E0 & copy state from (ix+$1E)
-	.dl Signpost_State_03_Logic_03	;Set the player's state & play end of level music
+	.dw Signpost_State_03_Logic_02	;set frame display count to $E0 & copy state from (ix+$1E)
+	.dw Signpost_State_03_Logic_03	;Set the player's state & play end of level music
 .db $FF, $00
 
 Signpost_State_04:		;$B8E5
 .db $01, $00
-	.dl Signpost_State_04_Logic_01
+	.dw Signpost_State_04_Logic_01
 .db $FF, $00
 
 Signpost_State_05:		;B8EB
@@ -91,7 +91,7 @@ Signpost_State_01_Logic_01:		;$B91B
 	and     $0f
 	ret     z
 	xor     a
-	ld      ($D2B8), a
+	ld      (gameMem+$D2B8), a
 	ld      (ix+$02), $02
 	ld      a, $FC
 	ld      (ix+$19), a
@@ -100,7 +100,7 @@ Signpost_State_01_Logic_01:		;$B91B
 ;calculate which signpost to display
 Signpost_State_02_Logic_01:		;$B937
 	xor     a
-	ld      ($D469), a
+	ld      (gameMem+$D469), a
 	ld      de, $0010
 	ld      bc, $0600
 	call    VF_Engine_SetObjectVerticalSpeed
@@ -120,13 +120,13 @@ Signpost_State_02_Logic_01:		;$B937
 	ld      a, $A9
 	ld      ($DD04), a
 	call    LABEL_B31_B981		;Should we show the Tails signpost?
-	jr      c, Signpost_State_02_Logic_01
+	jr      c, +_
 	call    LABEL_B31_B9A0		;Should we show the Sonic signpost?
-	jr      c, Signpost_State_02_Logic_01
+	jr      c, +_
 	call    LABEL_B31_B9C2		;Should we show the ring signpost?
-	jr      c, Signpost_State_02_Logic_01
+	jr      c, +_
 	ld      b, $06				;signpost art
-	ld      (ix+$1E), b
+_:	ld      (ix+$1E), b
 	ret     
 
 
@@ -135,19 +135,19 @@ Signpost_State_02_Logic_01:		;$B937
 ;*	and has 77 rings, show Tails signpost & add 1 continue.	*
 ;************************************************************
 LABEL_B31_B981:
-	ld      hl, $D297		;number of lives when starting act
+	ld      hl, (gameMem+$D297)		;number of lives when starting act
 	ld      a, (hl)			;is the player's life count the same as at the start of the act?
 	inc     hl
 	cp      (hl)
 	jr      nz, LABEL_B31_B9F3 	;bail out
-	ld      a, ($D299)		;has the player got 77 rings?
+	ld      a, (gameMem+$D299)		;has the player got 77 rings?
 	cp      $77
 	jr      nz, LABEL_B31_B9F3 	;bail out
-	ld      a, ($D2BD)		;add 1 continue
+	ld      a, (gameMem+$D2BD)		;add 1 continue
 	inc     a
-	ld      ($D2BD), a
+	ld      (gameMem+$D2BD), a
 	ld      a, $02
-	ld      ($D2A3), a
+	ld      (gameMem+$D2A3), a
 	ld      b, $07			;which signpost art?
 	scf     
 	ret     
@@ -158,7 +158,7 @@ LABEL_B31_B981:
 ;*	counter.										*
 ;****************************************************
 LABEL_B31_B9A0:
-	ld      hl, $D297		;number of lives when starting act
+	ld      hl, (gameMem+$D297)		;number of lives when starting act
 	ld      a, (hl)			;check to see if the player lost 2 lives
 	inc     hl				;on this act
 	ld      c, (hl)
@@ -167,10 +167,9 @@ LABEL_B31_B9A0:
 	jr      c, LABEL_B31_B9F3 	;bail out
 	cp      $02
 	jr      nz, LABEL_B31_B9F3 	;bail out
-	ld      a, ($D298)		;add 1 life
+	ld      a, (gameMem+$D298)		;add 1 life
 	inc     a
-	ld      ($D298), a
-	ld      ($DD04), a
+	ld      (gameMem+$D298), a
 	call    LABEL_200 + $010B
 	ld      b, $05			;which signpost art?
 	scf     
@@ -188,17 +187,16 @@ LABEL_B31_B9C2:
 	add     a, $10
 	daa     
 	ld      (RingCounter), a
-	ld      ($DD04), a
 	call    LABEL_200 + $010E
 	ld      a, (RingCounter)		;if the ring count wrapped past 99
 	or      a				;add 1 life.
-	jr      nz, LABEL_B31_B9C2
+	jr      nz, +_
 	ld      a, (LifeCounter)
 	inc     a
 	ld      (LifeCounter), a
 	ld      ($DD04), a
 	call    LABEL_200 + $010B
-	ld      b, $08			;which signpost art?
+_:	ld      b, $08			;which signpost art?
 	scf     
 	ret     
 
@@ -220,15 +218,14 @@ Signpost_State_03_Logic_02:		;$BA01
 	ret     
 
 Signpost_State_03_Logic_03:		;$BA0C
-	ld      a, ($D501)
+	ld      a, (gameMem+$D501)
 	cp      PlayerState_EndOfLevel
 	ret     z
-	ld      a, ($D503)
+	ld      a, (gameMem+$D503)
 	bit     0, a
 	ret     nz
 	ld      a, PlayerState_EndOfLevel
-	ld      ($D502), a
-	ld      ($DD04), a
+	ld      (gameMem+$D502), a
 	ret     
 
 LABEL_B31_BA23:	;set the camera position

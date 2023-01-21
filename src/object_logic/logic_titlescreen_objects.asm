@@ -1,22 +1,22 @@
 Logic_Title_SonicHand:		;$8D97
-.dl Title_SonicHand_State_00
-.dl Title_SonicHand_State_01
+.dw Title_SonicHand_State_00
+.dw Title_SonicHand_State_01
 
 Title_SonicHand_State_00:	;$8D9B
 .db $01, $00
-	.dl LABEL_B30_8DB3
+	.dw LABEL_B30_8DB3
 .db $FF, $00
 
 
 Title_SonicHand_State_01:	;$8DA1
 .db $0C, $01
-	.dl LABEL_B30_8DCE
+	.dw LABEL_B30_8DCE
 .db $04, $02
-	.dl LABEL_B30_8DCE
+	.dw LABEL_B30_8DCE
 .db $0C, $03
-	.dl LABEL_B30_8DCE
+	.dw LABEL_B30_8DCE
 .db $04, $02
-	.dl LABEL_B30_8DCE
+	.dw LABEL_B30_8DCE
 .db $FF, $00
 
 LABEL_B30_8DB3:
@@ -35,41 +35,41 @@ LABEL_B30_8DCE:
 
 
 Logic_Title_TailsEye:		;$8DCF
-.dl DATA_B30_8DD3
-.dl DATA_B30_8DD9
+.dw DATA_B30_8DD3
+.dw DATA_B30_8DD9
 
 DATA_B30_8DD3:
 .db $01, $00
-	.dl LABEL_B30_8E0F
+	.dw LABEL_B30_8E0F
 .db $FF, $00
 
 DATA_B30_8DD9:
 .db $40, $03
-	.dl LABEL_B30_8E2A
+	.dw LABEL_B30_8E2A
 .db $04, $02
-	.dl LABEL_B30_8E2A
+	.dw LABEL_B30_8E2A
 .db $04, $01
-	.dl LABEL_B30_8E2A
+	.dw LABEL_B30_8E2A
 .db $04, $02
-	.dl LABEL_B30_8E2A
+	.dw LABEL_B30_8E2A
 .db $40, $03
-	.dl LABEL_B30_8E2A
+	.dw LABEL_B30_8E2A
 .db $02, $02
-	.dl LABEL_B30_8E2A
+	.dw LABEL_B30_8E2A
 .db $04, $01
-	.dl LABEL_B30_8E2A
+	.dw LABEL_B30_8E2A
 .db $04, $02
-	.dl LABEL_B30_8E2A
+	.dw LABEL_B30_8E2A
 .db $04, $03
-	.dl LABEL_B30_8E2A
+	.dw LABEL_B30_8E2A
 .db $04, $02
-	.dl LABEL_B30_8E2A
+	.dw LABEL_B30_8E2A
 .db $04, $01
-	.dl LABEL_B30_8E2A
+	.dw LABEL_B30_8E2A
 .db $04, $02
-	.dl LABEL_B30_8E2A
+	.dw LABEL_B30_8E2A
 .db $40, $03
-	.dl LABEL_B30_8E2A
+	.dw LABEL_B30_8E2A
 .db $FF, $00
 
 LABEL_B30_8E0F:

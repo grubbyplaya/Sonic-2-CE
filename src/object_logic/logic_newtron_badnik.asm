@@ -92,7 +92,7 @@ Newtron_State_03:		;$B39D
 .db $FF, $05
 	.db $04			;set state = $04
 .db $01, $02
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $00
 
 ;State 05 - flash & disappear

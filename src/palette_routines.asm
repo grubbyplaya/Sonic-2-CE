@@ -1,28 +1,38 @@
+#define gameMem userMem+$A000
+
+;Variables used by palette control/update routines
+#define PaletteFadeTime		gameMem+$D2C8		;TODO: Check this one
+#define BgPaletteControl		gameMem+$D4E6		;Triggers background palette fades (bit 6 = to black, bit 7 = to colour).
+#define BgPaletteIndex			gameMem+$D4E7		;Current background palette (index into array of palettes)
+#define FgPaletteControl		gameMem+$D4E8		;Triggers foreground palette fades (bit 6 = to black, bit 7 = to colour).
+#define FgPaletteIndex			gameMem+$D4E9		;Current foreground palette (index into array of palettes)
+#define WorkingCRAM			$E302C0	;copy of Colour RAM maintained in work RAM.
+#define  Palette_UpdateTrig		gameMem+$D4EA       ; causes a CRAM update with the next vblank
 Palette_Update:
-	ld		hl, $D2C9		;counter for smooth fade
+	ld		hl, gameMem+$D2C9		;counter for smooth fade
 	inc		(hl)
-	ld		a, ($D2C8)		;palette fade timeout value (will fade when counter = timeout value)
+	ld		a, (gameMem+$D2C8)		;palette fade timeout value (will fade when counter = timeout value)
 	cp		(hl)
 	ret		nc
 	ld		(hl), $00
 	ld		ix, BgPaletteControl
 	ld		iy, WorkingCRAM
 	ld		b, $02
-	push		bc
+_:	push		bc
 	push		iy
 	ld		a, (ix+$00)
 	or		a
-	jr		z, Palette_Update
+	jr		z, +_
 	call		Palette_UpdateColours
 	ld		a, $FF
 	ld		(Palette_UpdateTrig), a
-	ld		de, $0002		;check FgPaletteControl
+_:	ld		de, $0002		;check FgPaletteControl
 	add		ix, de
 	pop		iy
 	ld		de, $0010
 	add		iy, de
 	pop		bc
-	djnz		Palette_Update
+	djnz		--_
 	ret
 
 Palette_UpdateColours:	
@@ -35,7 +45,7 @@ Palette_UpdateColours:
 	ret
 
 Palette_Reset:			;$8044
-	call		Palette_CalculateOffset
+_:	call		Palette_CalculateOffset
 	push		iy
 	pop		de
 	ld		bc, $0010
@@ -46,7 +56,7 @@ Palette_Reset:			;$8044
 Palette_FadeToColour:		;$8054
 	call		Palette_CalculateOffset
 	ld		b, $10
-	push		bc
+_:	push		bc
 	ld		a, (ix+$00)
 	and		$03
 	ld		c, a
@@ -56,9 +66,9 @@ Palette_FadeToColour:		;$8054
 	ld		b, a
 	ld		a, c
 	sub		b
-	jr		nc, Palette_FadeToColour
+	jr		nc, +_
 	xor		a
-	and		$03
+_:	and		$03
 	ld		(iy+$00), a
 	ld		a, (hl)
 	and		$0C
@@ -68,9 +78,9 @@ Palette_FadeToColour:		;$8054
 	ld		b, a
 	ld		a, c
 	sub		b
-	jr		nc, Palette_FadeToColour
+	jr		nc, +_
 	xor		a
-	rlca		
+_:	rlca		
 	rlca		
 	and		$0c
 	or		(iy+$00)
@@ -85,9 +95,9 @@ Palette_FadeToColour:		;$8054
 	ld		b, a
 	ld		a, c
 	sub		b
-	jr		nc, Palette_FadeToColour
+	jr		nc, +_
 	xor		a
-	rlca		
+_:	rlca		
 	rlca		
 	rlca		
 	rlca		
@@ -97,7 +107,7 @@ Palette_FadeToColour:		;$8054
 	inc		iy
 	inc		hl
 	pop		bc
-	djnz		Palette_FadeToColour
+	djnz		----_
 	inc		(ix+$00)
 	ld		a, (ix+$00)
 	and		$07
@@ -114,33 +124,33 @@ Palette_FadeToBlack:		;80B8
 	ld		c, a
 	ld		a, (iy+$00)
 	and		$03				;get the B component
-	jr		z, Palette_FadeToBlack
+	jr		z, +_
 	sub		$01				;fade the B component
 	and		$03
 	or		c				;recombine with the R and G components
-	ld		(iy+$00), a		;store updated colour
+_:	ld		(iy+$00), a		;store updated colour
 	ld		a, (iy+$00)
 	and		$33				;keep hold of the R and B components
 	ld		c, a
 	ld		a, (iy+$00)
 	and		$0C
-	jr		z, Palette_FadeToBlack
+	jr		z, +_
 	sub		$04				;fade the G component
 	and		$0C
 	or		c				;recombine with the R and B components
 	ld		(iy+$00), a		;store updated colour
-	ld		a, (iy+$00)
+_:	ld		a, (iy+$00)
 	and		$0F				;keep hold of the G and B 
 	ld		c, a
 	ld		a, (iy+$00)
 	and		$30
-	jr		z, Palette_FadeToBlack
+	jr		z, +_
 	sub		$10				;fade the R component
 	and		$30
 	or		c				;recombine with the G and B components
 	ld		(iy+$00), a		;store updated colour
-	inc		iy
-	djnz		Palette_FadeToBlack				;move to next colour
+_:	inc		iy
+	djnz		----_				;move to next colour
 	inc		(ix+$00)
 	ld		a, (ix+$00)
 	and		$03

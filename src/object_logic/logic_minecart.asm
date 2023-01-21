@@ -102,15 +102,15 @@ Minecart_State_02_Logic_01:		;$8971
 	ld      h, (ix+$17)
 	ld      a, h
 	cp      $04
-	jp      nc, +_			;jump if H >= $04
+	jr      nc, +_			;jump if H >= $04
 	ld      de, $0010
 	add     hl, de
 	ld      (ix+$16), l		;set horizontal speed
 	ld      (ix+$17), h
-	ld      bc, $0010
+_:	ld      bc, $0010
 	ld      de, $FFF0
 	call    LABEL_200 + $63
-	ld      a, ($D353)
+	ld      a, (gameMem+$D353)
 	ld      hl, DATA_B28_8B0C
 	ld      bc, $001B
 	cpir    
@@ -136,7 +136,7 @@ Minecart_State_03_Logic_01:		;$89B4
 	ld      l, a
 	ld      a, h
 	cp      $04
-	jp      nc, +_		;jump if hi-byte of speed >= $04
+	jr      nc, +_		;jump if hi-byte of speed >= $04
 	ld      de, $0010		;increase speed by 16
 	add     hl, de
 	dec     hl
@@ -148,10 +148,10 @@ Minecart_State_03_Logic_01:		;$89B4
 	ld      l, a
 	ld      (ix+$16), l		;store horizontal speed
 	ld      (ix+$17), h
-	ld      bc, $FFF0
+_:	ld      bc, $FFF0
 	ld      de, $FFF0
 	call    LABEL_200 + $63
-	ld      a, ($D353)
+	ld      a, (gameMem+$D353)
 	ld      hl, DATA_B28_8B0C
 	ld      bc, $001B
 	cpir    
@@ -171,30 +171,29 @@ LABEL_B28_89F7:
 Minecart_State_04_Logic_01:		;$8A0B
 	ld      bc, $0010
 	bit     7, (ix+$17)
-	jp      z, +_
+	jr      z, +_
 	ld      bc, $FFF0
-	ld      de, $FFF0
+_:	ld      de, $FFF0
 	call    LABEL_200 + $63
-	ld      a, ($D353)
+	ld      a, (gameMem+$D353)
 	ld      hl, DATA_B28_8B0C
 	ld      bc, $001B
 	cpir    
-	jp      nz, +_
+	jr      nz, +_
 	ld      hl, $0000
 	ld      (ix+$16), l
 	ld      (ix+$17), h
-	ld      bc, $0600
+_:	ld      bc, $0600
 	ld      de, $0020
 	call    VF_Engine_SetObjectVerticalSpeed
 	bit     1, (ix+$22)
 	jp      z, LABEL_B28_8AAE
-	ld      a, ($D368)
+	ld      a, (gameMem+$D368)
 	ld      hl, DATA_B28_8AF2
 	ld      bc, $001A
 	cpir    
 	jp      z, LABEL_B28_895D
 LABEL_B28_8A51:
-	ld      ($DD04), a
 	res     1, (ix+$22)
 	res     7, (iy+$04)
 	ld      hl, $FC00			;set the vertical speed to
@@ -205,12 +204,12 @@ LABEL_B28_8A51:
 	ld      (ix+$02), $05		;set the state to $05
 	push    ix
 	pop     hl
-	ld      de, ($D39E)
+	ld      de, (gameMem+$D39E)
 	xor     a					;clear carry flag
 	sbc     hl, de
 	ret     nz					;check to see if player is riding
 	ld      hl, $0000			;the minecart.
-	ld      ($D39E), hl
+	ld      (gameMem+$D39E), hl
 	push    ix
 	ld      ix, $D500	;get a pointer to the player object structure...
 	call    VF_Player_PlayHurtAnimation	;... and play the "hurt" anim
@@ -234,27 +233,27 @@ Minecart_State_06_Logic_01:		;$8AA5
 LABEL_B28_8AAE:
 	call    VF_Engine_UpdateObjectPosition
 	call    LABEL_200 + $60
-	ld      a, ($D353)
-	ld      ($D368), a
+	ld      a, (gameMem+$D353)
+	ld      (gameMem+$D368), a
 	jp      LABEL_200 + $0C
 
 LABEL_B28_8ABD:
 	bit     6, (ix+$03)
-	jp      z, +_
+	jr      z, +_
 	dec     (ix+$1F)
-	jp      nz, +_
+	jr      nz, +_
 	res     6, (ix+$03)
-	call    VF_Engine_CheckCollision
+_:	call    VF_Engine_CheckCollision
 	ld      a, (ix+$21)
 	and     $0D
 	ld      (ix+$21), a
 	ret     z
-	ld      ($D39E), ix		;store pointer to minecart object descriptor
+	ld      (gameMem+$D39E), ix		;store pointer to minecart object descriptor
 	ld      iy, $D500		;get a pointer to the player object structure
 	res     0, (iy+$03)
 	res     1, (iy+$03)
 	ld      (iy+$02), PlayerState_EnterMineCart	;set player state to $16
-	ld      ($DD04), a
+	ld      (gameMem+$DD04), a
 	ret     
 
 DATA_B28_8AF2:
@@ -279,7 +278,7 @@ LABEL_B28_8B27:
 	ld      hl, $0000
 	xor     a
 	sbc     hl, de
-	push    hl
+_:	push    hl
 	pop     bc
 	ld      de, $FFE0
 	call    LABEL_200 + $63

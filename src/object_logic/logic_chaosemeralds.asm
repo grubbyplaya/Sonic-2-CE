@@ -1,19 +1,19 @@
 Logic_ChaosEmerald:            ;$B7D2
-.dl ChaosEmerald_State_00
-.dl ChaosEmerald_State_01
-.dl ChaosEmerald_State_02
+.dw ChaosEmerald_State_00
+.dw ChaosEmerald_State_01
+.dw ChaosEmerald_State_02
 
 
 ; constructor
 ChaosEmerald_State_00:      ;$B7D8
 .db $E0, $00
-    .dl ChaosEmerald_Init
+    .dw ChaosEmerald_Init
 .db $FF, $00
 
 ; main logic
 ChaosEmerald_State_01:      ;$B7DE
 .db $E0, $01
-    .dl ChaosEmerald_CheckCollisions
+    .dw ChaosEmerald_CheckCollisions
 .db $FF, $00
 
 ; destructor
@@ -21,7 +21,7 @@ ChaosEmerald_State_02:      ;$B7E4
 .db $F0, $00
     .dl VF_DoNothing
 .db $60, $00
-    .dl ChaosEmerald_Destruct
+    .dw ChaosEmerald_Destruct
 .db $FF, $00
 
 
@@ -32,20 +32,19 @@ ChaosEmerald_Init:      ;$B7EE
     ; if level is SEZ we don't need to bother loading the tiles
     ld      a, (CurrentLevel)
     cp      Level_SEZ
-    jr      nz, ChaosEmerald_Init
+    jr      nz, +_
     
     add     a, $20
     ld      (PatternLoadCue), a
-    jr      ChaosEmerald_Init ;++
+    jr      ++_
 
-
-    ld      a, (CurrentLevel)    ;calculate which tiles to load
+_:  ld      a, (CurrentLevel)    ;calculate which tiles to load
     add     a, $20                ;see subroutine at 783B (Engine_LoadSpriteTiles)
     ld      b, a
     call    Monitor_Emerald_CheckLoadTiles
 
 
-    set     OBJ_F3_BIT7, (ix + Object.Flags03)
+_:  set     OBJ_F3_BIT7, (ix + Object.Flags03)
     res     OBJ_F4_FACING_LEFT, (ix + Object.Flags04)
     set     OBJ_F4_FLASHING, (ix + Object.Flags04)
     
@@ -117,8 +116,6 @@ ChaosEmerald_Destruct:      ; $B871
     ld      a, (CurrentLevel)
     cp      Level_SEZ
     ret     z
-    
-    call    VF_Engine_ChangeLevelMusic
     ret     
 
 

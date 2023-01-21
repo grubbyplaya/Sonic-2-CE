@@ -26,6 +26,6 @@
 .db "THANKS  OKUSAN  "
 .db "THANKS  LUNARIAN"
 .db "THANKS  HITMEN  "
-.db "THANKS  ASPECT  "
 .db "THANKS  CEMETECH"
+.db "THANKS  ASPECT  "
 .db "        ,AND YOU"

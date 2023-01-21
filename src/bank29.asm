@@ -1,6 +1,17 @@
+#include	"includes/ti84pce.inc"
+#define gameMem 	userMem+$9C00
+
 Bank29:
+.db	AppvarObj,	"Bank29", 0
+
 ;2 extra bytes from the ghz control sequence (unused).
 .db $08, $00
+
+DemoControlSequence_GHZ:
+#import "demo\demo_control_sequence_ghz.bin"
+
+DemoControlSequence_SHZ:
+#import "demo\demo_control_sequence_shz.bin"
 
 Art_Rings_UGZ:
 #import "art\rings\rings_ucmp_ugz.bin"
@@ -29,25 +40,25 @@ Art_Rings_CEZ:
 LABEL_B29_B400:				;push the last 16 sprites off of the screen
 	ld      b, $10			;by setting the VPOS attribute
 	ld      a, $E0
-	ld      hl, $DB30
-	ld      (hl), a
+	ld      hl, gameMem+$DB30
+_:	ld      (hl), a
 	inc     hl
-	djnz    LABEL_B29_B400
+	djnz    -_
 	ret     
 
 LABEL_B29_B40C:
-	ld      a, ($D46D)
+	ld      a, (gameMem+$D46D)
 	or      a
 	jp      nz, LABEL_B29_B422
-	ld      hl, ($D46F)
+	ld      hl, (gameMem+$D46F)
 	dec     hl
-	ld      ($D46F), hl
+	ld      (gameMem+$D46F), hl
 	ld      a, h
 	or      l
 	ret     nz
 
 	ld      a, $01
-	ld      ($D46D), a
+	ld      (gameMem+$D46D), a
 	ret     
 
 LABEL_B29_B422:
@@ -63,17 +74,17 @@ LABEL_B29_B422:
 
 LABEL_B29_B433:
 	ld      b, $08
-	ld      hl, $DB30
+	ld      hl, gameMem+$DB30
 	ld      a, $9A
-	ld      (hl), a
+_:	ld      (hl), a
 	inc     hl
-	djnz    LABEL_B29_B433
+	djnz    -_
 	ld      b, $08
 	ld      a, $B0
-	ld      (hl), a
+_:	ld      (hl), a
 	inc     hl
-	djnz    LABEL_B29_B433
-	ld      a, ($D46E)
+	djnz    -_
+	ld      a, (gameMem+$D46E)
 	ld      l, a
 	ld      h, $00
 	add     hl, hl
@@ -82,9 +93,9 @@ LABEL_B29_B433:
 	add     hl, hl
 	ld      de, EndSequence_Data_CreditsText
 	add     hl, de
-	ld      de, $DBA0		;copy the 16-byte line of text to $DBA0
+	ld      de, gameMem+$DBA0		;copy the 16-byte line of text to $DBA0
 	ld      b, $10
-	xor     a
+_:	xor     a
 	ld      (de), a
 	inc     de
 	ld      a, (hl)			;check for $FF byte
@@ -95,25 +106,25 @@ LABEL_B29_B433:
 	add     a, a
 	add     a, $12
 	cp      $45
-	jp      c, +_
+	jp      c, ++_
 	ld      c, $46
 	cp      $E8
-	jp      z, ++_
+	jp      z, +_
 	ld      c, $48
 	cp      $EA
-	jp      z, ++_
+	jp      z, +_
 	ld      c, $4A
-	ld      a, c
-	ld      (de), a			;copy char to work RAM
+_:	ld      a, c
+_:	ld      (de), a			;copy char to work RAM
 	inc     de
 	inc     hl
-	djnz    LABEL_B29_B433
+	djnz    ---_
 
 	ld      hl, DATA_B29_B522
 	ld      ix, DATA_B29_B542
-	ld      de, $D46F
+	ld      de, gameMem+$D46F
 	ld      b, $10
-	ld      a, (hl)
+_:	ld      a, (hl)
 	ld      (de), a
 	inc     de
 	inc     hl
@@ -125,25 +136,25 @@ LABEL_B29_B433:
 	ld      (de), a
 	inc     ix
 	inc     de
-	djnz    LABEL_B29_B433
-	ld      a, ($D46E)
+	djnz    -_
+	ld      a, (gameMem+$D46E)
 	inc     a
-	ld      ($D46E), a
+	ld      (gameMem+$D46E), a
 	ld      a, $02
-	ld      ($D46D), a
+	ld      (gameMem+$D46D), a
 	ret     
 
 LABEL_B29_B4A9:
 	ld      a, $04			;reset the counter
-	ld      ($D46D), a
+	ld      (gameMem+$D46D), a
 	ret     
 
 LABEL_B29_B4AF:
 	ld      b, $10
 	ld      c, $00
-	ld      ix, $D46F
-	ld      iy, $DBA0
-	bit     7, (ix+$01)
+	ld      ix, gameMem+$D46F
+	ld      iy, gameMem+$DBA0
+_:	bit     7, (ix+$01)
 	jp      z, +_
 	ld      a, (ix+$02)
 	ld      h, (iy+$00)
@@ -153,25 +164,25 @@ LABEL_B29_B4AF:
 	ld      (iy+$00), a
 	xor     a
 	jp      ++_
-	call    LABEL_B29_B4F5
+_:	call    LABEL_B29_B4F5
 	xor     a
 	dec     a
-	or      c
+_:	or      c
 	ld      c, a
 	inc     ix
 	inc     ix
 	inc     ix
 	inc     iy
 	inc     iy
-	djnz    LABEL_B29_B4AF
+	djnz    ---_
 	ld      a, c
 	or      a
 	ret     nz
 
 	ld      a, $03
-	ld      ($D46D), a
+	ld      (gameMem+$D46D), a
 	ld      hl, $00B4
-	ld      ($D46F), hl
+	ld      (gameMem+$D46F), hl
 	ret     
 
 LABEL_B29_B4F5:
@@ -188,17 +199,17 @@ LABEL_B29_B4F5:
 	ret     
 
 LABEL_B29_B510:
-	ld      hl, ($D46F)
+	ld      hl, (gameMem+$D46F)
 	dec     hl
 	ld      a, h
 	or      l
 	jp	  z, LABEL_B29_B51C
-	ld      ($D46F), hl
+	ld      (gameMem+$D46F), hl
 	ret     
 
 LABEL_B29_B51C:
 	ld      a, $01
-	ld      ($D46D), a
+	ld      (gameMem+$D46D), a
 	ret     
 
 

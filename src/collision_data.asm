@@ -572,23 +572,13 @@ DATA_B30_9C89:
 ;----------- Top Right Quater Circle ------------
 DATA_B30_9C91:
 .db $00, $00
-#ifdef Version 2.2
 	.dl DATA_B30_A711
 	.dl DATA_B30_AC71
-#else
-	.dl DATA_B30_A591
-	.dl DATA_B30_AA91
-#endif
 	.dl DATA_B30_AE51	; $0450-$0457
 DATA_B30_9C99:
 .db $00, $00
-#ifdef Version 2.2
 	.dl DATA_B30_A711
 	.dl DATA_B30_AC71
-#else
-	.dl DATA_B30_A5B1
-	.dl DATA_B30_AAB1
-#endif
 	.dl DATA_B30_AE51	; $0458-$045F
 DATA_B30_9CA1:
 .db $00, $00

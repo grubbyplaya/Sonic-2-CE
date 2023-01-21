@@ -1,4 +1,12 @@
+#include "includes/ti84pce.inc"
+
+#define gameMem 				userMem+$9C00
+#define CurrentLevel			gameMem+$D295       ; byte - current level number
+#define Score				gameMem+$D29C		;score stored in 3-byte BCD
+
 Bank28:
+	.db	AppVarObj, "Bank28", 0
+
 DATA_B28_8000:
 .dw DATA_B28_8030
 .dw DATA_B28_8036
@@ -75,9 +83,9 @@ LABEL_B28_8067:
 	rlca    
 	rlca    
 	or      a
-	jp      nz, +_
+	jr      nz, +_
 	inc     a
-  	ld      (ix+$02), a
+_:  	ld      (ix+$02), a
 	ret     
 
 LABEL_B28_8080:
@@ -99,7 +107,7 @@ LABEL_B28_809B:
 	ld      a, (ix+$1b)
 	or      a
 	jp      z, LABEL_B28_80D6
-	ld      hl, ($D174)		;add 128 to the horizontal position
+	ld      hl, (gameMem+$D174)		;add 128 to the horizontal position
 	ld      de, $0080
 	add     hl, de
 	ld      e, (ix+$11)
@@ -130,9 +138,9 @@ LABEL_B28_80C3:
 LABEL_B28_80D6:
 	ld      a, $01
 	bit     4, (ix+$0A)
-	jp      z, +_
+	jr      z, +_
 	neg     
-  	ld      (ix+$17), a
+_:	ld      (ix+$17), a
 	call    LABEL_B28_814F
 	ld      a, (CurrentLevel)
 	cp      $04
@@ -192,47 +200,47 @@ LABEL_B28_8147:
 	ret     
 
 LABEL_B28_814F:
-	ld      a, ($d521)
-	ld      ($D100), a
+	ld      a, (gameMem+$D521)
+	ld      (gameMem+$D100), a
 	call    VF_Engine_CheckCollision
 	ld      a, (ix+$21)
 	and     $0f
 	jp      z, LABEL_B28_819B
 	bit     1, a
 	jp      nz, LABEL_B28_819B
-	ld      a, ($d519)
+	ld      a, (gameMem+$D519)
 	rla     
 	jp      c, LABEL_B28_819B
-	ld      a, ($d522)
+	ld      a, (gameMem+$D522)
 	bit     1, a
 	jp      nz, LABEL_B28_819B
 	call    VF_Engine_UpdateObjectPosition
 	ld      (ix+$21), $01
 	ld      a, $20
-	ld      ($D521), a
-	ld      a, ($D523)
+	ld      (gameMem+$D521), a
+	ld      a, (gameMem+$D523)
 	set     1, a
-	ld      ($D523), a
+	ld      (gameMem+$D523), a
 	push    ix
 	pop     hl
 	call    VF_Engine_GetObjectIndexFromPointer
 	ld      b, a
-	ld      a, ($d3b9)
+	ld      a, (gameMem+$D3B9)
 	or      a
-	jp      z, +_
+	jr      z, +_
 	cp      b
 	ret     nz
-  	ld      a, b
-	ld      ($d3b9), a
+_: 	ld      a, b
+	ld      (gameMem+$D3B9), a
 	call    LABEL_B28_81B9
 	ret     
 
 LABEL_B28_819B:
 	call    VF_Engine_UpdateObjectPosition
 	ld      (ix+$21), $00
-	ld      a, ($d100)
-	ld      ($d521), a
-	ld      a, ($d3b9)
+	ld      a, (gameMem+$D100)
+	ld      (gameMem+$D521), a
+	ld      a, (gameMem+$D3b9)
 	ld      b, a
 	push    ix
 	pop     hl
@@ -240,7 +248,7 @@ LABEL_B28_819B:
 	cp      b
 	ret     nz
 	xor     a
-	ld      ($d3b9), a
+	ld      (gameMem+$D3b9), a
 	ret     
 
 LABEL_B28_81B9:
@@ -251,11 +259,11 @@ LABEL_B28_81B9:
 	inc     hl
 	xor     a
 	sbc     hl, de
-	ld      ($d514), hl
-	ld      hl, ($d510)
+	ld      (gameMem+$D514), hl
+	ld      hl, (gameMem+$D510)
 	ld      e, (ix+$16)
 	ld      d, (ix+$17)
-	ld      a, ($d512)
+	ld      a, (gameMem+$D512)
 	ld      b, a
 	ld      a, d
 	and     $80
@@ -264,8 +272,8 @@ LABEL_B28_81B9:
 	cpl     
 	add     hl, de
 	adc     a, b
-	ld      ($d512), a
-	ld      ($d510), hl
+	ld      (gameMem+$D512), a
+	ld      (gameMem+$D510), hl
 	ret     
 
 LABEL_B28_81E7:
@@ -320,7 +328,7 @@ DATA_B28_8212:
 .db $FF, $05
 	.db $00
 .db $00, $01
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $00
 
 DATA_B28_823F:
@@ -381,7 +389,7 @@ DATA_B28_823F:
 .db $FF, $05
 	.db $00
 .db $00, $01
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $00
 
 DATA_B28_82B4:
@@ -398,7 +406,7 @@ DATA_B28_82B4:
 .db $FF, $05
 	.db $00
 .db $00, $01
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $00
 
 DATA_B28_82D1:
@@ -461,7 +469,7 @@ DATA_B28_82D1:
 	.dw LABEL_B28_8108
 .db $FF, $05, $00
 .db $00, $01
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $00
 
 DATA_B28_834C:
@@ -474,11 +482,11 @@ LABEL_B28_8352:
 	set     7, (ix+$03)
 	ld      a, (ix+$3f)
 	dec     a
-	jp      z, +_
+	jr      z, +_
 	bit     6, (ix+$04)
 	ret     nz
 	set     1, (ix+$04)
-  	ld      (ix+$02), $05
+_: 	ld      (ix+$02), $05
 	ret
 
 LABEL_B28_836A:
@@ -497,10 +505,10 @@ LABEL_B28_837F:
 LABEL_B28_8383:
 	ld      a, (ix+$3f)
 	dec     a
-	jp      z, +_
+	jr      z, +_
 	bit     6, (ix+$04)
 	ret     nz
-  	ld      a, $00
+_:	ld      a, $00
 	ld      (ix+$16), a
 	ld      (ix+$17), a
 	ld      (ix+$18), a
@@ -547,9 +555,9 @@ DATA_B28_83DD:
 LABEL_B28_83E3:
 	ld      hl, $0100
 	bit     0, (ix+$1e)
-	jp      z, +_
+	jr      z, +_
 	ld      hl, $ff00
-  	ld      (ix+$16), l
+_:	ld      (ix+$16), l
 	ld      (ix+$17), h
 	call    LABEL_B28_814F
 	ld      l, (ix+$11)
@@ -587,7 +595,7 @@ SHZ_YellowBird_State_00:	;$85F9
 .db $FF, $05
 	.db $01			;set state to $01
 .db $E0, $00
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $00
 
 SHZ_YellowBird_State_01:	;$8602
@@ -607,10 +615,10 @@ SHZ_YellowBird_State_02:	;$860E
 
 
 SHZ_YellowBird_State_01_Logic:		;$8618
-	ld      a, ($D523)
+	ld      a, (gameMem+$D523)
 	cp      $06
 	ret     nz
-	ld      a, ($D137)		;a = controller flags
+	ld      a, (gameMem+$D137)		;a = controller flags
 	cp      $08
 	ret     nz
 	ld      (ix+$02), $02	;set state = $02
@@ -710,19 +718,19 @@ LABEL_B28_86A9:
 LABEL_B28_86B2:
 	bit     6, (ix+$04)
 	ret     nz
-	ld      hl, ($d514)
+	ld      hl, (gameMem+$D514)
 	ld      e, (ix+$14)
 	ld      d, (ix+$15)
 	xor     a
 	sbc     hl, de
 	ret     nc
 LABEL_B28_86C4:
-	ld      hl, ($d511)
+	ld      hl, (gameMem+$D511)
 	ld      e, (ix+$11)
 	ld      d, (ix+$12)
 	xor     a
 	sbc     hl, de
-	jp      nc, +_
+	jr      nc, +_
 	dec     hl
 	ld      a, h
 	cpl     
@@ -730,7 +738,7 @@ LABEL_B28_86C4:
 	ld      a, l
 	cpl     
 	ld      l, a
-  	ld      a, h
+_:	ld      a, h
 	or      a
 	ret     nz
 	ld      a, l
@@ -741,7 +749,7 @@ LABEL_B28_86C4:
 LABEL_B28_86E3:
 	bit     6, (ix+$04)
 	ret     nz
-	ld      hl, ($d514)
+	ld      hl, (gameMem+$D514)
 	ld      e, (ix+$14)
 	ld      d, (ix+$15)
 	xor     a
@@ -752,19 +760,19 @@ LABEL_B28_86E3:
 LABEL_B28_86F8:
 	bit     6, (ix+$04)
 	ret     nz
-	ld      hl, ($d511)
+	ld      hl, (gameMem+$D511)
 	ld      e, (ix+$11)
 	ld      d, (ix+$12)
 	xor     a
 	sbc     hl, de
 	ret     nc
 LABEL_B28_870A:
-	ld      hl, ($d514)
+	ld      hl, (gameMem+$D514)
 	ld      e, (ix+$14)
 	ld      d, (ix+$15)
 	xor     a
 	sbc     hl, de
-	jp      nc, +_
+	jr      nc, +_
 	dec     hl
 	ld      a, h
 	cpl     
@@ -772,7 +780,7 @@ LABEL_B28_870A:
 	ld      a, l
 	cpl     
 	ld      l, a
-    ld      a, h
+_:	ld      a, h
 	or      a
 	ret     nz
 	ld      a, l
@@ -783,7 +791,7 @@ LABEL_B28_870A:
 LABEL_B28_8729:
 	bit     6, (ix+$04)
 	ret     nz
-	ld      hl, ($d511)
+	ld      hl, (gameMem+$D511)
 	ld      e, (ix+$11)
 	ld      d, (ix+$12)
 	xor     a
@@ -802,10 +810,10 @@ LABEL_B28_8746:
 	call    VF_Engine_CheckCollision
 	ld      a, (ix+$21)
 	and     $0f
-	jp      z, +_
+	jr      z, +_
 	ld      a, $ff
 	ld      (Player_HurtTrigger), a
-  	bit     6, (ix+$04)
+_:  	bit     6, (ix+$04)
 	ret     z
 	ld      (ix+$00), $fe
 	ret     
@@ -826,7 +834,7 @@ DATA_B28_8806:
 .db $FF, $05
 	.db $01
 .db $01, $00
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $00
 
 DATA_B28_8813:
@@ -844,41 +852,41 @@ LABEL_B28_881E:
 	ld      a, (ix+$21)
 	and     $0f
 	ret     z
-	ld      a, ($d501)
+	ld      a, (gameMem+$D501)
 	cp      $22
-	jp      z, +_
+	jr      z, +++_
 	ld      a, $22
-	ld      ($d502), a
-	ld      ($dd04), a
+	ld      (gameMem+$D502), a
+	ld      (gameMem+$Dd04), a
 	ld      hl, $0300
-	ld      ($d3c7), hl
+	ld      (gameMem+$D3C7), hl
 	ld      l, (ix+$14)
 	ld      h, (ix+$15)
 	ld      de, $fff4
 	add     hl, de
 	ex      de, hl
-	ld      hl, ($d514)
+	ld      hl, (gameMem+$D514)
 	xor     a
 	sbc     hl, de
-	ld      ($d3cb), de
+	ld      (gameMem+$D3CB), de
 	jp      nc, LABEL_B28_8889
 	ld      l, (ix+$11)
 	ld      h, (ix+$12)
-	ld      ($d3c9), hl
+	ld      (gameMem+$D3c9), hl
 	ld      de, $0028
 	add     hl, de
-	ld      de, ($d511)
+	ld      de, (gameMem+$D511)
 	xor     a
 	sbc     hl, de
 	ld      a, h
 	or      a
-	jp      z, ++_
+	jr      z, +_
 	ld      l, $00
-   	ld      a, l
+_:	ld      a, l
 	cp      $4f
-	jp      c, ++_
+	jr      c, +_
 	ld      a, $4f
-   	and     $f8
+_:  	and     $f8
 	rrca    
 	rrca    
 	rrca    
@@ -887,27 +895,27 @@ LABEL_B28_881E:
 	ld      hl, DATA_B28_88BB
 	add     hl, de
 	ld      a, (hl)
-	ld      ($d3c6), a
-  	ret     
+	ld      (gameMem+$D3c6), a
+_:	ret     
 
 LABEL_B28_8889:
 	ld      l, (ix+$11)
 	ld      h, (ix+$12)
-	ld      ($d3c9), hl
+	ld      (gameMem+$D3c9), hl
 	ld      de, $0028
 	add     hl, de
-	ld      de, ($d511)
+	ld      de, (gameMem+$D511)
 	xor     a
 	sbc     hl, de
 	ld      a, h
 	or      a
-	jp      z, +_
+	jr      z, +_
 	ld      l, $00
-  	ld      a, l
+_: 	ld      a, l
 	cp      $4f
-	jp      c, +_
+	jr      c, +_
 	ld      a, $4f
-  	and     $f8
+_: 	and     $f8
 	rrca    
 	rrca    
 	rrca    
@@ -916,7 +924,7 @@ LABEL_B28_8889:
 	ld      hl, DATA_B28_88C5
 	add     hl, de
 	ld      a, (hl)
-	ld      ($d3c6), a
+	ld      (gameMem+$D3c6), a
 	ret
 
 DATA_B28_88BB:
@@ -939,7 +947,7 @@ DATA_B28_8B5E:
 .db $FF, $05
 	.db $01
 .db $01, $00
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $00
 
 DATA_B28_8B6B:
@@ -962,9 +970,9 @@ LABEL_B28_8B7E:
 	call    LABEL_200 + $36
 	ld      hl, $0100
 	bit     0, (ix+$1e)
-	jp      z, +_
+	jr      z, +_
 	ld      hl, $ff00
-  	ld      (ix+$16), l
+_:  	ld      (ix+$16), l
 	ld      (ix+$17), h
 	call    VF_Engine_UpdateObjectPosition
 	ld      a, (ix+$0a)
@@ -983,76 +991,76 @@ LABEL_B28_8B7E:
 LABEL_B28_8BBE
 	ld      a, h
 	or      a
-	jp      nz, +_
+	jr      nz, +_
 	ld      a, l
 	cp      (ix+$3f)
 	jp      c, LABEL_B28_8BCC
-  	set     0, (ix+$1e)
+_: 	set     0, (ix+$1e)
 LABEL_B28_8BCC:
-	ld      a, ($d3cd)
+	ld      a, (gameMem+$D3cd)
 	or      a
-	jp      z, +_
+	jr      z, +_
 	push    ix
 	pop     hl
 	call    VF_Engine_GetObjectIndexFromPointer
 	ld      b, a
-	ld      a, ($d3cd)
+	ld      a, (gameMem+$D3cd)
 	cp      b
 	ret     nz
 	ld      l, (ix+$11)
 	ld      h, (ix+$12)
 	set     7, h
-	ld      ($d3c9), hl
+	ld      (gameMem+$D3c9), hl
 	ld      l, (ix+$14)
 	ld      h, (ix+$15)
 	ld      de, $fffa
 	add     hl, de
-	ld      ($d3cb), hl
-  	call    VF_Engine_CheckCollision
+	ld      (gameMem+$D3cb), hl
+_:	call    VF_Engine_CheckCollision
 	ld      a, (ix+$21)
 	and     $0f
 	ret     z
-	ld      a, ($d501)
+	ld      a, (gameMem+$D501)
 	cp      $22
-	jp      z, +_
+	jr      z, +++_
 	push    ix
 	pop     hl
 	call    VF_Engine_GetObjectIndexFromPointer
-	ld      ($d3cd), a
+	ld      (gameMem+$D3cd), a
 	ld      a, $22
-	ld      ($d502), a
+	ld      (gameMem+$D502), a
 	ld      a, $ae
-	ld      ($dd04), a
+	ld      (gameMem+$Dd04), a
 	ld      hl, $0300
-	ld      ($d3c7), hl
+	ld      (gameMem+$D3c7), hl
 	ld      l, (ix+$14)
 	ld      h, (ix+$15)
 	ld      de, $fffa
 	add     hl, de
 	ex      de, hl
-	ld      hl, ($d514)
+	ld      hl, (gameMem+$D514)
 	xor     a
 	sbc     hl, de
-	ld      ($d3cb), de
+	ld      (gameMem+$D3cb), de
 	jp      nc, LABEL_B28_8C6D
 	ld      l, (ix+$11)
 	ld      h, (ix+$12)
 	set     7, h
-	ld      ($d3c9), hl
+	ld      (gameMem+$D3c9), hl
 	ld      de, $0028
 	add     hl, de
-	ld      de, ($d511)
+	ld      de, (gameMem+$D511)
 	xor     a
 	sbc     hl, de
 	ld      a, h
 	or      a
-	jp      z, ++_
+	jr      z, +_
 	ld      l, $00
-   	ld      a, l
+_:   	ld      a, l
 	cp      $4f
-	jp      c, ++_
+	jr      c, +_
 	ld      a, $4f
-   	and     $f8
+_:   	and     $f8
 	rrca    
 	rrca    
 	rrca    
@@ -1061,28 +1069,28 @@ LABEL_B28_8BCC:
 	ld      hl, DATA_B28_8CA1
 	add     hl, de
 	ld      a, (hl)
-	ld      ($d3c6), a
-  	ret     
+	ld      (gameMem+$D3c6), a
+_:	ret     
 
 LABEL_B28_8C6D:
 	ld      l, (ix+$11)
 	ld      h, (ix+$12)
 	set     7, h
-	ld      ($d3c9), hl
+	ld      (gameMem+$D3c9), hl
 	ld      de, $0028
 	add     hl, de
-	ld      de, ($d511)
+	ld      de, (gameMem+$D511)
 	xor     a
 	sbc     hl, de
 	ld      a, h
 	or      a
-	jp      z, +_
+	jr      z, +_
 	ld      l, $00
-  	ld      a, l
+_:  	ld      a, l
 	cp      $4f
-	jp      c, +_
+	jr      c, +_
 	ld      a, $4f
-  	and     $f8
+_:  	and     $f8
 	rrca    
 	rrca    
 	rrca    
@@ -1091,7 +1099,7 @@ LABEL_B28_8C6D:
 	ld      hl, DATA_B28_8CAB
 	add     hl, de
 	ld      a, (hl)
-	ld      ($d3c6), a
+	ld      (gameMem+$D3c6), a
 	ret     
 
 DATA_B28_8CA1:
@@ -1138,18 +1146,18 @@ LABEL_B28_8CDB:
 	add     hl, de
 	ld      (ix+$0a), h
 	ld      (ix+$3f), l
-	jp      c, +_
+	jr      c, +_
 	xor     a
 	add     hl, de
 	ld      (ix+$0a), h
 	ld      (ix+$3f), l
-	jp      c, +_
+	jr      c, +_
 	xor     a
 	add     hl, de
 	ld      (ix+$0a), h
 	ld      (ix+$3f), l
 	jp      nc, LABEL_B28_8D78
-  	inc     (ix+$1f)
+_:  	inc     (ix+$1f)
 	ld      (ix+$0a), $80
 	ld      (ix+$3f), $00
 	jp      LABEL_B28_8D78
@@ -1165,18 +1173,18 @@ LABEL_B28_8D1C:
 	sbc     hl, de
 	ld      (ix+$0a), h
 	ld      (ix+$3f), l
-	jp      c, +_
+	jr      c, +_
 	xor     a
 	sbc     hl, de
 	ld      (ix+$0a), h
 	ld      (ix+$3f), l
-	jp      c, +_
+	jr      c, +_
 	xor     a
 	sbc     hl, de
 	ld      (ix+$0a), h
 	ld      (ix+$3f), l
 	jp      nc, LABEL_B28_8D78
-	inc     (ix+$1f)
+_:	inc     (ix+$1f)
 	ld      (ix+$0a), $80
 	ld      (ix+$3f), $00
 	ld      a, (ix+$3b)
@@ -1222,10 +1230,10 @@ LABEL_B28_8DA6:
 LABEL_B28_8DAC:
 	ld      a, (ix+$0a)
 	cp      $40
-	jp      c, +_
+	jr      c, +_
 	neg     
 	sub     $80
-  	add     a, $40
+_:	add     a, $40
 	ld      (ix+$1e), a
 	ret     
 
@@ -1273,7 +1281,7 @@ DATA_B28_8DF2:
 LABEL_B28_8DF8:
 	bit     6, (ix+$04)
 	ret     nz
-	ld      hl, ($d514)
+	ld      hl, (gameMem+$D514)
 	ld      e, (ix+$14)
 	ld      d, (ix+$15)
 	xor     a
@@ -1284,9 +1292,9 @@ LABEL_B28_8DF8:
 	ret     nz
 	ld      b, l
 	srl     b
-	ld      de, ($d516)
+	ld      de, (gameMem+$D516)
 	bit     7, d
-	jp      z, +_
+	jr      z, +_
 	dec     de
 	ld      a, d
 	cpl     
@@ -1294,33 +1302,33 @@ LABEL_B28_8DF8:
 	ld      a, e
 	cpl     
 	ld      e, a
-  	ld      hl, $0180
+_:  	ld      hl, $0180
 	xor     a
 	sbc     hl, de
-	jp      nc, +_
+	jr      nc, +_
 	ld      a, b
 	add     a, a
 	ld      b, a
 	ld      hl, $0380
 	xor     a
 	sbc     hl, de
-	jp      nc, +_
+	jr      nc, +_
 	ld      a, b
 	add     a, b
 	ld      b, a
-	jp      nc, +_
+	jr      nc, +_
 	ld      b, $ff
-  	ld      hl, ($d511)
+_:  	ld      hl, (gameMem+$D511)
 	ld      e, (ix+$11)
 	ld      d, (ix+$12)
 	xor     a
 	sbc     hl, de
-	jp      nc, +_
+	jr      nc, +_
 	ex      de, hl
 	ld      hl, $0000
 	xor     a
 	sbc     hl, de
-  	ld      a, h
+_:  	ld      a, h
 	or      a
 	ret     nz
 	ld      a, l
@@ -1340,7 +1348,7 @@ LABEL_B28_8E66:
 	call    VF_Engine_CheckCollision
 	ld      a, (ix+$21)
 	and     $0f
-	jp      nz, +_
+	jr      nz, +_
 	ld      de, $0050
 	ld      bc, $0600
 	call    VF_Engine_SetObjectVerticalSpeed
@@ -1348,7 +1356,7 @@ LABEL_B28_8E66:
 	call    LABEL_200 + $60
 	bit     1, (ix+$22)
 	ret     z
-  	ld      (ix+$02), $04
+_:  	ld      (ix+$02), $04
 	ret     
 
 LABEL_B28_8E89:
@@ -1357,13 +1365,13 @@ LABEL_B28_8E89:
 	ld      a, l
 	and     $e0
 	ld      l, a
-	ld      ($d35a), hl
+	ld      (gameMem+$D35a), hl
 	ld      l, (ix+$14)
 	ld      h, (ix+$15)
 	ld      a, l
 	and     $e0
 	ld      l, a
-	ld      ($d35c), hl
+	ld      (gameMem+$D35c), hl
 	call    VF_Engine_CreateBlockFragmentObjects
 	ld      (ix+$3f), $82
 	ld      (ix+$3e), $00
@@ -1388,14 +1396,14 @@ DATA_B28_8EBE:
 LABEL_B28_8EC4:
 	set     7, (ix+$03)
 	ld      (ix+$08), $62
-	ld      hl, ($d511)
+	ld      hl, (gameMem+$D511)
 	ld      a, l
 	and     $f0
 	or      $08
 	ld      l, a
 	ld      (ix+$11), l
 	ld      (ix+$12), h
-	ld      hl, ($d514)
+	ld      hl, (gameMem+$D514)
 	ld      bc, $0020
 	add     hl, bc
 	ld      a, l
@@ -1453,7 +1461,7 @@ LABEL_B28_8F12
 	res     0, (ix+$1f)
 	bit     0, (ix+$3f)
 	jp      nz, LABEL_B28_8F76
-	ld      hl, ($d511)
+	ld      hl, (gameMem+$D511)
 	ld      e, (ix+$11)
 	ld      d, (ix+$12)
 	xor     a
@@ -1471,7 +1479,7 @@ LABEL_B28_8F12
 	jp      LABEL_B28_9017
 
 LABEL_B28_8F76:
-	ld      de, ($d511)
+	ld      de, (gameMem+$D511)
 	ld      l, (ix+$11)
 	ld      h, (ix+$12)
 	xor     a
@@ -1534,8 +1542,8 @@ LABEL_B28_8FC9:
 	ld      a, (DATA_B28_901A)
 	ld      l, a
 	ld      de, $0040
-  	add     hl, de
-	djnz    LABEL_B28_8FC9
+_:  	add     hl, de
+	djnz    -_
 	ld      (ix+$19), h
 	ld      (ix+$18), l
 LABEL_B28_9014:
@@ -1634,7 +1642,7 @@ DATA_B28_9446:
 .db $04, $0E
 	.dw LABEL_B28_AC2B
 .db $FF, $02
-	.dw VF_Logic_ChangeDirectionTowardsPlayer
+	.dl VF_Logic_ChangeDirectionTowardsPlayer
 .db $FF, $04
 	.dw $0040
 	.dw $0000
@@ -1694,7 +1702,7 @@ DATA_B28_94A7:
 .db $04, $0E
 	.dw LABEL_B28_AC2B
 .db $FF, $02
-	.dw VF_Logic_ChangeDirectionTowardsPlayer
+	.dl VF_Logic_ChangeDirectionTowardsPlayer
 .db $FF, $04
 	.dw $0040
 	.dw $0200
@@ -1765,7 +1773,7 @@ DATA_B28_951D:
 .db $04, $0E
 	.dw LABEL_B28_AC2B
 .db $FF, $02
-	.dw VF_Logic_ChangeDirectionTowardsPlayer
+	.dl VF_Logic_ChangeDirectionTowardsPlayer
 .db $FF, $04
 	.dw $0200
 	.dw $FC00
@@ -1831,44 +1839,44 @@ DATA_B28_95DE:
 
 DATA_B28_95E8:
 .db $FF, $02
-	.dw VF_Score_AddBossValue
+	.dl VF_Score_AddBossValue
 .db $08, $01
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $06
 	.db $0F
 	.dw $0008
 	.dw $FFFC
 	.db $05
 .db $08, $01
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $06
 	.db $0F
 	.dw $FFF8
 	.dw $FFFA
 	.db $05
 .db $08, $01
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $06
 	.db $0F
 	.dw $0004
 	.dw $FFF8
 	.db $05
 .db $08, $01
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $06
 	.db $0F
 	.dw $FFFC
 	.dw $FFF6
 	.db $05
 .db $08, $01
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $06
 	.db $0F
 	.dw $0000
 	.dw $FFF0
 	.db $05
 .db $E0, $00
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $08, $00
 	.dw UGZ3_Pincers_State_03_Logic_01
 .db $FF, $00
@@ -1876,37 +1884,37 @@ DATA_B28_95E8:
  
 LABEL_B28_9632:
 	ld      a, $ff
-	ld      ($d4a2), a
+	ld      (gameMem+$D4a2), a
 	ld      (ix+$24), $08
 	ret     
 
 LABEL_B28_963C:
 	call    VF_Engine_SetMinimumCameraX
-	ld      de, ($D174)
+	ld      de, (gameMem+$D174)
 	ld      l, (ix+$11)
 	ld      h, (ix+$12)
 	xor     a
 	sbc     hl, de
-	jp      c, +_
+	jr      c, +_
 	ld      a, h
 	or      a
 	ret     nz
 	ld      a, l
 	cp      $e0
 	ret     nc
-  	ld      (ix+$02), $01
+_:  	ld      (ix+$02), $01
 	ld      bc, $11f8
 	ld      de, $0090
 	call    VF_Engine_SetCameraAndLock
 	ret
 
 LABEL_B28_9663:
-	ld      a, ($d2b9)
+	ld      a, (gameMem+$D2b9)
 	and     $03
 	add     a, a
 	add     a, a
 	ld      b, a
-	ld      a, ($d511)
+	ld      a, (gameMem+$D511)
 	and     $03
 	add     a, b
 	ld      e, a
@@ -1954,10 +1962,10 @@ LABEL_B28_96CC:
 LABEL_B28_96D2:
 	ld      a, (ix+$17)
 	bit     7, a
-	jp      z, +_
+	jr      z, +_
 	neg     
-  	cp      $04
-	jp      nc, +_
+_:  	cp      $04
+	jr      nc, +_
 	ld      l, (ix+$16)
 	ld      h, (ix+$17)
 	ld      e, l
@@ -1977,7 +1985,7 @@ LABEL_B28_96D2:
 	add     hl, de
 	ld      (ix+$16), l
 	ld      (ix+$17), h
-  	call    VF_Engine_UpdateObjectPosition
+_:  	call    VF_Engine_UpdateObjectPosition
 	call    LABEL_B28_974D
 	ret     nc
 	jp      LABEL_B28_9706
@@ -1986,7 +1994,7 @@ LABEL_B28_9706:
 	ld      hl, $fc00
 	ld      (ix+$18), l
 	ld      (ix+$19), h
-	ld      hl, ($d174)
+	ld      hl, (gameMem+$D174)
 	ld      de, $0080
 	add     hl, de
 	ld      e, (ix+$11)
@@ -1994,8 +2002,8 @@ LABEL_B28_9706:
 	xor     a
 	sbc     hl, de
 	ld      bc, $ffc0
-	jp      c, +_
-	ld      bc, $0040
+	jr      c, +_
+_:	ld      bc, $0040
   	ld      (ix+$16), c
 	ld      (ix+$17), b
 	ld      (ix+$02), $09
@@ -2014,7 +2022,7 @@ LABEL_B28_9732:
 	ret     
 
 LABEL_B28_974D:
-	ld      de, ($d174)
+	ld      de, (gameMem+$D174)
 	ld      l, (ix+$11)
 	ld      h, (ix+$12)
 	xor     a
@@ -2035,7 +2043,7 @@ LABEL_B28_974D:
 	or      l
 	or      e
 	or      d
-	jp      z, LABEL_B28_977D
+	jr      z, LABEL_B28_977D
 	xor     a
 	ret     
 
@@ -2047,11 +2055,11 @@ LABEL_B28_977F:
 	ld      e, (ix+$16)
 	ld      a, (ix+$17)
 	or      e
-	jp      z, +_
+	jr      z, +_
 	xor     a
 	bit     7, (ix+$17)
 	ret     z
-  	scf     
+_:  	scf     
 	ret     
 
 LABEL_B28_9790:
@@ -2099,7 +2107,7 @@ DATA_B28_97D5:
 .db $FF, $05
 	.db $08
 .db $02, $00
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $00
 
 DATA_B28_97E2:
@@ -2161,7 +2169,7 @@ DATA_B28_97FA:
 
 LABEL_B28_9842:
 	ld		a, $40
-	ld		($D290), a
+	ld		(gameMem+$D290), a
 	ret
 
 DATA_B28_9848:
@@ -2171,57 +2179,57 @@ DATA_B28_9848:
 
 DATA_B28_984E:
 .db $FF, $02
-	.dw VF_Score_AddBossValue
+	.dl VF_Score_AddBossValue
 .db $FF, $04
 	.dw $0000
 	.dw $0000
 .db $08, $06
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $08, $07
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $08, $06
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $08, $07
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $08, $06
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $08, $07
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $06
 	.db $0F
 	.dw $000C
 	.dw $FFFC
 	.db $05
 .db $08, $07
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $06
 	.db $0F
 	.dw $FFF4
 	.dw $FFFC
 	.db $05
 .db $08, $06
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $06
 	.db $0F
 	.dw $0004
 	.dw $FFF8
 	.db $05
 .db $08, $07
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $06
 	.db $0F
 	.dw $FFFC
 	.dw $FFF8
 	.db $05
 .db $08, $06
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $06
 	.db $0F
 	.dw $0000
 	.dw $FFF4
 	.db $05
 .db $E0, $00
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $08, $00
 	.dw LABEL_B28_9A49
 .db $FF, $00
@@ -2255,12 +2263,12 @@ DATA_B28_98D0:
 .db $FF, $05
 	.db $01
 .db $20, $01
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $00
 
 LABEL_B28_98DF:
 	ld      a, $ff
-	ld      ($d4a2), a
+	ld      (gameMem+$D4a2), a
 	ld      (ix+$24), $08
 	ret     
 
@@ -2269,7 +2277,7 @@ LABEL_B28_98E9:
 	ld      h, (ix+$15)
 	ld      de, $0010
 	add     hl, de
-	ld      de, ($d514)
+	ld      de, (gameMem+$D514)
 	xor     a
 	sbc     hl, de
 	ret     c
@@ -2282,23 +2290,23 @@ LABEL_B28_9900:
 	ld      h, (ix+$15)
 	ld      de, $0010
 	add     hl, de
-	ld      de, ($d514)
+	ld      de, (gameMem+$D514)
 	xor     a
 	sbc     hl, de
 	ret     c
-	ld      de, ($d174)
+	ld      de, (gameMem+$D174)
 	ld      l, (ix+$11)
 	ld      h, (ix+$12)
 	xor     a
 	sbc     hl, de
-	jp      c, +_
+	jr      c, +_
 	ld      a, h
 	or      a
 	ret     nz
 	ld      a, l
 	cp      $e0
 	ret     nc
-  	call    LABEL_B28_9A01
+_:  	call    LABEL_B28_9A01
 	ld      bc, $0221
 	ld      de, $0048
 	call    VF_Engine_SetCameraAndLock
@@ -2341,7 +2349,7 @@ LABEL_B28_9954:
 	add     hl, de
 	ld      (ix+$16), l
 	ld      (ix+$17), h
-	ld      de, ($d174)
+	ld      de, (gameMem+$D174)
 	ld      l, (ix+$11)
 	ld      h, (ix+$12)
 	xor     a
@@ -2390,7 +2398,7 @@ LABEL_B28_99AD:
 	ld      (ix+$19), h
 	call    LABEL_B28_9842
 	ld      a, $aa
-	ld      ($dd04), a
+	ld      (gameMem+$DD04), a
 	ld      (ix+$02), $04
 	ret     
 
@@ -2412,7 +2420,7 @@ LABEL_B28_99FC:
 	ret     
 
 LABEL_B28_9A01:
-	ld      hl, ($d174)
+	ld      hl, (gameMem+$D174)
 	ld      de, $0080
 	add     hl, de
 	ld      e, (ix+$11)
@@ -2475,7 +2483,7 @@ LABEL_B28_9A7E:
 	and     $03
 	ret     z
 	ld      a, $FF
-	ld      ($d3a8), a
+	ld      (gameMem+$D3a8), a
 	ret     
 
 DATA_B28_9A8A:
@@ -2498,7 +2506,7 @@ DATA_B28_9A97:
 
 
 LABEL_B28_9AA1:
-	ld      hl, ($d176)
+	ld      hl, (gameMem+$D176)
 	ld      (ix+$14), l
 	ld      (ix+$15), h
 	ld      a, (ix+$3f)
@@ -2512,7 +2520,7 @@ LABEL_B28_9AA1:
 	inc     hl
 	ld      d, (hl)
 	ex      de, hl
-	ld      bc, ($d511)
+	ld      bc, (gameMem+$D511)
 	add     hl, bc
 	ld      (ix+$11), l
 	ld      (ix+$12), h
@@ -2538,7 +2546,7 @@ LABEL_B28_9ADD:
 	ld      bc, $0600
 	call    VF_Engine_SetObjectVerticalSpeed
 	call    VF_Engine_UpdateObjectPosition
-	ld      hl, ($d176)
+	ld      hl, (gameMem+$D176)
 	ld      de, $00c0
 	add     hl, de
 	ld      e, (ix+$14)
@@ -2552,7 +2560,7 @@ LABEL_B28_9ADD:
 
 LABEL_B28_9B0B:
 	ld      a, $ff
-	ld      ($d3a8), a
+	ld      (gameMem+$D3A8), a
 	ld      (ix+$00), $ff
 	ret     
 
@@ -2599,12 +2607,12 @@ LABEL_B28_9FE7:
 	push    ix
 	pop     hl
 	call    VF_Engine_GetObjectIndexFromPointer
-	ld      ($d46b), a
+	ld      (gameMem+$D46B), a
 	ld      hl, $0040
 	bit     4, (ix+$04)
-	jp      z, +_
-	ld      hl, $ffc0
-  	ld      (ix+$16), l
+	jr      z, +_
+	ld      hl, $FFC0
+_:  	ld      (ix+$16), l
 	ld      (ix+$17), h
 	ld      hl, $fc80
 	ld      (ix+$18), l
@@ -2622,7 +2630,7 @@ LABEL_B28_A00C
 	call    VF_Engine_SetObjectVerticalSpeed
 	bit     7, (ix+$19)
 	ret     nz
-	ld      a, ($d46a)
+	ld      a, (gameMem+$D46a)
 	call    VF_Engine_GetObjectDescriptorPointer
 	push    hl
 	pop     iy
@@ -2651,9 +2659,9 @@ LABEL_B28_A055:
 	ld      (ix+$19), h
 	ld      hl, $0380
 	bit     4, (ix+$04)
-	jp      z, +_
+	jr      z, +_
 	ld      hl, $fc80
-  	ld      (ix+$16), l
+_:  	ld      (ix+$16), l
 	ld      (ix+$17), h
 	ld      (ix+$02), $02
 	ret     
@@ -2664,16 +2672,16 @@ LABEL_B28_A07C
 	ld      (ix+$19), h
 	ld      hl, $0100
 	bit     4, (ix+$04)
-	jp      z, +_
+	jr      z, +_
 	ld      hl, $ff00
-  	ld      (ix+$16), l
+_:  	ld      (ix+$16), l
 	ld      (ix+$17), h
 	ld      (ix+$02), $02
 	ret     
 
 LABEL_B28_A09C:
 	bit     6, (ix+$04)
-	jp      z, LABEL_B28_A0A7
+	jr      z, LABEL_B28_A0A7
 	ld      (ix+$00), $ff
 	ret     
 
@@ -2683,7 +2691,7 @@ LABEL_B28_A0A7:
 	and     $0f
 	jp      z, LABEL_B28_A0BA
 	ld      a, $ff
-	ld      ($d3a8), a
+	ld      (gameMem+$D3a8), a
 	jp      LABEL_200 + $5D
 
 LABEL_B28_A0BA:
@@ -2697,7 +2705,7 @@ LABEL_B28_A0BA:
 	bit     6, (ix+$04)
 	ret     nz
 	ld      a, $a8
-	ld      ($dd04), a
+	ld      (gameMem+$Dd04), a
 	ret     
 
 DATA_B28_A0D8:
@@ -2720,24 +2728,24 @@ DATA_B28_A0E7:
 
 DATA_B28_A0F1:
 .db $FF, $02
-	.dw VF_Logic_ChangeDirectionTowardsPlayer
+	.dl VF_Logic_ChangeDirectionTowardsPlayer
 .db $FF, $04
 	.dw $0000
 	.dw $0000
 .db $FF, $02
 	.dw LABEL_B28_A213
 .db $20, $01
-	.dw LABEL_200 + $1B
+	.dl LABEL_200 + $1B
 .db $20, $02
-	.dw LABEL_200 + $1B
+	.dl LABEL_200 + $1B
 .db $FF, $02
-	.dw VF_Logic_ChangeDirectionTowardsPlayer
+	.dl VF_Logic_ChangeDirectionTowardsPlayer
 .db $20, $03
-	.dw LABEL_200 + $1B
+	.dl LABEL_200 + $1B
 .db $20, $08
 	.dw LABEL_B28_A289
 .db $FF, $02
-	.dw VF_Logic_ChangeDirectionTowardsPlayer
+	.dl VF_Logic_ChangeDirectionTowardsPlayer
 .db $20, $09
 	.dw LABEL_B28_A289
 .db $FF, $06
@@ -2748,12 +2756,12 @@ DATA_B28_A0F1:
 .db $FF, $02
 	.dw LABEL_B28_A217
 .db $01, $04
-	.dw LABEL_200 + $1B
+	.dl LABEL_200 + $1B
 .db $FF, $00
 
 DATA_B28_A12D:
 .db $32, $04
-	.dw LABEL_200 + $1B
+	.dl LABEL_200 + $1B
 .db $FF, $04
 	.dw $0100
 	.dw $FE00
@@ -2762,12 +2770,12 @@ DATA_B28_A12D:
 .db $FF, $02
 	.dw LABEL_B28_A225
 .db $10, $01
-	.dw LABEL_200 + $1B
+	.dl LABEL_200 + $1B
 .db $FF, $00
 
 DATA_B28_A145:
 .db $12, $04
-	.dw LABEL_200 + $1B
+	.dl LABEL_200 + $1B
 .db $FF, $04
 	.dw $0100
 	.dw $FE00
@@ -2776,7 +2784,7 @@ DATA_B28_A145:
 .db $FF, $02
 	.dw LABEL_B28_A225
 .db $10, $01
-	.dw LABEL_200 + $1B
+	.dl LABEL_200 + $1B
 .db $FF, $00
 
 DATA_B28_A15D:
@@ -2786,29 +2794,29 @@ DATA_B28_A15D:
 	.dw $FFE2
 	.db $00
 .db $10, $05
-	.dw VF_Engine_CheckCollisionAndAdjustPlayer
+	.dl VF_Engine_CheckCollisionAndAdjustPlayer
 .db $FF, $02
 	.dw LABEL_B28_A236
 .db $08, $06
-	.dw VF_Engine_CheckCollisionAndAdjustPlayer
+	.dl VF_Engine_CheckCollisionAndAdjustPlayer
 .db $08, $07
-	.dw VF_Engine_CheckCollisionAndAdjustPlayer
+	.dl VF_Engine_CheckCollisionAndAdjustPlayer
 .db $08, $06
-	.dw VF_Engine_CheckCollisionAndAdjustPlayer
+	.dl VF_Engine_CheckCollisionAndAdjustPlayer
 .db $08, $07
-	.dw VF_Engine_CheckCollisionAndAdjustPlayer
+	.dl VF_Engine_CheckCollisionAndAdjustPlayer
 .db $08, $06
-	.dw VF_Engine_CheckCollisionAndAdjustPlayer
+	.dl VF_Engine_CheckCollisionAndAdjustPlayer
 .db $08, $07
-	.dw VF_Engine_CheckCollisionAndAdjustPlayer
+	.dl VF_Engine_CheckCollisionAndAdjustPlayer
 .db $08, $06
-	.dw VF_Engine_CheckCollisionAndAdjustPlayer
+	.dl VF_Engine_CheckCollisionAndAdjustPlayer
 .db $10, $05
-	.dw VF_Engine_CheckCollisionAndAdjustPlayer
+	.dl VF_Engine_CheckCollisionAndAdjustPlayer
 .db $FF, $02
 	.dw LABEL_B28_A225
 .db $08, $05
-	.dw VF_Engine_CheckCollisionAndAdjustPlayer
+	.dl VF_Engine_CheckCollisionAndAdjustPlayer
 .db $FF, $00
 
 DATA_B28_A197:
@@ -2832,57 +2840,57 @@ DATA_B28_A1AB:
 
 DATA_B28_A1B1:
 .db $FF, $02
-	.dw VF_Score_AddBossValue
+	.dl VF_Score_AddBossValue
 .db $FF, $06
 	.db $0F
 	.dw $0004
 	.dw $FFE2
 	.db $00
 .db $10, $05
-	.dw VF_Engine_CheckCollisionAndAdjustPlayer
+	.dl VF_Engine_CheckCollisionAndAdjustPlayer
 .db $08, $06
-	.dw VF_Engine_CheckCollisionAndAdjustPlayer
+	.dl VF_Engine_CheckCollisionAndAdjustPlayer
 .db $08, $07
-	.dw VF_Engine_CheckCollisionAndAdjustPlayer
+	.dl VF_Engine_CheckCollisionAndAdjustPlayer
 .db $FF, $06
 	.db $0F
 	.dw $000C
 	.dw $FFFC
 	.db $05
 .db $08, $06
-	.dw VF_Engine_CheckCollisionAndAdjustPlayer
+	.dl VF_Engine_CheckCollisionAndAdjustPlayer
 .db $FF, $06
 	.db $0F
 	.dw $FFF4
 	.dw $FFFC
 	.db $05
 .db $08, $07
-	.dw VF_Engine_CheckCollisionAndAdjustPlayer
+	.dl VF_Engine_CheckCollisionAndAdjustPlayer
 .db $FF, $06
 	.db $0F
 	.dw $0004
 	.dw $FFF8
 	.db $05
 .db $08, $06
-	.dw VF_Engine_CheckCollisionAndAdjustPlayer
+	.dl VF_Engine_CheckCollisionAndAdjustPlayer
 .db $FF, $06
 	.db $0F
 	.dw $FFFC
 	.dw $FFF8
 	.db $05
 .db $08, $07
-	.dw VF_Engine_CheckCollisionAndAdjustPlayer
+	.dl VF_Engine_CheckCollisionAndAdjustPlayer
 .db $FF, $06
 	.db $0F
 	.dw $0000
 	.dw $FFF4
 	.db $05
 .db $08, $06
-	.dw VF_Engine_CheckCollisionAndAdjustPlayer
+	.dl VF_Engine_CheckCollisionAndAdjustPlayer
 .db $10, $05
-	.dw VF_Engine_CheckCollisionAndAdjustPlayer
+	.dl VF_Engine_CheckCollisionAndAdjustPlayer
 .db $E0, $00
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $08, $00
 	.dw LABEL_B28_A247
 .db $FF, $00
@@ -2895,9 +2903,9 @@ LABEL_B28_A217:
 	ld      b, $03
 	ld      a, (ix+$0a)
 	dec     a
-	jp      nz, +_
+	jr      nz, +_
 	ld      b, $04
-  	ld      (ix+$02), b
+_:  	ld      (ix+$02), b
 	ret     
 
 LABEL_B28_A225:
@@ -2922,29 +2930,29 @@ LABEL_B28_A247:
 
 LABEL_B28_A24F:
 	ld      a, $ff
-	ld      ($d4a2), a
+	ld      (gameMem+$D4a2), a
 	push    ix
 	pop     hl
 	call    VF_Engine_GetObjectIndexFromPointer
-	ld      ($d46a), a
+	ld      (gameMem+$D46a), a
 	ld      (ix+$24), $06
 	ret
 
 LABEL_B28_A262:
 	call    VF_Engine_SetMinimumCameraX
-	ld      de, ($d174)
+	ld      de, (gameMem+$D174)
 	ld      l, (ix+$11)
 	ld      h, (ix+$12)
 	xor     a
 	sbc     hl, de
-	jp      c, +_
+	jr      c, +_
 	ld      a, h
 	or      a
 	ret     nz
 	ld      a, l
 	cp      $e0
 	ret     nc
-  	ld      (ix+$02), $02
+_:  	ld      (ix+$02), $02
 	ld      bc, $0d60
 	ld      de, $0080
 	call    VF_Engine_SetCameraAndLock
@@ -2988,7 +2996,7 @@ LABEL_B28_A2CA:
 	call    LABEL_200 + $3F
 	dec     (ix+$1e)
 	jp      z, LABEL_B28_A335
-	ld      hl, ($d511)
+	ld      hl, (gameMem+$D511)
 	ld      e, (ix+$11)
 	ld      d, (ix+$12)
 	xor     a
@@ -3025,10 +3033,10 @@ LABEL_B28_A303:
 	ret     
 
 LABEL_B28_A319:
-	ld      a, ($d501)
+	ld      a, (gameMem+$D501)
 	cp      $0a
 	ret     nz
-	ld      hl, ($d514)
+	ld      hl, (gameMem+$D514)
 	ld      de, $0028
 	add     hl, de
 	ld      e, (ix+$14)
@@ -3044,7 +3052,7 @@ LABEL_B28_A335:
 	ret     
 
 LABEL_B28_A33A:
-	ld      a, ($d501)
+	ld      a, (gameMem+$D501)
 	cp      $0a
 	jp      nz, LABEL_B28_A335
 	ld      de, $fff8
@@ -3059,7 +3067,7 @@ LABEL_B28_A33A:
 	ret
 
 LABEL_B28_A35D:
-	ld      hl, ($d174)
+	ld      hl, (gameMem+$D174)
 	ld      de, $0080
 	add     hl, de
 	ex      de, hl
@@ -3075,14 +3083,14 @@ LABEL_B28_A35D:
 	ret     nz
 	ld      (ix+$02), $02
 	ld      a, $1b
-	ld      ($d502), a
+	ld      (gameMem+$D502), a
 	ld      hl, $f900
-	ld      ($d518), hl
+	ld      (gameMem+$D518), hl
 	ld      hl, $0500
 	bit     4, (ix+$04)
-	jp      z, +_ 
+	jr      z, +_ 
 	ld      hl, $fb00
-  	ld      ($d516), hl
+_: 	ld      (gameMem+$D516), hl
 	ret     
 
 ;************************************
@@ -3126,7 +3134,7 @@ DATA_B28_A837:
 
 LABEL_B28_A846:
 	ld      a, $ff
-	ld      ($d4a2), a
+	ld      (gameMem+$D4a2), a
 	ld      (ix+$24), $08
 	ret     
 
@@ -3259,86 +3267,86 @@ DATA_B28_A902:
 
 DATA_B28_A90C:
 .db $FF, $02
-	.dw LABEL_200 + $11D
+	.dl LABEL_200 + $11D
 .db $FF, $04
 	.dw $0000
 	.dw $FF80
 .db $08, $08
-	.dw VF_Engine_UpdateObjectPosition
+	.dl VF_Engine_UpdateObjectPosition
 .db $08, $09
-	.dw VF_Engine_UpdateObjectPosition
+	.dl VF_Engine_UpdateObjectPosition
 .db $08, $08
-	.dw VF_Engine_UpdateObjectPosition
+	.dl VF_Engine_UpdateObjectPosition
 .db $08, $09
-	.dw VF_Engine_UpdateObjectPosition
+	.dl VF_Engine_UpdateObjectPosition
 .db $08, $08
-	.dw VF_Engine_UpdateObjectPosition
+	.dl VF_Engine_UpdateObjectPosition
 .db $08, $09
-	.dw VF_Engine_UpdateObjectPosition
+	.dl VF_Engine_UpdateObjectPosition
 .db $FF, $06
 	.db $0F
 	.dw $0006
 	.dw $FFFC
 	.db $05
 .db $08, $08
-	.dw LABEL_200  + $57
+	.dl LABEL_200  + $57
 .db $FF, $06
 	.db $0F
 	.dw $FFFA
 	.dw $FFFC
 	.db $05
 .db $08, $09
-	.dw VF_Engine_UpdateObjectPosition
+	.dl VF_Engine_UpdateObjectPosition
 .db $FF, $06
 	.db $0F
 	.dw $0004
 	.dw $FFF8
 	.db $05
 .db $08, $08
-	.dw VF_Engine_UpdateObjectPosition
+	.dl VF_Engine_UpdateObjectPosition
 .db $FF, $06
 	.db $0F
 	.dw $FFFC
 	.dw $FFF8
 	.db $05
 .db $08, $00
-	.dw VF_Engine_UpdateObjectPosition
+	.dl VF_Engine_UpdateObjectPosition
 .db $FF, $06
 	.db $0F
 	.dw $0000
 	.dw $FFF4
 	.db $05
 .db $40, $00
-	.dw VF_Engine_UpdateObjectPosition
+	.dl VF_Engine_UpdateObjectPosition
 .db $08, $00
 	.dw LABEL_B28_A9DF
 .db $FF, $00
 
 DATA_B28_A973:
 .db $FF, $02
-	.dw LABEL_200 + $11D
+	.dl LABEL_200 + $11D
 .db $FF, $04
 	.dw $0000
 	.dw $FF80
 .db $08, $08
-	.dw VF_Engine_UpdateObjectPosition
+	.dl VF_Engine_UpdateObjectPosition
 .db $08, $09
-	.dw VF_Engine_UpdateObjectPosition
+	.dl VF_Engine_UpdateObjectPosition
 .db $08, $08
-	.dw VF_Engine_UpdateObjectPosition
+	.dl VF_Engine_UpdateObjectPosition
 .db $08, $09
-	.dw VF_Engine_UpdateObjectPosition
+	.dl VF_Engine_UpdateObjectPosition
 .db $08, $08
-	.dw VF_Engine_UpdateObjectPosition
+	.dl VF_Engine_UpdateObjectPosition
 .db $08, $09
-	.dw VF_Engine_UpdateObjectPosition
+	.dl VF_Engine_UpdateObjectPosition
 .db $FF, $06
 	.db $0F
 	.dw $0006
 	.dw $FFFC
 	.db $05
 .db $08, $08
-	.dw VF_Engine_UpdateObjectPosition
+	.dl VF_Engine_UpdateObjectPosition
 .db $FF, $06
 	.db $14
 	.dw $0000
@@ -3350,58 +3358,58 @@ DATA_B28_A973:
 	.dw $FFFC
 	.db $05
 .db $08, $09
-	.dw VF_Engine_UpdateObjectPosition
+	.dl VF_Engine_UpdateObjectPosition
 .db $FF, $06
 	.db $0F
 	.dw $0004
 	.dw $FFF8
 	.db $05
 .db $08, $08
-	.dw VF_Engine_UpdateObjectPosition
+	.dl VF_Engine_UpdateObjectPosition
 .db $FF, $06
 	.db $0F
 	.dw $FFFC
 	.dw $FFF8
 	.db $05
 .db $08, $00
-	.dw VF_Engine_UpdateObjectPosition
+	.dl VF_Engine_UpdateObjectPosition
 .db $FF, $06
 	.db $0F
 	.dw $0000
 	.dw $FFF4
 	.db $05
 .db $40, $00
-	.dw VF_Engine_UpdateObjectPosition
+	.dl VF_Engine_UpdateObjectPosition
 .db $08, $00
 	.dw LABEL_B28_A9E4
 .db $FF, $00
 
 
 LABEL_B28_A9DF:
-	ld      hl, $d293
+	ld      hl, $D293
 	set     4, (hl)
 LABEL_B28_A9E4:
 	ld      (ix+$00), $fe
 	ret     
 
 LABEL_B28_A9E9:
-	ld      hl, ($d511)
+	ld      hl, (gameMem+$D511)
 	ld      e, (ix+$11)
 	ld      d, (ix+$12)
 	xor     a
 	sbc     hl, de
-	jp      nc, +_
+	jr      nc, +_
 	ex      de, hl
 	ld      hl, $0000
 	xor     a
 	sbc     hl, de
-  	ld      a, h
+_:  	ld      a, h
 	or      a
 	ret     nz
 	ld      a, l
 	cp      $80
 	ret     nc
-	ld      de, ($d514)
+	ld      de, (gameMem+$D514)
 	ld      l, (ix+$14)
 	ld      h, (ix+$15)
 	xor     a
@@ -3414,19 +3422,19 @@ LABEL_B28_A9E9:
 	ret     
 
 LABEL_B28_AA21:
-	ld      hl, ($d174)
+	ld      hl, (gameMem+$D174)
 	ld      de, $0080
 	add     hl, de
 	ex      de, hl
 	call    LABEL_200 + $42
-	ld      a, ($d2b9)
+	ld      a, (gameMem+$D2b9)
 	ld      b, a
-	ld      a, ($d2b9)
+	ld      a, (gameMem+$D2b9)
 	rrca    
 	rrca    
 	rrca    
 	ld      c, a
-	ld      a, ($d510)
+	ld      a, (gameMem+$D510)
 	add     a, b
 	add     a, c
 	and     $03
@@ -3468,7 +3476,7 @@ LABEL_B28_AA65:
 	ret     
 
 LABEL_B28_AA7C:
-	ld      a, ($d2b9)
+	ld      a, (gameMem+$D2b9)
 	and     $01
 	jp      z, LABEL_B28_AA88
 	ld      (ix+$02), $03
@@ -3632,7 +3640,7 @@ LABEL_B28_ABB5:
 	ret     
 
 LABEL_B28_ABE0:
-	ld      de, ($d174)
+	ld      de, (gameMem+$D174)
 	ld      l, (ix+$11)
 	ld      h, (ix+$12)
 	xor     a
@@ -3644,7 +3652,7 @@ LABEL_B28_ABE0:
 	ld      a, l
 	cp      $30
 	jp      c, LABEL_B28_AC12
-	cp      $d0
+	cp      $D0
 	jp      nc, LABEL_B28_AC23
 	ld      e, (ix+$16)
 	ld      d, (ix+$17)
@@ -3665,11 +3673,11 @@ LABEL_B28_AC12:
 	ld      e, (ix+$16)
 	ld      a, (ix+$17)
 	or      e
-	jp      z, +_
+	jr      z, +_
 	xor     a
 	bit     7, (ix+$17)
 	ret     z
-  	scf     
+_:  	scf     
 	ret     
 
 LABEL_B28_AC23:
@@ -3683,15 +3691,15 @@ LABEL_B28_AC2B:
 	call    LABEL_200 + $1B
 	ld      a, (ix+$00)
 	cp      $42
-	jp      nz, +_
+	jr      nz, +_
 	ld      a, (ix+$21)
 	and     $0f
-	jp      z, ++_
+	jr      z, ++_
 	ld      a, $ff
-	ld      ($d3a8), a
-	ld      a, (ix+$21)
+	ld      (gameMem+$D3a8), a
+_:	ld      a, (ix+$21)
 	and     $0f
-	jp      z, ++_
+	jr      z, +_
 	ld      e, (ix+$16)
 	ld      d, (ix+$17)
 	ld      hl, $0000
@@ -3699,7 +3707,7 @@ LABEL_B28_AC2B:
 	sbc     hl, de
 	ld      (ix+$16), l
 	ld      (ix+$17), h
-   	ld      a, (ix+$1f)
+_:   	ld      a, (ix+$1f)
 	or      a
 	jp      nz, LABEL_B28_ACAC
 	res     5, (ix+$04)
@@ -3720,7 +3728,7 @@ LABEL_B28_AC6E:
 	ld      (ix+$1f), $40
 	dec     (ix+$24)
 	ld      a, $aa
-	ld      ($dd04), a
+	ld      (gameMem+$Dd04), a
 	ret     
 
 LABEL_B28_AC93:
@@ -3729,7 +3737,7 @@ LABEL_B28_AC93:
 	or      a
 	ret     nz
 LABEL_B28_AC9B:
-	ld      a, ($d2c5)
+	ld      a, (gameMem+$D2c5)
 	cp      $1f
 	jp      z, LABEL_B28_ACA7
 	ld      (ix+$02), $10
@@ -3852,13 +3860,13 @@ LABEL_B28_AD47:
 	ld      a, $40
 	call    Logic_CheckPlayerHorizontalProximity
 	cp      $00
-	jp      z, +_
+	jr      z, +_
 	ld      a, $40
 	call    Logic_CheckPlayerVerticalProximity
 	cp      $00
-	jp      z, +_
+	jr      z, +_
 	ld      (ix+$02), $02
-  	ret     
+_:  	ret     
 
 LABEL_B28_AD74:
 	bit     6, (ix+$04)
@@ -3877,7 +3885,7 @@ LABEL_B28_AD88:
 	ld      (ix+$19), $00
 	ld      (ix+$18), $00
 	ld      (ix+$02), $04
-	ld      hl, ($d511)
+	ld      hl, (gameMem+$D511)
 	ld      d, (ix+$12)
 	ld      e, (ix+$11)
 	xor     a
@@ -3912,7 +3920,7 @@ LABEL_B28_ADD8:
 	ld      (ix+$02), $06
 	ld      (ix+$19), $00
 	ld      (ix+$18), $00
-	ld      hl, ($d511)
+	ld      hl, (gameMem+$D511)
 	ld      d, (ix+$12)
 	ld      e, (ix+$11)
 	xor     a
@@ -3964,7 +3972,7 @@ LABEL_B28_AE3C:
 	cp      $81
 	jp      nz, LABEL_B28_AE85
 	ld      (ix+$02), $08
-	ld      hl, ($d511)
+	ld      hl, (gameMem+$D511)
 	ld      d, (ix+$12)
 	ld      e, (ix+$11)
 	xor     a
@@ -4054,31 +4062,31 @@ LABEL_B28_AEEE:
 	ret     nz
 	call    VF_Engine_CheckCollision
 	call    LABEL_200 + $3F
-	ld      hl, ($d511)
+	ld      hl, (gameMem+$D511)
 	ld      e, (ix+$11)
 	ld      d, (ix+$12)
 	xor     a
 	sbc     hl, de
-	jp      nc, ++_
+	jr      nc, +_
 	ex      de, hl
 	ld      hl, $0000
 	xor     a
 	sbc     hl, de
-  	ld      a, h
+_:  	ld      a, h
 	or      a
 	jp      nz, VF_Logic_CheckDestroyObject
 	ld      b, l
-	ld      hl, ($d514)
+	ld      hl, (gameMem+$D514)
 	ld      e, (ix+$14)
 	ld      d, (ix+$15)
 	xor     a
 	sbc     hl, de
-	jp      nc, +_
+	jr      nc, +_
 	ex      de, hl
 	ld      hl, $0000
 	xor     a
 	sbc     hl, de
-  	ld      a, h
+_: 	ld      a, h
 	or      a
 	jp      nz, VF_Logic_CheckDestroyObject
 	ld      a, l
@@ -4093,11 +4101,11 @@ LABEL_B28_AEEE:
 LABEL_B28_AF43:
 	bit     6, (ix+$04)
 	ret     nz
-	ld      hl, ($d511)
+	ld      hl, (gameMem+$D511)
 	ld      de, $0000
 	ld      bc, $00c0
 	call    LABEL_200 + $48
-	ld      hl, ($d514)
+	ld      hl, (gameMem+$D514)
 	ld      de, $0000
 	ld      bc, $00c0
 	call    LABEL_200 + $4B
@@ -4105,16 +4113,16 @@ LABEL_B28_AF43:
 	call    LABEL_200 + $39
 	ld      a, (ix+$22)
 	and     $0c
-	jp      nz, +_
+	jr      nz, +_
 	call    VF_Engine_UpdateObjectPosition
 	call    LABEL_200 + $60
 	call    LABEL_200 + $3F
 	ld      a, (ix+$21)
 	and     $0f
-	jp      nz, +_
+	jr      nz, +_
 	dec     (ix+$1f)
 	jp      nz, VF_Logic_CheckDestroyObject
-  	ld      (ix+$02), $03
+_:  	ld      (ix+$02), $03
 	jp      VF_Logic_CheckDestroyObject
 
 LABEL_B28_AF8A:
@@ -4124,9 +4132,9 @@ LABEL_B28_AF8A:
 	call    LABEL_200 + $3f
 	ld      a, (ix+$06)
 	cp      $04
-	jp      z, +_
+	jr      z, +_
 	call    VF_Engine_UpdateObjectPosition
-  	call    VF_Engine_CheckCollision
+_:  	call    VF_Engine_CheckCollision
 	ld      l, (ix+$3a)
 	ld      h, (ix+$3b)
 	ld      de, $0000
@@ -4193,7 +4201,7 @@ Motobug_State_01:		;$AFF3
 .db $FF, $05
 	.db $03			;set state = $03
 .db $08, $03
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $00
 
 Motobug_State_02:		;$B02C
@@ -4224,7 +4232,7 @@ Motobug_State_02:		;$B02C
 .db $FF, $05
 	.db $04			;set state $04
 .db $08, $03
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $00
 
 
@@ -4270,7 +4278,7 @@ Motobug_State_05:		;$B081
 .db $FF, $05
 	.db $02
 .db $08, $03
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $00
 
 
@@ -4296,7 +4304,7 @@ Motobug_State_06:		;$B0AE
 .db $FF, $05
 	.db $01
 .db $08, $03
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $00
 
 
@@ -4344,25 +4352,25 @@ LABEL_B28_B101:
 	ld      a, $40				;check player proximity
 	call    Logic_CheckPlayerVerticalProximity
 	or      a
-	jp      z, +_				;jump if player is not close enough
+	jr      z, +_				;jump if player is not close enough
 	
-	ld      hl, ($D511)			;HL = player hpos
+	ld      hl, (gameMem+$D511)			;HL = player hpos
 	ld      d, (ix+$12)			;DE = object hpos
 	ld      e, (ix+$11)
 	xor     a
 	sbc     hl, de
-	jp      c, +_				;jump if object to right of player
+	jr      c, +_				;jump if object to right of player
 	
 	ld      de, $0040
 	xor     a
 	sbc     hl, de
-	jp      nc, +_				;jump if player not with 64 pixels of object
+	jr      nc, +_				;jump if player not with 64 pixels of object
 	
 	ld      (ix+$02), $07		;set state = $07
 	ld      (ix+$17), $00		;set horizontal velocity
 	ld      (ix+$16), $00
 	
-  	ld      a, (ix+$21)			;check collision flags
+_:  	ld      a, (ix+$21)			;check collision flags
 	and     $0F					;jump if there was a collision
 	jp      nz, Logic_Generic_CheckDestroyObject
 
@@ -4392,26 +4400,26 @@ Motobug_MoveLeft:		;$B161
 	ld      a, $40				;check to see if player is close
 	call    Logic_CheckPlayerVerticalProximity
 	or      a
-	jp      z, +_				;jump if player not close enough
+	jr      z, +_				;jump if player not close enough
 	
-	ld      de, ($D511)			;DE = player hpos
+	ld      de, (gameMem+$D511)			;DE = player hpos
 	ld      h, (ix+$12)			;HL = object hpos
 	ld      l, (ix+$11)
 
 	xor     a
 	sbc     hl, de
-	jp      c, +_				;jump if player is to right of object
+	jr      c, +_				;jump if player is to right of object
 
 	ld      de, $0040
 	xor     a
 	sbc     hl, de
-	jp      nc, +_				;jump if player not with 64 pixels of object
+	jr      nc, +_				;jump if player not with 64 pixels of object
 
 	ld      (ix+$02), $08		;set state = $08
 	ld      (ix+$17), $00		;set horizontal velocity
 	ld      (ix+$16), $00
 
-  	ld      a, (ix+$21)			;check collision flags and
+_:  	ld      a, (ix+$21)			;check collision flags and
 	and     $0F					;jump if there was a collision
 	jp      nz, Logic_Generic_CheckDestroyObject
 	
@@ -4532,7 +4540,7 @@ LABEL_B28_B290:
 	call    VF_Logic_UpdateObjectDirectionFlag
 	call    Logic_CheckBackgroundCollision
 	bit     0, a
-	jp      nz, +_
+	jr      nz, +_
 	ld      h, (ix+$17)
 	ld      l, (ix+$16)
 	ld      de, $0004
@@ -4544,7 +4552,7 @@ LABEL_B28_B290:
 	xor     a
 	sbc     hl, de
 	ret     c
-  	ld      (ix+$17), $00
+_:  	ld      (ix+$17), $00
 	ld      (ix+$16), $00
 	ld      (ix+$02), $05
 	ret     
@@ -4559,7 +4567,7 @@ LABEL_B28_B2D0:
 	call    VF_Logic_UpdateObjectDirectionFlag
 	call    Logic_CheckBackgroundCollision
 	bit     0, a
-	jp      nz, +_
+	jr      nz, +_
 	ld      h, (ix+$17)
 	ld      l, (ix+$16)
 	ld      de, $0004
@@ -4571,7 +4579,7 @@ LABEL_B28_B2D0:
 	xor     a
 	sbc     hl, de
 	ret     nc
-  	ld      (ix+$17), $00
+_:  	ld      (ix+$17), $00
 	ld      (ix+$16), $00
 	ld      (ix+$02), $06
 	ret     
@@ -4759,7 +4767,7 @@ LABEL_B28_B56A:
 	ld      hl, $fb00
 	ld      (ix+$19), h
 	ld      (ix+$18), l
-	ld      hl, ($d511)
+	ld      hl, (gameMem+$D511)
 	ld      d, (ix+$12)
 	ld      e, (ix+$11)
 	xor     a
@@ -4846,7 +4854,7 @@ LABEL_B28_B61D:
 	ld      (ix+$19), $00
 	ld      (ix+$18), $00
 	ld      (ix+$1e), $40
-	ld      hl, ($d511)
+	ld      hl, (gameMem+$D511)
 	ld      d, (ix+$12)
 	ld      e, (ix+$11)
 	xor     a
@@ -4869,7 +4877,7 @@ LABEL_B28_B686:
 	ld      a, (ix+$21)
 	and     $0f
 	ret     z
-	ld      a, ($d503)
+	ld      a, (gameMem+$D503)
 	bit     1, a
 	ret     z
 	call    LABEL_B28_B698
@@ -4881,12 +4889,12 @@ LABEL_B28_B698:
 	call    VF_Engine_GetObjectIndexFromPointer
 	ld      c, a
 	ld      b, $08
-	ld      de, $D3BC
-  	ld      a, (de)
+	ld      de, gameMem+$D3BC
+_:  	ld      a, (de)
 	cp      c
 	jp      z, LABEL_B28_B6AC
 	inc     de
-	djnz    LABEL_B28_B698
+	djnz    -_
 	ret     
 
 LABEL_B28_B6AC:
@@ -4932,14 +4940,14 @@ LABEL_B28_B6E3:
 	add     a, $01
 	ld      (ix+$1e), a
 	and     $80
-	jp      z, +_
+	jr      z, +_
 	ld      h, (ix+$19)
 	ld      l, (ix+$18)
 	call    LABEL_B28_BC23
 	ld      (ix+$19), h
 	ld      (ix+$18), l
 	ld      (ix+$1e), $00
-  	call    VF_Logic_UpdateObjectDirectionFlag
+_:  	call    VF_Logic_UpdateObjectDirectionFlag
 	call    VF_Engine_CheckCollision
 	call    VF_Engine_UpdateObjectPosition
 	ld      a, (ix+$21)
@@ -4950,13 +4958,13 @@ LABEL_B28_B6E3:
 	call    LABEL_200 + $39
 	ld      a, (ix+$22)
 	and     $0c
-	jp      z, +_
+	jr      z, +_
 	ld      h, (ix+$17)
 	ld      l, (ix+$16)
 	call    LABEL_B28_BC23
 	ld      (ix+$17), h
 	ld      (ix+$16), l
-  	ret     
+_:  	ret     
 
 LABEL_B28_B737:
 	jp      VF_Logic_CheckDestroyObject
@@ -4999,9 +5007,9 @@ DATA_B28_B75C:
 
 LABEL_B28_B766:
 	bit     6, (ix+$04)
-	jp      nz, +_
+	jr      nz, +_
 	ld      (ix+$02), $01
-  	ret     
+_:  	ret     
 
 LABEL_B28_B771:
 	bit     6, (ix+$04)
@@ -5115,9 +5123,9 @@ LABEL_B28_B844:
 	jp      nz, LABEL_B28_B8DF
 	call    Logic_CheckBackgroundCollision
 	bit     0, a
-	jp      z, +_
+	jr      z, +_
 	call    LABEL_B28_BD26
-  	bit     7, (ix+$17)
+_:  	bit     7, (ix+$17)
 	jp      nz, LABEL_B28_B89A
 	ld      h, (ix+$12)
 	ld      l, (ix+$11)
@@ -5156,7 +5164,7 @@ LABEL_B28_B8BC:
 	call    Logic_CheckPlayerHorizontalProximity
 	or      a
 	ret     z
-	ld      a, ($d503)
+	ld      a, (gameMem+$D503)
 	bit     0, a
 	ret     z
 	ld      (ix+$02), $02
@@ -5212,7 +5220,7 @@ DATA_B28_B8FA:
 .db $FF, $05
 	.db $03
 .db $10, $02
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $00
 
 DATA_B28_B829:
@@ -5248,22 +5256,22 @@ LABEL_B28_B956:
 	ld      a, $40
 	call    Logic_CheckPlayerVerticalProximity
 	cp      $00
-	jp      z, +_
+	jr      z, +_
 	ld      a, $40
 	call    Logic_CheckPlayerHorizontalProximity
 	cp      $00
-	jp      z, +_
+	jr      z, +_
 	ld      (ix+$02), $02
-  	call    VF_Engine_CheckCollision
+_:  	call    VF_Engine_CheckCollision
 	call    VF_Engine_UpdateObjectPosition
 	ld      a, $00
 	ld      b, $60
 	call    LABEL_B28_BCB3
 	call    Logic_CheckBackgroundCollision
 	bit     0, a
-	jp      z, +_
+	jr      z, +_
 	call    LABEL_B28_BD26
-  	ld      a, (ix+$21)
+_:  	ld      a, (ix+$21)
 	and     $0f
 	jp      nz, LABEL_B28_B9C6
 	ret     
@@ -5276,7 +5284,7 @@ LABEL_B28_B994:
 	ld      a, (ix+$21)
 	and     $0f
 	jp      nz, LABEL_B28_B9C6
-	ld      a, ($d503)
+	ld      a, (gameMem+$D503)
 	bit     0, a
 	ret     z
 	ld      a, $10
@@ -5299,7 +5307,7 @@ LABEL_B28_B9BE:
 
 LABEL_B28_B9C6:
 	ld      a, $ff
-	ld      ($d3a8), a
+	ld      (gameMem+$D3a8), a
 	ret     
 
 
@@ -5375,14 +5383,14 @@ LABEL_B28_BA30:
 	ld      de, $0000
 	call    VF_Engine_GetCollisionValueForBlock
 	cp      $81
-	jp      nz, +_
-	ld      hl, ($bb2a)
+	jr      nz, +_
+	ld      hl, (gameMem+$bb2a)
 	ld      (ix+$18), l
 	ld      (ix+$19), h
 	ld      a, (ix+$1e)
 	add     a, $01
 	ld      (ix+$1e), a
-  	ret     
+_:  	ret     
 
 LABEL_B28_BA70:
 	bit     6, (ix+$04)
@@ -5416,7 +5424,7 @@ LABEL_B28_BAA3:
 	ld      (ix+$02), $01
 	ld      (ix+$17), $00
 	ld      (ix+$16), $00
-	ld      hl, ($bb2a)
+	ld      hl, (gameMem+$bb2a)
 	ld      (ix+$18), l
 	ld      (ix+$19), h
 	ret     
@@ -5424,17 +5432,17 @@ LABEL_B28_BAA3:
 LABEL_B28_BAC9:
 	ld      a, (ix+$17)
 	or      a
-	jp      nz, +_
+	jr      nz, +_
 	ld      a, (ix+$16)
 	or      a
-	jp      z, ++_
-  	call    LABEL_200 + $39
+	jr      z, ++_
+_:  	call    LABEL_200 + $39
 	ld      a, (ix+$22)
 	and     $0c
-	jp      z, ++_
+	jr      z, +_
 	ld      (ix+$17), $00
 	ld      (ix+$16), $00
-   	call    VF_Engine_CheckCollision
+_:  	call    VF_Engine_CheckCollision
 	call    VF_Engine_UpdateObjectPosition
 	ld      a, (ix+$21)
 	and     $0f
@@ -5450,14 +5458,14 @@ LABEL_B28_BAC9:
 	ld      de, $0000
 	call    VF_Engine_GetCollisionValueForBlock
 	cp      $81
-	jp      nz, +_
+	jr      nz, +_
 	ld      hl, $ff00
 	ld      (ix+$18), l
 	ld      (ix+$19), h
 	ld      a, (ix+$1e)
 	add     a, $01
 	ld      (ix+$1e), a
-  	ret     
+_: 	ret     
 
 LABEL_B28_BB27:
 	jp      VF_Logic_CheckDestroyObject
@@ -5483,10 +5491,10 @@ LABEL_B28_BB36:
 
 LABEL_B28_BB3C:
 	bit     6, (ix+$04)
-	jp      z, +_
+	jr      z, +_
 	ld      a, $ff
 	ld      (ix+$00), a
-  	ld      (ix+$02), $01
+_:  	ld      (ix+$02), $01
 	ld      (ix+$1e), $00
 	ld      l, (ix+$11)
 	ld      h, (ix+$12)
@@ -5517,7 +5525,7 @@ LABEL_B28_BB81:
 	ret     
 
 LABEL_B28_BB94:
-	ld      hl, ($d176)
+	ld      hl, (gameMem+$D176)
 	ld      de, $00E0
 	xor     a
 	add     hl, de
@@ -5565,7 +5573,7 @@ LABEL_B28_BBD1:
 	ld      a, (ix+$21)
 	and     $0f
 	ret     z
-	ld      hl, $d3a8
+	ld      hl, $D3a8
 	ld      a, $ff
 	ld      (hl), a
 	ret     
@@ -5583,7 +5591,7 @@ LABEL_B28_BBFD:
 	ld      a, (ix+$21)
 	and     $0f
 	ret     z
-	ld      hl, $d3a8
+	ld      hl, $D3a8
 	ld      a, $ff
 	ld      (hl), a
 	ret     
@@ -5612,7 +5620,7 @@ LABEL_B28_BC23:
 ;********************************************************************
 Logic_CheckPlayerHorizontalProximity:	;$BC2B
 	ld      b, a
-	ld      de, ($D511)		;DE = player hpos
+	ld      de, (gameMem+$D511)		;DE = player hpos
 	ld      l, (ix+$11)		;HL = object hpos
 	ld      h, (ix+$12)
 	
@@ -5634,7 +5642,7 @@ Logic_CheckPlayerHorizontalProximity:	;$BC2B
 
 ;ckeck player's proximity to the right of the object
 Logic_CheckPlayerHorizontalProximity_Right:		;$BC4B
-	ld      hl, ($D511)		;HL = player hpos
+	ld      hl, (gameMem+$D511)		;HL = player hpos
 	ld      e, (ix+$11)		;DE = object hpos
 	ld      d, (ix+$12)
 	
@@ -5674,7 +5682,7 @@ Logic_CheckPlayerHorizontalProximity_Return:
 ;********************************************************************
 Logic_CheckPlayerVerticalProximity:		;$BC6F
 	ld      b, a			;B = proximity tolerance
-	ld      de, ($D514)		;DE = player's vpos
+	ld      de, (gameMem+$D514)		;DE = player's vpos
 	ld      l, (ix+$14)		;HL = object's vpos
 	ld      h, (ix+$15)
 	
@@ -5695,7 +5703,7 @@ Logic_CheckPlayerVerticalProximity:		;$BC6F
 	ret     
 
 Logic_CheckPlayerVerticalProximity_Below:	;$BC8F
-	ld      hl, ($D514)		;HL = player's vpos
+	ld      hl, (gameMem+$D514)		;HL = player's vpos
 	ld      e, (ix+$14)		;DE = object's vpos
 	ld      d, (ix+$15)
 	
@@ -5740,13 +5748,13 @@ LABEL_B28_BCB3:
 	jp      c, LABEL_B28_BD14
 	ld      a, c
 	and     $01
-	jp      nz, +_
+	jr      nz, +_
 	ld      h, (ix+$17)
 	ld      l, (ix+$16)
 	call    LABEL_B28_BC23
 	ld      (ix+$17), h
 	ld      (ix+$16), l
-  	ld      a, $01
+_:  	ld      a, $01
 	ret     
 
 LABEL_B28_BCE4:
@@ -5765,13 +5773,13 @@ LABEL_B28_BCE4:
 	jp      c, LABEL_B28_BD14
 	ld      a, c
 	and     $01
-	jp      nz, +_
+	jr      nz, +_
 	ld      h, (ix+$17)
 	ld      l, (ix+$16)
 	call    LABEL_B28_BC23
 	ld      (ix+$17), h
 	ld      (ix+$16), l
-  	ld      a, $01
+_:  	ld      a, $01
 	ret     
 
 LABEL_B28_BD14:
@@ -5795,25 +5803,25 @@ LABEL_B28_BD26:
 ;test for a collision with the background tiles
 Logic_CheckBackgroundCollision:			;$BD36
 	bit     7, (ix+$17)		;which direction is the object moving?
-	jp      nz, +_			;jump if moving left
+	jr      nz, +_			;jump if moving left
 	
 							;get the mapping block type
 	ld      bc, $0008		;horizontal adjustment value if moving right
-	jp      ++_
+	jr      ++_
 	
-  	ld      bc, $FFF8		;horizontal adjustment value if moving left
+_:  	ld      bc, $FFF8		;horizontal adjustment value if moving left
 
-   	ld      de, $FFF0		;vertical adjustment value (-16px)
+_:   	ld      de, $FFF0		;vertical adjustment value (-16px)
 	call    VF_Engine_GetCollisionValueForBlock
 	cp      $81
-	jp      z, +_
+	jr      z, +_
 	cp      $8D
-	jp      z, +_
+	jr      z, +_
 	cp      $90
-	jp      z, +_
+	jr      z, +_
 	jp      Logic_CheckBackgroundCollision_Bottom
 	
-  	ld      a, ($D353)			;search the 8-element array at $BD86 for the current mapping number.
+_:  	ld      a, (gameMem+$D353)			;search the 8-element array at $BD86 for the current mapping number.
 	ld      hl, Logic_CheckBackgroundCollision_MappingData
 	ld      bc, $0008
 	cpir    					;jump if mapping number found
@@ -5825,20 +5833,20 @@ Logic_CheckBackgroundCollision:			;$BD36
 ;test for a collision at the bottom of the object with the background tiles
 Logic_CheckBackgroundCollision_Bottom:	;$BD68
 	bit     7, (ix+$17)		;which direction is the sprite moving?
-	jp      nz, +_			;jump if moving left
+	jr      nz, +_			;jump if moving left
 	ld      bc, $0008		;horizontal adjustment value if moving right
-	jp      ++_
-  	ld      bc, $FFF8		;horizontal adjustment value if moving left
-   	ld      de, $0010		;vertical adjustment value (+16px)
+	jr      ++_
+_:  	ld      bc, $FFF8		;horizontal adjustment value if moving left
+_:   	ld      de, $0010		;vertical adjustment value (+16px)
 	call    VF_Engine_GetCollisionValueForBlock
 	
 	bit     7, a
-	jp      z, +_			;jump if block value < $80
+	jr      z, +_			;jump if block value < $80
 	
 	ld      a, $00
 	ret     
 
-  	ld      a, $01
+_:  	ld      a, $01
 	ret     
 
 ;note: these mappings are half-solid, i.e. the bottom 2 rows of
@@ -5888,7 +5896,7 @@ LABEL_B28_BDBF:
 	and     $0f
 	ret     z
 LABEL_B28_BDD1:
-	ld      hl, $d3a8
+	ld      hl, $D3a8
 	ld      (hl), $ff
 	ret
 
@@ -5976,9 +5984,9 @@ LABEL_B28_BE53:
 	call    VF_Engine_CheckCollision
 	call    Logic_CheckBackgroundCollision
 	bit     0, a
-	jp      z, +_
+	jr      z, +_
 	call    LABEL_B28_BD26
-  	call    VF_Engine_UpdateObjectPosition
+_:  	call    VF_Engine_UpdateObjectPosition
 	call    LABEL_200 + $60
 	ld      a, (ix+$21)
 	and     $0f
@@ -5995,7 +6003,7 @@ LABEL_B28_BE53:
 	xor     a
 	sbc     hl, de
 	jp      nc, LABEL_B28_BEA5
-	ld      hl, ($d511)
+	ld      hl, (gameMem+$D511)
 	ld      d, (ix+$12)
 	ld      e, (ix+$11)
 	xor     a
@@ -6005,7 +6013,7 @@ LABEL_B28_BE53:
 	ret     
 
 LABEL_B28_BEA5:
-	ld      hl, ($d511)
+	ld      hl, (gameMem+$D511)
 	ld      d, (ix+$12)
 	ld      e, (ix+$11)
 	xor     a
@@ -6103,7 +6111,7 @@ LABEL_B28_BF47:
 	ld      a, (ix+$21)
 	and     $0f
 	jp      z, LABEL_B28_BF6E
-	ld      hl, $d3a8
+	ld      hl, $D3a8
 	ld      a, $ff
 	ld      (hl), a
 	jp      LABEL_B28_BFA4
@@ -6112,13 +6120,13 @@ LABEL_B28_BF6E:
 	call    LABEL_200 + $60
 	ld      a, (ix+$22)
 	bit     2, a
-	jp      nz, LABEL_B28_BFA4
+	jr      nz, LABEL_B28_BFA4
 	bit     3, a
-	jp      nz, LABEL_B28_BFA4
+	jr      nz, LABEL_B28_BFA4
 	bit     0, a
-	jp      nz, LABEL_B28_BFA4
+	jr      nz, LABEL_B28_BFA4
 	bit     1, a
-	jp      z, +_
+	jr      z, +_
 	ld      h, (ix+$19)
 	ld      l, (ix+$18)
 	call    LABEL_B28_BC23
@@ -6130,12 +6138,132 @@ LABEL_B28_BF6E:
 	add     a, $01
 	ld      (ix+$1e), a
 	cp      $06
-	jp      nc, LABEL_B28_BFA4
+	jr      nc, LABEL_B28_BFA4
   	ret     
 
 LABEL_B28_BFA4:
 	ld      (ix+$3f), $80
 	jp      LABEL_200 + $5D
-	ret     
+_:	ret     
+
+;bank 28 is separate from s2.asm, so a few includes and routines are here to fix some bugs.
+.nolist
+#include	"logic_jump_table.asm"
+#include	"includes/memory_layout.asm"
+#include	"includes/structures.asm"
+#include	"includes/objects.asm"
+#include	"includes/player_states.asm"
+DATA_1E76:
+.db $00, $01, $00
+
+LABEL_1D05: ;BCD subtraction subroutine
+	xor	a
+	ld	de, gameMem+$D29E
+	ld	hl, gameMem+$D2A1
+	ld	a, (de)
+	sub	(hl)
+	ret	c
+	jr	z, +_
+	jr	+++_
+_:	dec	hl
+	dec	de
+	ld	a, (de)
+	sub	(hl)
+	ret	c
+	jr	z, +_
+	jr	++_
+_:	dec	hl
+	dec	de
+	ld	a, (de)
+	sub	(hl)
+	ret	c
+	jr	nc, +_
+_:	ld	hl, Score
+	ld	de, gameMem+$D29F
+	ld	bc, $0003
+	ldir
+	ld	a, $02
+	ld	(gameMem+$D2B5), a
+	ret
+
+LABEL_1CC4:
+	ld	hl, DATA_1E76
+	jp	LABEL_1CD0
+
+LABEL_1CD0:
+	ld	a, (gameMem+$D292)
+	or	a
+	ret	nz
+	xor	a
+	ld	de, Score
+	ld	a, (de)
+	adc	a, (hl)
+	daa
+	ld	(de), a	;update first BCD byte
+	inc	de
+	inc	hl
+	ld	a, (de)
+	adc	a, (hl)
+	daa
+	ld	(de), a	;update second BCD byte
+	inc	de
+	inc	hl
+	ld	a, (de)
+	adc	a, (hl)
+	daa
+	ld	(de), a	;update third BCD byte
+	
+	jr	nc, +_		;score overflow. cap at 999,990
+	ld	hl, gameMem+$D29F
+	ld	(hl), $90
+	inc	hl
+	ld	(hl), $99
+	inc	hl
+	ld	(hl), $99
+	ld	a, $02
+	jr	++_
+_:	ld	a, $01
+_: 	ld	(gameMem+$D2B5), a
+	call	LABEL_1D05
+	jp	LABEL_1D34
+
+#define  GT_NEXT_LEVEL_BIT         4
+
+LABEL_1D34:
+	ld	hl, gameMem+$D2B6
+	ld	a, (hl)
+	or	a
+	ret	nz
+	ld	a, (gameMem+$D29E)
+	cp	$03
+	ret	c
+	ld	(hl), $01
+	ld	hl, LifeCounter
+	inc	(hl)
+	ld	a, (GlobalTriggers)
+	bit	GT_NEXT_LEVEL_BIT, a
+	ret	nz
+	jp	Engine_CapLifeCounterValue
+
+Engine_CapLifeCounterValue:	; $25AC 
+	ld	a, (gameMem+$D292)
+	or	a
+	ret	nz
+	
+	ld	a, (LifeCounter)
+	cp	9
+	jr	c, +_
+
+	ld	a, 9
+	
+_:	; calculate the sprite number to display
+	rlca
+	and	$1E
+	add	a, $10
+	ld	(VDP_WorkingSAT_HPOS + $69), a
+	ret
+
+.list
 
 DATA_B28_BFAC:
+

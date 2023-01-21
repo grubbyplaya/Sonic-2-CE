@@ -1,56 +1,56 @@
 Logic_Sonic:        ;$A6A6
-.dl DATA_B31_A70E       ;$00
-.dl Sonic_State_01      ;$01
-.dl Sonic_State_02      ;$02
-.dl Sonic_State_03      ;$03
-.dl Sonic_State_04      ;$04
-.dl Sonic_State_05      ;$05
-.dl Sonic_State_06      ;$06
-.dl Sonic_State_07      ;$07
-.dl Sonic_State_08      ;$08
-.dl Sonic_State_09      ;$09
-.dl Sonic_State_0A      ;$0A
-.dl Sonic_State_0B      ;$0B
-.dl DATA_B31_A78E       ;$0C
-.dl Sonic_State_0D      ;$0D
-.dl Sonic_State_0E      ;$0E
-.dl DATA_B31_A819       ;$0F
-.dl DATA_B31_A863       ;$10
-.dl DATA_B31_A875       ;$11
-.dl DATA_B31_A87B       ;$12
-.dl DATA_B31_A895       ;$13
-.dl DATA_B31_A8A7       ;$14
-.dl DATA_B31_A8B9       ;$15
-.dl DATA_B31_A8CB       ;$16
-.dl DATA_B31_A8D5       ;$17
-.dl Sonic_State_01      ;$18
-.dl DATA_B31_A71A       ;$19
-.dl DATA_B31_A993       ;$1A
-.dl DATA_B31_A772       ;$1B
-.dl DATA_B31_A788       ;$1C
-.dl DATA_B31_A8DD       ;$1D
-.dl DATA_B31_A8E5       ;$1E
-.dl DATA_B31_A8EB       ;$1F
-.dl DATA_B31_A903       ;$20
-.dl DATA_B31_A90B       ;$21
-.dl DATA_B31_A921       ;$22
-.dl DATA_B31_A937       ;$23
-.dl DATA_B31_A953       ;$24
-.dl DATA_B31_A987       ;$25
-.dl DATA_B31_A99D       ;$26
-.dl DATA_B31_A9B7       ;$27
-.dl DATA_B31_A8F1       ;$28
-.dl DATA_B31_A9D1       ;$29
-.dl DATA_B31_A9D1       ;$2A
-.dl DATA_B31_A9D1       ;$2B
-.dl DATA_B31_A9E9       ;$2C
-.dl DATA_B31_AA09       ;$2D
-.dl DATA_B31_AA31       ;$2E
-.dl DATA_B31_AB7A       ;$2F
-.dl DATA_B31_AB84       ;$30
-.dl DATA_B31_AA97       ;$31
-.dl DATA_B31_AAB1       ;$32
-.dl DATA_B31_AAF6       ;$33
+.dw DATA_B31_A70E       ;$00
+.dw Sonic_State_01      ;$01
+.dw Sonic_State_02      ;$02
+.dw Sonic_State_03      ;$03
+.dw Sonic_State_04      ;$04
+.dw Sonic_State_05      ;$05
+.dw Sonic_State_06      ;$06
+.dw Sonic_State_07      ;$07
+.dw Sonic_State_08      ;$08
+.dw Sonic_State_09      ;$09
+.dw Sonic_State_0A      ;$0A
+.dw Sonic_State_0B      ;$0B
+.dw DATA_B31_A78E       ;$0C
+.dw Sonic_State_0D      ;$0D
+.dw Sonic_State_0E      ;$0E
+.dw DATA_B31_A819       ;$0F
+.dw DATA_B31_A863       ;$10
+.dw DATA_B31_A875       ;$11
+.dw DATA_B31_A87B       ;$12
+.dw DATA_B31_A895       ;$13
+.dw DATA_B31_A8A7       ;$14
+.dw DATA_B31_A8B9       ;$15
+.dw DATA_B31_A8CB       ;$16
+.dw DATA_B31_A8D5       ;$17
+.dw Sonic_State_01      ;$18
+.dw DATA_B31_A71A       ;$19
+.dw DATA_B31_A993       ;$1A
+.dw DATA_B31_A772       ;$1B
+.dw DATA_B31_A788       ;$1C
+.dw DATA_B31_A8DD       ;$1D
+.dw DATA_B31_A8E5       ;$1E
+.dw DATA_B31_A8EB       ;$1F
+.dw DATA_B31_A903       ;$20
+.dw DATA_B31_A90B       ;$21
+.dw DATA_B31_A921       ;$22
+.dw DATA_B31_A937       ;$23
+.dw DATA_B31_A953       ;$24
+.dw DATA_B31_A987       ;$25
+.dw DATA_B31_A99D       ;$26
+.dw DATA_B31_A9B7       ;$27
+.dw DATA_B31_A8F1       ;$28
+.dw DATA_B31_A9D1       ;$29
+.dw DATA_B31_A9D1       ;$2A
+.dw DATA_B31_A9D1       ;$2B
+.dw DATA_B31_A9E9       ;$2C
+.dw DATA_B31_AA09       ;$2D
+.dw DATA_B31_AA31       ;$2E
+.dw DATA_B31_AB7A       ;$2F
+.dw DATA_B31_AB84       ;$30
+.dw DATA_B31_AA97       ;$31
+.dw DATA_B31_AAB1       ;$32
+.dw DATA_B31_AAF6       ;$33
 
 DATA_B31_A70E:
 .db $FF, $02
@@ -361,8 +361,8 @@ DATA_B31_A8F1:
     .dl LABEL_200 + $108
 .db $FF, $06
     .db $0A
-    .dl $0000
-    .dl $0000
+    .dw $0000
+    .dw $0000
     .db $03
 .db    $FF, $00
 
@@ -400,8 +400,8 @@ DATA_B31_A921:
 
 DATA_B31_A937:
 .db $FF, $04
-    .dl $0000
-    .dl $0000
+    .dw $0000
+    .dw $0000
 .db $03, $11 
     .dl VF_DoNothing
 .db $03, $12
@@ -416,13 +416,13 @@ DATA_B31_A937:
 
 DATA_B31_A953:
 .db $FF, $04
-    .dl $0000
-    .dl $0000
+    .dw $0000
+    .dw $0000
 .db $FF, $07 
-    .dl LABEL_B31_A967
+    .dw LABEL_B31_A967
     .dl LABEL_200 + $E7
 .db $FF, $07
-    .dl LABEL_B31_A96E
+    .dw LABEL_B31_A96E
     .dl LABEL_200 + $E7
 .db $FF, $00
 
@@ -469,72 +469,72 @@ DATA_B31_A993:
 
 DATA_B31_A99D:
 .db $08, $01
-    .dl LABEL_B31_AB34
+    .dw LABEL_B31_AB34
 .db $08, $02
-    .dl LABEL_B31_AB34
+    .dw LABEL_B31_AB34
 .db $08, $03
-    .dl LABEL_B31_AB34
+    .dw LABEL_B31_AB34
 .db $08, $04
-    .dl LABEL_B31_AB34
+    .dw LABEL_B31_AB34
 .db $08, $05
-    .dl LABEL_B31_AB34
+    .dw LABEL_B31_AB34
 .db $08, $06
-    .dl LABEL_B31_AB34
+    .dw LABEL_B31_AB34
 .db $FF, $00
 
 DATA_B31_A9B7:
 .db $08, $01
-    .dl LABEL_B31_AB4C
+    .dw LABEL_B31_AB4C
 .db $08, $02
-    .dl LABEL_B31_AB4C
+    .dw LABEL_B31_AB4C
 .db $08, $03
-    .dl LABEL_B31_AB4C
+    .dw LABEL_B31_AB4C
 .db $08, $04
-    .dl LABEL_B31_AB4C
+    .dw LABEL_B31_AB4C
 .db $08, $05
-    .dl LABEL_B31_AB4C
+    .dw LABEL_B31_AB4C
 .db $08, $06
-    .dl LABEL_B31_AB4C
+    .dw LABEL_B31_AB4C
 .db $FF, $00
 
 DATA_B31_A9D1:
 .db $FF, $04 
-    .dl $0400
-    .dl $0000
+    .dw $0400
+    .dw $0000
 .db $04, $0C
-    .dl LABEL_B31_AA41
+    .dw LABEL_B31_AA41
 .db $04, $0D
-    .dl LABEL_B31_AA41
+    .dw LABEL_B31_AA41
 .db $04, $0E
-    .dl LABEL_B31_AA41
+    .dw LABEL_B31_AA41
 .db $04, $0F
-    .dl LABEL_B31_AA41
+    .dw LABEL_B31_AA41
 .db $FF, $00
 
 DATA_B31_A9E9:
 .db $FF, $04 
-    .dl $0100
-    .dl $0000
+    .dw $0100
+    .dw $0000
 .db $08, $01
-    .dl LABEL_B31_AA54
+    .dw LABEL_B31_AA54
 .db $08, $02
-    .dl LABEL_B31_AA54
+    .dw LABEL_B31_AA54
 .db $08, $03
-    .dl LABEL_B31_AA54
+    .dw LABEL_B31_AA54
 .db $08, $04
-    .dl LABEL_B31_AA54
+    .dw LABEL_B31_AA54
 .db $08, $05
-    .dl LABEL_B31_AA54
+    .dw LABEL_B31_AA54
 .db $08, $06
-    .dl LABEL_B31_AA54
+    .dw LABEL_B31_AA54
 .db $FF, $00
 
 DATA_B31_AA09:
 .db $FF, $04 
-    .dl $0000
-    .dl $0000
+    .dw $0000
+    .dw $0000
 .db $FF, $02 
-    .dl LABEL_B31_AA37
+    .dw LABEL_B31_AA37
 .db $08, $16
     .dl VF_DoNothing
 .db $08, $17
@@ -544,11 +544,11 @@ DATA_B31_AA09:
 .db $08, $17
     .dl VF_DoNothing
 .db $FF, $02
-    .dl LABEL_B31_AA3C
+    .dw LABEL_B31_AA3C
 .db $E0, $0B
     .dl VF_DoNothing
 .db $E0, $0B
-    .dl LABEL_B31_AA6D
+    .dw LABEL_B31_AA6D
 .db $FF, $00
 
 DATA_B31_AA31:
@@ -567,12 +567,12 @@ LABEL_B31_AA3C:
 
 LABEL_B31_AA41:
     call    LABEL_B31_AA81
-    ld      a, ($D46D)
+    ld      a, (gameMem+$D46D)
     cp      $04
     ret     nz
     ld      (ix + Object.StateNext), $2C
     ld      a, $0A
-    ld      ($D702), a
+    ld      (gameMem+$D702), a
     ret     
 
 LABEL_B31_AA54:
@@ -586,7 +586,7 @@ LABEL_B31_AA54:
     ret     nz
     ld      (ix + Object.StateNext), $2D
     ld      a, $02
-    ld      ($D702), a
+    ld      (gameMem+$D702), a
     ret
 
 LABEL_B31_AA6D:
@@ -595,7 +595,7 @@ LABEL_B31_AA6D:
     call    VF_Engine_SetCameraAndLock
     ld      (ix + Object.StateNext), $2E
     ld      a, $03
-    ld      ($D702), a
+    ld      (gameMem+$D702), a
     ret
 
 LABEL_B31_AA81
@@ -614,17 +614,17 @@ LABEL_B31_AA81
     
 DATA_B31_AA97:
 .db $06, $01
-    .dl LABEL_B31_AB06
+    .dw LABEL_B31_AB06
 .db $06, $02
-    .dl LABEL_B31_AB06
+    .dw LABEL_B31_AB06
 .db $06, $03
-    .dl LABEL_B31_AB06
+    .dw LABEL_B31_AB06
 .db $06, $04
-    .dl LABEL_B31_AB06
+    .dw LABEL_B31_AB06
 .db $06, $05
-    .dl LABEL_B31_AB06
+    .dw LABEL_B31_AB06
 .db $06, $06
-    .dl LABEL_B31_AB06
+    .dw LABEL_B31_AB06
 .db $FF, $00
 
 DATA_B31_AAB1:
@@ -657,7 +657,7 @@ DATA_B31_AAB1:
 .db $10, $08
     .dl VF_DoNothing
 .db $FF, $02
-    .dl Logic_Sonic_LoadNextLevel
+    .dw Logic_Sonic_LoadNextLevel
 .db $FF, $05
     .db $33
 .db $10, $08
@@ -738,15 +738,15 @@ LABEL_B31_AB64:
 
 DATA_B31_AB7A:
 .db $10, $08
-    .dl LABEL_B31_ABA2
+    .dw LABEL_B31_ABA2
 .db $10, $09
-    .dl LABEL_B31_ABA2
+    .dw LABEL_B31_ABA2
 .db $FF, $00
 
 DATA_B31_AB84:
 .db $FF, $07
-    .dl LABEL_B31_AB8C
-    .dl LABEL_B31_ABC6
+    .dw LABEL_B31_AB8C
+    .dw LABEL_B31_ABC6
 .db $FF, $00
 
 LABEL_B31_AB8C:
@@ -754,11 +754,11 @@ LABEL_B31_AB8C:
     inc     (hl)
     ld      a, (hl)
     cp      $04
-    jp      c, +_
+    jr      c, +_
     xor     a
     ld      (hl), a
     
-    add     a, $0C            ;set player animation = running
+_:  add     a, $0C            ;set player animation = running
     ld      (Player.AnimFrame), a
     
     ld      a, $04            ;set frame display timer
@@ -777,7 +777,7 @@ LABEL_B31_ABA2:
     ld      (Player.VelX), hl        ;set player's horiz & vert speed to 0
     ld      (Player.VelY), hl
 
-    ld      a, ($D2BD)        ;check level timer frame counter
+    ld      a, (gameMem+$D2BD)        ;check level timer frame counter
     bit     7, a
     ret     z                ;return if value is positive
 

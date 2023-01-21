@@ -1,61 +1,61 @@
 RingArtPointers:
 ;pointers for each level
-.dw RingArtPointers_UGZ
-.dw RingArtPointers_SHZ
-.dw RingArtPointers_ALZ
-.dw RingArtPointers_GHZ
-.dw RingArtPointers_GMZ
-.dw RingArtPointers_SEZ
-.dw RingArtPointers_CEZ	;same?
-.dw DATA_231A
-.dw RingArtPointers_CEZ	;same?
-.dw DATA_2320
+.dl RingArtPointers_UGZ
+.dl RingArtPointers_SHZ
+.dl RingArtPointers_ALZ
+.dl RingArtPointers_GHZ
+.dl RingArtPointers_GMZ
+.dl RingArtPointers_SEZ
+.dl RingArtPointers_CEZ	;same?
+.dl DATA_231A
+.dl RingArtPointers_CEZ	;same?
+.dl DATA_2320
 
 ;pointers for each act
 RingArtPointers_UGZ:
-.dw RingArtPointers_UGZ1
-.dw RingArtPointers_UGZ2
-.dw RingArtPointers_UGZ3
+.dl RingArtPointers_UGZ1
+.dl RingArtPointers_UGZ2
+.dl RingArtPointers_UGZ3
 
 RingArtPointers_SHZ:
-.dw RingArtPointers_SHZ1
-.dw RingArtPointers_SHZ2
-.dw RingArtPointers_SHZ3
+.dl RingArtPointers_SHZ1
+.dl RingArtPointers_SHZ2
+.dl RingArtPointers_SHZ3
 
 RingArtPointers_ALZ:
-.dw RingArtPointers_ALZ1
-.dw RingArtPointers_ALZ2
-.dw RingArtPointers_ALZ3
+.dl RingArtPointers_ALZ1
+.dl RingArtPointers_ALZ2
+.dl RingArtPointers_ALZ3
 
 RingArtPointers_GHZ:
-.dw RingArtPointers_GHZ1
-.dw RingArtPointers_GHZ2
-.dw RingArtPointers_GHZ3
+.dl RingArtPointers_GHZ1
+.dl RingArtPointers_GHZ2
+.dl RingArtPointers_GHZ3
 
 RingArtPointers_GMZ:
-.dw RingArtPointers_GMZ1
-.dw RingArtPointers_GMZ2
-.dw RingArtPointers_GMZ3
+.dl RingArtPointers_GMZ1
+.dl RingArtPointers_GMZ2
+.dl RingArtPointers_GMZ3
 
 RingArtPointers_SEZ
-.dw RingArtPointers_SEZ1
-.dw RingArtPointers_SEZ2
-.dw RingArtPointers_SEZ3
+.dl RingArtPointers_SEZ1
+.dl RingArtPointers_SEZ2
+.dl RingArtPointers_SEZ3
 
 RingArtPointers_CEZ:
-.dw RingArtPointers_CEZ1
-.dw RingArtPointers_CEZ2
-.dw RingArtPointers_CEZ3
+.dl RingArtPointers_CEZ1
+.dl RingArtPointers_CEZ2
+.dl RingArtPointers_CEZ3
 
 DATA_231A:
-.dw DATA_23F8
-.dw DATA_23F8
-.dw DATA_23F8
+.dl DATA_23F8
+.dl DATA_23F8
+.dl DATA_23F8
 
 DATA_2320:
-.dw DATA_2402
-.dw DATA_240C
-.dw DATA_240C
+.dl DATA_2402
+.dl DATA_240C
+.dl DATA_240C
 
 ;ring art headers for each level/act
 ;	2 bytes	-	pointer to collision data

@@ -1,3 +1,6 @@
+#define	VDP_ScreenMap           $D53800
+#define	VDP_SATAddress          $D53F00
+
 ; =============================================================================
 ;  VDP_InitRegisters()
 ; -----------------------------------------------------------------------------
@@ -12,7 +15,7 @@ VDP_InitRegisters:
 	;read/clear VDP status flags
 	in	a, ($BF)
 	; loop 11 times to copy to each register
-	ld	b, $0B			; FIXME: more efficient to load BC with one opcode
+	ld	b, $0B		; FIXME: more efficient to load BC with one opcode
 	; load C with the first latch byte
 	ld	c, $80
 	; load DE with a pointer to the RAM cached copies 
@@ -22,15 +25,15 @@ VDP_InitRegisters:
 	ld	hl, _VDP_InitRegisters_RegValues
 	
 	; loop over each register
-	ld	a, (hl)
-	out   (Ports_VDP_Control), a
+_:	ld	a, (hl)
+	ld   (Ports_VDP_Control), a
 	ld	(de), a
 	ld	a, c
-	out   (Ports_VDP_Control), a
+	ld   (Ports_VDP_Control), a
 	inc   c
 	inc   de
 	inc   hl
-	djnz  VDP_InitRegisters
+	djnz  -_
 	
 	ret
 
@@ -39,7 +42,7 @@ _VDP_InitRegisters_RegValues:
 
 
 ; =============================================================================
-;  VDP_SetRegister(uint8 register, uint8 data)					   UNUSED
+;  VDP_SetRegister(uint8 register, uint8 data)			   UNUSED
 ; -----------------------------------------------------------------------------
 ;  Sets a VDP register.
 ; -----------------------------------------------------------------------------
@@ -51,16 +54,16 @@ _VDP_InitRegisters_RegValues:
 ;  Destroys:
 ;	A
 ; -----------------------------------------------------------------------------
-VDP_SetRegister:		; $1310
+VDP_SetRegister:	; $1310
 	push  bc
 	push  hl
 	
 	;update the VDP Register
 	ld	a, b
-	out   (Ports_VDP_Control), a
+	ld   (Ports_VDP_Control), a
 	ld	a, c
 	or	$80
-	out   (Ports_VDP_Control), a
+	ld   (Ports_VDP_Control), a
 	
 	;update the RAM copy
 	ld	a, b
@@ -75,7 +78,7 @@ VDP_SetRegister:		; $1310
 
 
 ; =============================================================================
-;  VDP_ReadStatus()												  UNUSED
+;  VDP_ReadStatus()						  UNUSED
 ; -----------------------------------------------------------------------------
 ;  Reads the VDP status flags.
 ; -----------------------------------------------------------------------------
@@ -105,10 +108,10 @@ VDP_SetAddress:	 ; $1328
 	push  af
 	
 	ld	a, l
-	out   (Ports_VDP_Control), a
+	ld   (Ports_VDP_Control), a
 	ld	a, h
 	or	$40
-	out   (Ports_VDP_Control), a
+	ld   (Ports_VDP_Control), a
 	
 	pop   af
 	
@@ -127,21 +130,21 @@ VDP_SetAddress:	 ; $1328
 ;  Destroys:
 ;	A
 ; -----------------------------------------------------------------------------
-VDP_SendRead:		   ;$1333
+VDP_SendRead:	   ;$1333
 	ld	a, l
-	out   (Ports_VDP_Control), a
+	ld   (Ports_VDP_Control), a
 	ld	a, h
 	and   $3F
-	out   (Ports_VDP_Control), a
+	ld   (Ports_VDP_Control), a
 	
-	push  af			; FIXME: pointless stack activity/timing related?
+	push  af		; FIXME: pointless stack activity/timing related?
 	pop   af
 	
 	ret
 
 
 ; =============================================================================
-;  VDP_WriteByte(uint16 address, uint8 data)						 UNUSED
+;  VDP_WriteByte(uint16 address, uint8 data)			 UNUSED
 ; -----------------------------------------------------------------------------
 ;  Sets the VDP address pointer and writes a value.
 ; -----------------------------------------------------------------------------
@@ -155,16 +158,16 @@ VDP_SendRead:		   ;$1333
 ; -----------------------------------------------------------------------------
 VDP_WriteByte:	  ; $133E
 	; set the VDP adderess pointer
-	push  af				  ;FIXME: this push/pop is unnecessary as
+	push  af		  ;FIXME: this push/pop is unnecessary as
 	call  VDP_SetAddress	  ; VDP_SetAddress does the same thing.
 	pop   af
 	; write the data
-	out   (Ports_VDP_Data), a
+	ld	(Ports_VDP_Data), a
 	ret
 
 
 ; =============================================================================
-;  VDP_ReadByte(uint16 address)									  UNUSED
+;  VDP_ReadByte(uint16 address)					  UNUSED
 ; -----------------------------------------------------------------------------
 ;  Sets the VDP address pointer and reads a value.
 ; -----------------------------------------------------------------------------
@@ -177,12 +180,12 @@ VDP_WriteByte:	  ; $133E
 ; -----------------------------------------------------------------------------
 VDP_ReadByte:	   ; $1346
 	call  VDP_SendRead
-	in	a, (Ports_VDP_Data)
+	ld	a, (Ports_VDP_Data)
 	ret
 
 
 ; =============================================================================
-;  VDP_WriteAndSkip(uint8 data, uint16 address, uint16 count)		UNUSED
+;  VDP_WriteAndSkip(uint8 data, uint16 address, uint16 count)	UNUSED
 ; -----------------------------------------------------------------------------
 ;  Writes a value to every other byte, starting from <address> (i.e. writes
 ;  one byte, skips the next address, writes a byte, skips...)
@@ -190,7 +193,7 @@ VDP_ReadByte:	   ; $1346
 ;  In:
 ;	A   - The data.
 ;	BC  - Number of bytes to write. When the function returns, the VRAM
-;		  addess pointer will be HL + 2*BC.
+;	  addess pointer will be HL + 2*BC.
 ;	HL  - The address to start writing from.
 ;  Out:
 ;	None.
@@ -200,26 +203,26 @@ VDP_ReadByte:	   ; $1346
 VDP_WriteAndSkip:	   ; $134C
 	push  de
 	
-	push  af				;FIXME: this push/pop is unnecessary
+	push  af		;FIXME: this push/pop is unnecessary
 	call  VDP_SetAddress
 	pop   af
 	
 	ld	d, a
 	
-	ld	a, d
+_:	ld	a, d
 	; write the data to VRAM
-	out   (Ports_VDP_Data), a
+	ld	(Ports_VDP_Data), a
 	push  af
 	pop   af
 	
 	; skip the next VRAM address
-	in	a, (Ports_VDP_Data)
+	ld	a, (Ports_VDP_Data)
 	
 	; decrement BC and loop back if != 0
 	dec   bc
 	ld	a, b
 	or	c
-	jr	nz, VDP_WriteAndSkip
+	jr	nz, -_
 	
 	pop   de
 	ret
@@ -239,24 +242,24 @@ VDP_WriteAndSkip:	   ; $134C
 ;  Destroys:
 ;	A, BC
 ; -----------------------------------------------------------------------------
-VDP_Write:		;$1361
+VDP_Write:	;$1361
 	call  VDP_SetAddress
 	
-	; write the low-order byte
+_:	; write the low-order byte
 	ld	a, e
-	out   (Ports_VDP_Data), a
+	ld	(Ports_VDP_Data), a
 	push  af 
 	pop   af
 	
 	; write the hi-order byte
 	ld	a, d
-	out   (Ports_VDP_Data), a
+	ld	(Ports_VDP_Data+1), a
 	
 	; decrement BC and loop back if != 0
 	dec   bc
 	ld	a, b
 	or	c
-	jr	nz, VDP_Write
+	jr	nz, -_
 
 	ret
 
@@ -275,14 +278,14 @@ VDP_Write:		;$1361
 ;  Destroys:
 ;	A, BC, DE
 ; -----------------------------------------------------------------------------
-VDP_Copy:		 ;$1372
-	ex	de, hl		 ;set the VRAM pointer
+VDP_Copy:	 ;$1372
+	ex	de, hl	 ;set the VRAM pointer
 	call  VDP_SetAddress
 	
-	; read a byte from the source
+_:	; read a byte from the source
 	ld	a, (de)
 	; ...and copy to the VDP
-	out   (Ports_VDP_Data), a
+	ld	(Ports_VDP_Data), a
 	
 	; move the source pointer
 	inc   de
@@ -291,7 +294,7 @@ VDP_Copy:		 ;$1372
 	dec   bc
 	ld	a, b
 	or	c
-	jr	nz, VDP_Copy
+	jr	nz, -_
 	
 	ret
 
@@ -308,14 +311,14 @@ VDP_Copy:		 ;$1372
 ; -----------------------------------------------------------------------------
 VDP_SetMode2Reg_DisplayOn:	  ; $1381
 	;set register VDP(1) - mode control register 2
-	ld		hl, VDPRegister1
-	ld		a, (hl)
+	ld	hl, VDPRegister1
+	ld	a, (hl)
 	;change all flags - make sure display is visible
-	or		VDP_DisplayVisibleBit
-	ld		(hl), a
-	out		(Ports_VDP_Control), a
-	ld		a, $81
-	out		(Ports_VDP_Control), a
+	or	VDP_DisplayVisibleBit
+	ld	(hl), a
+	ld	(Ports_VDP_Control), a
+	ld	a, $81
+	ld	(Ports_VDP_Control+1), a
 	ret
 
 
@@ -331,16 +334,16 @@ VDP_SetMode2Reg_DisplayOn:	  ; $1381
 ; -----------------------------------------------------------------------------
 VDP_SetMode2Reg_DisplayOff:
 	;set register VDP(1) - mode control register 2
-	ld		hl, VDPRegister1
-	ld		a, (hl)
+	ld	hl, VDPRegister1
+	ld	a, (hl)
 	; set each of the flags except for the "Display Visible" bit
 	; i.e. leave the display turned off
-	and		VDP_DisplayVisibleBit = $FF
-	ld		(hl), a
+	and	VDP_DisplayVisibleBit = $FF
+	ld	(hl), a
 	
-	out		(Ports_VDP_Control), a
-	ld		a, $81
-	out		(Ports_VDP_Control), a
+	ld	(Ports_VDP_Control), a
+	ld	a, $81
+	ld	(Ports_VDP_Control+1), a
 	ret
 
 
@@ -356,19 +359,19 @@ VDP_SetMode2Reg_DisplayOff:
 ;	None.
 ; -----------------------------------------------------------------------------
 VDP_EnableFrameInterrupt:
-	ld		hl, VDPRegister1
-	ld		a, (hl)
-	or		VDP_FrameInterruptsBit
-	ld		(hl), a
-	out		(Ports_VDP_Control), a
-	ld		a, $81
-	out		(Ports_VDP_Control), a
+	ld	hl, VDPRegister1
+	ld	a, (hl)
+	or	VDP_FrameInterruptsBit
+	ld	(hl), a
+	ld	(Ports_VDP_Control), a
+	ld	a, $81
+	ld	(Ports_VDP_Control+1), a
 
 	ret
 
 
 ; =============================================================================
-;  VDP_DisableFrameInterrupt()									   UNUSED
+;  VDP_DisableFrameInterrupt()					   UNUSED
 ; -----------------------------------------------------------------------------
 ;  Sets the VDP's Mode Control 2 register, ensuring frame interrupts are 
 ;  disabled.
@@ -379,13 +382,13 @@ VDP_EnableFrameInterrupt:
 ;	None.
 ; -----------------------------------------------------------------------------
 VDP_DisableFrameInterrupt:	  ; $13AA
-	ld		hl, VDPRegister1
-	ld		a, (hl)
-	and		VDP_FrameInterruptsBit = $FF
-	ld		(hl), a
-	out		(Ports_VDP_Control), a
-	ld		a, $81
-	out		(Ports_VDP_Control), a
+	ld	hl, VDPRegister1
+	ld	a, (hl)
+	and	VDP_FrameInterruptsBit = $FF
+	ld	(hl), a
+	ld	(Ports_VDP_Control), a
+	ld	a, $81
+	ld	(Ports_VDP_Control+1), a
 	ret
 
 
@@ -412,28 +415,28 @@ VDP_DrawText:	   ; $13B8
 	push	de
 	push	bc
 	
-	; copy a byte from RAM to the VDP
-	ld		a, (de)
-	out		(Ports_VDP_Data), a	;write a char to the VDP memory
+_:	; copy a byte from RAM to the VDP
+	ld	a, (de)
+	ld	(Ports_VDP_Data), a	;write a char to the VDP memory
 	
 	; copy the tile attribute byte to the VDP
-	ld		a, (VDP_DefaultTileAttribs)
+	ld	a, (VDP_DefaultTileAttribs)
 	nop
 	nop
 	nop
-	out		(Ports_VDP_Data), a
+	ld	(Ports_VDP_Data+1), a
 	
 	; increment the source pointer
-	inc		de
+	inc	de
 	
 	; decrement the counter and loop back if != 0
-	dec		bc
-	ld		a, c
-	or		b
-	jr		nz, VDP_DrawText
+	dec	bc
+	ld	a, c
+	or	b
+	jr	nz, -_
 
-	pop		bc
-	pop		de
+	pop	bc
+	pop	de
 	ret
 
 
@@ -456,24 +459,24 @@ LABEL_13D2:
 	push	de
 	push	bc
 	
-	ld		a, ($D292)
-	bit		7, a
-	jr		nz, LABEL_13D2
+_:	ld	a, (gameMem+$D292)
+	bit	7, a
+	jr	nz, +++_
 
 	di
 	
 	call	VDP_SetAddress
  
-	; copy a byte from RAM to the VDP
-	ld		a, (de)
-	out		(Ports_VDP_Data), a
+	; copy a byte from RAM to VRAM
+	ld	a, (de)
+	ld	(Ports_VDP_Data), a
 	
-	; copy the default tile attribs to the VDP
-	ld		a, (VDP_DefaultTileAttribs)
+	; copy the default tile attribs to VRAM
+	ld	a, (VDP_DefaultTileAttribs)
 	nop
 	nop
 	nop
-	out		(Ports_VDP_Data), a
+	ld	(Ports_VDP_Data+1), a
 
 	ei
 
@@ -482,16 +485,16 @@ LABEL_13D2:
 	push	hl
 
 	; wait 6 frames for a button press?
-	ld		b, $06
-	ei
+	ld	b, $06
+_:	ei
 	halt
-	ld		a, ($D137)
-	and		$80
-	jr		nz, LABEL_13D2	;++
+	ld	a, (gameMem+$D137)
+	and	$80
+	jr	nz, +_
 
-	djnz  LABEL_13D2
+	djnz  -_
 
-	pop   hl
+_:	pop   hl
 	pop   de
 	pop   bc
 
@@ -503,9 +506,9 @@ LABEL_13D2:
 	dec   bc
 	ld	a, c
 	or	b
-	jr	nz, LABEL_13D2
+	jr	nz, ---_
 
-	pop   bc
+_:	pop   bc
 	pop   de
 	ret
 
@@ -523,582 +526,303 @@ LABEL_13D2:
 VDP_UpdateSAT:	  ; $1409
 	; check the SAT update trigger. don't bother updating
 	; if it is 0
-	ld		hl, VDP_SATUpdateTrig
-	xor		a
-	or		(hl)
-	ret		z
+	ld	hl, VDP_SATUpdateTrig
+	xor	a
+	or	(hl)
+	ret	z
 	
 	; reset the trigger
-	ld		(hl), $00
-	
+	ld	(hl), $00
 	
 	; check the frame counter. if it's odd do a descending update
-	ld		a, (FrameCounter)
+	ld	a, (FrameCounter)
 	rrca
-	jp		c, VDP_UpdateSAT_Descending
+	jp	c, VDP_UpdateSAT_Descending
 	
-	; set the VDP's address pointer to the SAT
-	ld		a, VDP_SATAddress & $FF
-	out		(Ports_VDP_Control), a
-	ld		a, VDP_SATAddress >> 8
-	or		$40
-	out		(Ports_VDP_Control), a
-	
+	; set the address pointer to the SAT
+	ld	a, VDP_SATAddress & $FF
+	ld	(VDP_SATAddress), a
 	
 	; copy 64 v-pos attributes to the VDP
-	ld		hl, VDP_WorkingSAT_VPOS	   ;copy 64 VPOS bytes.
-	ld		c, Ports_VDP_Data
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
+	ld	hl, VDP_WorkingSAT_VPOS	   ;copy 64 VPOS bytes.
+	ld	de, $D50040
+	ld	bc, $3F
+	ldir
 
 	;set VRAM pointer to SAT + $80
-	ld		a, $80
-	out		(Ports_VDP_Control), a
-	ld		a, VDP_SATAddress >> 8
-	or		$40
-	out		(Ports_VDP_Control), a
+	ld	a, $80
+	ld	(VDP_WorkingSAT + $80), a
 	
 	; copy 64 h-pos and char code attributes to the VDP
-	ld		hl, VDP_WorkingSAT_HPOS
-	ld		c, Ports_VDP_Data
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-
-
+	ld	hl, VDP_WorkingSAT_HPOS
+	ld	de, $D50040
+	ld	bc,	$3F
+	ldir
 	ret
 
 
 VDP_UpdateSAT_Descending:	;$15B7
-	; set the VDP address pointer to the SAT
-	ld		a, VDP_SATAddress & $FF
-	out		(Ports_VDP_Control), a
-	ld		a, VDP_SATAddress >> 8
-	or		$40
-	out		(Ports_VDP_Control), a
+	; set the address pointer to the SAT
+	ld	a, VDP_SATAddress & $FF
+	ld	(VDP_SATAddress), a
 	
 	; copy the 8 player sprites first (so that they always
 	; appear on top).
-	ld		hl, VDP_WorkingSAT_VPOS
-	ld		c, Ports_VDP_Data
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
+	ld	hl, VDP_WorkingSAT_VPOS
+	ld	de, $D50008
+	ld	bc,	$07
+	ldir
 
 	; copy the remaining 56 sprites in descending order
-	ld		hl, VDP_WorkingSAT_VPOS + $3F
-	ld		c, Ports_VDP_Data			   ; FIXME - opcode not required
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
-	outd
+	ld	hl, VDP_WorkingSAT_VPOS + $3F
+	ld	de, $D50038		   ; FIXME - opcode not required
+	ld	bc,	$38
+	lddr
 
-	; set VDP address pointer to SAT + $80
-	ld		a, $80
-	out		(Ports_VDP_Control), a
-	ld		a, VDP_SATAddress >> 8
-	or		$40
-	out		(Ports_VDP_Control), a
+	; set address pointer to SAT + $80
+	ld	a, $80
+	ld	(VDP_SATAddress + $80), a
 	
 	; copy hpos and char codes for the 8 player sprites
-	ld		hl, VDP_WorkingSAT_HPOS
-	ld		c, Ports_VDP_Data
-
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
-	outi
+	ld	hl, VDP_WorkingSAT_HPOS
+	ld	de, Ports_VDP_Data
+	ld	bc,	$0F
+	ldir
 
 	; copy the remaining 56 hpos and char codes in descending order
-	ld		hl, VDP_WorkingSAT_HPOS + $7E
-	ld		de, -4
-	ld		c, Ports_VDP_Data
+	ld	hl, VDP_WorkingSAT_HPOS + $7E
+	ld	bc, -4
+	ld	de, Ports_VDP_Data
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
-	outi
-	outi
-	add		hl, de
+	ldi
+	ldi
+	add	hl, bc
 
 	ret
 
 
 ; =============================================================================
-;  VDP_ClearScreenMap()											  UNUSED
+;  VDP_ClearScreenMap()						  UNUSED
 ; -----------------------------------------------------------------------------
 ;  Clears the VDP's screen map memory
 ; -----------------------------------------------------------------------------
@@ -1114,17 +838,17 @@ VDP_ClearScreenMap:	 ; $179B
 	di
 
 	; clear the VDP's screen map memory
-	ld		hl, VDP_ScreenMap  ;address
-	ld		bc, $0380	  ;count
-	ld		de, $0000	  ;value
+	ld	hl, VDP_ScreenMap  ;address
+	ld	bc, $0380	  ;count
+	ld	de, $0000	  ;value
 	call	VDP_Write
-	jr		VDP_ClearSAT
+	jr	VDP_ClearSAT
 
 
 ; =============================================================================
 ;  VDP_ClearScreen
 ; -----------------------------------------------------------------------------
-;  Clears the screen by resetting the first level tile ($2000) and setting the
+;  Clears the screen by resetting the first level tile (gameMem+$2000) and setting the
 ;  screen map to the tile index.
 ; -----------------------------------------------------------------------------
 ;  In:
@@ -1138,13 +862,13 @@ VDP_ClearScreen:	 ;$17AC
 	ei
 	halt
 	di
-	ld		hl, $2000		  ;clear the first level tile from VRAM (32-bytes starting at $2000)
-	ld		bc, $0020
-	ld		de, $0000
+	ld	hl, $D42000	  ;clear the first level tile from VRAM (32-bytes starting at $2000)
+	ld	bc, $0020
+	ld	de, $0000
 	call	VDP_Write
-	ld		hl, ScreenMap	  ;set up all background tiles to point to the first "level tile"
-	ld		bc, $0380
-	ld		de, $0100
+	ld	hl, ScreenMap	  ;set up all background tiles to point to the first "level tile"
+	ld	bc, $0380
+	ld	de, $0100
 	call	VDP_Write
 
 
@@ -1161,26 +885,26 @@ VDP_ClearScreen:	 ;$17AC
 ;  Destroys:
 ;	A, B, DE, HL
 ; -----------------------------------------------------------------------------
-VDP_ClearSAT:		; $17C7
-	ld		hl, VDP_WorkingSAT_VPOS
-	ld		de, VDP_WorkingSAT_HPOS
-	xor		a
+VDP_ClearSAT:	; $17C7
+	ld	hl, VDP_WorkingSAT_VPOS
+	ld	de, VDP_WorkingSAT_HPOS
+	xor	a
 	
 	; loop over the 64 sprites
-	ld		b, $40
+	ld	b, $40
 	
-	  ; set the vpos and clear the hpos and char code
-	ld		(hl), $F0
-	inc		hl
-	ld		(de), a
-	inc		de
-	ld		(de), a
-	inc		de
+_:	; set the vpos and clear the hpos and char code
+	ld	(hl), $F0
+	inc	hl
+	ld	(de), a
+	inc	de
+	ld	(de), a
+	inc	de
 	
-	djnz	VDP_ClearSAT
+	djnz	-_
 	
 	; flag the SAT update trigger
-	ld		a, $FF
-	ld		(VDP_SATUpdateTrig), a
+	ld	a, $FF
+	ld	(VDP_SATUpdateTrig), a
 
 	ret

@@ -54,7 +54,7 @@ Crab_State_01:		;$842E
 .db $FF, $05
 	.db $02		;change object state
 .db $06, $02
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $00
 
 
@@ -100,7 +100,7 @@ Crab_State_02:			;$8483
 .db $FF, $05		;set state to $01
 	.db $01
 .db $06, $02
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $00
 
 
@@ -166,7 +166,7 @@ Crab_State_01_Logic_02:		;$853C
 	call    VF_Engine_CheckCollision
 	call    Logic_CheckBackgroundCollision
 	bit     0, a
-	jp      z, LABEL_B28_8558
+	jr      z, LABEL_B28_8558
 	ld      (ix+$02), $02		;set state to $02
 	jp      LABEL_B28_8594
 
@@ -186,9 +186,9 @@ Crab_State_02_Logic_02:		;$8568
 	call    VF_Engine_CheckCollision
 	call    Logic_CheckBackgroundCollision
 	bit     0, a
-	jp      z, +_
+	jr      z, +_
 	ld      (ix+$02), $01
-	jp      LABEL_B28_8594
+_:	jp      LABEL_B28_8594
 
 
 Crab_State_03_Logic_01:		;$8584
@@ -218,9 +218,9 @@ CrabProjectile_State_00_Logic_01:	;$85A7
 	ld      hl, $0080		;set horizontal speed to 128
 	ld      a, (ix+$3F)
 	or      a
-	jp      z, +_			;if this is the first projectile
+	jr      z, +_			;if this is the first projectile
 	ld      hl, $FF80		;set horizontal speed to -128
-	ld      (ix+$16), l
+_:	ld      (ix+$16), l
 	ld      (ix+$17), h
 	ld      hl, $FC00
 	ld      (ix+$18), l		;set vertical speed to -1024
@@ -237,12 +237,12 @@ CrabProjectile_State_01_Logic_01:	;$85C7
 	ld      (ix+$18), l			;set vertical speed
 	ld      (ix+$19), h
 	bit     6, (ix+$04)
-	jp      z, +_
+	jr      z, +_
 	ld      (ix+$00), $FF		;destroy the object
-	call    VF_Engine_CheckCollision
+_:	call    VF_Engine_CheckCollision
 	ld      a, (ix+$21)
 	and     $0F
 	ret     z
 	ld      a, $FF
-	ld      ($D3A8), a
+	ld      (gameMem+$D3A8), a
 	ret     

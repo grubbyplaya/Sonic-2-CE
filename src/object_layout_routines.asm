@@ -27,7 +27,7 @@ Engine_UpdateObjectLayout:			;$8000
 	ld	h, (hl)
 	ld	l, a				  ;HL = pointer for current act
 
-	ld	bc, $D400			 ;store a pointer to the active objects 
+	ld	bc, gameMem+$D400			 ;store a pointer to the active objects 
 								;array
 	exx
 
@@ -38,7 +38,7 @@ Engine_UpdateObjectLayout:			;$8000
 	
 	ld	hl, $0000
 	
-	ex	de, hl
+_:	ex	de, hl
 
 	ld	hl, (Camera_Y)		;get camera vpos
 	ld	bc, $FF80
@@ -47,11 +47,11 @@ Engine_UpdateObjectLayout:			;$8000
 	
 	ld	hl, $0000
 
-	exx
+_:	exx
 
-	ld	a, (hl)			   ;read the object number
+_:	ld	a, (hl)			   ;read the object number
 	inc   a
-	jp	z, +_				 ;check for $FF terminator byte
+	jr	z, ++_				 ;check for $FF terminator byte
 
 	ld	a, (bc)			   ;check the active objects array to see
 	or	a					 ;if the slot is available
@@ -64,7 +64,7 @@ Engine_UpdateObjectLayout:			;$8000
 	
 	ld	de, $0009			 ;move to the next sprite header
 	add   hl, de
-	jr	Engine_UpdateObjectLayout
+	jr	-_
 
 	ret
 
@@ -94,7 +94,7 @@ ObjectLayout_CheckLoadObject:		;$804D
 
 	jp	c, ObjectLayout_Return	;jump if cam pos > object pos
 
-	exx
+_:	exx
 	ld	a, d
 	exx
 
@@ -104,7 +104,7 @@ ObjectLayout_CheckLoadObject:		;$804D
 	jp	c, ObjectLayout_Return
 
 	or	a
-	jp	nz, +_
+	jr	nz, +_
 
 	ld	a, e
 	exx
@@ -113,7 +113,7 @@ ObjectLayout_CheckLoadObject:		;$804D
 	jp	nc, ObjectLayout_Return
 
 
-	inc   hl					;test vertical proximity
+_:	inc   hl					;test vertical proximity
 	ld	e, (hl)
 	inc   hl
 	ld	d, (hl)			   ;DE = object vpos	
@@ -150,7 +150,7 @@ ObjectLayout_CheckLoadObject:		;$804D
 	exx
 	jp	nc, ObjectLayout_Return
 
-	ld	de, $FFFC			 ;move the pointer back 4 bytes
+_:	ld	de, $FFFC			 ;move the pointer back 4 bytes
 	add   hl, de
 	ld	a, (hl)			   ;read the object number
 	
@@ -293,3 +293,88 @@ Data_ObjectLayouts:		;$8135
 .dl Data_ObjectLayout_CEZ 
 .dl Data_ObjectLayout_CEZ
 
+Data_ObjectLayout_UGZ:    ;$8149
+.dl Data_ObjectLayout_UGZ1
+.dl Data_ObjectLayout_UGZ2 
+.dl Data_ObjectLayout_UGZ3 
+
+Data_ObjectLayout_SHZ:    ;$814F
+.dl Data_ObjectLayout_SHZ1
+.dl Data_ObjectLayout_SHZ2
+.dl Data_ObjectLayout_SHZ3
+
+Data_ObjectLayout_ALZ:    ;$8155
+.dl Data_ObjectLayout_ALZ1 
+.dl Data_ObjectLayout_ALZ2 
+.dl Data_ObjectLayout_ALZ3 
+
+Data_ObjectLayout_GHZ:    ;$815B
+.dl Data_ObjectLayout_GHZ1 
+.dl Data_ObjectLayout_GHZ2 
+.dl Data_ObjectLayout_GHZ3 
+
+Data_ObjectLayout_GMZ:    ;$8161
+.dl Data_ObjectLayout_GMZ1 
+.dl Data_ObjectLayout_GMZ2 
+.dl Data_ObjectLayout_GMZ3 
+
+Data_ObjectLayout_SEZ:    ;$8167
+.dl Data_ObjectLayout_SEZ1 
+.dl Data_ObjectLayout_SEZ2 
+.dl Data_ObjectLayout_SEZ3 
+
+Data_ObjectLayout_CEZ:    ;$816D
+.dl Data_ObjectLayout_CEZ1 
+.dl Data_ObjectLayout_CEZ2 
+.dl Data_ObjectLayout_CEZ3
+
+
+Data_ObjectLayout_UGZ1:    ;$8173
+#import "layout/ugz/object_layout_ugz1.bin"
+Data_ObjectLayout_UGZ2:    ;$82C1
+#import "layout/ugz/object_layout_ugz2.bin"
+Data_ObjectLayout_UGZ3:    ;$840F
+#import "layout/ugz/object_layout_ugz3.bin"
+
+Data_ObjectLayout_SHZ1:    ;$848E
+#import "layout/shz/object_layout_shz1.bin"
+Data_ObjectLayout_SHZ2:    ;$84E9
+#import "layout/shz/object_layout_shz2.bin"
+Data_ObjectLayout_SHZ3:    ;$8568
+#import "layout/shz/object_layout_shz3.bin"
+
+Data_ObjectLayout_ALZ1:    ;$8584
+#import "layout/alz/object_layout_alz1.bin"
+Data_ObjectLayout_ALZ2:    ;$8666
+#import "layout/alz/object_layout_alz2.bin"
+Data_ObjectLayout_ALZ3:    ;$87BD
+#import "layout/alz/object_layout_alz3.bin"
+
+Data_ObjectLayout_GHZ1:    ;$87F4
+;#import "layout/ghz/object_layout_ghz1.bin"
+#include "layout/ghz/object_layout_ghz1.asm"
+Data_ObjectLayout_GHZ2:    ;$88C4
+#import "layout/ghz/object_layout_ghz2.bin"
+Data_ObjectLayout_GHZ3:    ;$8970
+#import "layout/ghz/object_layout_ghz3.bin"
+
+Data_ObjectLayout_GMZ1:    ;$8983
+#import "layout/gmz/object_layout_gmz1.bin"
+Data_ObjectLayout_GMZ2:    ;$8A4A
+#import "layout/gmz/object_layout_gmz2.bin"
+Data_ObjectLayout_GMZ3:    ;$8AFF
+#import "layout/gmz/object_layout_gmz3.bin"
+
+Data_ObjectLayout_SEZ1:    ;$8B24
+#import "layout/sez/object_layout_sez1.bin"
+Data_ObjectLayout_SEZ2:    ;$8BE2
+#import "layout/sez/object_layout_sez2.bin"
+Data_ObjectLayout_SEZ3:    ;$8C7C
+#import "layout/sez/object_layout_sez3.bin"
+
+Data_ObjectLayout_CEZ1:    ;$8C8F
+#import "layout/cez/object_layout_cez1.bin"
+Data_ObjectLayout_CEZ2:    ;$8D20
+#import "layout/cez/object_layout_cez2.bin"
+Data_ObjectLayout_CEZ3: ;$8D8D
+#import "layout/cez/object_layout_cez3.bin"

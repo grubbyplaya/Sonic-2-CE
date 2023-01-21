@@ -11,7 +11,7 @@ PrisonCapsule_State_00:		;$902C
 .db $FF, $08			;set PLC value to $10 (prison capsule art)
 	.db $10
 .db $18, $00
-	.dw VF_DoNothing
+	.dl VF_DoNothing
 .db $FF, $06			;spawn special object $06
 	.db SpecObj_HideTimerRings
 	.dw $0000
@@ -91,7 +91,7 @@ PrisonCapsule_State_02:		;$90A5
 .db $10, $03
 	.dw PrisonCapsule_SetEndOfLevel
 .db $FF, $02
-	.dw LABEL_200 + $2D		;TODO: resets ix+$1F. what's 1f used for?
+	.dl LABEL_200 + $2D		;TODO: resets ix+$1F. what's 1f used for?
 .db $FF, $05
 	.db $03
 .db $0C, $03
@@ -216,20 +216,20 @@ PrisonCapsule_LockCamera:		;$916E
 	set     7, (ix+$03)
 	res     6, (ix+$04)			;clear the "hide object" flag
 	
-	ld      hl, ($D176)			;get vertical cam position
+	ld      hl, (gameMem+$D176)			;get vertical cam position
 	ld      de, $FFD8			;subtract 40 from cam pos
 	add     hl, de
 
 	ld      (ix+$14), l			;set object's vertical pos so that
 	ld      (ix+$15), h			;it appears offscreen (above)
 	
-	ld      de, ($D174)			;get horiz. cam position
+	ld      de, (gameMem+$D174)			;get horiz. cam position
 	ld      l, (ix+$11)			;get object's h-pos
 	ld      h, (ix+$12)
 	xor     a
 
 	sbc     hl, de				;compare object's hpos with camera hpos
-	jp      c, +_				;jump if object to left of camera
+	jr      c, +_				;jump if object to left of camera
 
 	ld      a, h				;return if the object is too far offscreen
 	or      a
@@ -239,7 +239,7 @@ PrisonCapsule_LockCamera:		;$916E
 	cp      $80
 	ret     nc
 
-	ld      (ix+$02), $05		;set state = $05
+_:	ld      (ix+$02), $05		;set state = $05
 
 	ld      a, (CurrentLevel)	;work out where to lock the camera
 	add     a, a				;calculate an index into the array
@@ -276,19 +276,18 @@ Data_PrisonCapsule_CameraPositions:		;$91BB
 PrisonCapsule_SetEndOfLevel:	;$91D7
 	call    VF_Engine_CheckCollisionAndAdjustPlayer
 	
-	ld      a, ($D501)			;check player state
+	ld      a, (gameMem+$D501)			;check player state
 	cp      PlayerState_EndOfLevel
-	jp      z, +_
+	jr      z, +_
 
-	ld      a, ($D503)			;check to see if player is jumping
+	ld      a, (gameMem+$D503)			;check to see if player is jumping
 	bit     0, a
-	jp      nz, +_
+	jr      nz, +_
 
 	ld      a, PlayerState_EndOfLevel
-	ld      ($D502), a			;set player state
+	ld      (gameMem+$D502), a			;set player state
 
-
-	ld      a, (ix+$1E)			;make the capsule vibrate
+_:	ld      a, (ix+$1E)			;make the capsule vibrate
 	inc     (ix+$1E)
 	and     $06
 	ld      e, a
@@ -362,8 +361,6 @@ PrisonCapsule_CheckCollision_SetState2:		;$924F
 	ret     z					;return if there were no collisions
 	
 	ld      (ix+$02), $02		;set object state = $02
-	
-	ld      ($DD04), a
 	ret     
 
 

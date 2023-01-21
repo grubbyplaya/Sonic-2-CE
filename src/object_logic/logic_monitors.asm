@@ -1,34 +1,34 @@
 Logic_Monitors:            ;$B710
-.dl Monitors_State_00
-.dl Monitors_State_01
-.dl Monitors_State_02
+.dw Monitors_State_00
+.dw Monitors_State_01
+.dw Monitors_State_02
 
 
 Monitors_State_00:        ;$B716
 .db $01, $00
-    .dl Monitor_Init
+    .dw Monitor_Init
 .db $FF, $00
 
 
 Monitors_State_01:        ;$B71C
 .db $01, $00
-    .dl Monitor_LoadTiles
+    .dw Monitor_LoadTiles
 .db $FF, $00
 
 
 Monitors_State_02:        ;$B722
 .db $05, $02
-    .dl Monitor_CheckCollisions
+    .dw Monitor_CheckCollisions
 .db $02, $01
-    .dl Monitor_CheckCollisions
+    .dw Monitor_CheckCollisions
 .db $04, $02
-    .dl Monitor_CheckCollisions
+    .dw Monitor_CheckCollisions
 .db $02, $01
-    .dl Monitor_CheckCollisions
+    .dw Monitor_CheckCollisions
 .db $03, $02
-    .dl Monitor_CheckCollisions
+    .dw Monitor_CheckCollisions
 .db $02, $01
-    .dl Monitor_CheckCollisions
+    .dw Monitor_CheckCollisions
 .db $FF, $00
 
 
