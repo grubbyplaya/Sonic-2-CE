@@ -1,5 +1,5 @@
-#define	VDP_ScreenMap           $D53800
-#define	VDP_SATAddress          $D53F00
+#define	VDP_ScreenMap           $D43800
+#define	VDP_SATAddress          $D43F00
 
 ; =============================================================================
 ;  VDP_InitRegisters()
@@ -523,7 +523,7 @@ _:	pop   bc
 ;  Out:
 ;	None.
 ; -----------------------------------------------------------------------------
-VDP_UpdateSAT:	  ; $1409
+VDP_UpdateSAT:	  ; PORTED
 	; check the SAT update trigger. don't bother updating
 	; if it is 0
 	ld	hl, VDP_SATUpdateTrig
@@ -545,7 +545,7 @@ VDP_UpdateSAT:	  ; $1409
 	
 	; copy 64 v-pos attributes to the VDP
 	ld	hl, VDP_WorkingSAT_VPOS	   ;copy 64 VPOS bytes.
-	ld	de, $D50040
+	ld	de, $D43F00
 	ld	bc, $3F
 	ldir
 
@@ -555,13 +555,13 @@ VDP_UpdateSAT:	  ; $1409
 	
 	; copy 64 h-pos and char code attributes to the VDP
 	ld	hl, VDP_WorkingSAT_HPOS
-	ld	de, $D50040
-	ld	bc,	$3F
+	ld	de, $D43F40
+	ld	bc, $3F
 	ldir
 	ret
 
 
-VDP_UpdateSAT_Descending:	;$15B7
+VDP_UpdateSAT_Descending:	; PORTED
 	; set the address pointer to the SAT
 	ld	a, VDP_SATAddress & $FF
 	ld	(VDP_SATAddress), a
@@ -569,14 +569,14 @@ VDP_UpdateSAT_Descending:	;$15B7
 	; copy the 8 player sprites first (so that they always
 	; appear on top).
 	ld	hl, VDP_WorkingSAT_VPOS
-	ld	de, $D50008
-	ld	bc,	$07
+	ld	de, $D43F00
+	ld	bc, $07
 	ldir
 
 	; copy the remaining 56 sprites in descending order
 	ld	hl, VDP_WorkingSAT_VPOS + $3F
-	ld	de, $D50038		   ; FIXME - opcode not required
-	ld	bc,	$38
+	ld	de, $D43F3F	   ; FIXME - opcode not required
+	ld	bc, $38
 	lddr
 
 	; set address pointer to SAT + $80
@@ -585,14 +585,14 @@ VDP_UpdateSAT_Descending:	;$15B7
 	
 	; copy hpos and char codes for the 8 player sprites
 	ld	hl, VDP_WorkingSAT_HPOS
-	ld	de, Ports_VDP_Data
-	ld	bc,	$0F
+	ld	de, $D43F40
+	ld	bc, $0F
 	ldir
 
 	; copy the remaining 56 hpos and char codes in descending order
 	ld	hl, VDP_WorkingSAT_HPOS + $7E
+	ld	de, $D43FBE
 	ld	bc, -4
-	ld	de, Ports_VDP_Data
 
 	ldi
 	ldi
@@ -817,7 +817,6 @@ VDP_UpdateSAT_Descending:	;$15B7
 	ldi
 	ldi
 	add	hl, bc
-
 	ret
 
 

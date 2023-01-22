@@ -1,4 +1,4 @@
-pushd	C:\Users\kobia\OneDrive\Documents\GitHub\Sonic-2-CE\src
+cd src
 spasm64 -E s2.asm s2.8xp
 spasm64 -E appvars/bank04.asm appvars/bank04.8xv
 spasm64 -E appvars/bank05.asm appvars/bank05.8xv

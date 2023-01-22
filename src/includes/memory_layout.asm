@@ -177,6 +177,6 @@ PlayerObj:
 ; ---------------------------------------------------------
 
 
-#define  VDP_WorkingSAT            $D5DB00
+#define  VDP_WorkingSAT            gameMem+$DB00
 #define  VDP_WorkingSAT_VPOS       VDP_WorkingSAT
 #define  VDP_WorkingSAT_HPOS       VDP_WorkingSAT + 64

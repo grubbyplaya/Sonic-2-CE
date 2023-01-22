@@ -258,9 +258,9 @@ LABEL_B31_B30C:
 	ret     
 
 LABEL_B31_B311:
-	ld      a, (gameMem+$D137)
-	and     $0C				;check for left/right buttons
-	jp      z, LABEL_B31_B341
+	ld      a, (kbdG7)
+	and     kbitLeft | kbitRight	;check for left/right buttons
+	jr      z, LABEL_B31_B341
 	ld      hl, $0100		;move right
 	and     $08
 	jr      nz, +_
@@ -278,13 +278,13 @@ _:	ld      (ix+$16), l		;set horizontal speed
 	ld      (ix+$18), l		;restore vertical speed
 	ld      (ix+$19), h
 LABEL_B31_B341:
-	ld      a, (gameMem+$D137)
+	ld      a, (kbdG7)
 	ld      b, a
 	ld      hl, $FF00
-	and     $01				;is up button pressed?
+	and     kbitUp			;is up button pressed?
 	jr      nz, +_
 	ld      a, b
-	and     $02				;is down button pressed
+	and     kbitDown				;is down button pressed
 	ld      hl, $FF80
 	jr      z, +_
 	ld      hl, $FFD0

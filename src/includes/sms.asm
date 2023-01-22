@@ -29,8 +29,8 @@ BTN_UP=kbdUp
 BTN_DOWN=kbdDown
 BTN_LEFT=kbdLeft
 BTN_RIGHT=kbdRight
-BTN_1=kbd2nd
-BTN_2=kbdAlpha
+BTN_1=kbit2nd
+BTN_2=kbitAlpha
 
 
 ; =========================================================

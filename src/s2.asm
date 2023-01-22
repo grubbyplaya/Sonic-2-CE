@@ -80,7 +80,8 @@
 #define VDPRegister5			gameMem+$D123
 #define VDPRegister6			gameMem+$D124
 
-#define WorkingCRAM			$E302C0	;copy of Colour RAM maintained in work RAM.
+#define CRAM				$E30200
+#define WorkingCRAM			$E30220	;copy of Colour RAM maintained in work RAM.
 
 #define BankSlot0			gameMem+$0400
 #define BankSlot1			saveSScreen		;bank slot 2. In safeRAM instead of gameMem
@@ -336,14 +337,21 @@ LABEL_472:
 
 LevelSelectCheck:
 	xor	a
-	ld	(LevelSelectTrg), a
-	ld	a, (Ports_IO1)
+	ld	a, (kbdG1)
+	bit	kbitGraph, a
+	ret	z
 	cpl
+
+	;ld	(LevelSelectTrg), a
+	;ld	a, (Ports_IO1)
+	;cpl
+
 	;-----------------
 	;ld	a, $0d
 	;nop
 	;-----------------
-	cp	$0D
+
+	cp	$FF
 	ret	nz
 	ld	(LevelSelectTrg), a
 	ret
@@ -915,7 +923,7 @@ ContinueScreen_MainLoop:		;7DB
 	
 	; check to see if button 1/2 is pressed
 	ld	a, (kbdG1 | kbdG2)
-	and	BTN_1 | BTN_2
+	and	BTN_1_BIT | BTN_2_BIT
 	jr	nz, ContinueScreen_MainLoop
 	
 	ld	hl, ContinueScreen_Timer	;increase the timer
@@ -1906,27 +1914,38 @@ Engine_LoadPlayerTiles_CopyTiles:	;copy 2 tiles (64 bytes) to vram
 ;*****************************************
 Engine_ClearPlayerTiles:
 	;set vram address to $0
-	ld	a, $00
-	or	$40
-	ld	($D40000), a
-	xor	a
-	ld	b, $20
-_:	ld	($D40000), a
-	ld	($D40001), a
-	ld	($D40002), a
-	ld	($D40003), a
-	ld	($D40004), a
-	ld	($D40005), a
-	ld	($D40006), a
-	ld	($D40007), a
-	ld	($D40008), a
-	ld	($D40009), a
-	ld	($D4000A), a
-	ld	($D4000B), a
-	ld	($D4000C), a
-	ld	($D4000D), a
-	ld	($D4000E), a
-	ld	($D4000E), a
+_:	ld	hl, $D40000
+	ld	(hl), a
+	inc	hl
+	ld	(hl), a
+	inc	hl
+	ld	(hl), a
+	inc	hl
+	ld	(hl), a
+	inc	hl
+	ld	(hl), a
+	inc	hl
+	ld	(hl), a
+	inc	hl
+	ld	(hl), a
+	inc	hl
+	ld	(hl), a
+	inc	hl
+	ld	(hl), a
+	inc	hl
+	ld	(hl), a
+	inc	hl
+	ld	(hl), a
+	inc	hl
+	ld	(hl), a
+	inc	hl
+	ld	(hl), a
+	inc	hl
+	ld	(hl), a
+	inc	hl
+	ld	(hl), a
+	inc	hl
+	ld	(hl), a
 	djnz	-_
 	ret
 
@@ -2728,7 +2747,7 @@ ReadInput:	;$1A35
 	;ld	a, (Ports_IO1)		;is "reset" button pressed?
 
 	ld	a, (kbdG1)
-	bit	kbitDel, a		;is "reset" button pressed?
+	bit	kbitDel, a		;is the delete button pressed?
 	cpl
 	and	$10
 	ret	z
@@ -2741,7 +2760,7 @@ _Port1_Input:	;$1A7A
 	and	$7F
 	ld	b, a
 	ld	c, $80
-	and	$30		;check buttons 1 & 2
+	and	kbit2nd | kbitAlpha		;check buttons 1 & 2
 	jr	nz, +_	;jump if buttons not pressed
 	ld	c, $00
 _:	ld	a, c
@@ -2866,8 +2885,8 @@ _:    inc	e
 
 
 ScoreCard_UpdateScore:		;$1C12
-_:	ld	a, (Engine_InputFlags)		;check for button press
-	and	$30
+_:	ld	a, (kbdG1 | kbdG2)		;check for button press
+	and	kbit2nd | kbitAlpha
 	jr	nz, +_	;if not pressing a button, wait for 1 frame
 	
 	ei
@@ -2885,8 +2904,8 @@ _:	ld	a, (RingCounter)
 	call	LABEL_1CD0		;update score value
 	call	LABEL_1D4F		;update score graphics?
 	call	LABEL_1D6F
-	ld	a, (Engine_InputFlags)		;check for button press
-	and	$30
+	ld	a, (kbdG1 | kbdG2)		;check for button press
+	and	kbit2nd | kbitAlpha
 	jr	z, +_
 
 	ld	a, (FrameCounter)		;jump if framecount is odd
@@ -2907,8 +2926,8 @@ _:
    	halt
    	djnz  ScoreCard_UpdateScore
 	
-_:	ld	a, (Engine_InputFlags)		;check for button press
-	and	$30
+_:	ld	a, (kbdG1 | kbdG2)		;check for button press
+	and	kbit2nd | kbitAlpha
 	jr	nz, +_
 
 	ei
@@ -2930,8 +2949,8 @@ _:	xor	a
 	call	LABEL_1CD0		;update score value
 	call	LABEL_1D60
 	call	LABEL_1D6F
-	ld	a, (Engine_InputFlags)		;check for button press
-	and	$30
+	ld	a, (kbdG1 | kbdG2)		;check for button press
+	and	kbit2nd | kbitAlpha
 	jr	z, +_
 
 	ld	a, (gameMem+$D12F)		;jump if frame count is odd
@@ -3723,14 +3742,13 @@ _:	ei	;FIXME: 3 wasted opcodes
 	halt
 	ret
 
-
-Engine_ClearWorkingVRAM:		;21E0
-	ld	hl, $D40000	;clear RAM from $D40000 -> $D7FFFF
-	ld	de, $D40001
-	ld	bc, $D408BF
-	ld	(hl), $00
-	ldir
-	ret
+Engine_ClearWorkingVRAM:       ;21E0
+    ld    hl, gameMem+$D300   ;clear RAM from $D300 -> $DBBF
+    ld    de, gameMem+$D301
+    ld    bc, $08BF
+    ld    (hl), $00
+    ldir
+    ret
 
 
 ; =============================================================================
@@ -4609,8 +4627,8 @@ _:	ld	a, $FF			;flag for a SAT update
 	call	UpdateCyclingPalette_ScrollingText
 	ei	
 	halt
-	ld	a, (Engine_InputFlagsLast)		;check for a buttons 1/2
-	and	$30
+	ld	a, (kbdG1 | kbdG2)		;check for a buttons 1/2
+	and	kbit2nd | kbitAlpha
 	ret	nz
 	ld	hl, (gameMem+$D3BA)	;timer?
 	dec	hl
@@ -4980,9 +4998,9 @@ LABEL_31F8:
 	ld	a, h
 	or	l
 	jp	nz, Player_SetState_Walking
-	ld	hl, Engine_InputFlags			
+	ld	hl, kbdG7		
 	ld	a, (hl)
-	and	$0C				;check for left/right buttons
+	and	kbitLeft | kbitRight				;check for left/right buttons
 	jp	nz, Player_SetState_Walking
 	bit	kbitUp, (hl)			;check for up button
 	jp	nz, Player_SetState_LookUp
@@ -4999,12 +5017,13 @@ LABEL_3222:
 	ld	a, (gameMem+$D502)
 	cp	PlayerState_Idle
 	ret	nz
-	ld	hl, Engine_InputFlags
+	ld	hl, kbdG1 | kbdG2
 	ld	a, (hl)
-	and	$30				;check for button 1/2
+	and	kbit2nd | kbitAlpha			;check for button 1/2
 	jp	nz, Player_SetState_Jumping
+	ld	hl, kbdG7
 	ld	a, (hl)
-	and	$0C				;check for left/right
+	and	kbitLeft | kbitRight		;check for left/right
 	jp	nz, Player_SetState_Walking
 	bit	kbitUp, (hl)			;check for up
 	jp	nz, Player_SetState_LookUp
@@ -5023,9 +5042,9 @@ LABEL_3245:
 	ld	a, (Player.StateNext)
 	cp	PlayerState_LookUp
 	ret	nz
-	ld	hl, Engine_InputFlags
+	ld	hl, kbdG7
 	ld	a, (hl)
-	and	$0C				;check for left/right buttons
+	and	kbitLeft | kbitRight				;check for left/right buttons
 	jp	nz, Player_SetState_Walking
 	bit	1, (hl)
 	jp	nz, Player_SetState_Crouch
@@ -5044,7 +5063,7 @@ LABEL_3267:
 	ld	a, (Player.StateNext)
 	cp	PlayerState_Crouch
 	ret	nz
-	ld	hl, Engine_InputFlags
+	ld	hl, kbdG7
 	bit	kbitUp, (hl)			;check for up button
 	jp	nz, Player_SetState_LookUp
 	bit	kbitDown, (hl)			;check for down button
@@ -5067,7 +5086,7 @@ Player_HandleWalk:		; $3283
 	inc	a
 	cp	$02
 	jr	c, +_
-	ld	hl, Engine_InputFlags
+	ld	hl, kbdG7
 	bit	kbitDown, (hl)			;check for down button
 	jp	nz, Player_SetState_Roll
 _:	ld	a, (Player_UnderwaterFlag)
@@ -5101,8 +5120,8 @@ _:	call	Player_CheckFinishSkid
 ;	None.
 ; -----------------------------------------------------------------------------
 Player_CheckFinishSkid:	; $32C8
-	ld	a, (Engine_InputFlags)
-	and	$0C				;check for left/right buttons
+	ld	a, (kbdG7)
+	and	kbitLeft | kbitRight				;check for left/right buttons
 	ret	nz
 	
 	; calculate absolute velocity
@@ -5141,7 +5160,7 @@ _:	; if velocity has dropped below $00E0 change to the
 ; -----------------------------------------------------------------------------
 Player_RollingCheckSkid:		; $32E4
 	; load HL with a pointer to the input flags
-	ld	hl, Engine_InputFlags
+	ld	hl, kbdG7
 	
 	; fetch the high byte of the player's x velocity
 	ld	a, (Player.VelX + 1)
@@ -5151,14 +5170,14 @@ Player_RollingCheckSkid:		; $32E4
 	jp	nz, +_
 	
 	; player moving right. check the left button in the input flags
-	bit	2, (hl)
+	bit	kbitLeft, (hl)
 	jr	z, ++_
 	; player moving right & left button pressed - skid to a stop
 	jp	Player_SetState_SkidRight
 
 
 _:	; player is moving left. check the right button in the input flags
-	bit	3, (hl)
+	bit	kbitRight, (hl)
 	jr	z, +_
 	; player moving left & right button pressed - skid
 	jp	Player_SetState_SkidLeft
@@ -5193,9 +5212,9 @@ _:	; copy the low-byte into A
 	ret	nz
 
 	; player not moving. set the object's state.
-	ld	a, (Engine_InputFlags)
+	ld	a, (kbdG7)
 	; check the input flags for the "down" button
-	bit	1, a
+	bit	kbitDown, a
 	jp	nz, Player_SetState_Crouch	;crouch...
 	jp	Player_SetState_Standing		;...or stand
 
@@ -5216,7 +5235,7 @@ _:	ret
 ; -----------------------------------------------------------------------------
 Player_CheckSkid:		; $3321
 	; get a pointer to the input flags
-	ld	hl, Engine_InputFlags
+	ld	hl, kbdG7
 	
 	; return if the upper byte of the x-velocity is zero (not moving
 	; fast enough).
@@ -5382,7 +5401,7 @@ Player_HandleJumping:
 LABEL_33EA:
 	ld	hl, gameMem+$D3AA		;increase D3AA as long as button 1/2 is held.
 	ld	a, (kbdG1 | kbdG2)
-	and	$30
+	and	kbit2nd | kbitAlpha
 	jr	nz, +_
 	ld	(hl), $20
 	jr	+++_
@@ -6472,8 +6491,8 @@ _:	call	Player_UpdatePositionX
 	call	LABEL_6BF2		;check collisions
 	call	LABEL_376E
 
-	ld	a, (Engine_InputFlagsLast)
-	and	$30			;check for either button 1 or button2
+	ld	a, (kbdG1 | kbdG2)
+	and	kbit2nd | kbitAlpha			;check for either button 1 or button2
 	ret	z
 
 
@@ -6875,7 +6894,7 @@ Player_CalcAccel_UnderWater:		; $3C5F
 
 	; check to see if left/right button is pressed
 	ld	a, (kbdG7)
-	and	BTN_LEFT | BTN_RIGHT
+	and	BTN_LEFT_BIT | BTN_RIGHT_BIT
 	jr	z, Player_CalcAccel_NoBtnPress
 
 	; use this array if the player is moving left
@@ -7209,10 +7228,10 @@ LABEL_4137:
 	ld	bc, $0200
 	call	Engine_SetObjectVerticalSpeed
 	call	Engine_UpdateObjectPosition
-	ld	a, (Engine_InputFlags)
-	bit	2, a
+	ld	a, (kbdG7)
+	bit	kbitLeft, a
 	jr	nz, LABEL_415F
-	bit	3, a
+	bit	kbitRight, a
 	jr	nz, LABEL_415A
 	ld	a, (gameMem+$D440)
 	cp	$02
@@ -7261,8 +7280,8 @@ LABEL_4199:
 LABEL_41A6:
 	call	Engine_UpdateObjectPosition
 	call	LABEL_4226
-	ld	a, (Engine_InputFlags)
-	bit	3, a
+	ld	a, (kbitG7)
+	bit	kbitRight, a
 	jr	nz, +_
 	ld	a, (gameMem+$D440)
 	cp	$02
@@ -7270,8 +7289,8 @@ LABEL_41A6:
 _:	ld	de, $0008
 	ld	bc, $0400
 	call	Engine_SetObjectVerticalSpeed
-	ld	a, (Engine_InputFlags)
-	bit	2, a
+	ld	a, (kbitG7)
+	bit	kbitLeft, a
 	ret	nz
 	ld	a, (ix+$19)
 	bit	7, a
@@ -7294,8 +7313,8 @@ LABEL_41EA:
 	ld	bc, $0400
 	call	Engine_SetObjectVerticalSpeed
 	call	Engine_UpdateObjectPosition
-	ld	a, (Engine_InputFlags)
-	bit	3, a
+	ld	a, (kbitG7)
+	bit	kbitRight, a
 	ret	nz
 	ld	(ix+$02), $13
 	ret
@@ -7600,8 +7619,8 @@ LABEL_4420:
 	jr	z, LABEL_4446
 	call	LABEL_462F
 	jp	nc, LABEL_43F3
-	ld	a, (Engine_InputFlags)
-	bit	0, a
+	ld	a, (kbdG7)
+	bit	kbitUp, a
 	jr	nz, LABEL_4440
 	call	LABEL_465D
 	jp	LABEL_43F3
@@ -7613,8 +7632,8 @@ LABEL_4440:
 LABEL_4446:
 	call	LABEL_4637
 	jp	nc, LABEL_43F3
-	ld	a, (Engine_InputFlags)
-	bit	0, a
+	ld	a, (kbdG7)
+	bit	kbitUp, a
 	jr	nz, LABEL_4459
 	call	LABEL_464D
 	jp	LABEL_43F3
@@ -7651,8 +7670,8 @@ LABEL_4482:
 	jr	z, LABEL_44A8
 	call	LABEL_462F
 	jp	nc, LABEL_43F3
-	ld	a, (Engine_InputFlags)
-	bit	1, a
+	ld	a, (kbdG7)
+	bit	kbitDown, a
 	jr	nz, LABEL_44A2
 	call	LABEL_465D
 	jp	LABEL_43F3
@@ -7664,8 +7683,8 @@ LABEL_44A2:
 LABEL_44A8:
 	call	LABEL_4637
 	jp	nc, LABEL_43F3
-	ld	a, (Engine_InputFlags)
-	bit	1, a
+	ld	a, (kbdG7)
+	bit	kbitDown, a
 	jr	nz, LABEL_44BB
 	call	LABEL_464D
 	jp	LABEL_43F3
@@ -7676,10 +7695,10 @@ LABEL_44BB:
 LABEL_44C1:
 	call	LABEL_464B
 	jp	nc, LABEL_43F3
-	ld	a, (Engine_InputFlags)
-	bit	3, a
+	ld	a, (kbdG7)
+	bit	kbitRight, a
 	jr	nz, LABEL_44D8
-	bit	2, a
+	bit	kbitLeft, a
 	jr	nz, LABEL_44DE
 	call	LABEL_466D
 	jp	LABEL_43F3
@@ -7700,8 +7719,8 @@ LABEL_44E4:
 	jr	z, LABEL_450A
 	call	LABEL_464B
 	jp	nc, LABEL_43F3
-	ld	a, (Engine_InputFlags)
-	bit	2, a
+	ld	a, (kbdG7)
+	bit	kbitLeft, a
 	jr	nz, LABEL_4504
 	call	LABEL_467D
 	jp	LABEL_43F3
@@ -7713,8 +7732,8 @@ LABEL_4504:
 LABEL_450A:
 	call	LABEL_4640
 	jp	nc, LABEL_43F3
-	ld	a, (Engine_InputFlags)
-	bit	2, a
+	ld	a, (kbdG7)
+	bit	kbitLeft, a
 	jr	nz, LABEL_451D
 	call	LABEL_466D
 	jp	LABEL_43F3
@@ -7726,10 +7745,10 @@ LABEL_451D:
 LABEL_4523:
 	call	LABEL_4637
 	jp	nc, LABEL_43F3
-	ld	a, (Engine_InputFlags)
-	bit	0, a
+	ld	a, (kbdG7)
+	bit	kbitUp, a
 	jr	nz, LABEL_453A
-	bit	1, a
+	bit	kbitDown, a
 	jr	nz, LABEL_4540
 	call	LABEL_465D
 	jp	LABEL_43F3
@@ -7750,8 +7769,8 @@ LABEL_4546:
 	jr	z, LABEL_456C
 	call	LABEL_464B
 	jp	nc, LABEL_43F3
-	ld	a, (Engine_InputFlags)
-	bit	3, a
+	ld	a, (kbdG7)
+	bit	kbitRight, a
 	jr	nz, LABEL_4566
 	call	LABEL_467D
 	jp	LABEL_43F3
@@ -7763,8 +7782,8 @@ LABEL_4566:
 LABEL_456C:
 	call	LABEL_4640
 	jp	nc, LABEL_43F3
-	ld	a, (Engine_InputFlags)
-	bit	3, a
+	ld	a, (kbdG7)
+	bit	kbitRight, a
 	jr	nz, LABEL_457F
 	call	LABEL_466D
 	jp	LABEL_43F3
@@ -7776,10 +7795,10 @@ LABEL_457F:
 LABEL_4585:
 	call	LABEL_462F
 	jp	nc, LABEL_43F3
-	ld	a, (Engine_InputFlags)
-	bit	0, a
+	ld	a, (kbdG7)
+	bit	kbitUp, a
 	jr	nz, LABEL_459C
-	bit	1, a
+	bit	kbitDown, a
 	jr	nz, LABEL_45A2
 	call	LABEL_464D
 	jp	LABEL_43F3
@@ -9236,7 +9255,7 @@ _:	ld	a, (de)		;write the 2-byte tile value to VRAM
 	inc	de
 	inc	hl
 	ld	a, (de)
-	ld	($D4FFFE), a
+	ld	(VDP_ScreenMap+1), a
 	inc	de
 	inc	hl
 	ld	a, l
@@ -13871,14 +13890,13 @@ Engine_ClearVRAM:		; $77F3
 ; -----------------------------------------------------------------------------
 Engine_ClearPaletteRAM:	; $782D
 	di
-	;write to VRAM at address $C000
-	ld	hl, $D4C000
+	;write to CRAM at address $E30200
+	ld	hl, $E30200
 	;write $0 to VRAM
 	ld	de, $00
 	;loop 32 times
 	ld	bc, $20
-	; FIXME: use tail recursion here.
-	call	VDP_Write
+	ldir
 	ret
 
 
@@ -14361,7 +14379,7 @@ UpdateCyclingPalette_Rain:		;$7D41
 	ld	a, (iy+$02)
 	inc	a
 	cp	$03
-	jp	c, $89F6
+	jp	c, $01
 	xor	a
 	ld	(iy+$02), a
 	add	a, a
@@ -14374,11 +14392,11 @@ UpdateCyclingPalette_Rain:		;$7D41
 	ld	hl, DATA_B30_AF4A
 #endif
 	add	hl, de
-	ld	de, gameMem+$D4CA
+	ld	de, CRAM+4
 	ld	bc, $0003
 	ldir
-	ld	a, $FF
-	ld	(Palette_UpdateTrig), a
+	;ld	a, $FF
+	;ld	(Palette_UpdateTrig), a
 	ret
 
 ;unknown palette. gets called in SHZ2
@@ -14391,13 +14409,13 @@ UpdateCyclingPalette_SHZ_Lightning:	;$7D73
 	ld	a, $3C
 	ld	bc, $330F
 	bit	1, (iy+$02)
-	jp	nz, $8A2F
+	jp	nz, $01
 	ld	a, $10
 	ld	bc, $1010
-	ld	hl, gameMem+$D4D1
+	ld	hl, CRAM+$0B
 	ld	(hl),a
-	ld	a, $FF
-	ld	(Palette_UpdateTrig),a
+	;ld	a, $FF
+	;ld	(Palette_UpdateTrig),a
 	ld	a, (iy+$02)
 	cp	$10
 	ret	c
@@ -14428,11 +14446,11 @@ _:	ld	(iy+$02), a
 	ld	hl, DATA_B30_AF41
 #endif
 	add	hl, de
-	ld	de, gameMem+$D4D3		;update 3 colours in CRAM
+	ld	de, CRAM+$0D		;update 3 colours in CRAM
 	ld	bc, $0003
 	ldir	
-	ld	a, $FF
-	ld	(Palette_UpdateTrig), a
+	;ld	a, $FF
+	;ld	(Palette_UpdateTrig), a
 	ret
 	
 ;update the cycling palette for ALZ's water
@@ -14445,7 +14463,7 @@ UpdateCyclingPalette_Water:	;$7DD9
 	ld	a, (iy+$02)
 	inc	a
 	cp	$03
-	jp	c, $8A9A
+	jp	c, $01
 	xor	a
 	ld	(iy+$02), a
 	add	a,a
@@ -14454,11 +14472,11 @@ UpdateCyclingPalette_Water:	;$7DD9
 	ld	d, $00
 	ld	hl, DATA_B30_AF53
 	add	hl, de
-	ld	de, gameMem+$D4D3
+	ld	de, CRAM+$0D
 	ld	bc, $0003
 	ldir	
-	ld	a, $FF
-	ld	(Palette_UpdateTrig), a
+	;ld	a, $FF
+	;ld	(Palette_UpdateTrig), a
 	ret	
 
 ;Update the GMZ conveyor belt and wheel palette
@@ -14471,7 +14489,7 @@ UpdateCyclingPalette_Conveyor:		;$7E0B
 	ld	a, (iy+$02)
 	inc	a
 	cp	$03
-	jp	c, $8AD0
+	jp	c, $01
 	xor	a
 	ld	(iy+$02), a
 	add	a,a
@@ -14480,11 +14498,11 @@ UpdateCyclingPalette_Conveyor:		;$7E0B
 	ld	d, $00
 	ld	hl, Alt_Palette_GMZ_Conveyor
 	add	hl, de
-	ld	de, gameMem+$D4D3
+	ld	de, CRAM+$0D
 	ld	bc, $0003
 	ldir
-	ld	a, $FF
-	ld	(Palette_UpdateTrig), a
+	;ld	a, $FF
+	;ld	(Palette_UpdateTrig), a
 	ret
 
 UpdateCyclingPalette_Unknown2:		;$7E3D
@@ -14496,7 +14514,7 @@ UpdateCyclingPalette_Unknown2:		;$7E3D
 	ld	a, (iy+$02)
 	inc	a
 	cp	$0C
-	jp	c, $8B06
+	jp	c, $01
 	xor	a
 	ld	(iy+$02), a
 	add	a, a
@@ -14504,11 +14522,11 @@ UpdateCyclingPalette_Unknown2:		;$7E3D
 	ld	d, $00
 	ld	hl, DATA_B30_AF65
 	add	hl, de
-	ld	de, gameMem+$D4D1
+	ld	de, CRAM+$0B
 	ld	bc, $0002
 	ldir	
-	ld	a, $FF
-	ld	(Palette_UpdateTrig), a
+	;ld	a, $FF
+	;ld	(Palette_UpdateTrig), a
 	ret
 
 ;Update the CEZ3 wall lights
@@ -14521,7 +14539,7 @@ UpdateCyclingPalette_WallLighting:		;$7E6C
 	ld	a, (iy+$02)
 	inc	a
 	cp	$06
-	jp	c, $8B39
+	jp	c, $01
 	xor	a
 	ld	(iy+$02), a
 	ld	e, a
@@ -14529,10 +14547,10 @@ UpdateCyclingPalette_WallLighting:		;$7E6C
 	ld	hl, DATA_B30_AF7D
 	add	hl, de
 	ld	a, (hl)
-	ld	de, gameMem+$D4CA
+	ld	de, CRAM+$04
 	ld	(de), a
-	ld	a, $FF
-	ld	(Palette_UpdateTrig), a
+	;ld	a, $FF
+	;ld	(Palette_UpdateTrig), a
 	ret
 
 ;update the CEZ1 orb cycling palette
@@ -14553,11 +14571,11 @@ UpdateCyclingPalette_Orb:		;$7E97
 	ld	d, $00
 	ld	hl, DATA_B30_AF83
 	add	hl, de
-	ld	de, $D4D3
+	ld	de, CRAM+$0D
 	ld	bc, $0002
 	ldir	
-	ld	a, $FF
-	ld	(Palette_UpdateTrig), a
+	;ld	a, $FF
+	;ld	(Palette_UpdateTrig), a
 	ret
 
 ;Update palette for CEZ3 boss lightening
@@ -14570,7 +14588,7 @@ UpdateCyclingPalette_Lightning:	;$7EC6
 	ld	a, (iy+$02)
 	inc	a
 	cp	$03
-	jp	c, $8B9A
+	jp	c, $01
 	xor	a
 	ld	(iy+$02), a
 	add	a, a
@@ -14581,21 +14599,21 @@ UpdateCyclingPalette_Lightning:	;$7EC6
 	ld	d, $00
 	ld	hl, DATA_B30_AF9F
 	add	hl, de
-	ld	de, WorkingCRAM
+	ld	de, CRAM
 	ld	bc, $0010
 	ldir
-	ld	a, $FF
-	ld	(Palette_UpdateTrig), a
+	;ld	a, $FF
+	;ld	(Palette_UpdateTrig), a
 	ret
 
 ;Update palette for CEZ3 boss lightning (part 2)
 UpdateCyclingPalette_Lightning2:		;$7EF8
 	ld	hl, DATA_B30_AF9F
-	ld	de, WorkingCRAM
+	ld	de, CRAM
 	ld	bc, $0010
 	ldir
-	ld	a, $FF
-	ld	(Palette_UpdateTrig), a
+	;ld	a, $FF
+	;ld	(Palette_UpdateTrig), a
 	ld	(iy+$00), $00
 	ld	(iy+$03), $00
 	ld	(iy+$02), $00
@@ -14613,18 +14631,18 @@ UpdateCyclingPalette_ScrollingText:	;$7F15
 
 	ld	hl, DATA_B30_AFCF
 
-	ld	a, (gameMem+$D12F)			;use the frame counter to alternate
+	ld	a, (gameMem+$D12F)	;use the frame counter to alternate
 	bit	2, a				;the palettes
 	jr	z, +_
 
-	ld	hl, DATA_B30_AFD5	;copy the palette to working copy of CRAM
+	ld	hl, DATA_B30_AFD5	;copy the palette to CRAM
 
-_:	ld	de, WorkingCRAM + $09
+_:	ld	de, CRAM + $09
 	ld	bc, $0006
 	ldir
 
-	ld	a, $FF			;flag for a VRAM palette update
-	ld	(Palette_UpdateTrig), a
+	;ld	a, $FF			;flag for a VRAM palette update
+	;ld	(Palette_UpdateTrig), a
 
 	pop	af				;page the previous bank bank in
 	ld	(Frame2Page), a
@@ -14669,7 +14687,7 @@ LABEL_7F7E:
 	ld	a, (iy + $02)
 	inc	a
 	cp	$06
-	jp	c, $8C69
+	jp	c, $01
 	xor	a
 	ld	(iy + $02), a
 	add	a, a
@@ -14678,10 +14696,10 @@ LABEL_7F7E:
 	ld	hl, DATA_B30_AFDB
 	add	hl, de
 	ld	a, (hl)
-	ld	(gameMem+$D4CF), a
+	ld	(CRAM+$09), a
 	inc	hl
 	ld	a, (hl)
-	ld	(gameMem+$D4D5), a
+	ld	(CRAM+$0F), a
 	
 	; flag for a palette update with the next vsync
 	ld	a, $FF
