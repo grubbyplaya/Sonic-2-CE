@@ -1,7 +1,4 @@
-#include	"includes/ti84pce.inc"
 #define	Version = 2
-Bank12:
-	.db	AppVarObj, "Bank12", 0
 
 Mappings32_GHZ:
 ;#import "mappings\ghz\mappings32_ghz.bin"

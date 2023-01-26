@@ -1,8 +1,3 @@
-#include	"includes/ti84pce.inc"
-
-Bank16:
-	.db	AppVarObj, "Bank16", 0
-
 Art_Sonic_Mirrored:		;$8000
 #import "art\sonic\art_ucmp_sonic_mirrored.bin"
 

@@ -1,7 +1,4 @@
-#include	"includes/ti84pce.inc"
 #define	Version=2
-Bank14:
-	.db	AppVarObj, "Bank14", 0
 
 Layout_ALZ1:
 #import "layout\alz\layout_alz1.bin"

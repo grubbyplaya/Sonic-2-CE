@@ -1,8 +1,3 @@
-#include	"includes/ti84pce.inc"
-
-Bank22:
-	.db	AppVarObj, "Bank22", 0
-
 Mappings32_GMZ:
 ;#import "mappings/gmz/mappings32_gmz.bin"
 #include "mappings/gmz/mappings32_gmz.asm"

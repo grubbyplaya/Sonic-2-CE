@@ -1,8 +1,3 @@
-#include	"includes/ti84pce.inc"
-
-Bank08:
-	.db	AppVarObj, "Bank08", 0
-
 Art_Intro_Sequence:		;$8000
 #import "art\intro_title\art_intro_sequence.bin"
 

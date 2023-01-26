@@ -45,7 +45,8 @@
 
 #define  VDP_SATUpdateTrig		gameMem+$D134
 #define  Engine_InterruptServiced	gameMem+$D135       ; byte - set when the interrupt has been serviced
-#define  Engine_InputFlags		gameMem+$D137       ; byte - current controller input flags
+#define  VRAMPointer			gameMem+$D136       ; word - stores VRAM adress
+#define  Engine_InputFlags		gameMem+$D138       ; byte - current controller input flags
 #define  Engine_InputFlagsLast	gameMem+$D147       ; byte - input flags from the previous frame
 
 #define  Camera_X			gameMem+$D174       ; word
@@ -92,7 +93,7 @@
 
 #define  Engine_UpdateSpriteAttribs_adj_pos  	gameMem+$D393       ; word
 #define  Engine_RingArt_Src					gameMem+$D395       ; word - pointer to uncompressed ring art data.
-#define  Engine_RingArt_Dest				gameMem+$D40397     ; word - vram destination pointer for ring art tiles.
+#define  Engine_RingArt_Dest				gameMem+$D397     ; word - vram destination pointer for ring art tiles.
 
 #define  Player_HurtTrigger					gameMem+$D3A8       ; byte - trigger causes player to lose rings or die
 #define  Player_FlashCounter				gameMem+$D3A9       ; byte

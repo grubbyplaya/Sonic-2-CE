@@ -204,7 +204,7 @@ WriteTileToVRAM:
 	ld   hl, gameMem+$D300		;copy 32 bytes from $D300 to VRAM
 	ld   b, $20
 _:	ld   a, (hl)
-	ld  ($BE), a
+	ld  (VRAM+VRAMPointer), a
 	push hl
 	pop  hl
 	inc  hl
@@ -223,7 +223,7 @@ _:	ld   e, (hl)		;read a byte of tile data from RAM
 	ld   a, (de)		;"flip" the byte by using it as an
 						;index into the array at $100 and
 						;retrieving the value
-	out  ($BE), a
+	ld  (VRAM+VRAMPointer), a
 	push hl
 	pop  hl
 	inc  hl

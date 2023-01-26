@@ -1,8 +1,3 @@
-#include	"includes/ti84pce.inc"
-
-Bank04:
-	.db	AppvarObj, "Bank04"
-
 Art_Sonic:				;$8000
 #import "art/sonic/art_ucmp_sonic.bin"
 

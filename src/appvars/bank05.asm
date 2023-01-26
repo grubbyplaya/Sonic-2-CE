@@ -1,8 +1,3 @@
-#include	"includes/ti84pce.inc"
-
-Bank05:
-	.db	AppVarObj, "Bank05", 0
-
 Art_Sonic_Gliding:
 #import "art\sonic\art_ucmp_sonic_gliding.bin" ;insert preferred directory here
 

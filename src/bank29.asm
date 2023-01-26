@@ -1,9 +1,6 @@
 #include	"includes/ti84pce.inc"
 #define gameMem 	userMem+$9C00
 
-Bank29:
-.db	AppvarObj,	"Bank29", 0
-
 ;2 extra bytes from the ghz control sequence (unused).
 .db $08, $00
 
@@ -45,7 +42,6 @@ _:	ld      (hl), a
 	inc     hl
 	djnz    -_
 	ret     
-
 LABEL_B29_B40C:
 	ld      a, (gameMem+$D46D)
 	or      a

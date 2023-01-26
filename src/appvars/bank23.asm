@@ -1,8 +1,3 @@
-#include	"includes/ti84pce.inc"
-
-Bank23:
-	.db	AppVarObj, "Bank23", 0
-
 Mappings32_SEZ2:
 ;#import "mappings\sez\mappings32_sez2.bin"
 #include "mappings\sez\mappings32_sez2.asm"

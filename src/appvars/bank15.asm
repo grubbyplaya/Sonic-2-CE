@@ -1,8 +1,3 @@
-#include	"includes/ti84pce.inc"
-
-Bank15:
-	.db	AppVarObj, "Bank15", 0
-
 Mappings32_ALZ2:
 ;#import "mappings\alz\mappings32_alz2.bin"
 #include "mappings\alz\mappings32_alz2.asm"
@@ -22,7 +17,7 @@ ContinueScreen_Data_ContinueTiles:		;3570
 
 ;just padding?
 .db $00, $00
-
+.db	"OMIRE"
 ContinueScreen_Data_NumberTiles:		;375A
 #import "art\continue_gameover\continue_screen_tiles_2.bin"
 

@@ -1,8 +1,3 @@
-#include	"includes/ti84pce.inc"
-
-Bank24:
-	.db	AppVarObj, "Bank24", 0
-
 Mappings32_CEZ1_2:
 ;#import "mappings\cez\mappings32_cez1_2.bin"
 #include "mappings\cez\mappings32_cez1_2.asm"

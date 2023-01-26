@@ -1,8 +1,3 @@
-#include	"includes/ti84pce.inc"
-
-Bank21:
-	.db	AppVarObj, "Bank21", 0
-
 Art_ALZ_Level_Tiles:		;$8000
 #import "art\level\alz\art_alz_level_tiles.bin"
 

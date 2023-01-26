@@ -104,14 +104,10 @@ VDP_ReadStatus:	 ; $1325
 ;  Destroys:
 ;	None.
 ; -----------------------------------------------------------------------------
-VDP_SetAddress:	 ; $1328
+VDP_SetAddress:	 ; PORTED
 	push  af
 	
-	ld	a, l
-	ld   (Ports_VDP_Control), a
-	ld	a, h
-	or	$40
-	ld   (Ports_VDP_Control), a
+	ld	(VRAMPointer), hl
 	
 	pop   af
 	
@@ -156,13 +152,13 @@ VDP_SendRead:	   ;$1333
 ;  Destroys:
 ;	None.
 ; -----------------------------------------------------------------------------
-VDP_WriteByte:	  ; $133E
-	; set the VDP adderess pointer
+VDP_WriteByte:	  ; Ported
+	; set the VDP address pointer
 	push  af		  ;FIXME: this push/pop is unnecessary as
 	call  VDP_SetAddress	  ; VDP_SetAddress does the same thing.
 	pop   af
 	; write the data
-	ld	(Ports_VDP_Data), a
+	ld	(VRAM+VRAMPointer), a
 	ret
 
 
@@ -200,7 +196,7 @@ VDP_ReadByte:	   ; $1346
 ;  Destroys:
 ;	A, BC
 ; -----------------------------------------------------------------------------
-VDP_WriteAndSkip:	   ; $134C
+VDP_WriteAndSkip:	   ; PORTED
 	push  de
 	
 	push  af		;FIXME: this push/pop is unnecessary
@@ -211,12 +207,12 @@ VDP_WriteAndSkip:	   ; $134C
 	
 _:	ld	a, d
 	; write the data to VRAM
-	ld	(Ports_VDP_Data), a
+	ld	(VRAM+VRAMPointer), a
 	push  af
 	pop   af
 	
 	; skip the next VRAM address
-	ld	a, (Ports_VDP_Data)
+	ld	a, ($D40001+VRAMPointer)
 	
 	; decrement BC and loop back if != 0
 	dec   bc
@@ -242,18 +238,18 @@ _:	ld	a, d
 ;  Destroys:
 ;	A, BC
 ; -----------------------------------------------------------------------------
-VDP_Write:	;$1361
+VDP_Write:	; PORTED
 	call  VDP_SetAddress
 	
 _:	; write the low-order byte
 	ld	a, e
-	ld	(Ports_VDP_Data), a
+	ld	(VRAM+VRAMPointer), a
 	push  af 
 	pop   af
 	
 	; write the hi-order byte
 	ld	a, d
-	ld	(Ports_VDP_Data+1), a
+	ld	($D40001+VRAMPointer), a
 	
 	; decrement BC and loop back if != 0
 	dec   bc
@@ -278,17 +274,18 @@ _:	; write the low-order byte
 ;  Destroys:
 ;	A, BC, DE
 ; -----------------------------------------------------------------------------
-VDP_Copy:	 ;$1372
+VDP_Copy:	 ; PORTED
 	ex	de, hl	 ;set the VRAM pointer
-	call  VDP_SetAddress
+_:	call  VDP_SetAddress
 	
-_:	; read a byte from the source
+	; read a byte from the source
 	ld	a, (de)
 	; ...and copy to the VDP
-	ld	(Ports_VDP_Data), a
+	ld	(VRAM+VRAMPointer), a
 	
 	; move the source pointer
 	inc   de
+	inc   hl
 	
 	; decrement BC and loop back if != 0
 	dec   bc

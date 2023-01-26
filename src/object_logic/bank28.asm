@@ -1,12 +1,3 @@
-#include "includes/ti84pce.inc"
-
-#define gameMem 				userMem+$9C00
-#define CurrentLevel			gameMem+$D295       ; byte - current level number
-#define Score				gameMem+$D29C		;score stored in 3-byte BCD
-
-Bank28:
-	.db	AppVarObj, "Bank28", 0
-
 DATA_B28_8000:
 .dw DATA_B28_8030
 .dw DATA_B28_8036
@@ -6153,6 +6144,12 @@ _:	ret
 #include	"includes/structures.asm"
 #include	"includes/objects.asm"
 #include	"includes/player_states.asm"
+#include "includes/ti84pce.inc"
+
+#define gameMem 				userMem+$9C00
+#define CurrentLevel			gameMem+$D295       ; byte - current level number
+#define Score				gameMem+$D29C		;score stored in 3-byte BCD
+
 DATA_1E76:
 .db $00, $01, $00
 

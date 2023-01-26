@@ -1,7 +1,4 @@
-#include	"includes/ti84pce.inc"
 #define	Version=2
-Bank27:
-	.db	AppVarObj, "Bank27", 0
 
 Layout_UGZ3:
 #ifdef Version=2

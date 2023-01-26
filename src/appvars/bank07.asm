@@ -1,8 +1,3 @@
-#include	"includes/ti84pce.inc"
-
-Bank07:
-	.db	AppVarObj, "Bank07", 0
-
 Art_Icons_Numbers:
 #import "art\level\icons_numbers.bin" ;
 

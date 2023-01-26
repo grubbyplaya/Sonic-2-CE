@@ -1,8 +1,3 @@
-#include	"includes/ti84pce.inc"
-
-Bank11:
-	.db	AppVarObj, "Bank11", 0
-
 Mappings32_SHZ1_3:
 ;#import "mappings\shz\mappings32_shz1_3.bin"
 #include "mappings\shz\mappings32_shz1_3.asm"

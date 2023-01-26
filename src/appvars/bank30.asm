@@ -1,7 +1,4 @@
-#include "includes/ti84pce.inc"
-#define Score	gameMem+$D29C		;score stored in 3-byte BCD
-#define gameMem 	userMem+$9C00
-#define LastLevel	$07
+
 ;routines to load a level's object layout
 #include "object_layout_routines.asm"
 
@@ -19,11 +16,18 @@ DemoControlSequence_SEZ:
 
 ;bank 30 is separate from s2.asm, so a few includes and routines are here to fix some bugs.
 .nolist
+#include "includes/ti84pce.inc"
+
+#define Score	gameMem+$D29C		;score stored in 3-byte BCD
+#define gameMem 	userMem+$9C00
+#define LastLevel	$07
+
 #include	"logic_jump_table.asm"
 #include	"includes/memory_layout.asm"
 #include	"includes/structures.asm"
 #include	"includes/objects.asm"
 #include	"includes/player_states.asm"
+
 DATA_1E76:
 .db $00, $01, $00
 

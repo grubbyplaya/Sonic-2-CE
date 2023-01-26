@@ -1,7 +1,4 @@
-#include	"includes/ti84pce.inc"
-
-Bank13:
-	.db	AppVarObj, "Bank13", 0
+#define	Version=2
 
 Layout_GHZ1:
 #import "layout\ghz\layout_ghz1.bin"

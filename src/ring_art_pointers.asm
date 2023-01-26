@@ -66,57 +66,57 @@ DATA_2320:
 ;	1 byte	-	third cycling palette index?
 ;	1 byte	-	fourth cycling palette index?
 RingArtPointers_GHZ1:
-.dw DATA_B30_9841, Art_Rings_GHZ, $2880, $0000, $0000
+.dl DATA_B30_9841, Art_Rings_GHZ, $D42880, $0000, $0000
 RingArtPointers_GHZ2:
-.dw DATA_B30_9841, Art_Rings_GHZ, $2880, $0000, $0000
+.dl DATA_B30_9841, Art_Rings_GHZ, $D42880, $0000, $0000
 RingArtPointers_GHZ3:
-.dw DATA_B30_9841, Art_Rings_GHZ, $2880, $0000, $0000
+.dl DATA_B30_9841, Art_Rings_GHZ, $D42880, $0000, $0000
 
 RingArtPointers_SHZ1:
-.dw DATA_B30_9841, Art_Rings_SHZ1_3, $2A80, $0000, $0000
+.dl DATA_B30_9841, Art_Rings_SHZ1_3, $D42A80, $0000, $0000
 RingArtPointers_SHZ2:
-.dw DATA_B30_9841, Art_Rings_SHZ2, $27C0, $0302, $0000
+.dl DATA_B30_9841, Art_Rings_SHZ2, $D427C0, $0302, $0000
 RingArtPointers_SHZ3:
-.dw DATA_B30_9841, Art_Rings_SHZ1_3, $2A80, $0000, $0000
+.dl DATA_B30_9841, Art_Rings_SHZ1_3, $D42A80, $0000, $0000
 
 RingArtPointers_ALZ1:
-.dw DATA_B30_9841, Art_Rings_ALZ, $2940, $0005, $0000
+.dl DATA_B30_9841, Art_Rings_ALZ, $D42940, $0005, $0000
 RingArtPointers_ALZ2:
-.dw DATA_B30_9A41, Art_Rings_ALZ, $2940, $0005, $0000
+.dl DATA_B30_9A41, Art_Rings_ALZ, $D42940, $0005, $0000
 RingArtPointers_ALZ3:
-.dw DATA_B30_9841, Art_Rings_ALZ, $2940, $0005, $0000
+.dl DATA_B30_9841, Art_Rings_ALZ, $D42940, $0005, $0000
 
 RingArtPointers_UGZ1:
-.dw DATA_B30_9841, Art_Rings_UGZ, $2DE0, $0004, $0000
+.dl DATA_B30_9841, Art_Rings_UGZ, $D42DE0, $0004, $0000
 RingArtPointers_UGZ2:
-.dw DATA_B30_9841, Art_Rings_UGZ, $2DE0, $0004, $0000
+.dl DATA_B30_9841, Art_Rings_UGZ, $D42DE0, $0004, $0000
 RingArtPointers_UGZ3:
-.dw DATA_B30_9841, Art_Rings_UGZ, $2DE0, $0004, $0000
+.dl DATA_B30_9841, Art_Rings_UGZ, $D42DE0, $0004, $0000
 
 RingArtPointers_GMZ1:
-.dw DATA_B30_9841, Art_Rings_GMZ, $2860, $0706, $0000
+.dl DATA_B30_9841, Art_Rings_GMZ, $D42860, $0706, $0000
 RingArtPointers_GMZ2:
-.dw DATA_B30_9841, Art_Rings_GMZ, $2860, $0706, $0000
+.dl DATA_B30_9841, Art_Rings_GMZ, $D42860, $0706, $0000
 RingArtPointers_GMZ3:
-.dw DATA_B30_9841, Art_Rings_GMZ, $2860, $0706, $0000
+.dl DATA_B30_9841, Art_Rings_GMZ, $D42860, $0706, $0000
 
 RingArtPointers_SEZ1:
-.dw DATA_B30_9841, Art_Rings_SEZ, $30A0, $0008, $0000
+.dl DATA_B30_9841, Art_Rings_SEZ, $D430A0, $0008, $0000
 RingArtPointers_SEZ2:
-.dw DATA_B30_9841, Art_Rings_SEZ, $3120, $0008, $0000
+.dl DATA_B30_9841, Art_Rings_SEZ, $D43120, $0008, $0000
 RingArtPointers_SEZ3:
-.dw DATA_B30_9841, Art_Rings_SEZ, $30A0, $0008, $0000
+.dl DATA_B30_9841, Art_Rings_SEZ, $D430A0, $0008, $0000
 
 RingArtPointers_CEZ1:
-.dw DATA_B30_9841, Art_Rings_CEZ, $29A0, $000C, $0000
+.dl DATA_B30_9841, Art_Rings_CEZ, $D429A0, $000C, $0000
 RingArtPointers_CEZ2:
-.dw DATA_B30_9841, Art_Rings_CEZ, $29A0, $000C, $0000
+.dl DATA_B30_9841, Art_Rings_CEZ, $D429A0, $000C, $0000
 RingArtPointers_CEZ3:
-.dw DATA_B30_9841, Art_Rings_CEZ, $0000, $0B00, $0000
+.dl DATA_B30_9841, Art_Rings_CEZ, $0000, $0B00, $0000
 
 DATA_23F8:
-.dw DATA_B30_9841, Art_Rings_CEZ, $0000, $0000, $0000
+.dl DATA_B30_9841, Art_Rings_CEZ, $0000, $0000, $0000
 DATA_2402:
-.dw DATA_B30_9841, Art_Rings_GHZ, $0000, $0000, $0000
+.dl DATA_B30_9841, Art_Rings_GHZ, $0000, $0000, $0000
 DATA_240C:
-.dw DATA_B30_9841, Art_Rings_GHZ, $0000, $0000, $0000
+.dl DATA_B30_9841, Art_Rings_GHZ, $0000, $0000, $0000

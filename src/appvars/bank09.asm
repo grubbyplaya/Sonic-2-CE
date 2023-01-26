@@ -1,8 +1,5 @@
 #include	"includes/ti84pce.inc"
 
-Bank09:
-	.db	AppVarObj, "Bank09", 0
-
 #include "palette_routines.asm"
 
 Palettes:
@@ -19,7 +16,7 @@ Art_TitleCard_Text_Tiles:
 
 Art_TitleCard_Unknown:
 #import "art\titlecard\art_titlecard_unknown.bin"
-
+.db "OMIRE"
 Art_TitleCard_Unknown2:
 #import "art\titlecard\art_titlecard_unknown2.bin"
 

@@ -1,7 +1,4 @@
-#include	"includes/ti84pce.inc"
 #define	Version = 2
-Bank19:
-	.db	AppVarObj, "Bank19", 0
 
 Layout_GMZ1:
 #ifdef Version=2

@@ -1,8 +1,3 @@
-#include	"includes/ti84pce.inc"
-
-Bank06:
-	.db	AppVarObj, "Bank06", 0
-
 Art_Sonic_Loop:
 #import "art\sonic\art_ucmp_sonic_loop.bin"
 

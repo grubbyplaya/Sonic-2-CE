@@ -1,8 +1,3 @@
-#include	"includes/ti84pce.inc"
-
-Bank25:
-	.db	AppVarObj, "Bank25", 0
-
 UGZ_Title_Pic_Art:
 #import "art\titlecard\ugz_title_card_pic.bin"
 SHZ_Title_Pic_Art:

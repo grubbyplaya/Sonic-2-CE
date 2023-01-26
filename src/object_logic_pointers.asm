@@ -29,7 +29,7 @@
 .dw DATA_B31_BBC6				;1C
 .dw Logic_IntroCloudsAndPalette	;1D
 .dw Logic_IntroTree			;1E
-.dw Data_PlayerSprites			;1F ($BCCB) - invalid (not logic!)
+.dl Data_PlayerSprites			;1F ($BCCB) - invalid (not logic!)
 
 ;Bank 28 objects
 .dw DATA_B28_8000				;20

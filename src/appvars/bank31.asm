@@ -1,11 +1,3 @@
-#include	"includes/ti84pce.inc"
-
-Bank31:
-	.db	AppVarObj, "Bank31", 0
-
-#define gameMem 	userMem+$9C00
-#define Score	gameMem+$D29C		;score stored in 3-byte BCD
-#define PatternLoadCue gameMem+$D3AB	;PLC index
 #include "object_animations.asm"
 
 #include "object_logic\bank31_logic.asm"
@@ -21,6 +13,12 @@ Bank31:
 #include	"includes/objects.asm"
 #include	"includes/player_states.asm"
 #include	"includes/level_values.asm"
+#include	"includes/ti84pce.inc"
+
+#define gameMem 	userMem+$9C00
+#define Score	gameMem+$D29C		;score stored in 3-byte BCD
+#define PatternLoadCue gameMem+$D3AB	;PLC index
+
 DATA_1E76:
 .db $00, $01, $00
 
