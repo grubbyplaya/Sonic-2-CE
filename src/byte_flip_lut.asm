@@ -8,7 +8,6 @@
 ;*  This array needs to be aligned to a 256 byte boundary in    *
 ;*  order for the addressing mechanism to work properly.        *
 ;****************************************************************
-.ORG $100
 Engine_Data_ByteFlipLUT:       ;$0100
 .db $00, $80, $40, $C0, $20, $A0, $60, $E0
 .db $10, $90, $50, $D0, $30, $B0, $70, $F0

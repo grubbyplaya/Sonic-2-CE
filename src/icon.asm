@@ -18,8 +18,9 @@ Tails_Icon:
 	.db	$FF, $FF, $FF, $FF, $B5, $B5, $B5, $FF, $E2, $FF, $FF, $B5, $B5, $FF, $FF, $FF
 	.db	$FF, $FF, $FF, $FF, $C3, $E4, $B5, $B5, $B5, $B5, $8B, $8B, $FF, $FF, $FF, $FF
 	.db	$FF, $FF, $FF, $C3, $E4, $E6, $C3, $FF, $FF, $FF, $B5, $FF, $FF, $FF, $FF, $FF
-	.db	"Sonic 2 CE", 0
-;Hard (original) mode icon
+	.db	"Sonic the Hedgehog 2 CE", 0
+
+;Hard (original levels) mode icon
 ;	jp	_START
 ;	.db	1
 ;	.db	16, 16

@@ -15,7 +15,7 @@
 #include	"includes/level_values.asm"
 #include	"includes/ti84pce.inc"
 
-#define gameMem 	userMem+$9C00
+#define gameMem 	cmdPixelShadow-$C000
 #define Score	gameMem+$D29C		;score stored in 3-byte BCD
 #define PatternLoadCue gameMem+$D3AB	;PLC index
 

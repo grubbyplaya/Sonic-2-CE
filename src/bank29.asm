@@ -1,5 +1,5 @@
 #include	"includes/ti84pce.inc"
-#define gameMem 	userMem+$9C00
+#define gameMem 	cmdPixelShadow-$C000
 
 ;2 extra bytes from the ghz control sequence (unused).
 .db $08, $00

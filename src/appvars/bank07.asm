@@ -50,15 +50,11 @@ Art_Animals:
 Art_Scrolling_Text_Background:
 #import "art\misc\art_misc_scrolling_text_background.bin"
 
-.db $00, $00
-
 Art_Signpost:
 #import "art\misc\art_ucmp_signpost.bin"
 
 Art_Minecart:
 #import "art\misc\art_minecart.bin"
-
-.db $00, $00
 
 Art_SilverSonic:
 #import "art\boss\art_ucmp_silver_sonic.bin"

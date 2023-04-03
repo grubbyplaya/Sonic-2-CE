@@ -1,7 +1,6 @@
 ;************************************************************
 ;*   Main logic vtable - used extensively by object logic   *
 ;************************************************************
-.org gameMem+$0200
 LABEL_200:
 VF_Engine_AllocateObjectHighPriority:           ;$200 - find an available object slot from $D540 onwards
     jp  Engine_AllocateObjectHighPriority                           

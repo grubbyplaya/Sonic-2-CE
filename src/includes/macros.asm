@@ -11,9 +11,9 @@
 
 #macro wait_1s
     ld    b, Time_1Second
-    ei
+_:  ei
     halt
-    djnz  - wait_1s
+    djnz  -_
 #endmacro
 
 ; =============================================================================
@@ -27,8 +27,8 @@
 ;    None.
 ; -----------------------------------------------------------------------------
 #macro Engine_FillMemory args value
-    ld    hl, $C001
-    ld    de, $C002
+    ld    hl, gameMem+$C001
+    ld    de, gameMem+$C002
     ld    bc, $1FEE
     ld    (hl), value
     ldir

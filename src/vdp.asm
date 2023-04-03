@@ -1,5 +1,5 @@
-#define	VDP_ScreenMap           $D43800
-#define	VDP_SATAddress          $D43F00
+#define	VDP_ScreenMap           SegaVRAM+$3800
+#define	VDP_SATAddress          SegaVRAM+$3F00
 
 ; =============================================================================
 ;  VDP_InitRegisters()
@@ -12,8 +12,6 @@
 ;	None.
 ; -----------------------------------------------------------------------------
 VDP_InitRegisters:
-	;read/clear VDP status flags
-	in	a, ($BF)
 	; loop 11 times to copy to each register
 	ld	b, $0B		; FIXME: more efficient to load BC with one opcode
 	; load C with the first latch byte
@@ -23,7 +21,7 @@ VDP_InitRegisters:
 	ld	de, VDPRegister0
 	
 	ld	hl, _VDP_InitRegisters_RegValues
-	
+	ei
 	; loop over each register
 _:	ld	a, (hl)
 	ld   (Ports_VDP_Control), a
@@ -88,7 +86,7 @@ VDP_SetRegister:	; $1310
 ;	A   - The status byte.
 ; -----------------------------------------------------------------------------
 VDP_ReadStatus:	 ; $1325
-	in	a, (Ports_VDP_Control)
+	ld	a, (Ports_VDP_Control)
 	ret
 
 
@@ -104,13 +102,13 @@ VDP_ReadStatus:	 ; $1325
 ;  Destroys:
 ;	None.
 ; -----------------------------------------------------------------------------
-VDP_SetAddress:	 ; PORTED
-	push  af
-	
-	ld	(VRAMPointer), hl
-	
-	pop   af
-	
+VDP_SetAddress:	 ; Ported
+	push  af	
+	ld	a, h
+	or	$40
+	ld	h, a
+	ld	(VRAMPointer), hl	
+	pop   af	
 	ret
 
 
@@ -126,17 +124,17 @@ VDP_SetAddress:	 ; PORTED
 ;  Destroys:
 ;	A
 ; -----------------------------------------------------------------------------
-VDP_SendRead:	   ;$1333
-	ld	a, l
-	ld   (Ports_VDP_Control), a
-	ld	a, h
-	and   $3F
-	ld   (Ports_VDP_Control), a
+VDP_SendRead:	   ; NOT NEEDED
+	;ld	a, l
+	;ld   (Ports_VDP_Control), a
+	;ld	a, h
+	;and   $3F
+	;ld   (Ports_VDP_Control), a
 	
-	push  af		; FIXME: pointless stack activity/timing related?
-	pop   af
+	;push  af		; FIXME: pointless stack activity/timing related?
+	;pop   af
 	
-	ret
+	;ret
 
 
 ; =============================================================================
@@ -154,11 +152,13 @@ VDP_SendRead:	   ;$1333
 ; -----------------------------------------------------------------------------
 VDP_WriteByte:	  ; Ported
 	; set the VDP address pointer
-	push  af		  ;FIXME: this push/pop is unnecessary as
-	call  VDP_SetAddress	  ; VDP_SetAddress does the same thing.
-	pop   af
+	push	de
+	call  VDP_SetAddress
 	; write the data
-	ld	(VRAM+VRAMPointer), a
+	ld	de, SegaVRAM
+	add	hl, de
+	ld	(hl), a
+	pop	de
 	ret
 
 
@@ -174,9 +174,15 @@ VDP_WriteByte:	  ; Ported
 ;  Destroys:
 ;	None.
 ; -----------------------------------------------------------------------------
-VDP_ReadByte:	   ; $1346
-	call  VDP_SendRead
-	ld	a, (Ports_VDP_Data)
+VDP_ReadByte:	   ; Ported
+	push	de
+	ld	a, h
+	and   $3F
+	ld	h, a
+	ld	de, SegaVRAM
+	add	hl, de
+	ld	a, (hl)
+	pop	de
 	ret
 
 
@@ -189,30 +195,31 @@ VDP_ReadByte:	   ; $1346
 ;  In:
 ;	A   - The data.
 ;	BC  - Number of bytes to write. When the function returns, the VRAM
-;	  addess pointer will be HL + 2*BC.
+;	  address pointer will be HL + 2*BC.
 ;	HL  - The address to start writing from.
 ;  Out:
 ;	None.
 ;  Destroys:
 ;	A, BC
 ; -----------------------------------------------------------------------------
-VDP_WriteAndSkip:	   ; PORTED
+VDP_WriteAndSkip:	   ; Ported
 	push  de
-	
-	push  af		;FIXME: this push/pop is unnecessary
-	call  VDP_SetAddress
-	pop   af
-	
+	call  VDP_SetAddress	
 	ld	d, a
-	
+	ld	de, SegaVRAM
+	add	hl, de
+	pop	de
+	push	de
+
 _:	ld	a, d
 	; write the data to VRAM
-	ld	(VRAM+VRAMPointer), a
+	ld	(hl), a
 	push  af
 	pop   af
 	
 	; skip the next VRAM address
-	ld	a, ($D40001+VRAMPointer)
+	inc	hl
+	inc	hl
 	
 	; decrement BC and loop back if != 0
 	dec   bc
@@ -238,18 +245,23 @@ _:	ld	a, d
 ;  Destroys:
 ;	A, BC
 ; -----------------------------------------------------------------------------
-VDP_Write:	; PORTED
+VDP_Write:	; Ported
 	call  VDP_SetAddress
 	
 _:	; write the low-order byte
 	ld	a, e
-	ld	(VRAM+VRAMPointer), a
+	push	de
+	ld	de, SegaVRAM
+	add	hl, de
+	ld	(hl), a
 	push  af 
 	pop   af
+	pop	de
+	inc	hl
 	
 	; write the hi-order byte
 	ld	a, d
-	ld	($D40001+VRAMPointer), a
+	ld	(hl), a
 	
 	; decrement BC and loop back if != 0
 	dec   bc
@@ -274,14 +286,20 @@ _:	; write the low-order byte
 ;  Destroys:
 ;	A, BC, DE
 ; -----------------------------------------------------------------------------
-VDP_Copy:	 ; PORTED
+VDP_Copy:	 ; Ported
 	ex	de, hl	 ;set the VRAM pointer
 _:	call  VDP_SetAddress
 	
 	; read a byte from the source
 	ld	a, (de)
 	; ...and copy to the VDP
-	ld	(VRAM+VRAMPointer), a
+	push	de
+	push	hl
+	ld	de, SegaVRAM
+	add	hl, de
+	ld	(hl), a
+	push	hl
+	push	de
 	
 	; move the source pointer
 	inc   de
@@ -291,8 +309,7 @@ _:	call  VDP_SetAddress
 	dec   bc
 	ld	a, b
 	or	c
-	jr	nz, -_
-	
+	jr	nz, -_	
 	ret
 
 
@@ -313,9 +330,6 @@ VDP_SetMode2Reg_DisplayOn:	  ; $1381
 	;change all flags - make sure display is visible
 	or	VDP_DisplayVisibleBit
 	ld	(hl), a
-	ld	(Ports_VDP_Control), a
-	ld	a, $81
-	ld	(Ports_VDP_Control+1), a
 	ret
 
 
@@ -337,10 +351,6 @@ VDP_SetMode2Reg_DisplayOff:
 	; i.e. leave the display turned off
 	and	VDP_DisplayVisibleBit = $FF
 	ld	(hl), a
-	
-	ld	(Ports_VDP_Control), a
-	ld	a, $81
-	ld	(Ports_VDP_Control+1), a
 	ret
 
 
@@ -360,10 +370,6 @@ VDP_EnableFrameInterrupt:
 	ld	a, (hl)
 	or	VDP_FrameInterruptsBit
 	ld	(hl), a
-	ld	(Ports_VDP_Control), a
-	ld	a, $81
-	ld	(Ports_VDP_Control+1), a
-
 	ret
 
 
@@ -383,9 +389,6 @@ VDP_DisableFrameInterrupt:	  ; $13AA
 	ld	a, (hl)
 	and	VDP_FrameInterruptsBit = $FF
 	ld	(hl), a
-	ld	(Ports_VDP_Control), a
-	ld	a, $81
-	ld	(Ports_VDP_Control+1), a
 	ret
 
 
@@ -402,26 +405,31 @@ VDP_DisableFrameInterrupt:	  ; $13AA
 ;  Out:
 ;	None.
 ;  Destroys:
-;	A
+;	A, HL
 ; -----------------------------------------------------------------------------
-VDP_DrawText:	   ; $13B8
+VDP_DrawText:	   ; Ported
 	di
 	
 	call	VDP_SetAddress
+	push	de
+	ld	de, SegaVRAM
+	add	hl, de
+	pop	de
 	
 	push	de
 	push	bc
 	
 _:	; copy a byte from RAM to the VDP
 	ld	a, (de)
-	ld	(Ports_VDP_Data), a	;write a char to the VDP memory
+	ld	(hl), a	;write a char to the VDP memory
+	inc	hl
 	
 	; copy the tile attribute byte to the VDP
 	ld	a, (VDP_DefaultTileAttribs)
 	nop
 	nop
 	nop
-	ld	(Ports_VDP_Data+1), a
+	ld	(hl), a
 	
 	; increment the source pointer
 	inc	de
@@ -465,15 +473,19 @@ _:	ld	a, (gameMem+$D292)
 	call	VDP_SetAddress
  
 	; copy a byte from RAM to VRAM
-	ld	a, (de)
-	ld	(Ports_VDP_Data), a
+	push	de
+	ld	de, SegaVRAM
+	add	hl, de
+	ld	(hl), a
+	inc	hl
+	pop	de
 	
 	; copy the default tile attribs to VRAM
 	ld	a, (VDP_DefaultTileAttribs)
 	nop
 	nop
 	nop
-	ld	(Ports_VDP_Data+1), a
+	ld	(hl), a
 
 	ei
 
@@ -485,8 +497,8 @@ _:	ld	a, (gameMem+$D292)
 	ld	b, $06
 _:	ei
 	halt
-	ld	a, (gameMem+$D137)
-	and	$80
+	ld	a, (kbdG1 | kbdG2)
+	and	kbit2nd | kbitAlpha
 	jr	nz, +_
 
 	djnz  -_
@@ -520,7 +532,7 @@ _:	pop   bc
 ;  Out:
 ;	None.
 ; -----------------------------------------------------------------------------
-VDP_UpdateSAT:	  ; PORTED
+VDP_UpdateSAT:	  ; Ported
 	; check the SAT update trigger. don't bother updating
 	; if it is 0
 	ld	hl, VDP_SATUpdateTrig
@@ -542,7 +554,7 @@ VDP_UpdateSAT:	  ; PORTED
 	
 	; copy 64 v-pos attributes to the VDP
 	ld	hl, VDP_WorkingSAT_VPOS	   ;copy 64 VPOS bytes.
-	ld	de, $D43F00
+	ld	de, SegaVRAM+$3F00
 	ld	bc, $3F
 	ldir
 
@@ -552,13 +564,14 @@ VDP_UpdateSAT:	  ; PORTED
 	
 	; copy 64 h-pos and char code attributes to the VDP
 	ld	hl, VDP_WorkingSAT_HPOS
-	ld	de, $D43F40
+	ld	de, SegaVRAM+$3F80
 	ld	bc, $3F
 	ldir
 	ret
 
 
-VDP_UpdateSAT_Descending:	; PORTED
+VDP_UpdateSAT_Descending:	; Ported
+	ld	(SaveSP2), sp
 	; set the address pointer to the SAT
 	ld	a, VDP_SATAddress & $FF
 	ld	(VDP_SATAddress), a
@@ -566,254 +579,34 @@ VDP_UpdateSAT_Descending:	; PORTED
 	; copy the 8 player sprites first (so that they always
 	; appear on top).
 	ld	hl, VDP_WorkingSAT_VPOS
-	ld	de, $D43F00
-	ld	bc, $07
+	ld	de, VDP_SATAddress
+	ld	bc, $08
 	ldir
 
 	; copy the remaining 56 sprites in descending order
 	ld	hl, VDP_WorkingSAT_VPOS + $3F
-	ld	de, $D43F3F	   ; FIXME - opcode not required
+	ld	de, VDP_SATAddress + $3F	   ; FIXME - opcode not required
 	ld	bc, $38
 	lddr
 
-	; set address pointer to SAT + $80
-	ld	a, $80
-	ld	(VDP_SATAddress + $80), a
-	
 	; copy hpos and char codes for the 8 player sprites
 	ld	hl, VDP_WorkingSAT_HPOS
-	ld	de, $D43F40
-	ld	bc, $0F
+	ld	de, VDP_SATAddress + $80
+	ld	bc, $10
 	ldir
 
 	; copy the remaining 56 hpos and char codes in descending order
 	ld	hl, VDP_WorkingSAT_HPOS + $7E
-	ld	de, $D43FBE
-	ld	bc, -4
+	ld	de, VDP_SATAddress + $87
+	ld	b, 56
+	ld	sp, -4
 
+_:	ldi
 	ldi
-	ldi
-	add	hl, bc
+	add	hl, sp
+	djnz -_
 
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
-
-	ldi
-	ldi
-	add	hl, bc
+	ld	sp, (SaveSP2)
 	ret
 
 
@@ -855,14 +648,11 @@ VDP_ClearScreenMap:	 ; $179B
 ;	A, BC, DE, HL
 ; -----------------------------------------------------------------------------
 VDP_ClearScreen:	 ;$17AC
-	ei
-	halt
-	di
-	ld	hl, $D42000	  ;clear the first level tile from VRAM (32-bytes starting at $2000)
+	ld	hl, SegaVRAM+$2000	  ;clear the first level tile from VRAM (32-bytes starting at $2000)
 	ld	bc, $0020
 	ld	de, $0000
 	call	VDP_Write
-	ld	hl, ScreenMap	  ;set up all background tiles to point to the first "level tile"
+	ld	hl, VDP_ScreenMap	  ;set up all background tiles to point to the first "level tile"
 	ld	bc, $0380
 	ld	de, $0100
 	call	VDP_Write
@@ -881,7 +671,7 @@ VDP_ClearScreen:	 ;$17AC
 ;  Destroys:
 ;	A, B, DE, HL
 ; -----------------------------------------------------------------------------
-VDP_ClearSAT:	; $17C7
+VDP_ClearSAT:	; Ported
 	ld	hl, VDP_WorkingSAT_VPOS
 	ld	de, VDP_WorkingSAT_HPOS
 	xor	a

@@ -8,68 +8,142 @@ CheckForBank: 			;it's bankin' time
 	ret
 
 DataFound:
-	ld	a, b	;check if archived
-	or	a	;is it?
-	jr	z, +_	;jump if exists
+	ld de, $42616E	;Store "Ban" in DE
+	call	_ChkInRam	;check in RAM
+	jr	z, +_		;jump if exists
 	call	_Arc_Unarc
-	jr	CheckForBank
+	call	_ChkInRam
 _:	ret
 
-RestoreRegisters:
-	ld	a, (PixelShadow+1)
-	ld	b, a
-	ld	a, (PixelShadow+2)
-	ld	c, a
-	ld	a, (PixelShadow+3)
-	ld	d, a
-	ld	a, (PixelShadow+4)
-	ld	e, a
-	ld	a, (PixelShadow+5)
-	ld	h, a
-	ld	a, (PixelShadow+6)
-	ld	l, a
-	ld	a, (PixelShadow)
+SegaSP:	;used to exit the game
+	.dl	$062391
+
+SaveSP:
+	.dl	$221022
+
+SaveSP2:	;exists to optimize VDP_UpdateSAT_Descending in vdp.asm
+	.dl	$112492
+
+StoreRegisters:		;stores registers in RAM
+	di
+	ld	(SaveSP), sp
+	ld	sp, gameMem+$DFF0
+	ex	af, af'
+	push	af
+	push	bc
+	push	de
+	push	hl
+	exx
+	push	bc
+	push	de
+	push	hl
+	push	ix
+	push	iy
 	ret
 
-StoreRegisters:		;stores register values in SafeRAM
-	ld	(PixelShadow), a
-	ld	a, b
-	ld	(PixelShadow+1), a
-	ld	a, c
-	ld	(PixelShadow+2), a
-	ld	a, d
-	ld	(PixelShadow+3), a
-	ld	a, e
-	ld	(PixelShadow+4), a
-	ld	a, h
-	ld	(PixelShadow+5), a
-	ld	a, l
-	ld	(PixelShadow+6), a
-	ret
-
-PutBankinSlot1:
-	ex	de, hl		;point hl to appvar
-	ld	de, BankSlot1	;point de to bank slot	
-	ld	a, (BankSlot2-5)	;point bc to size word
-	ld	b, a			
-	ld	a, (BankSlot2-6)
-	ld	c, a
-	ldir				;copy appvar to bank slot
-	call	_Arc_Unarc		;archive appvar
-	ret
+;PutBankinSlot1:	;unused, since Sonic 2 only uses one ROM bank.
+	;ex	de, hl		;point hl to appvar
+	;ld	de, BankSlot1	;point de to bank slot	
+	;ld	bc, 17
+	;add	hl, bc
+	;push	hl
+	;pop	ix
+	;ld	b, (ix+1)
+	;ld	c, (ix)
+	;inc	hl
+	;inc	hl
+	;ldir				;copy appvar to bank slot
+	;call	_Arc_Unarc		;archive appvar
+	;ret
 
 PutBankinSlot2:
 	ex	de, hl		;point hl to appvar
-	ld	de, BankSlot2	;point de to bank slot		
-	ld	a, (BankSlot2-5)
-	ld	b, a			;point bc to size word
-	ld	a, (BankSlot2-6)
-	ld	c, a
+	ld	de, BankSlot2	;point de to bank slot	
+	ld	bc, 17
+	add	hl, bc
+	push	hl
+	pop	ix
+	ld	b, (ix+1)
+	ld	c, (ix)
+	inc	hl
+	inc	hl
 	ldir				;copy appvar to bank slot
 	call	_Arc_Unarc		;archive appvar
 	ret
 
+ExitGame:
+	ld	hl, SaveFile
+	call	_Mov9toOP1
+	call _ChkFindSym
+	call c, MakeSave
+	call nc, LoadSave
+	ld	sp, (SegaSP)
+	ret	
+
+MakeSave:
+	ld	hl, SaveFile
+	call _Mov9toOP1
+	ld	hl, 9
+	call _CreateAppvar
+	ld	hl, SaveFile
+	call _Mov9toOP1
+	call _Arc_Unarc
+	ret
+
+LoadSave:
+	ld  hl, SaveFile
+	call _Mov9toOP1
+	call _Arc_Unarc
+	
+	ex	de, hl
+	ld	de, Score
+	ldi
+	ldi
+	ldi
+	ld	de, CurrentLevel
+	ldi
+	ldi
+	ldi
+	dec	hl
+	ldi
+	ldi
+	ld	de, ContinueCounter
+	ldi
+	ld	de, EmeraldFlags
+	ldi
+	ld	hl, SaveFile
+	call	_Mov9toOP1
+	call _Arc_Unarc
+	ret
+
+SaveGame:
+	ld	hl, SaveFile
+	call _Mov9toOP1
+	call _Arc_Unarc
+
+	ld	hl, Score
+	ldi
+	ldi
+	ldi
+	ld	hl, CurrentLevel
+	ldi
+	ldi
+	inc	hl
+	ldi
+	ldi
+	ld	hl, ContinueCounter
+	ldi
+	ld	hl, EmeraldFlags
+	ldi
+	ld	hl, SaveFile
+	call _Mov9toOP1
+	call _Arc_Unarc
+	ret
+
 ;Appvar Headers
+
+SaveFile:
+	.db	AppvarObj, "S2SAVE", 0
 
 Bank04:
 	.db	AppvarObj, "Bank04", 0
@@ -154,3 +228,4 @@ Bank30:
 
 Bank31:
 	.db	AppVarObj, "Bank31", 0
+

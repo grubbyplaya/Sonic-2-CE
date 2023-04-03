@@ -2,11 +2,11 @@
 ;pointers into bank 20
 
 ChaosEmeraldData:
-.dw Art_ChaosEmerald_Blue
-.dw Art_ChaosEmerald_Yellow
-.dw Art_ChaosEmerald_Pink
-.dw Art_ChaosEmerald_Grey
-.dw Art_ChaosEmerald_Red
-.dw Art_ChaosEmerald_Green
-.dw Art_ChaosEmerald_Blue
-.dw Art_ChaosEmerald_Blue
+.dl Art_ChaosEmerald_Blue
+.dl Art_ChaosEmerald_Yellow
+.dl Art_ChaosEmerald_Pink
+.dl Art_ChaosEmerald_Grey
+.dl Art_ChaosEmerald_Red
+.dl Art_ChaosEmerald_Green
+.dl Art_ChaosEmerald_Blue
+.dl Art_ChaosEmerald_Blue

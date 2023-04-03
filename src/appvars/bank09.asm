@@ -1,4 +1,4 @@
-#include	"includes/ti84pce.inc"
+.ORG $D09466
 
 #include "palette_routines.asm"
 
@@ -16,7 +16,7 @@ Art_TitleCard_Text_Tiles:
 
 Art_TitleCard_Unknown:
 #import "art\titlecard\art_titlecard_unknown.bin"
-.db "OMIRE"
+
 Art_TitleCard_Unknown2:
 #import "art\titlecard\art_titlecard_unknown2.bin"
 
@@ -61,3 +61,5 @@ Art_GMZ_Spikes:				;BCB1
 
 Art_ALZ_Big_Bubble:			;BD51
 #import "art\level\alz\art_alz_big_bubble.bin"
+
+#include	"includes/ti84pce.inc"

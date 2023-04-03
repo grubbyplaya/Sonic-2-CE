@@ -63,7 +63,6 @@
 .dw DATA_B28_BD8E				;3C
 .dw DATA_B28_BDF0				;3D
 .dw DATA_B28_BEEA				;3E
-.dw DummyValue					;3F - The old value broke the port
 .dw Logic_PrisonCapsule			;40 - End of level prison capsule
 .dw Logic_PrisonAnimals			;41 - End of level prison capsule animals
 .dw DATA_B28_9419				;42

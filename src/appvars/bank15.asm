@@ -17,7 +17,7 @@ ContinueScreen_Data_ContinueTiles:		;3570
 
 ;just padding?
 .db $00, $00
-.db	"OMIRE"
+
 ContinueScreen_Data_NumberTiles:		;375A
 #import "art\continue_gameover\continue_screen_tiles_2.bin"
 

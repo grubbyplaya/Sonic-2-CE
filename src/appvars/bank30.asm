@@ -14,12 +14,12 @@ DATA_B30_9841:
 DemoControlSequence_SEZ:
 #import "demo\demo_control_sequence_sez.bin"
 
-;bank 30 is separate from s2.asm, so a few includes and routines are here to fix some bugs.
-.nolist
+;bank 30 is separate from s2.asm, so a few includes and routines are here to fix bugs.
+
 #include "includes/ti84pce.inc"
 
+#define gameMem 	cmdPixelShadow-$C000
 #define Score	gameMem+$D29C		;score stored in 3-byte BCD
-#define gameMem 	userMem+$9C00
 #define LastLevel	$07
 
 #include	"logic_jump_table.asm"

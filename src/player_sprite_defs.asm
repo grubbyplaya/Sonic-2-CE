@@ -8,269 +8,268 @@
 ;	Porting Guide: ;.dstruct values become defines
 ;	using the SpriteDef structure from structures.asm.
 ;================================================================
-#define gameMem userMem+$A000
 
 Data_PlayerSprites:
 
 Sonic_Walking:		;6 frames
 	#define Sonic_Walking_1.BankNum			Bank04
-	#define Sonic_Walking_1.SourceAddress		gameMem+$8000
+	#define Sonic_Walking_1.SourceAddress		BankSlot2+$00
 	#define Sonic_Walking_1.LineCount			$06
 ;.dstruct Sonic_Walking_1 instanceof SpriteDef DATA $04, $8000, $06 
 	#define Sonic_Walking_2.BankNum			Bank04
-	#define Sonic_Walking_2.SourceAddress		gameMem+$8180
+	#define Sonic_Walking_2.SourceAddress		BankSlot2+$0180
 	#define Sonic_Walking_2.LineCount			$06
 ;.dstruct Sonic_Walking_2 instanceof SpriteDef DATA $04, $8180, $06 
 	#define Sonic_Walking_3.BankNum			Bank04
-	#define Sonic_Walking_3.SourceAddress		gameMem+$8300
+	#define Sonic_Walking_3.SourceAddress		BankSlot2+$0300
 	#define Sonic_Walking_3.LineCount			$06
 ;.dstruct Sonic_Walking_3 instanceof SpriteDef DATA $04, $8300, $06 
 	#define Sonic_Walking_4.BankNum			Bank04
-	#define Sonic_Walking_4.SourceAddress		gameMem+$8480
+	#define Sonic_Walking_4.SourceAddress		BankSlot2+$0480
 	#define Sonic_Walking_4.LineCount			$06
 ;.dstruct Sonic_Walking_4 instanceof SpriteDef DATA $04, $8480, $06 
 	#define Sonic_Walking_5.BankNum			Bank04
-	#define Sonic_Walking_5.SourceAddress		gameMem+$8600
+	#define Sonic_Walking_5.SourceAddress		BankSlot2+$0600
 	#define Sonic_Walking_5.LineCount			$06
 ;.dstruct Sonic_Walking_5 instanceof SpriteDef DATA $04, $8600, $06
 	#define Sonic_Walking_6.BankNum			Bank04
-	#define Sonic_Walking_6.SourceAddress		gameMem+$8780
+	#define Sonic_Walking_6.SourceAddress		BankSlot2+$0780
 	#define Sonic_Walking_6.LineCount			$06
 ;.dstruct Sonic_Walking_6 instanceof SpriteDef DATA $04, $8780, $06 
 
 Sonic_Idle:			;3 frames
 	#define Sonic_Idle_1.BankNum			Bank04
-	#define Sonic_Idle_1.SourceAddress		gameMem+$8900
+	#define Sonic_Idle_1.SourceAddress		BankSlot2+$0900
 	#define Sonic_Idle_1.LineCount			$06
 ;.dstruct Sonic_Idle_1 instanceof SpriteDef DATA $04, $8900, $06		;$07
 	#define Sonic_Idle_2.BankNum			Bank04
-	#define Sonic_Idle_2.SourceAddress		gameMem+$AF80
+	#define Sonic_Idle_2.SourceAddress		BankSlot2+$2F80
 	#define Sonic_Idle_2.LineCount			$06
 ;.dstruct Sonic_Idle_2 instanceof SpriteDef DATA $04, $AF80, $06		;$08 
 	#define Sonic_Idle_3.BankNum			Bank04
-	#define Sonic_Idle_3.SourceAddress		gameMem+$B100
+	#define Sonic_Idle_3.SourceAddress		BankSlot2+$3100
 	#define Sonic_Idle_3.LineCount			$06
 ;.dstruct Sonic_Idle_3 instanceof SpriteDef DATA $04, $B100, $06		;$09
 
 Sonic_Standing:		;1 frame
 	#define Sonic_Standing_1.BankNum			Bank04
-	#define Sonic_Standing_1.SourceAddress		gameMem+$8D80
+	#define Sonic_Standing_1.SourceAddress		BankSlot2+$0D80
 	#define Sonic_Standing_1.LineCount		$06
 ;.dstruct Sonic_Standing_1 instanceof SpriteDef DATA $04, $8D80, $06	;$0A
 
 Sonic_LookUp:		;1 frame
 	#define Sonic_LookUp_1.BankNum			Bank04
-	#define Sonic_LookUp_1.SourceAddress		gameMem+$8F00
+	#define Sonic_LookUp_1.SourceAddress		BankSlot2+$0F00
 	#define Sonic_LookUp_1.LineCount			$06
 ;.dstruct Sonic_LookUp_1 instanceof SpriteDef DATA $04, $8F00, $06		;$0B
 
 Sonic_Running:		;4 frames
 	#define Sonic_Running_1.BankNum			Bank04
-	#define Sonic_Running_1.SourceAddress		gameMem+$9080
+	#define Sonic_Running_1.SourceAddress		BankSlot2+$1080
 	#define Sonic_Running_1.LineCount			$06
 ;.dstruct Sonic_Running_1 instanceof SpriteDef DATA $04, $9080, $06	;$0C
 	#define Sonic_Running_2.BankNum			Bank04
-	#define Sonic_Running_2.SourceAddress		gameMem+$9200
+	#define Sonic_Running_2.SourceAddress		BankSlot2+$1200
 	#define Sonic_Running_2.LineCount			$06
 ;.dstruct Sonic_Running_2 instanceof SpriteDef DATA $04, $9200, $06	;$0D 
 	#define Sonic_Running_3.BankNum			Bank04
-	#define Sonic_Running_3.SourceAddress		gameMem+$9380
+	#define Sonic_Running_3.SourceAddress		BankSlot2+$1380
 	#define Sonic_Running_3.LineCount			$06
 ;.dstruct Sonic_Running_3 instanceof SpriteDef DATA $04, $9380, $06	;$0E 
 	#define Sonic_Running_4.BankNum			Bank04
-	#define Sonic_Running_4.SourceAddress		gameMem+$9500
+	#define Sonic_Running_4.SourceAddress		BankSlot2+$1500
 	#define Sonic_Running_4.LineCount			$06
 ;.dstruct Sonic_Running_4 instanceof SpriteDef DATA $04, $9500, $06	;$0F 
 
 Sonic_LookDown:		;1 frame
 	#define Sonic_LookDown_1.BankNum			Bank04
-	#define Sonic_LookDown_1.SourceAddress		gameMem+$9680
+	#define Sonic_LookDown_1.SourceAddress		BankSlot2+$1680
 	#define Sonic_LookDown_1.LineCount		$06
 ;.dstruct Sonic_LookDown_1 instanceof SpriteDef DATA $04, $9680, $06	;$10
 
 Sonic_Roll:			;5 frames
 	#define Sonic_Roll_1.BankNum			Bank04
-	#define Sonic_Roll_1.SourceAddress		gameMem+$9800
+	#define Sonic_Roll_1.SourceAddress		BankSlot2+$1800
 	#define Sonic_Roll_1.LineCount			$06
 ;.dstruct Sonic_Roll_1 instanceof SpriteDef DATA $04, $9800, $06			;$11
 	#define Sonic_Roll_2.BankNum			Bank04
-	#define Sonic_Roll_2.SourceAddress		gameMem+$9980
+	#define Sonic_Roll_2.SourceAddress		BankSlot2+$1980
 	#define Sonic_Roll_2.LineCount			$06
 ;.dstruct Sonic_Roll_2 instanceof SpriteDef DATA $04, $9980, $06			;$12
 	#define Sonic_Roll_3.BankNum			Bank04
-	#define Sonic_Roll_3.SourceAddress		gameMem+$9B00
+	#define Sonic_Roll_3.SourceAddress		BankSlot2+$1B00
 	#define Sonic_Roll_3.LineCount			$06
 ;.dstruct Sonic_Roll_3 instanceof SpriteDef DATA $04, $9B00, $06			;$13 
 	#define Sonic_Roll_4.BankNum			Bank04
-	#define Sonic_Roll_4.SourceAddress		gameMem+$9C80
+	#define Sonic_Roll_4.SourceAddress		BankSlot2+$1C80
 	#define Sonic_Roll_4.LineCount			$06
 ;.dstruct Sonic_Roll_4 instanceof SpriteDef DATA $04, $9C80, $06			;$14 
 	#define Sonic_Roll_5.BankNum			Bank04
-	#define Sonic_Roll_5.SourceAddress		gameMem+$9E00
+	#define Sonic_Roll_5.SourceAddress		BankSlot2+$1E00
 	#define Sonic_Roll_5.LineCount			$06
 ;.dstruct Sonic_Roll_5 instanceof SpriteDef DATA $04, $9E00, $06			;$15 
 
 Sonic_Skid:			;2 frames
-	#define Sonic_Skid_Left_1.BankNum			Bank10
+	#define Sonic_Skid_Left_1.BankNum			Bank16
 	#define Sonic_Skid_Left_1.SourceAddress	$9F80
 	#define Sonic_Skid_Left_1.LineCount		$06
 ;.dstruct Sonic_Skid_Left_1 instanceof SpriteDef DATA $10, $9F80, $06	;$16
-	#define Sonic_Skid_Left_2.BankNum			Bank10
+	#define Sonic_Skid_Left_2.BankNum			Bank16
 	#define Sonic_Skid_Left_2.SourceAddress	$A100
 	#define Sonic_Skid_Left_2.LineCount		$06
 ;.dstruct Sonic_Skid_Left_2 instanceof SpriteDef DATA $10, $A100, $06	;$17 
 
 Sonic_Drowning:		;2 frames
 	#define Sonic_Drowning_1.BankNum			Bank04
-	#define Sonic_Drowning_1.SourceAddress		gameMem+$A280
+	#define Sonic_Drowning_1.SourceAddress		$A280
 	#define Sonic_Drowning_1.LineCount		$06
 ;.dstruct Sonic_Drowning_1 instanceof SpriteDef DATA $04, $A280, $06		;$18
 	#define Sonic_Drowning_2.BankNum			Bank04
-	#define Sonic_Drowning_2.SourceAddress		gameMem+$A400
+	#define Sonic_Drowning_2.SourceAddress		$A400
 	#define Sonic_Drowning_2.LineCount		$06
 ;.dstruct Sonic_Drowning_2 instanceof SpriteDef DATA $04, $A400, $06		;$19
  
 Sonic_Leap:			;1 frame
 	#define Sonic_Leap_1.BankNum			Bank04
-	#define Sonic_Leap_1.SourceAddress		gameMem+$A580
+	#define Sonic_Leap_1.SourceAddress		$A580
 	#define Sonic_Leap_1.LineCount			$06
 ;.dstruct Sonic_Leap_1 instanceof SpriteDef DATA $04, $A580, $06			;$1A 
 
 Sonic_Hurt:			;2 frames
 	#define Sonic_Hurt_1.BankNum			Bank04
-	#define Sonic_Hurt_1.SourceAddress		gameMem+$A700
+	#define Sonic_Hurt_1.SourceAddress		$A700
 	#define Sonic_Hurt_1.LineCount			$06
 ;.dstruct Sonic_Hurt_1 instanceof SpriteDef DATA $04, $A700, $06			;$1B
 	#define Sonic_Hurt_2.BankNum			Bank04
-	#define Sonic_Hurt_2.SourceAddress		gameMem+$A880
+	#define Sonic_Hurt_2.SourceAddress		$A880
 	#define Sonic_Hurt_2.LineCount			$06
 ;.dstruct Sonic_Hurt_2 instanceof SpriteDef DATA $04, $A880, $06			;$1C
 
 Sonic_Spring		;1 frame
 	#define Sonic_Spring_1.BankNum			Bank04
-	#define Sonic_Spring_1.SourceAddress		gameMem+$AA00
+	#define Sonic_Spring_1.SourceAddress		$AA00
 	#define Sonic_Spring_1.LineCount			$06
 ;.dstruct Sonic_Spring_1 instanceof SpriteDef DATA $04, $AA00, $06		;$1D
 
 ;loop anims
 	#define SPR19.BankNum			Bank06
-	#define SPR19.SourceAddress		gameMem+$8000
+	#define SPR19.SourceAddress		$8000
 	#define SPR19.LineCount		$08
 ;.dstruct SPR19 instanceof SpriteDef DATA $06, $8000, $08 		;$1D
 	#define SPR20.BankNum			Bank06
-	#define SPR20.SourceAddress		gameMem+$8200
+	#define SPR20.SourceAddress		$8200
 	#define SPR20.LineCount		$08
 ;.dstruct SPR20 instanceof SpriteDef DATA $06, $8200, $08 		;$1E
 	#define SPR21.BankNum			Bank06
-	#define SPR21.SourceAddress		gameMem+$8400
+	#define SPR21.SourceAddress		$8400
 	#define SPR21.LineCount		$08
 ;.dstruct SPR21 instanceof SpriteDef DATA $06, $8400, $08 		;$1F
 	#define SPR22.BankNum			Bank06
-	#define SPR22.SourceAddress		gameMem+$8600
+	#define SPR22.SourceAddress		$8600
 	#define SPR22.LineCount		$08
 ;.dstruct SPR22 instanceof SpriteDef DATA $06, $8600, $08 		;$20
 	#define SPR23.BankNum			Bank06
-	#define SPR23.SourceAddress		gameMem+$8800
+	#define SPR23.SourceAddress		$8800
 	#define SPR23.LineCount		$08
 ;.dstruct SPR23 instanceof SpriteDef DATA $06, $8800, $08 		;$21
 	#define SPR24.BankNum			Bank06
-	#define SPR24.SourceAddress		gameMem+$8A00
+	#define SPR24.SourceAddress		$8A00
 	#define SPR24.LineCount		$08
 ;.dstruct SPR24 instanceof SpriteDef DATA $06, $8A00, $08 		;$22
 	#define SPR25.BankNum			Bank06
-	#define SPR25.SourceAddress		gameMem+$8C00
+	#define SPR25.SourceAddress		$8C00
 	#define SPR25.LineCount		$08
 ;.dstruct SPR25 instanceof SpriteDef DATA $06, $8C00, $08 		;$23
 	#define SPR26.BankNum			Bank06
-	#define SPR26.SourceAddress		gameMem+$8E00
+	#define SPR26.SourceAddress		$8E00
 	#define SPR26.LineCount		$08
 ;.dstruct SPR26 instanceof SpriteDef DATA $06, $8E00, $08 		;$24
 	#define SPR27.BankNum			Bank06
-	#define SPR27.SourceAddress		gameMem+$9000
+	#define SPR27.SourceAddress		$9000
 	#define SPR27.LineCount		$08
 ;.dstruct SPR27 instanceof SpriteDef DATA $06, $9000, $08 		;$25
 	#define SPR28.BankNum			Bank06
-	#define SPR28.SourceAddress		gameMem+$9200
+	#define SPR28.SourceAddress		$9200
 	#define SPR28.LineCount		$08
 ;.dstruct SPR28 instanceof SpriteDef DATA $06, $9200, $08 		;$26
 	#define SPR29.BankNum			Bank06
-	#define SPR29.SourceAddress		gameMem+$9400
+	#define SPR29.SourceAddress		$9400
 	#define SPR29.LineCount		$08
 ;.dstruct SPR29 instanceof SpriteDef DATA $06, $9400, $08 		;$27
 	#define SPR30.BankNum			Bank06
-	#define SPR30.SourceAddress		gameMem+$9600
+	#define SPR30.SourceAddress		$9600
 	#define SPR30.LineCount		$08
 ;.dstruct SPR30 instanceof SpriteDef DATA $06, $9600, $08 		;$28
 	#define SPR31.BankNum			Bank06
-	#define SPR31.SourceAddress		gameMem+$9800
+	#define SPR31.SourceAddress		$9800
 	#define SPR31.LineCount		$08
 ;.dstruct SPR31 instanceof SpriteDef DATA $06, $9800, $08 		;$29
 	#define SPR32.BankNum			Bank06
-	#define SPR32.SourceAddress		gameMem+$9A00
+	#define SPR32.SourceAddress		$9A00
 	#define SPR32.LineCount		$08
 ;.dstruct SPR32 instanceof SpriteDef DATA $06, $9A00, $08 		;$2A
 	#define SPR33.BankNum			Bank06
-	#define SPR33.SourceAddress		gameMem+$9C00
+	#define SPR33.SourceAddress		$9C00
 	#define SPR33.LineCount		$08
 ;.dstruct SPR33 instanceof SpriteDef DATA $06, $9C00, $08 		;$2B
 	#define SPR34.BankNum			Bank06
-	#define SPR34.SourceAddress		gameMem+$9E00
+	#define SPR34.SourceAddress		$9E00
 	#define SPR34.LineCount		$08
 ;.dstruct SPR34 instanceof SpriteDef DATA $06, $9E00, $08 		;$2C
 	#define SPR35.BankNum			Bank06
-	#define SPR35.SourceAddress		gameMem+$A000
+	#define SPR35.SourceAddress		$A000
 	#define SPR35.LineCount		$08
 ;.dstruct SPR35 instanceof SpriteDef DATA $06, $A000, $08 		;$2D
 	#define SPR36.BankNum			Bank06
-	#define SPR36.SourceAddress		gameMem+$A200
+	#define SPR36.SourceAddress		$A200
 	#define SPR36.LineCount		$08
 ;.dstruct SPR36 instanceof SpriteDef DATA $06, $A200, $08 		;$2E
 	#define SPR37.BankNum			Bank06
-	#define SPR37.SourceAddress		gameMem+$A400
+	#define SPR37.SourceAddress		$A400
 	#define SPR37.LineCount		$08
 ;.dstruct SPR37 instanceof SpriteDef DATA $06, $A400, $08 		;$2F
 	#define SPR38.BankNum			Bank06
-	#define SPR38.SourceAddress		gameMem+$A600
+	#define SPR38.SourceAddress		$A600
 	#define SPR38.LineCount		$08
 ;.dstruct SPR38 instanceof SpriteDef DATA $06, $A600, $08 		;$30
 	#define SPR39.BankNum			Bank06
-	#define SPR39.SourceAddress		gameMem+$A800
+	#define SPR39.SourceAddress		$A800
 	#define SPR39.LineCount		$08
 ;.dstruct SPR39 instanceof SpriteDef DATA $06, $A800, $08 		;$31
 	#define SPR40.BankNum			Bank06
-	#define SPR40.SourceAddress		gameMem+$AA00
+	#define SPR40.SourceAddress		$AA00
 	#define SPR40.LineCount		$08
 ;.dstruct SPR40 instanceof SpriteDef DATA $06, $AA00, $08 		;$32
 	#define SPR41.BankNum			Bank06
-	#define SPR41.SourceAddress		gameMem+$AC00
+	#define SPR41.SourceAddress		$AC00
 	#define SPR41.LineCount		$08
 ;.dstruct SPR41 instanceof SpriteDef DATA $06, $AC00, $08 		;$33
 	#define SPR42.BankNum			Bank06
-	#define SPR42.SourceAddress		gameMem+$AE00
+	#define SPR42.SourceAddress		$AE00
 	#define SPR42.LineCount		$08
 ;.dstruct SPR42 instanceof SpriteDef DATA $06, $AE00, $08 		;$34
 	#define SPR43.BankNum			Bank06
-	#define SPR43.SourceAddress		gameMem+$B000
+	#define SPR43.SourceAddress		$B000
 	#define SPR43.LineCount		$08
 ;.dstruct SPR43 instanceof SpriteDef DATA $06, $B000, $08 		;$35
 	#define SPR44.BankNum			Bank06
-	#define SPR44.SourceAddress		gameMem+$B200
+	#define SPR44.SourceAddress		$B200
 	#define SPR44.LineCount		$08
 ;.dstruct SPR44 instanceof SpriteDef DATA $06, $B200, $08 		;$36
 	#define SPR45.BankNum			Bank06
-	#define SPR45.SourceAddress		gameMem+$B400
+	#define SPR45.SourceAddress		$B400
 	#define SPR45.LineCount		$08
 ;.dstruct SPR45 instanceof SpriteDef DATA $06, $B400, $08 		;$37
 	#define SPR46.BankNum			Bank06
-	#define SPR46.SourceAddress		gameMem+$B600
+	#define SPR46.SourceAddress		$B600
 	#define SPR46.LineCount		$08
 ;.dstruct SPR46 instanceof SpriteDef DATA $06, $B600, $08 		;$38
 	#define SPR47.BankNum			Bank06
-	#define SPR47.SourceAddress		gameMem+$B800
+	#define SPR47.SourceAddress		$B800
 	#define SPR47.LineCount		$08
 ;.dstruct SPR47 instanceof SpriteDef DATA $06, $B800, $08 		;$39
 	#define SPR48.BankNum			Bank06
-	#define SPR48.SourceAddress		gameMem+$BA00
+	#define SPR48.SourceAddress		$BA00
 	#define SPR48.LineCount		$08
 ;.dstruct SPR48 instanceof SpriteDef DATA $06, $BA00, $08		;$3A
 
@@ -499,34 +498,121 @@ Data_PlayerSprites_Mirrored:
 	#define SPR102.SourceAddress	$9380
 	#define SPR102.LineCount		$06
 ;.dstruct SPR102 instanceof SpriteDef DATA $10, $9380, $06 
+	#define SPR103.BankNum			Bank10
+	#define SPR103.SourceAddress	$9500
+	#define SPR103.LineCount		$06
 ;.dstruct SPR103 instanceof SpriteDef DATA $10, $9500, $06 
+	#define SPR104.BankNum			Bank10
+	#define SPR104.SourceAddress	$9680
+	#define SPR104.LineCount		$06
 ;.dstruct SPR104 instanceof SpriteDef DATA $10, $9680, $06 
+	#define SPR105.BankNum			Bank10
+	#define SPR105.SourceAddress	$9800
+	#define SPR105.LineCount		$06
 ;.dstruct SPR105 instanceof SpriteDef DATA $10, $9800, $06 
+	#define SPR106.BankNum			Bank10
+	#define SPR106.SourceAddress	$9980
+	#define SPR106.LineCount		$06
 ;.dstruct SPR106 instanceof SpriteDef DATA $10, $9980, $06 
+	#define SPR107.BankNum			Bank10
+	#define SPR107.SourceAddress	$9B00
+	#define SPR107.LineCount		$06
 ;.dstruct SPR107 instanceof SpriteDef DATA $10, $9B00, $06 
+	#define SPR108.BankNum			Bank10
+	#define SPR108.SourceAddress	$9C80
+	#define SPR108.LineCount		$06
 ;.dstruct SPR108 instanceof SpriteDef DATA $10, $9C80, $06 
+	#define SPR109.BankNum			Bank10
+	#define SPR109.SourceAddress	$9E00
+	#define SPR109.LineCount		$06
 ;.dstruct SPR109 instanceof SpriteDef DATA $10, $9E00, $06 
+	#define SPR110.BankNum			Bank10
+	#define SPR110.SourceAddress	$9F80
+	#define SPR110.LineCount		$06
 ;.dstruct SPR110 instanceof SpriteDef DATA $04, $9F80, $06 
+	#define SPR111.BankNum			Bank04
+	#define SPR111.SourceAddress	$A100
+	#define SPR111.LineCount		$06
 ;.dstruct SPR111 instanceof SpriteDef DATA $04, $A100, $06 
+	#define SPR112.BankNum			Bank04
+	#define SPR112.SourceAddress	$A280
+	#define SPR112.LineCount		$06
 ;.dstruct SPR112 instanceof SpriteDef DATA $10, $A280, $06 
-;.dstruct SPR113 instanceof SpriteDef DATA $10, $A400, $06 
+	#define SPR113.BankNum			Bank04
+	#define SPR113.SourceAddress	$A400
+	#define SPR113.LineCount		$06
+;.dstruct SPR113 instanceof SpriteDef DATA $10, $A400, $06
+	#define SPR114.BankNum			Bank04
+	#define SPR114.SourceAddress	$A580
+	#define SPR114.LineCount		$06 
 ;.dstruct SPR114 instanceof SpriteDef DATA $10, $A580, $06 
+	#define SPR115.BankNum			Bank04
+	#define SPR115.SourceAddress	$A700
+	#define SPR115.LineCount		$06
 ;.dstruct SPR115 instanceof SpriteDef DATA $10, $A700, $06 
+	#define SPR116.BankNum			Bank04
+	#define SPR116.SourceAddress	$A880
+	#define SPR116.LineCount		$06
 ;.dstruct SPR116 instanceof SpriteDef DATA $10, $A880, $06 
+	#define SPR117.BankNum			Bank04
+	#define SPR117.SourceAddress	$AA00
+	#define SPR117.LineCount		$06
 ;.dstruct SPR117 instanceof SpriteDef DATA $10, $AA00, $06 
+	#define SPR118.BankNum			Bank12
+	#define SPR118.SourceAddress	$BA00
+	#define SPR118.LineCount		$08
 ;.dstruct SPR118 instanceof SpriteDef DATA $12, $BA00, $08 
+	#define SPR119.BankNum			Bank12
+	#define SPR119.SourceAddress	$B800
+	#define SPR119.LineCount		$08
 ;.dstruct SPR119 instanceof SpriteDef DATA $12, $B800, $08 
+	#define SPR120.BankNum			Bank12
+	#define SPR120.SourceAddress	$B600
+	#define SPR120.LineCount		$08
 ;.dstruct SPR120 instanceof SpriteDef DATA $12, $B600, $08 
+	#define SPR121.BankNum			Bank12
+	#define SPR121.SourceAddress	$B400
+	#define SPR121.LineCount		$08
 ;.dstruct SPR121 instanceof SpriteDef DATA $12, $B400, $08 
+	#define SPR123.BankNum			Bank12
+	#define SPR123.SourceAddress	$B200
+	#define SPR123.LineCount		$08
 ;.dstruct SPR123 instanceof SpriteDef DATA $12, $B200, $08 
+	#define SPR124.BankNum			Bank12
+	#define SPR124.SourceAddress	$B000
+	#define SPR124.LineCount		$08
 ;.dstruct SPR124 instanceof SpriteDef DATA $12, $B000, $08 
+	#define SPR125.BankNum			Bank12
+	#define SPR125.SourceAddress	$AE00
+	#define SPR125.LineCount		$08
 ;.dstruct SPR125 instanceof SpriteDef DATA $12, $AE00, $08 
-;.dstruct SPR126 instanceof SpriteDef DATA $12, $AC00, $08 
+	#define SPR126.BankNum			Bank12
+	#define SPR126.SourceAddress	$AC00
+	#define SPR126.LineCount		$08
+;.dstruct SPR126 instanceof SpriteDef DATA $12, $AC00, $08
+	#define SPR127.BankNum			Bank12
+	#define SPR127.SourceAddress	$AA00
+	#define SPR127.LineCount		$08 
 ;.dstruct SPR127 instanceof SpriteDef DATA $12, $AA00, $08 
+	#define SPR128.BankNum			Bank12
+	#define SPR128.SourceAddress	$A800
+	#define SPR128.LineCount		$08
 ;.dstruct SPR128 instanceof SpriteDef DATA $12, $A800, $08 
+	#define SPR129.BankNum			Bank12
+	#define SPR129.SourceAddress	$A600
+	#define SPR129.LineCount		$08
 ;.dstruct SPR129 instanceof SpriteDef DATA $12, $A600, $08 
-;.dstruct SPR130 instanceof SpriteDef DATA $12, $A400, $08 
-;.dstruct SPR131 instanceof SpriteDef DATA $12, $A200, $08 
+	#define SPR130.BankNum			Bank12
+	#define SPR130.SourceAddress	$A400
+	#define SPR130.LineCount		$08
+;.dstruct SPR130 instanceof SpriteDef DATA $12, $A400, $08
+	#define SPR131.BankNum			Bank12
+	#define SPR131.SourceAddress	$A200
+	#define SPR131.LineCount		$08 
+;.dstruct SPR131 instanceof SpriteDef DATA $12, $A200, $08
+ 	#define SPR132.BankNum			Bank12
+	#define SPR132.SourceAddress	$A000
+	#define SPR132.LineCount		$08 
 ;.dstruct SPR132 instanceof SpriteDef DATA $12, $A000, $08 
 ;.dstruct SPR133 instanceof SpriteDef DATA $12, $9E00, $08 
 ;.dstruct SPR134 instanceof SpriteDef DATA $12, $9C00, $08 
