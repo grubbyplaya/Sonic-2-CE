@@ -11,6 +11,7 @@
 
 
 DrawScreen:
+	call	StoreRegisters
 	ld	a, (VDPRegister1)
 	bit	6, a
 	jr	nz, +_
@@ -33,6 +34,8 @@ _:	ld	bc, $0100
 	ld	b, a		
 	djnz	-_
 	call	Engine_HandleVBlank
+
+	call	RestoreRegisters
 	ret
 
 ClearScreen:
@@ -52,9 +55,77 @@ DrawScreenMap:
 	ld	a, (CRAM)
 	ld	(hl), a
 	ldir
-	;code this when SAT parsing is done
+
+	ld	hl, ScreenMap
+	ld	bc, 32*32
+	ld	ixh, $00	;x position of tile (in tiles)
+	ld	ixl, $00	;y position of tile (in tiles)
+
+_:	push	bc
+	bit	3, (hl)	
+	jr	z, +_
+
+	call	GetTilePointer
+	call	GetTileCoordinates
+	call	ConvertFGTileTo8bpp
+	pop	bc
+	jr	++_
+
+_:	call	GetTilePointer
+	call	GetTileCoordinates
+	call	ConvertBGTileTo8bpp
+	pop	bc
+
+_:	inc	hl
+	ld	a, 31
+	cp	ixh
+	jr	z, +_
+	inc	ixh
+
+	dec   bc
+	ld	a, b
+	or	c
+	jr	nz, ---_
 	ret
 
+_:	ld	ixh, $00
+	ld	a, 27
+	cp	ixl
+	ret	z	;exit if IXL is at the last row
+	inc	ixl
+	jr	----_
+
+GetTileCoordinates:
+	push	hl
+	ld	a, ixl
+	ld	h, a
+	ld	l, $00
+	ld	e, $FF
+
+	push	bc
+	call	Engine_Multiply_8_by_8u
+	pop	bc
+	add	hl, de
+	add	hl, hl
+	add	hl, hl
+	add	hl, hl	;HL stores the Y coordinate
+
+	push	hl
+	ld	d, $00
+	ld	e, ixh
+	ld	hl, $0008	;width of tile
+
+	push	bc
+	call	Engine_Multiply_8_by_8u
+	pop	bc
+
+	ex	de, hl	;DE has the X coordinate
+	pop	hl		;HL has the Y coordinate
+	add	hl, de
+	ex	de, hl
+	pop	hl		;bring back the tile pointer
+	ret
+	
 DrawSAT:
 	ld	iy, SAT	;y position
 	ld	ix, SAT+$80	;x position
@@ -73,7 +144,7 @@ _:	ld	h, $FF
 	
 	ld	de, RenderedScreenMap
 	add	hl, de
-	push hl
+	push	hl
 
 	ld	a, (ix)
 	ld	e, a
@@ -82,15 +153,13 @@ _:	ld	h, $FF
 	call	Engine_Multiply_8_by_8u
 	pop	bc
 	
-	ex	de, hl
-	ld	hl, SegaVRAM
-	add	hl, de
-	pop de
+	ld	de, SegaVRAM
+	add	hl, de	;HL now points to the selected tile
+	pop	de
 	call	ConvertFGTileTo8bpp
 	djnz	-_
 	ret
 
-	
 GetScrollOffsets:	;gets the screen map offsets
 	ld	h, 	$FF
 	ld	a, (BackgroundYScroll)
@@ -102,32 +171,33 @@ GetScrollOffsets:	;gets the screen map offsets
 	add	hl, de
 	ret
 
-
-
-GetBGTilePointer:	;makes HL a pointer to the selected tile
+GetTilePointer:	;makes DE a pointer to the selected tile
 	ld	e, $20
+	inc	hl
+	ld	a, (hl)
+	dec	hl
+	push	hl
+	ld	l, a
+	ld	h, $00
+	push	bc
 	call	Engine_Multiply_8_by_8u
+	pop	bc
 	ld	de, SegaVRAM+$2000
 	add	hl, de
-	ret
-
-GetFGTilePointer:	;makes HL a pointer to the selected tile
-	ld	e, $20
-	call	Engine_Multiply_8_by_8u
-	ld	de, SegaVRAM
-	add	hl, de
+	ex	de, hl
+	pop	hl
 	ret
 
 ; =============================================================================
 ;	In:
-;	HL	- Pointer to pixel.
+;	HL	- Pointer to pattern.
 ;	SP	- Position of tile.
 ;	B	- Row count.
 ;	C	- Column count.
 ;	ld:
 ;	None.
 ;	Destroys:
-;	A, SP, C, DE, HL
+;	A, C, DE
 ; -----------------------------------------------------------------------------
 
 ConvertBGTileTo8bpp:
@@ -193,27 +263,30 @@ _:	ld	hl, (cursorImage)
 	ret
 	
 ConvertFGTileTo8bpp:
+	ld	(SaveSP), sp
+	ex de, hl
+	ld sp, hl
+	ex de, hl
 	ld	c, $20
 	ld	(cursorImage), hl
-	
 _:	ld	a, (hl)
-	ld	(cursorImage-1), a	;save byte
-	res	4, a		;remove bits 4-7
+	ld	(CursorImage-1), a	;save byte
+	res	4, a			;remove bits 4-7
 	res	5, a
 	res	6, a
 	res	7, a
-	cp	$00 
-	jr	z, +_
+	cp	$00
+	jr z, +_
 	ld	h, 0
 	ld	l, a
-	ld	de, CRAM+$10		;load DE into palette
+	ld	de, CRAM+$10	;load DE into palette
 	add	hl, de		;use HL as offset into palette
 	ld	a, (hl)		;load result into A
 	push	af ;draw pixel
 	inc	sp
 	pop	af
 	
-_:	ld	a, (cursorImage-1)	;get back the byte
+_:	ld	a, (CursorImage-1)	;get back the byte
 	res	0, a		;remove bits 0-3
 	res	1, a
 	res	2, a
@@ -226,13 +299,13 @@ _:	ld	a, (cursorImage-1)	;get back the byte
 	rlca
 	ld	h, 0
 	ld	l, a
-	ld	de, CRAM+$10		;load DE into palette
+	ld	de, CRAM+$10	;load DE into palette
 	add	hl, de		;use HL as offset into palette
 	ld	a, (hl)		;load result into A
-	push	af	;draw pixel
+	push	af ;draw pixel
 	inc	sp
 	pop	af
-	
+
 _:	bit	0, c	;is C a multiple of 2?
 	jr	nz, +_	;jump if not
 	bit	1, c	;is C a multiple of 4?
@@ -246,8 +319,7 @@ _:	ld	hl, (cursorImage)
 	inc	hl
 	dec	c
 	ld	a, c
-	cp	$1C
 	cp	$00
-	jr	nz, ----_
+	jr	nz,	----_
 	ld	sp, (SaveSP)
 	ret

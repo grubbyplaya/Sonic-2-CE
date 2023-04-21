@@ -1,38 +1,38 @@
 DATA_B28_8000:
-.dw DATA_B28_8030
-.dw DATA_B28_8036
-.dw DATA_B28_8036
-.dw DATA_B28_8036
-.dw DATA_B28_8036
-.dw DATA_B28_8036
-.dw DATA_B28_8036
-.dw DATA_B28_8036
-.dw DATA_B28_803E
-.dw DATA_B28_804C 
-.dw DATA_B28_8057
-.dw DATA_B28_8036
-.dw DATA_B28_8036
-.dw DATA_B28_8036
-.dw DATA_B28_8036
-.dw DATA_B28_8036
-.dw DATA_B28_805F 
-.dw DATA_B28_8036
-.dw DATA_B28_8036
-.dw DATA_B28_8036
-.dw DATA_B28_8036
-.dw DATA_B28_8036
-.dw DATA_B28_8036
-.dw DATA_B28_8036
+.dl DATA_B28_8030
+.dl DATA_B28_8036
+.dl DATA_B28_8036
+.dl DATA_B28_8036
+.dl DATA_B28_8036
+.dl DATA_B28_8036
+.dl DATA_B28_8036
+.dl DATA_B28_8036
+.dl DATA_B28_803E
+.dl DATA_B28_804C 
+.dl DATA_B28_8057
+.dl DATA_B28_8036
+.dl DATA_B28_8036
+.dl DATA_B28_8036
+.dl DATA_B28_8036
+.dl DATA_B28_8036
+.dl DATA_B28_805F 
+.dl DATA_B28_8036
+.dl DATA_B28_8036
+.dl DATA_B28_8036
+.dl DATA_B28_8036
+.dl DATA_B28_8036
+.dl DATA_B28_8036
+.dl DATA_B28_8036
 
 DATA_B28_8030:
 .db $E0, $00  
-	.dw LABEL_B28_8067
+	.dl LABEL_B28_8067
 .db $FF, $00
 
 DATA_B28_8036:
 .db $FF, $07
-	.dw LABEL_B28_81EE
-	.dw LABEL_B28_8080
+	.dl LABEL_B28_81EE
+	.dl LABEL_B28_8080
 .db $FF, $00
 
 DATA_B28_803E:
@@ -40,28 +40,28 @@ DATA_B28_803E:
 	.dw $0000
 	.dw $0000
 .db $FF, $07
-	.dw LABEL_B28_81EE
-	.dw LABEL_B28_80F6
+	.dl LABEL_B28_81EE
+	.dl LABEL_B28_80F6
 .db $FF, $00
 
 DATA_B28_804C:
 .db $FF, $07
-	.dw LABEL_B28_81E7
-	.dw LABEL_B28_8104
+	.dl LABEL_B28_81E7
+	.dl LABEL_B28_8104
 .db $FF, $05
 	.db $0A
 .db $FF, $00
 
 DATA_B28_8057:
 .db $FF, $07
-	.dw LABEL_B28_81EE
-	.dw LABEL_B28_8108
+	.dl LABEL_B28_81EE
+	.dl LABEL_B28_8108
 .db $FF, $00
 
 DATA_B28_805F:
 .db $FF, $07
-	.dw LABEL_B28_81EE
-	.dw LABEL_B28_8123
+	.dl LABEL_B28_81EE
+	.dl LABEL_B28_8123
 .db $FF, $00
 
 LABEL_B28_8067:
@@ -285,16 +285,16 @@ LABEL_B28_81F2:
 	ret     
 
 DATA_B28_8200:
-.dw DATA_B28_820C
-.dw DATA_B28_8212
-.dw DATA_B28_823F
-.dw DATA_B28_82B4
-.dw DATA_B28_82D1
-.dw DATA_B28_834C
+.dl DATA_B28_820C
+.dl DATA_B28_8212
+.dl DATA_B28_823F
+.dl DATA_B28_82B4
+.dl DATA_B28_82D1
+.dl DATA_B28_834C
 
 DATA_B28_820C:
 .db $01, $01
-	.dw LABEL_B28_8352
+	.dl LABEL_B28_8352
 .db $FF, $00
 
 DATA_B28_8212:
@@ -302,20 +302,20 @@ DATA_B28_8212:
 	.dw $0000
 	.dw $FF00
 .db $80, $01
-	.dw LABEL_B28_837F
+	.dl LABEL_B28_837F
 .db $80, $01
-	.dw LABEL_B28_837F
+	.dl LABEL_B28_837F
 .db $80, $01
-	.dw LABEL_B28_837F
+	.dl LABEL_B28_837F
 .db $FF, $04
 	.dw $0000
 	.dw $0100
 .db $80, $01
-	.dw LABEL_B28_837F
+	.dl LABEL_B28_837F
 .db $80, $01
-	.dw LABEL_B28_837F
+	.dl LABEL_B28_837F
 .db $80, $01
-	.dw LABEL_B28_837F
+	.dl LABEL_B28_837F
 .db $FF, $05
 	.db $00
 .db $00, $01
@@ -327,56 +327,56 @@ DATA_B28_823F:
 	.dw $0000
 	.dw $FF00
 .db $D0, $01
-	.dw LABEL_B28_836A
+	.dl LABEL_B28_836A
 .db $FF, $04
 	.dw $0100
 	.dw $0000
 .db $60, $01
-	.dw LABEL_B28_836A
+	.dl LABEL_B28_836A
 .db $FF, $04
 	.dw $0000
 	.dw $FF00
 .db $E0, $01
-	.dw LABEL_B28_836A
+	.dl LABEL_B28_836A
 .db $FF, $04
 	.dw $0000
 	.dw $0100
 .db $60, $01
-	.dw LABEL_B28_836A
+	.dl LABEL_B28_836A
 .db $FF, $04
 	.dw $FF00
 	.dw $0000
 .db $80, $01
-	.dw LABEL_B28_836A
+	.dl LABEL_B28_836A
 .db $80, $01
-	.dw LABEL_B28_836A
+	.dl LABEL_B28_836A
 .db $80, $01
-	.dw LABEL_B28_836A
+	.dl LABEL_B28_836A
 .db $FF, $04
 	.dw $0000
 	.dw $0100
 .db $20, $01
-	.dw LABEL_B28_836A
+	.dl LABEL_B28_836A
 .db $FF, $04
 	.dw $FF00
 	.dw $0000
 .db $80, $01
-	.dw LABEL_B28_836A
+	.dl LABEL_B28_836A
 .db $80, $01
-	.dw LABEL_B28_836A
+	.dl LABEL_B28_836A
 .db $60, $01
-	.dw LABEL_B28_836A
+	.dl LABEL_B28_836A
 .db $FF, $04
 	.dw $0000
 	.dw $0000
 .db $20, $01
-	.dw LABEL_B28_836A
+	.dl LABEL_B28_836A
 .db $80, $01
-	.dw LABEL_B28_8108
+	.dl LABEL_B28_8108
 .db $80, $01
-	.dw LABEL_B28_8108
+	.dl LABEL_B28_8108
 .db $80, $01
-	.dw LABEL_B28_8108
+	.dl LABEL_B28_8108
 .db $FF, $05
 	.db $00
 .db $00, $01
@@ -388,12 +388,12 @@ DATA_B28_82B4:
 	.dw $0280
 	.dw $0000
 .db $CC, $01
-	.dw LABEL_B28_837F
+	.dl LABEL_B28_837F
 .db $FF, $04
 	.dw $FD80
 	.dw $0000
 .db $CC, $01
-	.dw LABEL_B28_837F
+	.dl LABEL_B28_837F
 .db $FF, $05
 	.db $00
 .db $00, $01
@@ -405,59 +405,59 @@ DATA_B28_82D1:
 	.dw $0220
 	.dw $0000
 .db $80, $01
-	.dw LABEL_B28_837F
+	.dl LABEL_B28_837F
 .db $80, $01
-	.dw LABEL_B28_837F
+	.dl LABEL_B28_837F
 .db $78, $01
-	.dw LABEL_B28_837F
+	.dl LABEL_B28_837F
 .db $FF, $04
 	.dw $0000
 	.dw $FF00
 .db $80, $01
-	.dw LABEL_B28_837F
+	.dl LABEL_B28_837F
 .db $FF, $04
 	.dw $FE00
 	.dw $0000
 .db $08, $01
-	.dw LABEL_B28_837F
+	.dl LABEL_B28_837F
 .db $FF, $04
 	.dw $F000
 	.dw $0000
 .db $07, $01
-	.dw LABEL_B28_837F
+	.dl LABEL_B28_837F
 .db $FF, $04
 	.dw $0000
 	.dw $F400
 .db $08, $01
-	.dw LABEL_B28_837F
+	.dl LABEL_B28_837F
 .db $FF, $04
 	.dw $FF00
 	.dw $0000
 .db $80, $01
-	.dw LABEL_B28_837F
+	.dl LABEL_B28_837F
 .db $FF, $04
 	.dw $0000
 	.dw $FF00
 .db $A0, $01
-	.dw LABEL_B28_837F
+	.dl LABEL_B28_837F
 .db $FF, $04
 	.dw $FF00
 	.dw $0000
 .db $80, $01
-	.dw LABEL_B28_837F
+	.dl LABEL_B28_837F
 .db $A0, $01
-	.dw LABEL_B28_837F
+	.dl LABEL_B28_837F
 .db $FF, $04
 	.dw $0000
 	.dw $0000
 .db $20, $01
-	.dw LABEL_B28_837F
+	.dl LABEL_B28_837F
 .db $80, $01
-	.dw LABEL_B28_8108
+	.dl LABEL_B28_8108
 .db $80, $01
-	.dw LABEL_B28_8108
+	.dl LABEL_B28_8108
 .db $80, $01
-	.dw LABEL_B28_8108
+	.dl LABEL_B28_8108
 .db $FF, $05, $00
 .db $00, $01
 	.dl VF_DoNothing
@@ -465,7 +465,7 @@ DATA_B28_82D1:
 
 DATA_B28_834C:
 .db $06, $01
-	.dw LABEL_B28_8383
+	.dl LABEL_B28_8383
 .db $FF, $00
 
 
@@ -522,12 +522,12 @@ _:	ld      a, $00
 	ret     
 
 DATA_B28_83C5:
-.dw DATA_B28_83C9
-.dw DATA_B28_83DD
+.dl DATA_B28_83C9
+.dl DATA_B28_83DD
 
 DATA_B28_83C9:
 .db $E0, $00
-	.dw LABEL_B28_83CF
+	.dl LABEL_B28_83CF
 .db $FF, $00
 
 
@@ -540,7 +540,7 @@ LABEL_B28_83CF:
 
 DATA_B28_83DD:
 .db $E0, $01
-	.dw LABEL_B28_83E3
+	.dl LABEL_B28_83E3
 .db $FF, $00
 
 LABEL_B28_83E3:
@@ -578,9 +578,9 @@ LABEL_B28_840E:
 
 Logic_SHZ_YellowBird:		;$85F3
 DATA_B28_85F3:
-.dw SHZ_YellowBird_State_00
-.dw SHZ_YellowBird_State_01
-.dw SHZ_YellowBird_State_02
+.dl SHZ_YellowBird_State_00
+.dl SHZ_YellowBird_State_01
+.dl SHZ_YellowBird_State_02
 
 SHZ_YellowBird_State_00:	;$85F9
 .db $FF, $05
@@ -594,14 +594,14 @@ SHZ_YellowBird_State_01:	;$8602
 	.dw $FF00
 	.dw $0000
 .db $E0, $00
-	.dw SHZ_YellowBird_State_01_Logic
+	.dl SHZ_YellowBird_State_01_Logic
 .db $FF, $00
 
 SHZ_YellowBird_State_02:	;$860E
 .db $06, $01
-	.dw SHZ_YellowBird_State_02_Logic
+	.dl SHZ_YellowBird_State_02_Logic
 .db $06, $02
-	.dw SHZ_YellowBird_State_02_Logic
+	.dl SHZ_YellowBird_State_02_Logic
 .db $FF, $00
 
 
@@ -630,26 +630,26 @@ SHZ_YellowBird_State_02_Logic:		;$8629
 
 
 DATA_B28_8645:
-.dw DATA_B28_865B
-.dw DATA_B28_8661
-.dw DATA_B28_8667
-.dw DATA_B28_8661
-.dw DATA_B28_8667
-.dw DATA_B28_8673
-.dw DATA_B28_8679
-.dw DATA_B28_8685
-.dw DATA_B28_868B
-.dw DATA_B28_8697
-.dw DATA_B28_869D
+.dl DATA_B28_865B
+.dl DATA_B28_8661
+.dl DATA_B28_8667
+.dl DATA_B28_8661
+.dl DATA_B28_8667
+.dl DATA_B28_8673
+.dl DATA_B28_8679
+.dl DATA_B28_8685
+.dl DATA_B28_868B
+.dl DATA_B28_8697
+.dl DATA_B28_869D
 
 DATA_B28_865B:
 .db $E0, $00
-	.dw LABEL_B28_86A9
+	.dl LABEL_B28_86A9
 .db $FF, $00
 
 DATA_B28_8661:
 .db $E0, $01
-	.dw LABEL_B28_86B2
+	.dl LABEL_B28_86B2
 .db $FF, $00
 
 DATA_B28_8667:
@@ -657,12 +657,12 @@ DATA_B28_8667:
 	.dw $0000
 	.dw $FE00
 .db $E0, $01
-	.dw LABEL_B28_8746
+	.dl LABEL_B28_8746
 .db $FF, $00
 
 DATA_B28_8673:
 .db $E0, $02
-	.dw LABEL_B28_86E3
+	.dl LABEL_B28_86E3
 .db $FF, $00
 
 DATA_B28_8679:
@@ -670,12 +670,12 @@ DATA_B28_8679:
 	.dw $0000
 	.dw $0200
 .db $E0, $02
-	.dw LABEL_B28_8746
+	.dl LABEL_B28_8746
 .db $FF, $00
 
 DATA_B28_8685:
 .db $E0, $03
-	.dw LABEL_B28_86F8
+	.dl LABEL_B28_86F8
 .db $FF, $00
 
 DATA_B28_868B:
@@ -683,12 +683,12 @@ DATA_B28_868B:
 	.dw $FE00
 	.dw $0000
 .db $E0, $03
-	.dw LABEL_B28_8746
+	.dl LABEL_B28_8746
 .db $FF, $00
 
 DATA_B28_8697
 .db $E0, $04
-	.dw LABEL_B28_8729
+	.dl LABEL_B28_8729
 .db $FF, $00
 
 DATA_B28_869D
@@ -696,7 +696,7 @@ DATA_B28_869D
 	.dw $0200
 	.dw $0000
 .db $E0, $04
-	.dw LABEL_B28_8746
+	.dl LABEL_B28_8746
 .db $FF, $00
 
 LABEL_B28_86A9:
@@ -816,12 +816,12 @@ _:  	bit     6, (ix+$04)
 
 
 DATA_B28_8802:
-.dw DATA_B28_8806
-.dw DATA_B28_8813
+.dl DATA_B28_8806
+.dl DATA_B28_8813
 
 DATA_B28_8806:
 .db $01, $00
-	.dw LABEL_B28_8819
+	.dl LABEL_B28_8819
 .db $FF, $05
 	.db $01
 .db $01, $00
@@ -830,7 +830,7 @@ DATA_B28_8806:
 
 DATA_B28_8813:
 .db $E0, $01
-	.dw LABEL_B28_881E
+	.dl LABEL_B28_881E
 .db $FF, $00
 
 
@@ -929,12 +929,12 @@ DATA_B28_88C5
 
 
 DATA_B28_8B5A:
-.dw DATA_B28_8B5E
-.dw DATA_B28_8B6B
+.dl DATA_B28_8B5E
+.dl DATA_B28_8B6B
 
 DATA_B28_8B5E:
 .db $01, $00
-	.dw LABEL_B28_8B75
+	.dl LABEL_B28_8B75
 .db $FF, $05
 	.db $01
 .db $01, $00
@@ -943,9 +943,9 @@ DATA_B28_8B5E:
 
 DATA_B28_8B6B:
 .db $04, $01
-	.dw LABEL_B28_8B7E
+	.dl LABEL_B28_8B7E
 .db $04, $02
-	.dw LABEL_B28_8B7E
+	.dl LABEL_B28_8B7E
 .db $FF, $00
 
 
@@ -1100,19 +1100,19 @@ DATA_B28_8CAB:
 .db $48, $50, $60, $70, $80, $80, $90, $A0, $B0, $B8
 
 DATA_B28_8CB5:
-.dw LABEL_B28_8CB9
-.dw LABEL_B28_8CBF
+.dl LABEL_B28_8CB9
+.dl LABEL_B28_8CBF
 
 LABEL_B28_8CB9:
 .db $01, $01
-	.dw LABEL_B28_8CC9
+	.dl LABEL_B28_8CC9
 .db $FF, $00
 
 LABEL_B28_8CBF:
 .db $10, $01
-	.dw LABEL_B28_8CDB
+	.dl LABEL_B28_8CDB
 .db $10, $02
-	.dw LABEL_B28_8CDB
+	.dl LABEL_B28_8CDB
 .db $FF, $00
 
 
@@ -1229,11 +1229,11 @@ _:	add     a, $40
 	ret     
 
 DATA_B28_8DBD:
-.dw DATA_B28_8DC7
-.dw DATA_B28_8DCC
-.dw DATA_B28_8DD2
-.dw DATA_B28_8DDC
-.dw DATA_B28_8DF2
+.dl DATA_B28_8DC7
+.dl DATA_B28_8DCC
+.dl DATA_B28_8DD2
+.dl DATA_B28_8DDC
+.dl DATA_B28_8DF2
 
 DATA_B28_8DC7:
 .db $FF, $05
@@ -1241,32 +1241,32 @@ DATA_B28_8DC7:
 .db $FF, $03
 DATA_B28_8DCC
 .db $E0, $01
-	.dw LABEL_B28_8DF8
+	.dl LABEL_B28_8DF8
 .db $FF, $00
 
 DATA_B28_8DD2:
 .db $02, $02
-	.dw LABEL_B28_8E5D
+	.dl LABEL_B28_8E5D
 .db $02, $03
-	.dw LABEL_B28_8E5D
+	.dl LABEL_B28_8E5D
 .db $FF, $00
 
 DATA_B28_8DDC:
 .db $02, $02
-	.dw LABEL_B28_8E66
+	.dl LABEL_B28_8E66
 .db $02, $03
-	.dw LABEL_B28_8E66
+	.dl LABEL_B28_8E66
 .db $02, $02
-	.dw LABEL_B28_8E66
+	.dl LABEL_B28_8E66
 .db $02, $03
-	.dw LABEL_B28_8E66
+	.dl LABEL_B28_8E66
 .db $E0, $01
-	.dw LABEL_B28_8E66
+	.dl LABEL_B28_8E66
 .db $FF, $00
 
 DATA_B28_8DF2:
 .db $E0, $01
-	.dw LABEL_B28_8E89
+	.dl LABEL_B28_8E89
 .db $FF, $00
 
 LABEL_B28_8DF8:
@@ -1369,18 +1369,18 @@ LABEL_B28_8E89:
 	jp      VF_Engine_DisplayExplosionObject
 
 DATA_B28_8EB1:
-.dw DATA_B28_8EB5
-.dw DATA_B28_8EBE
+.dl DATA_B28_8EB5
+.dl DATA_B28_8EBE
 
 DATA_B28_8EB5:
 .db $FF, $02
-	.dw LABEL_B28_8EC4
+	.dl LABEL_B28_8EC4
 .db $FF, $05
 	.db $01
 .db $FF, $03
 DATA_B28_8EBE:
 .db $E0, $01
-	.dw LABEL_B28_8108
+	.dl LABEL_B28_8108
 .db $FF, $00
 
 
@@ -1407,25 +1407,25 @@ LABEL_B28_8EC4:
 	ret     
 
 DATA_B28_8EF1:
-.dw DATA_B28_8EF7
-.dw DATA_B28_8EFD
-.dw DATA_B28_8F03
+.dl DATA_B28_8EF7
+.dl DATA_B28_8EFD
+.dl DATA_B28_8F03
 
 DATA_B28_8EF7:
 .db $01, $00
-	.dw LABEL_B28_8F0D
+	.dl LABEL_B28_8F0D
 .db $FF, $00
 
 DATA_B28_8EFD:
 .db $10, $01
-	.dw LABEL_B28_8F12
+	.dl LABEL_B28_8F12
 .db $FF, $00
 
 DATA_B28_8F03:
 .db $10, $01
-	.dw LABEL_B28_8FA3
+	.dl LABEL_B28_8FA3
 .db $10, $02
-	.dw LABEL_B28_8FA3
+	.dl LABEL_B28_8FA3
 .db $FF, $00
 
 LABEL_B28_8F0D:
@@ -1549,7 +1549,7 @@ DATA_B28_901A:
 
 
 DATA_B28_901C:
-.dw DATA_B28_901E
+.dl DATA_B28_901E
 
 DATA_B28_901E:
 .db $FF, $03
@@ -1564,18 +1564,18 @@ DATA_B28_901E:
 
 
 DATA_B28_9419:
-.dw DATA_B28_9431
-.dw DATA_B28_9440
-.dw DATA_B28_9446
-.dw DATA_B28_94A7
-.dw DATA_B28_951D
-.dw DATA_B28_959A
-.dw DATA_B28_95A0
-.dw DATA_B28_95AA
-.dw DATA_B28_95B4
-.dw DATA_B28_95BE
-.dw DATA_B28_95DE
-.dw DATA_B28_95E8
+.dl DATA_B28_9431
+.dl DATA_B28_9440
+.dl DATA_B28_9446
+.dl DATA_B28_94A7
+.dl DATA_B28_951D
+.dl DATA_B28_959A
+.dl DATA_B28_95A0
+.dl DATA_B28_95AA
+.dl DATA_B28_95B4
+.dl DATA_B28_95BE
+.dl DATA_B28_95DE
+.dl DATA_B28_95E8
 
 DATA_B28_9431:
 .db $FF, $09
@@ -1583,126 +1583,126 @@ DATA_B28_9431:
 .db $FF, $08
 	.db $16
 .db $FF, $02
-	.dw LABEL_B28_9632
+	.dl LABEL_B28_9632
 .db $FF, $05
 	.db $05
 .db $FF, $03
 
 DATA_B28_9440:
 .db $20, $01
-	.dw LABEL_B28_9663
+	.dl LABEL_B28_9663
 .db $FF, $00
 
 DATA_B28_9446:
 .db $08, $05
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $FF, $09
 	.db $A9
 .db $08, $01
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $08, $07
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $FF, $09
 	.db $A9
 .db $08, $01
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $06, $08
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $06, $09
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $06, $0A
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $06, $0B
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $06, $0C
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $04, $0D
-	.dw LABEL_B28_AC2B
+	.dl LABEL_B28_AC2B
 .db $04, $0E
-	.dw LABEL_B28_AC2B
+	.dl LABEL_B28_AC2B
 .db $04, $0D
-	.dw LABEL_B28_AC2B
+	.dl LABEL_B28_AC2B
 .db $04, $0E
-	.dw LABEL_B28_AC2B
+	.dl LABEL_B28_AC2B
 .db $04, $0D
-	.dw LABEL_B28_AC2B
+	.dl LABEL_B28_AC2B
 .db $04, $0E
-	.dw LABEL_B28_AC2B
+	.dl LABEL_B28_AC2B
 .db $04, $0D
-	.dw LABEL_B28_AC2B
+	.dl LABEL_B28_AC2B
 .db $04, $0E
-	.dw LABEL_B28_AC2B
+	.dl LABEL_B28_AC2B
 .db $FF, $02
 	.dl VF_Logic_ChangeDirectionTowardsPlayer
 .db $FF, $04
 	.dw $0040
 	.dw $0000
 .db $FF, $02
-	.dw LABEL_B28_9518
+	.dl LABEL_B28_9518
 .db $FF, $05
 	.db $06
 .db $08, $0C
-	.dw LABEL_B28_97B4
+	.dl LABEL_B28_97B4
 .db $FF, $00
 
 DATA_B28_94A7:
 .db $08, $01
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $08, $02
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $08, $03
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $08, $04
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $08, $05
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $FF, $09
 	.db $A9
 .db $08, $01
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $08, $07
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $FF, $09
 	.db $A9
 .db $08, $01
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $06, $08
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $06, $09
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $06, $0A
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $06, $0B
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $06, $0C
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $04, $0D
-	.dw LABEL_B28_AC2B
+	.dl LABEL_B28_AC2B
 .db $04, $0E
-	.dw LABEL_B28_AC2B
+	.dl LABEL_B28_AC2B
 .db $04, $0D
-	.dw LABEL_B28_AC2B
+	.dl LABEL_B28_AC2B
 .db $04, $0E
-	.dw LABEL_B28_AC2B
+	.dl LABEL_B28_AC2B
 .db $04, $0D
-	.dw LABEL_B28_AC2B
+	.dl LABEL_B28_AC2B
 .db $04, $0E
-	.dw LABEL_B28_AC2B
+	.dl LABEL_B28_AC2B
 .db $04, $0D
-	.dw LABEL_B28_AC2B
+	.dl LABEL_B28_AC2B
 .db $04, $0E
-	.dw LABEL_B28_AC2B
+	.dl LABEL_B28_AC2B
 .db $FF, $02
 	.dl VF_Logic_ChangeDirectionTowardsPlayer
 .db $FF, $04
 	.dw $0040
 	.dw $0200
 .db $FF, $02
-	.dw LABEL_B28_9518
+	.dl LABEL_B28_9518
 .db $FF, $05
 	.db $07
 .db $08, $0C
-	.dw LABEL_B28_97B4
+	.dl LABEL_B28_97B4
 .db $FF, $00
 
 
@@ -1712,120 +1712,120 @@ LABEL_B28_9518:
 
 DATA_B28_951D:
 .db $06, $01
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $06, $02
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $06, $03
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $06, $01
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $06, $02
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $06, $03
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $06, $04
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $08, $05
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $FF, $09
 	.db $A9
 .db $08, $01
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $08, $07
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $FF, $09
 	.db $A9
 .db $08, $01
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $06, $08
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $06, $09
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $06, $0A
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $06, $0B
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $06, $0C
-	.dw LABEL_B28_9798
+	.dl LABEL_B28_9798
 .db $04, $0D
-	.dw LABEL_B28_AC2B
+	.dl LABEL_B28_AC2B
 .db $04, $0E
-	.dw LABEL_B28_AC2B
+	.dl LABEL_B28_AC2B
 .db $04, $0D
-	.dw LABEL_B28_AC2B
+	.dl LABEL_B28_AC2B
 .db $04, $0E
-	.dw LABEL_B28_AC2B
+	.dl LABEL_B28_AC2B
 .db $04, $0D
-	.dw LABEL_B28_AC2B
+	.dl LABEL_B28_AC2B
 .db $04, $0E
-	.dw LABEL_B28_AC2B
+	.dl LABEL_B28_AC2B
 .db $04, $0D
-	.dw LABEL_B28_AC2B
+	.dl LABEL_B28_AC2B
 .db $04, $0E
-	.dw LABEL_B28_AC2B
+	.dl LABEL_B28_AC2B
 .db $FF, $02
 	.dl VF_Logic_ChangeDirectionTowardsPlayer
 .db $FF, $04
 	.dw $0200
 	.dw $FC00
 .db $FF, $02
-	.dw LABEL_B28_9518
+	.dl LABEL_B28_9518
 .db $FF, $05
 	.db $08
 .db $08, $0C
-	.dw LABEL_B28_97B4
+	.dl LABEL_B28_97B4
 .db $FF, $00
 
 DATA_B28_959A:
 .db $20, $01
-	.dw LABEL_B28_963C
+	.dl LABEL_B28_963C
 .db $FF, $00
 
 DATA_B28_95A0:
 .db $04, $0D
-	.dw LABEL_B28_96CC
+	.dl LABEL_B28_96CC
 .db $04, $0E
-	.dw LABEL_B28_96CC
+	.dl LABEL_B28_96CC
 .db $FF, $00
 
 DATA_B28_95AA:
 .db $04, $0D
-	.dw LABEL_B28_96CC
+	.dl LABEL_B28_96CC
 .db $04, $0E
-	.dw LABEL_B28_96CC
+	.dl LABEL_B28_96CC
 .db $FF, $00
 
 DATA_B28_95B4:
 .db $04, $0D
-	.dw LABEL_B28_968D
+	.dl LABEL_B28_968D
 .db $04, $0E
-	.dw LABEL_B28_968D
+	.dl LABEL_B28_968D
 .db $FF, $00
 
 DATA_B28_95BE:
 .db $FF, $02
-	.dw LABEL_B28_9842
+	.dl LABEL_B28_9842
 .db $FF, $09
 	.db $AB
 .db $04, $0D
-	.dw LABEL_B28_9732
+	.dl LABEL_B28_9732
 .db $04, $0E
-	.dw LABEL_B28_9732
+	.dl LABEL_B28_9732
 .db $04, $0D
-	.dw LABEL_B28_9732
+	.dl LABEL_B28_9732
 .db $04, $0E
-	.dw LABEL_B28_9732
+	.dl LABEL_B28_9732
 .db $FF, $05
 	.db $0A
 .db $04, $0E
-	.dw LABEL_B28_9732
+	.dl LABEL_B28_9732
 .db $FF, $00
 
 DATA_B28_95DE:
 .db $04, $0D
-	.dw LABEL_B28_9732
+	.dl LABEL_B28_9732
 .db $04, $0E
-	.dw LABEL_B28_9732
+	.dl LABEL_B28_9732
 .db $FF, $00
 
 DATA_B28_95E8:
@@ -1869,7 +1869,7 @@ DATA_B28_95E8:
 .db $E0, $00
 	.dl VF_DoNothing
 .db $08, $00
-	.dw UGZ3_Pincers_State_03_Logic_01
+	.dl UGZ3_Pincers_State_03_Logic_01
 .db $FF, $00
 
  
@@ -2081,20 +2081,20 @@ LABEL_B28_97B4:
 	ret
 
 DATA_B28_97C1:
-.dw DATA_B28_97D5
-.dw DATA_B28_97E2
-.dw DATA_B28_97E8
-.dw DATA_B28_97FA
-.dw DATA_B28_9848
-.dw DATA_B28_984E
-.dw DATA_B28_98B2
-.dw DATA_B28_98C4
-.dw DATA_B28_98CA
-.dw DATA_B28_98D0
+.dl DATA_B28_97D5
+.dl DATA_B28_97E2
+.dl DATA_B28_97E8
+.dl DATA_B28_97FA
+.dl DATA_B28_9848
+.dl DATA_B28_984E
+.dl DATA_B28_98B2
+.dl DATA_B28_98C4
+.dl DATA_B28_98CA
+.dl DATA_B28_98D0
 
 DATA_B28_97D5:
 .db $FF, $02 
-	.dw LABEL_B28_98DF
+	.dl LABEL_B28_98DF
 .db $FF, $05
 	.db $08
 .db $02, $00
@@ -2103,18 +2103,18 @@ DATA_B28_97D5:
 
 DATA_B28_97E2:
 .db $20, $01
-	.dw LABEL_B28_9900
+	.dl LABEL_B28_9900
 .db $FF, $00
 
 DATA_B28_97E8:
 .db $04, $01
-	.dw LABEL_B28_9938
+	.dl LABEL_B28_9938
 .db $04, $02
-	.dw LABEL_B28_9938
+	.dl LABEL_B28_9938
 .db $04, $03
-	.dw LABEL_B28_9938
+	.dl LABEL_B28_9938
 .db $04, $04
-	.dw LABEL_B28_9938
+	.dl LABEL_B28_9938
 .db $FF, $00
 
 DATA_B28_97FA:
@@ -2122,7 +2122,7 @@ DATA_B28_97FA:
 	.dw $0000
 	.dw $0000
 .db $08, $06
-	.dw LABEL_B28_99E2
+	.dl LABEL_B28_99E2
 .db $FF, $06
 	.db $45
 	.dw $0000
@@ -2139,23 +2139,23 @@ DATA_B28_97FA:
 	.dw $0000
 	.db $02
 .db $08, $07
-	.dw LABEL_B28_99E2
+	.dl LABEL_B28_99E2
 .db $08, $06
-	.dw LABEL_B28_99E2
+	.dl LABEL_B28_99E2
 .db $08, $07
-	.dw LABEL_B28_99E2
+	.dl LABEL_B28_99E2
 .db $08, $06
-	.dw LABEL_B28_99E2
+	.dl LABEL_B28_99E2
 .db $08, $07
-	.dw LABEL_B28_99E2
+	.dl LABEL_B28_99E2
 .db $08, $06
-	.dw LABEL_B28_99E2
+	.dl LABEL_B28_99E2
 .db $08, $05
-	.dw LABEL_B28_99E2
+	.dl LABEL_B28_99E2
 .db $FF, $02
-	.dw LABEL_B28_9A01
+	.dl LABEL_B28_9A01
 .db $80, $02
-	.dw LABEL_B28_99E2
+	.dl LABEL_B28_99E2
 .db $FF, $00
 
 LABEL_B28_9842:
@@ -2165,7 +2165,7 @@ LABEL_B28_9842:
 
 DATA_B28_9848:
 .db $08, $05
-	.dw LABEL_B28_9A2A
+	.dl LABEL_B28_9A2A
 .db $FF, $00
 
 DATA_B28_984E:
@@ -2222,28 +2222,28 @@ DATA_B28_984E:
 .db $E0, $00
 	.dl VF_DoNothing
 .db $08, $00
-	.dw LABEL_B28_9A49
+	.dl LABEL_B28_9A49
 .db $FF, $00
 
 DATA_B28_98B2:
 .db $02, $01
-	.dw LABEL_B28_9A51
+	.dl LABEL_B28_9A51
 .db $02, $02
-	.dw LABEL_B28_9A51
+	.dl LABEL_B28_9A51
 .db $02, $03
-	.dw LABEL_B28_9A51
+	.dl LABEL_B28_9A51
 .db $02, $04
-	.dw LABEL_B28_9A51
+	.dl LABEL_B28_9A51
 .db $FF, $00
 
 DATA_B28_98C4:
 .db $01, $04
-	.dw LABEL_B28_9A67
+	.dl LABEL_B28_9A67
 .db $FF, $00
 
 DATA_B28_98CA:
 .db $E0, $01
-	.dw LABEL_B28_98E9
+	.dl LABEL_B28_98E9
 .db $FF, $00
 
 DATA_B28_98D0:
@@ -2478,21 +2478,21 @@ LABEL_B28_9A7E:
 	ret     
 
 DATA_B28_9A8A:
-.dw DATA_B28_9A8E
-.dw DATA_B28_9A97
+.dl DATA_B28_9A8E
+.dl DATA_B28_9A97
 
 DATA_B28_9A8E:
 .db $01, $00
-	.dw LABEL_B28_9AA1
+	.dl LABEL_B28_9AA1
 .db $FF, $05
 	.db $01
 .db $FF, $03
 
 DATA_B28_9A97:
 .db $08, $01
-	.dw LABEL_B28_9ADD
+	.dl LABEL_B28_9ADD
 .db $08, $02
-	.dw LABEL_B28_9ADD
+	.dl LABEL_B28_9ADD
 .db $FF, $00
 
 
@@ -2561,37 +2561,37 @@ LABEL_B28_9B0B:
 
 
 DATA_B28_9FB8:
-.dw DATA_B28_A0D8
-.dw DATA_B28_A0E7
-.dw DATA_B28_A0F1
-.dw DATA_B28_A12D
-.dw DATA_B28_A145
-.dw DATA_B28_A15D
-.dw DATA_B28_A197
-.dw DATA_B28_A1A1
-.dw DATA_B28_A1AB
-.dw DATA_B28_A1B1
+.dl DATA_B28_A0D8
+.dl DATA_B28_A0E7
+.dl DATA_B28_A0F1
+.dl DATA_B28_A12D
+.dl DATA_B28_A145
+.dl DATA_B28_A15D
+.dl DATA_B28_A197
+.dl DATA_B28_A1A1
+.dl DATA_B28_A1AB
+.dl DATA_B28_A1B1
 
 DATA_B28_9FCC:
-.dw DATA_B28_9FD2
-.dw DATA_B28_9FDB
-.dw DATA_B28_9FE1
+.dl DATA_B28_9FD2
+.dl DATA_B28_9FDB
+.dl DATA_B28_9FE1
 
 DATA_B28_9FD2:
 .db $01, $00
-	.dw LABEL_B28_9FE7
+	.dl LABEL_B28_9FE7
 .db $FF, $05
 	.db $01
 .db $FF, $03
 
 DATA_B28_9FDB:
 .db $E0, $03
-	.dw LABEL_B28_A00C
+	.dl LABEL_B28_A00C
 .db $FF, $00
 
 DATA_B28_9FE1:
 .db $E0, $03
-	.dw LABEL_B28_A09C
+	.dl LABEL_B28_A09C
 .db $FF, $00
 
 LABEL_B28_9FE7:
@@ -2705,16 +2705,16 @@ DATA_B28_A0D8:
 .db $FF, $08
 	.db $15
 .db $FF, $02
-	.dw LABEL_B28_A24F
+	.dl LABEL_B28_A24F
 .db $FF, $05
 	.db $01
 .db $FF, $03
 
 DATA_B28_A0E7:
 .db $08, $01
-	.dw LABEL_B28_A262
+	.dl LABEL_B28_A262
 .db $08, $02
-	.dw LABEL_B28_A262
+	.dl LABEL_B28_A262
 .db $FF, $00
 
 DATA_B28_A0F1:
@@ -2724,7 +2724,7 @@ DATA_B28_A0F1:
 	.dw $0000
 	.dw $0000
 .db $FF, $02
-	.dw LABEL_B28_A213
+	.dl LABEL_B28_A213
 .db $20, $01
 	.dl LABEL_200 + $1B
 .db $20, $02
@@ -2734,18 +2734,18 @@ DATA_B28_A0F1:
 .db $20, $03
 	.dl LABEL_200 + $1B
 .db $20, $08
-	.dw LABEL_B28_A289
+	.dl LABEL_B28_A289
 .db $FF, $02
 	.dl VF_Logic_ChangeDirectionTowardsPlayer
 .db $20, $09
-	.dw LABEL_B28_A289
+	.dl LABEL_B28_A289
 .db $FF, $06
 	.db $4F
 	.dw $0004
 	.dw $FFE2
 	.db $00
 .db $FF, $02
-	.dw LABEL_B28_A217
+	.dl LABEL_B28_A217
 .db $01, $04
 	.dl LABEL_200 + $1B
 .db $FF, $00
@@ -2757,9 +2757,9 @@ DATA_B28_A12D:
 	.dw $0100
 	.dw $FE00
 .db $10, $01
-	.dw LABEL_B28_A29C
+	.dl LABEL_B28_A29C
 .db $FF, $02
-	.dw LABEL_B28_A225
+	.dl LABEL_B28_A225
 .db $10, $01
 	.dl LABEL_200 + $1B
 .db $FF, $00
@@ -2771,9 +2771,9 @@ DATA_B28_A145:
 	.dw $0100
 	.dw $FE00
 .db $40, $01
-	.dw LABEL_B28_A29C
+	.dl LABEL_B28_A29C
 .db $FF, $02
-	.dw LABEL_B28_A225
+	.dl LABEL_B28_A225
 .db $10, $01
 	.dl LABEL_200 + $1B
 .db $FF, $00
@@ -2787,7 +2787,7 @@ DATA_B28_A15D:
 .db $10, $05
 	.dl VF_Engine_CheckCollisionAndAdjustPlayer
 .db $FF, $02
-	.dw LABEL_B28_A236
+	.dl LABEL_B28_A236
 .db $08, $06
 	.dl VF_Engine_CheckCollisionAndAdjustPlayer
 .db $08, $07
@@ -2805,28 +2805,28 @@ DATA_B28_A15D:
 .db $10, $05
 	.dl VF_Engine_CheckCollisionAndAdjustPlayer
 .db $FF, $02
-	.dw LABEL_B28_A225
+	.dl LABEL_B28_A225
 .db $08, $05
 	.dl VF_Engine_CheckCollisionAndAdjustPlayer
 .db $FF, $00
 
 DATA_B28_A197:
 .db $08, $01
-	.dw LABEL_B28_A2CA
+	.dl LABEL_B28_A2CA
 .db $08, $02
-	.dw LABEL_B28_A2CA
+	.dl LABEL_B28_A2CA
 .db $FF, $00
 
 DATA_B28_A1A1:
 .db $08, $01
-	.dw LABEL_B28_A33A
+	.dl LABEL_B28_A33A
 .db $08, $02
-	.dw LABEL_B28_A33A
+	.dl LABEL_B28_A33A
 .db $FF, $00
 
 DATA_B28_A1AB:
 .db $08, $04
-	.dw LABEL_B28_A35D
+	.dl LABEL_B28_A35D
 .db $FF, $00
 
 DATA_B28_A1B1:
@@ -2883,7 +2883,7 @@ DATA_B28_A1B1:
 .db $E0, $00
 	.dl VF_DoNothing
 .db $08, $00
-	.dw LABEL_B28_A247
+	.dl LABEL_B28_A247
 .db $FF, $00
 
 LABEL_B28_A213:
@@ -3092,24 +3092,24 @@ _: 	ld      (gameMem+$D516), hl
 
 
 DATA_B28_A813:
-.dw DATA_B28_A837
-.dw DATA_B28_A850
-.dw DATA_B28_A856
-.dw DATA_B28_A860
-.dw DATA_B28_A885
-.dw DATA_B28_A88F
-.dw DATA_B28_A899
-.dw DATA_B28_A8A2
-.dw DATA_B28_A8AB
-.dw DATA_B28_A8BB
-.dw DATA_B28_A8C5
-.dw DATA_B28_A8D5
-.dw DATA_B28_A8DF
-.dw DATA_B28_A8E8
-.dw DATA_B28_A8F8
-.dw DATA_B28_A902
-.dw DATA_B28_A90C
-.dw DATA_B28_A973
+.dl DATA_B28_A837
+.dl DATA_B28_A850
+.dl DATA_B28_A856
+.dl DATA_B28_A860
+.dl DATA_B28_A885
+.dl DATA_B28_A88F
+.dl DATA_B28_A899
+.dl DATA_B28_A8A2
+.dl DATA_B28_A8AB
+.dl DATA_B28_A8BB
+.dl DATA_B28_A8C5
+.dl DATA_B28_A8D5
+.dl DATA_B28_A8DF
+.dl DATA_B28_A8E8
+.dl DATA_B28_A8F8
+.dl DATA_B28_A902
+.dl DATA_B28_A90C
+.dl DATA_B28_A973
 
 DATA_B28_A837:
 .db $FF, $09
@@ -3117,7 +3117,7 @@ DATA_B28_A837:
 .db $FF, $08
 	.db $18
 .db $FF, $02
-	.dw LABEL_B28_A846
+	.dl LABEL_B28_A846
 .db $FF, $05
 	.db $01
 .db $FF, $03
@@ -3132,61 +3132,61 @@ LABEL_B28_A846:
 
 DATA_B28_A850:
 .db $E0, $01
-	.dw LABEL_B28_A9E9
+	.dl LABEL_B28_A9E9
 .db $FF, $00
 
 DATA_B28_A856:
 .db $10, $01
-	.dw LABEL_B28_AC93
+	.dl LABEL_B28_AC93
 .db $02, $01
-	.dw LABEL_B28_AA21
+	.dl LABEL_B28_AA21
 .db $FF, $00
 
 DATA_B28_A860:
 .db $08, $04
-	.dw LABEL_B28_AC93
+	.dl LABEL_B28_AC93
 .db $04, $05
-	.dw LABEL_B28_AC93
+	.dl LABEL_B28_AC93
 .db $04, $06
-	.dw LABEL_B28_AC93
+	.dl LABEL_B28_AC93
 .db $04, $05
-	.dw LABEL_B28_AC93
+	.dl LABEL_B28_AC93
 .db $04, $06
-	.dw LABEL_B28_AC93
+	.dl LABEL_B28_AC93
 .db $04, $05
-	.dw LABEL_B28_AC93
+	.dl LABEL_B28_AC93
 .db $04, $06
-	.dw LABEL_B28_AC93
+	.dl LABEL_B28_AC93
 .db $08, $04
-	.dw LABEL_B28_AC93
+	.dl LABEL_B28_AC93
 .db $FF, $05
 	.db $02
 .db $FF, $00
 
 DATA_B28_A885:
 .db $04, $08
-	.dw LABEL_B28_AA9F
+	.dl LABEL_B28_AA9F
 .db $04, $09
-	.dw LABEL_B28_AA9F
+	.dl LABEL_B28_AA9F
 .db $FF, $00
 
 DATA_B28_A88F:
 .db $04, $08
-	.dw LABEL_B28_AACB
+	.dl LABEL_B28_AACB
 .db $04, $09
-	.dw LABEL_B28_AACB
+	.dl LABEL_B28_AACB
 .db $FF, $00
 
 DATA_B28_A899:
 .db $08, $02
-	.dw LABEL_B28_AC93
+	.dl LABEL_B28_AC93
 .db $FF, $05
 	.db $0A
 .db $FF, $00
 
 DATA_B28_A8A2:
 .db $08, $02
-	.dw LABEL_B28_AC93
+	.dl LABEL_B28_AC93
 .db $FF, $05
 	.db $0D
 .db $FF, $00
@@ -3196,16 +3196,16 @@ DATA_B28_A8AB:
 	.dw $0600
 	.dw $0000
 .db $04, $0A
-	.dw LABEL_B28_AAF7
+	.dl LABEL_B28_AAF7
 .db $04, $0B
-	.dw LABEL_B28_AAF7
+	.dl LABEL_B28_AAF7
 .db $FF, $00
 
 DATA_B28_A8BB:
 .db $04, $08
-	.dw LABEL_B28_AB23
+	.dl LABEL_B28_AB23
 .db $04, $09
-	.dw LABEL_B28_AB23
+	.dl LABEL_B28_AB23
 .db $FF, $00
 
 DATA_B28_A8C5:
@@ -3213,21 +3213,21 @@ DATA_B28_A8C5:
 	.dw $0600
 	.dw $0000
 .db $02, $07
-	.dw LABEL_B28_AB4F
+	.dl LABEL_B28_AB4F
 .db $02, $0C
-	.dw LABEL_B28_AB4F
+	.dl LABEL_B28_AB4F
 .db $FF, $00
 
 DATA_B28_A8D5:
 .db $02, $07
-	.dw LABEL_B28_AB66
+	.dl LABEL_B28_AB66
 .db $02, $0C
-	.dw LABEL_B28_AB66
+	.dl LABEL_B28_AB66
 .db $FF, $00
 
 DATA_B28_A8DF:
 .db $10, $02
-	.dw LABEL_B28_AC93
+	.dl LABEL_B28_AC93
 .db $FF, $05
 	.db $02
 .db $FF, $00
@@ -3237,23 +3237,23 @@ DATA_B28_A8E8:
 	.dw $0400
 	.dw $0000
 .db $02, $07
-	.dw LABEL_B28_ABA9
+	.dl LABEL_B28_ABA9
 .db $02, $0C
-	.dw LABEL_B28_ABA9
+	.dl LABEL_B28_ABA9
 .db $FF, $00
 
 DATA_B28_A8F8:
 .db $02, $07
-	.dw LABEL_B28_ABB5
+	.dl LABEL_B28_ABB5
 .db $02, $0C
-	.dw LABEL_B28_ABB5
+	.dl LABEL_B28_ABB5
 .db $FF, $00
 
 DATA_B28_A902:
 .db $02, $07
-	.dw LABEL_B28_ABB5
+	.dl LABEL_B28_ABB5
 .db $02, $0C
-	.dw LABEL_B28_ABB5
+	.dl LABEL_B28_ABB5
 .db $FF, $00
 
 DATA_B28_A90C:
@@ -3310,7 +3310,7 @@ DATA_B28_A90C:
 .db $40, $00
 	.dl VF_Engine_UpdateObjectPosition
 .db $08, $00
-	.dw LABEL_B28_A9DF
+	.dl LABEL_B28_A9DF
 .db $FF, $00
 
 DATA_B28_A973:
@@ -3372,7 +3372,7 @@ DATA_B28_A973:
 .db $40, $00
 	.dl VF_Engine_UpdateObjectPosition
 .db $08, $00
-	.dw LABEL_B28_A9E4
+	.dl LABEL_B28_A9E4
 .db $FF, $00
 
 
@@ -3441,10 +3441,10 @@ LABEL_B28_AA21:
 	jp      (hl)
 
 DATA_B28_AA4B:
-.dw LABEL_B28_AA65
-.dw LABEL_B28_AA5C
-.dw LABEL_B28_AA53
-.dw LABEL_B28_AA7C
+.dl LABEL_B28_AA65
+.dl LABEL_B28_AA5C
+.dl LABEL_B28_AA53
+.dl LABEL_B28_AA7C
 
 LABEL_B28_AA53:
 	ld      (ix+$1e), $40
@@ -3745,26 +3745,26 @@ LABEL_B28_ACAC:
 	ret     
 
 DATA_B28_ACB8:
-.dw DATA_B28_ACCA
-.dw DATA_B28_ACD0
-.dw DATA_B28_ACDA
-.dw DATA_B28_ACFD
-.dw DATA_B28_AD03
-.dw DATA_B28_AD0D
-.dw DATA_B28_AD13
-.dw DATA_B28_AD1D
-.dw DATA_B28_AD27
+.dl DATA_B28_ACCA
+.dl DATA_B28_ACD0
+.dl DATA_B28_ACDA
+.dl DATA_B28_ACFD
+.dl DATA_B28_AD03
+.dl DATA_B28_AD0D
+.dl DATA_B28_AD13
+.dl DATA_B28_AD1D
+.dl DATA_B28_AD27
 
 DATA_B28_ACCA:
 .db $01, $00
-	.dw LABEL_B28_AD31
+	.dl LABEL_B28_AD31
 .db $FF, $00
 
 DATA_B28_ACD0:
 .db $06, $01
-	.dw LABEL_B28_AD47
+	.dl LABEL_B28_AD47
 .db $06, $02
-	.dw LABEL_B28_AD47
+	.dl LABEL_B28_AD47
 .db $FF, $00
 
 DATA_B28_ACDA:
@@ -3772,57 +3772,57 @@ DATA_B28_ACDA:
 	.dw $0000
 	.dw $FE00
 .db $06, $03
-	.dw LABEL_B28_AD74
+	.dl LABEL_B28_AD74
 .db $06, $04
-	.dw LABEL_B28_AD74
+	.dl LABEL_B28_AD74
 .db $06, $03
-	.dw LABEL_B28_AD74
+	.dl LABEL_B28_AD74
 .db $06, $04
-	.dw LABEL_B28_AD74
+	.dl LABEL_B28_AD74
 .db $06, $03
-	.dw LABEL_B28_AD74
+	.dl LABEL_B28_AD74
 .db $06, $04
-	.dw LABEL_B28_AD74
+	.dl LABEL_B28_AD74
 .db $FF, $05
 	.db $03
 .db $FF, $00
 
 DATA_B28_ACFD:
 .db $01, $03
-	.dw LABEL_B28_AD88
+	.dl LABEL_B28_AD88
 .db $FF, $00
 
 DATA_B28_AD03:
 .db $03, $03
-	.dw LABEL_B28_ADC4
+	.dl LABEL_B28_ADC4
 .db $03, $04
-	.dw LABEL_B28_ADC4
+	.dl LABEL_B28_ADC4
 .db $FF, $00
 
 DATA_B28_AD0D:
 .db $01, $03
-	.dw LABEL_B28_ADD8
+	.dl LABEL_B28_ADD8
 .db $FF, $00
 
 DATA_B28_AD13:
 .db $03, $03
-	.dw LABEL_B28_AE0B
+	.dl LABEL_B28_AE0B
 .db $03, $04
-	.dw LABEL_B28_AE0B
+	.dl LABEL_B28_AE0B
 .db $FF, $00
 
 DATA_B28_AD1D:
 .db $03, $03
-	.dw LABEL_B28_AE3C
+	.dl LABEL_B28_AE3C
 .db $03, $04
-	.dw LABEL_B28_AE3C
+	.dl LABEL_B28_AE3C
 .db $FF, $00
 
 DATA_B28_AD27:
 .db $08, $01
-	.dw LABEL_B28_AE86
+	.dl LABEL_B28_AE86
 .db $08, $02
-	.dw LABEL_B28_AE86
+	.dl LABEL_B28_AE86
 .db $FF, $00
 
 
@@ -4009,10 +4009,10 @@ LABEL_B28_AEB2:
 
 
 DATA_B28_AEB5:
-.dw DATA_B28_AEBD
-.dw DATA_B28_AEC2
-.dw DATA_B28_AECC
-.dw DATA_B28_AED6
+.dl DATA_B28_AEBD
+.dl DATA_B28_AEC2
+.dl DATA_B28_AECC
+.dl DATA_B28_AED6
 
 DATA_B28_AEBD:
 .db $FF, $05
@@ -4021,23 +4021,23 @@ DATA_B28_AEBD:
 
 DATA_B28_AEC2:
 .db $30, $01
-	.dw LABEL_B28_AEE0
+	.dl LABEL_B28_AEE0
 .db $08, $02
-	.dw LABEL_B28_AEEE
+	.dl LABEL_B28_AEEE
 .db $FF, $00
 
 DATA_B28_AECC:
 .db $08, $01
-	.dw LABEL_B28_AF43
+	.dl LABEL_B28_AF43
 .db $08, $02
-	.dw LABEL_B28_AF43
+	.dl LABEL_B28_AF43
 .db $FF, $00
 
 DATA_B28_AED6:
 .db $08, $03
-	.dw LABEL_B28_AF8A
+	.dl LABEL_B28_AF8A
 .db $08, $04
-	.dw LABEL_B28_AF8A
+	.dl LABEL_B28_AF8A
 .db $FF, $00
 
 
@@ -4149,46 +4149,46 @@ _:  	call    VF_Engine_CheckCollision
 
 
 Logic_Motobug:			;$AFDB
-.dw Motobug_State_00
-.dw Motobug_State_01
-.dw Motobug_State_02
-.dw Motobug_State_03
-.dw Motobug_State_04
-.dw Motobug_State_05
-.dw Motobug_State_06
-.dw Motobug_State_07
-.dw Motobug_State_08
+.dl Motobug_State_00
+.dl Motobug_State_01
+.dl Motobug_State_02
+.dl Motobug_State_03
+.dl Motobug_State_04
+.dl Motobug_State_05
+.dl Motobug_State_06
+.dl Motobug_State_07
+.dl Motobug_State_08
 
 Motobug_State_00:		;$AFED
 .db $10, $01
-	.dw Motobug_Init
+	.dl Motobug_Init
 .db $FF, $00
 
 Motobug_State_01:		;$AFF3
 .db $08, $01
-	.dw Motobug_MoveRight
+	.dl Motobug_MoveRight
 .db $08, $02
-	.dw Motobug_MoveRight
+	.dl Motobug_MoveRight
 .db $08, $03
-	.dw Motobug_MoveRight
+	.dl Motobug_MoveRight
 .db $08, $01
-	.dw Motobug_MoveRight
+	.dl Motobug_MoveRight
 .db $08, $02
-	.dw Motobug_MoveRight
+	.dl Motobug_MoveRight
 .db $08, $03
-	.dw Motobug_MoveRight
+	.dl Motobug_MoveRight
 .db $08, $01
-	.dw Motobug_MoveRight
+	.dl Motobug_MoveRight
 .db $08, $02
-	.dw Motobug_MoveRight
+	.dl Motobug_MoveRight
 .db $08, $03
-	.dw Motobug_MoveRight
+	.dl Motobug_MoveRight
 .db $08, $01
-	.dw Motobug_MoveRight
+	.dl Motobug_MoveRight
 .db $08, $02
-	.dw Motobug_MoveRight
+	.dl Motobug_MoveRight
 .db $08, $03
-	.dw Motobug_MoveRight
+	.dl Motobug_MoveRight
 .db $FF, $05
 	.db $03			;set state = $03
 .db $08, $03
@@ -4197,29 +4197,29 @@ Motobug_State_01:		;$AFF3
 
 Motobug_State_02:		;$B02C
 .db $08, $01
-	.dw Motobug_MoveLeft
+	.dl Motobug_MoveLeft
 .db $08, $02
-	.dw Motobug_MoveLeft
+	.dl Motobug_MoveLeft
 .db $08, $03
-	.dw Motobug_MoveLeft
+	.dl Motobug_MoveLeft
 .db $08, $01
-	.dw Motobug_MoveLeft
+	.dl Motobug_MoveLeft
 .db $08, $02
-	.dw Motobug_MoveLeft
+	.dl Motobug_MoveLeft
 .db $08, $03
-	.dw Motobug_MoveLeft
+	.dl Motobug_MoveLeft
 .db $08, $01
-	.dw Motobug_MoveLeft
+	.dl Motobug_MoveLeft
 .db $08, $02
-	.dw Motobug_MoveLeft
+	.dl Motobug_MoveLeft
 .db $08, $03
-	.dw Motobug_MoveLeft
+	.dl Motobug_MoveLeft
 .db $08, $01
-	.dw Motobug_MoveLeft
+	.dl Motobug_MoveLeft
 .db $08, $02
-	.dw Motobug_MoveLeft
+	.dl Motobug_MoveLeft
 .db $08, $03
-	.dw Motobug_MoveLeft
+	.dl Motobug_MoveLeft
 .db $FF, $05
 	.db $04			;set state $04
 .db $08, $03
@@ -4229,43 +4229,43 @@ Motobug_State_02:		;$B02C
 
 Motobug_State_03:		;$B065
 .db $08, $01
-	.dw LABEL_B28_B1C2
+	.dl LABEL_B28_B1C2
 .db $08, $02
-	.dw LABEL_B28_B1C2
+	.dl LABEL_B28_B1C2
 .db $08, $03
-	.dw LABEL_B28_B1C2
+	.dl LABEL_B28_B1C2
 .db $FF, $00
 
 
 Motobug_State_04:		;$B073
 .db $08, $01
-	.dw LABEL_B28_B205
+	.dl LABEL_B28_B205
 .db $08, $02
-	.dw LABEL_B28_B205
+	.dl LABEL_B28_B205
 .db $08, $03
-	.dw LABEL_B28_B205
+	.dl LABEL_B28_B205
 .db $FF, $00
 
 
 Motobug_State_05:		;$B081
 .db $06, $01
-	.dw LABEL_B28_B248
+	.dl LABEL_B28_B248
 .db $06, $02
-	.dw LABEL_B28_B248
+	.dl LABEL_B28_B248
 .db $06, $03
-	.dw LABEL_B28_B248
+	.dl LABEL_B28_B248
 .db $06, $01
-	.dw LABEL_B28_B248
+	.dl LABEL_B28_B248
 .db $06, $02
-	.dw LABEL_B28_B248
+	.dl LABEL_B28_B248
 .db $06, $03
-	.dw LABEL_B28_B248
+	.dl LABEL_B28_B248
 .db $06, $01
-	.dw LABEL_B28_B248
+	.dl LABEL_B28_B248
 .db $06, $02
-	.dw LABEL_B28_B248
+	.dl LABEL_B28_B248
 .db $06, $03
-	.dw LABEL_B28_B248
+	.dl LABEL_B28_B248
 .db $FF, $05
 	.db $02
 .db $08, $03
@@ -4275,23 +4275,23 @@ Motobug_State_05:		;$B081
 
 Motobug_State_06:		;$B0AE
 .db $06, $01
-	.dw LABEL_B28_B26C
+	.dl LABEL_B28_B26C
 .db $06, $02
-	.dw LABEL_B28_B26C
+	.dl LABEL_B28_B26C
 .db $06, $03
-	.dw LABEL_B28_B26C
+	.dl LABEL_B28_B26C
 .db $06, $01
-	.dw LABEL_B28_B26C
+	.dl LABEL_B28_B26C
 .db $06, $02
-	.dw LABEL_B28_B26C
+	.dl LABEL_B28_B26C
 .db $06, $03
-	.dw LABEL_B28_B26C
+	.dl LABEL_B28_B26C
 .db $06, $01
-	.dw LABEL_B28_B26C
+	.dl LABEL_B28_B26C
 .db $06, $02
-	.dw LABEL_B28_B26C
+	.dl LABEL_B28_B26C
 .db $06, $03
-	.dw LABEL_B28_B26C
+	.dl LABEL_B28_B26C
 .db $FF, $05
 	.db $01
 .db $08, $03
@@ -4301,21 +4301,21 @@ Motobug_State_06:		;$B0AE
 
 Motobug_State_07:		;$B0DB	
 .db $02, $01
-	.dw LABEL_B28_B290
+	.dl LABEL_B28_B290
 .db $02, $02
-	.dw LABEL_B28_B290
+	.dl LABEL_B28_B290
 .db $02, $03
-	.dw LABEL_B28_B290
+	.dl LABEL_B28_B290
 .db $FF, $00
 
 
 Motobug_State_08:		;$B0E9
 .db $02, $01
-	.dw LABEL_B28_B2D0
+	.dl LABEL_B28_B2D0
 .db $02, $02
-	.dw LABEL_B28_B2D0
+	.dl LABEL_B28_B2D0
 .db $02, $03
-	.dw LABEL_B28_B2D0
+	.dl LABEL_B28_B2D0
 .db $FF, $00
 
 
@@ -4594,112 +4594,112 @@ Logic_Generic_CheckDestroyObject:		;$B311
 
 
 DATA_B28_B443:
-.dw DATA_B28_B459
-.dw DATA_B28_B465
-.dw DATA_B28_B473
-.dw DATA_B28_B481
-.dw DATA_B28_B48F
-.dw DATA_B28_B49D
-.dw DATA_B28_B4AB
-.dw DATA_B28_B4B9
-.dw DATA_B28_B4C7
-.dw DATA_B28_B4D5
-.dw DATA_B28_B4E3
+.dl DATA_B28_B459
+.dl DATA_B28_B465
+.dl DATA_B28_B473
+.dl DATA_B28_B481
+.dl DATA_B28_B48F
+.dl DATA_B28_B49D
+.dl DATA_B28_B4AB
+.dl DATA_B28_B4B9
+.dl DATA_B28_B4C7
+.dl DATA_B28_B4D5
+.dl DATA_B28_B4E3
 
 DATA_B28_B459:
 .db $FF, $04
 	.dw $0000
 	.dw $F400
 .db $01, $00
-	.dw LABEL_B28_B4ED
+	.dl LABEL_B28_B4ED
 .db $FF, $00
 
 DATA_B28_B465:
 .db $06, $01
-	.dw LABEL_B28_B4F2
+	.dl LABEL_B28_B4F2
 .db $06, $02
-	.dw LABEL_B28_B4F2
+	.dl LABEL_B28_B4F2
 .db $06, $03
-	.dw LABEL_B28_B4F2
+	.dl LABEL_B28_B4F2
 .db $FF, $00
 
 DATA_B28_B473:
 .db $06, $01
-	.dw LABEL_B28_B512
+	.dl LABEL_B28_B512
 .db $06, $02
-	.dw LABEL_B28_B512
+	.dl LABEL_B28_B512
 .db $06, $03
-	.dw LABEL_B28_B512
+	.dl LABEL_B28_B512
 .db $FF, $00
 
 DATA_B28_B481:
 .db $06, $01
-	.dw LABEL_B28_B55A
+	.dl LABEL_B28_B55A
 .db $06, $02
-	.dw LABEL_B28_B55A
+	.dl LABEL_B28_B55A
 .db $06, $03
-	.dw LABEL_B28_B55A
+	.dl LABEL_B28_B55A
 .db $FF, $00
 
 DATA_B28_B48F:
 .db $06, $01
-	.dw LABEL_B28_B56A
+	.dl LABEL_B28_B56A
 .db $06, $02
-	.dw LABEL_B28_B56A
+	.dl LABEL_B28_B56A
 .db $06, $03
-	.dw LABEL_B28_B56A
+	.dl LABEL_B28_B56A
 .db $FF, $00
 
 DATA_B28_B49D:
 .db $03, $01
-	.dw LABEL_B28_B5A1
+	.dl LABEL_B28_B5A1
 .db $03, $02
-	.dw LABEL_B28_B5A1
+	.dl LABEL_B28_B5A1
 .db $03, $03
-	.dw LABEL_B28_B5A1
+	.dl LABEL_B28_B5A1
 .db $FF, $00
 
 DATA_B28_B4AB:
 .db $03, $04
-	.dw LABEL_B28_B5A1
+	.dl LABEL_B28_B5A1
 .db $03, $05
-	.dw LABEL_B28_B5A1
+	.dl LABEL_B28_B5A1
 .db $03, $06
-	.dw LABEL_B28_B5A1
+	.dl LABEL_B28_B5A1
 .db $FF, $00
 
 DATA_B28_B4B9:
 .db $06, $04
-	.dw LABEL_B28_B5F1
+	.dl LABEL_B28_B5F1
 .db $06, $05
-	.dw LABEL_B28_B5F1
+	.dl LABEL_B28_B5F1
 .db $06, $06
-	.dw LABEL_B28_B5F1
+	.dl LABEL_B28_B5F1
 .db $FF, $00
 
 DATA_B28_B4C7:
 .db $0C, $01
-	.dw LABEL_B28_B601
+	.dl LABEL_B28_B601
 .db $0C, $02
-	.dw LABEL_B28_B601
+	.dl LABEL_B28_B601
 .db $0C, $03
-	.dw LABEL_B28_B601
+	.dl LABEL_B28_B601
 .db $FF, $00
 
 DATA_B28_B4D5:
 .db $0C, $04
-	.dw LABEL_B28_B601
+	.dl LABEL_B28_B601
 .db $0C, $05
-	.dw LABEL_B28_B601
+	.dl LABEL_B28_B601
 .db $0C, $06
-	.dw LABEL_B28_B601
+	.dl LABEL_B28_B601
 .db $FF, $00
 
 DATA_B28_B4E3:
 .db $10, $01
-	.dw LABEL_B28_B61D
+	.dl LABEL_B28_B61D
 .db $10, $04
-	.dw LABEL_B28_B61D
+	.dl LABEL_B28_B61D
 .db $FF, $00
 
 
@@ -4895,19 +4895,19 @@ LABEL_B28_B6AC:
 
 
 DATA_B28_B6AF:
-.dw DATA_B28_B6B3
-.dw DATA_B28_B6B9
+.dl DATA_B28_B6B3
+.dl DATA_B28_B6B9
 
 DATA_B28_B6B3:
 .db $01, $01
-	.dw LABEL_B28_B6C3
+	.dl LABEL_B28_B6C3
 .db $FF, $00
 
 DATA_B28_B6B9:
 .db $06, $01
-	.dw LABEL_B28_B6E3
+	.dl LABEL_B28_B6E3
 .db $06, $02
-	.dw LABEL_B28_B6E3
+	.dl LABEL_B28_B6E3
 .db $FF, $00
 
 
@@ -4962,37 +4962,37 @@ LABEL_B28_B737:
 
 
 DATA_B28_B73A:
-.dw DATA_B28_B744
-.dw DATA_B28_B74A 
-.dw DATA_B28_B750 
-.dw DATA_B28_B756 
-.dw DATA_B28_B75C 
+.dl DATA_B28_B744
+.dl DATA_B28_B74A 
+.dl DATA_B28_B750 
+.dl DATA_B28_B756 
+.dl DATA_B28_B75C 
 
 DATA_B28_B744:
 .db $01, $01
-	.dw LABEL_B28_B766
+	.dl LABEL_B28_B766
 .db $FF, $00
 
 DATA_B28_B74A:
 .db $06, $04
-	.dw LABEL_B28_B771
+	.dl LABEL_B28_B771
 .db $FF, $00
 
 DATA_B28_B750:
 .db $12, $03
-	.dw LABEL_B28_B7B1
+	.dl LABEL_B28_B7B1
 .db $FF, $00
 
 DATA_B28_B756:
 .db $00, $01
-	.dw LABEL_B28_B810
+	.dl LABEL_B28_B810
 .db $FF, $00
 
 DATA_B28_B75C:
 .db $06, $01
-	.dw LABEL_B28_B844
+	.dl LABEL_B28_B844
 .db $06, $02
-	.dw LABEL_B28_B844
+	.dl LABEL_B28_B844
 .db $FF, $00
 
 
@@ -5171,21 +5171,21 @@ LABEL_B28_B8DF:
 
 
 DATA_B28_B8E2:
-.dw DATA_B28_B8EA
-.dw DATA_B28_B8F0
-.dw DATA_B28_B8FA
-.dw DATA_B28_B829
+.dl DATA_B28_B8EA
+.dl DATA_B28_B8F0
+.dl DATA_B28_B8FA
+.dl DATA_B28_B829
 
 DATA_B28_B8EA:
 .db $80, $00
-	.dw LABEL_B28_B93F
+	.dl LABEL_B28_B93F
 .db $FF, $00
 
 DATA_B28_B8F0:
 .db $10, $01
-	.dw LABEL_B28_B956
+	.dl LABEL_B28_B956
 .db $10, $02
-	.dw LABEL_B28_B956
+	.dl LABEL_B28_B956
 .db $FF, $00
 
 DATA_B28_B8FA:
@@ -5193,21 +5193,21 @@ DATA_B28_B8FA:
 	.dw $0200
 	.dw $0000
 .db $06, $01
-	.dw LABEL_B28_B994
+	.dl LABEL_B28_B994
 .db $06, $02
-	.dw LABEL_B28_B994
+	.dl LABEL_B28_B994
 .db $06, $01
-	.dw LABEL_B28_B994
+	.dl LABEL_B28_B994
 .db $06, $02
-	.dw LABEL_B28_B994
+	.dl LABEL_B28_B994
 .db $06, $01
-	.dw LABEL_B28_B994
+	.dl LABEL_B28_B994
 .db $06, $02
-	.dw LABEL_B28_B994
+	.dl LABEL_B28_B994
 .db $06, $01
-	.dw LABEL_B28_B994
+	.dl LABEL_B28_B994
 .db $06, $02
-	.dw LABEL_B28_B994
+	.dl LABEL_B28_B994
 .db $FF, $05
 	.db $03
 .db $10, $02
@@ -5226,7 +5226,7 @@ DATA_B28_B829:
 	.dw $0000
 	.db $02
 .db $08, $02
-	.dw LABEL_B28_B9BB
+	.dl LABEL_B28_B9BB
 .db $FF, $00
 
 
@@ -5303,33 +5303,33 @@ LABEL_B28_B9C6:
 
 
 DATA_B28_B9CC:
-.dw DATA_B28_B9D4
-.dw DATA_B28_B9DA
-.dw DATA_B28_B9E4
-.dw DATA_B28_B9EA
+.dl DATA_B28_B9D4
+.dl DATA_B28_B9DA
+.dl DATA_B28_B9E4
+.dl DATA_B28_B9EA
 
 DATA_B28_B9D4:
 .db $10, $01
-	.dw LABEL_B28_B9F4
+	.dl LABEL_B28_B9F4
 .db $FF, $00
 
 DATA_B28_B9DA:
 .db $20, $01
-	.dw LABEL_B28_BA17
+	.dl LABEL_B28_BA17
 .db $20, $02
-	.dw LABEL_B28_BA17
+	.dl LABEL_B28_BA17
 .db $FF, $00
 
 DATA_B28_B9E4:
 .db $10, $01
-	.dw LABEL_B28_BA70
+	.dl LABEL_B28_BA70
 .db $FF, $00
 
 DATA_B28_B9EA:
 .db $18, $01
-	.dw LABEL_B28_BAA3
+	.dl LABEL_B28_BAA3
 .db $18, $02
-	.dw LABEL_B28_BAA3
+	.dl LABEL_B28_BAA3
 .db $FF, $00
 
 
@@ -5466,17 +5466,17 @@ DATA_B28_BB2A:
 .db $80, $FE
 
 DATA_B28_BB2C:
-.dw LABEL_B28_BB30
-.dw LABEL_B28_BB36
+.dl LABEL_B28_BB30
+.dl LABEL_B28_BB36
 
 LABEL_B28_BB30:
 .db $10, $00
-	.dw LABEL_B28_BB3C
+	.dl LABEL_B28_BB3C
 .db $FF, $00
 
 LABEL_B28_BB36:
 .db $10, $01
-	.dw LABEL_B28_BB94
+	.dl LABEL_B28_BB94
 .db $FF, $00
 
 
@@ -5847,25 +5847,25 @@ Logic_CheckBackgroundCollision_MappingData:
 
 
 DATA_B28_BD8E:
-.dw LABEL_B28_BD94
-.dw LABEL_B28_BD9A
-.dw LABEL_B28_BDA3
+.dl LABEL_B28_BD94
+.dl LABEL_B28_BD9A
+.dl LABEL_B28_BDA3
 
 LABEL_B28_BD94:
 .db $01, $01
-	.dw LABEL_B28_BDA9
+	.dl LABEL_B28_BDA9
 .db $FF, $00
 
 LABEL_B28_BD9A:
 .db $20, $01
-	.dw LABEL_B28_BDBF
+	.dl LABEL_B28_BDBF
 .db $FF, $05
 	.db $02
 .db $FF, $00
 
 LABEL_B28_BDA3:
 .db $08, $01
-	.dw LABEL_B28_BDD7
+	.dl LABEL_B28_BDD7
 .db $FF, $00
 
 
@@ -5906,22 +5906,22 @@ LABEL_B28_BDEB:
 
 
 DATA_B28_BDF0:
-.dw DATA_B28_BDFA
-.dw DATA_B28_BE00
-.dw DATA_B28_BE0A
-.dw DATA_B28_BE18
-.dw DATA_B28_BE26
+.dl DATA_B28_BDFA
+.dl DATA_B28_BE00
+.dl DATA_B28_BE0A
+.dl DATA_B28_BE18
+.dl DATA_B28_BE26
 
 DATA_B28_BDFA:
 .db $01, $01
-	.dw LABEL_B28_BE37
+	.dl LABEL_B28_BE37
 .db $FF, $00
 
 DATA_B28_BE00:
 .db $06, $01
-	.dw LABEL_B28_BE53
+	.dl LABEL_B28_BE53
 .db $06, $02
-	.dw LABEL_B28_BE53
+	.dl LABEL_B28_BE53
 .db $FF, $00
 
 DATA_B28_BE0A:
@@ -5931,7 +5931,7 @@ DATA_B28_BE0A:
 	.dw $0000
 	.db $00
 .db $01, $03
-	.dw LABEL_B28_BEB8
+	.dl LABEL_B28_BEB8
 .db $FF, $00
 
 DATA_B28_BE18:
@@ -5941,16 +5941,16 @@ DATA_B28_BE18:
 	.dw $0000
 	.db $01
 .db $01, $03
-	.dw LABEL_B28_BEC9
+	.dl LABEL_B28_BEC9
 .db $FF, $00
 
 DATA_B28_BE26:
 .db $10, $03
-	.dw LABEL_B28_BEDA
+	.dl LABEL_B28_BEDA
 .db $06, $03
-	.dw LABEL_B28_BEDA
+	.dl LABEL_B28_BEDA
 .db $06, $03
-	.dw LABEL_B28_BEDA
+	.dl LABEL_B28_BEDA
 .db $FF, $05
 	.db $01
 .db $FF, $00
@@ -6045,17 +6045,17 @@ LABEL_B28_BEE7:
 
 
 DATA_B28_BEEA:
-.dw DATA_B28_BEEE
-.dw DATA_B28_BEF4
+.dl DATA_B28_BEEE
+.dl DATA_B28_BEF4
 
 DATA_B28_BEEE:
 .db $01, $00
-	.dw LABEL_B28_BEFA
+	.dl LABEL_B28_BEFA
 .db $FF, $00
 
 DATA_B28_BEF4:
 .db $06, $01
-	.dw LABEL_B28_BF47
+	.dl LABEL_B28_BF47
 .db $FF, $00
 
 
@@ -6136,131 +6136,6 @@ LABEL_B28_BFA4:
 	ld      (ix+$3f), $80
 	jp      LABEL_200 + $5D
 _:	ret     
-
-;bank 28 is separate from s2.asm, so a few includes and routines are here to fix some bugs.
-.nolist
-#include	"logic_jump_table.asm"
-#include	"includes/memory_layout.asm"
-#include	"includes/structures.asm"
-#include	"includes/objects.asm"
-#include	"includes/player_states.asm"
-#include "includes/ti84pce.inc"
-
-#define gameMem 				cmdPixelShadow-$C000
-#define CurrentLevel			gameMem+$D295       ; byte - current level number
-#define Score				gameMem+$D29C		;score stored in 3-byte BCD
-
-DATA_1E76:
-.db $00, $01, $00
-
-LABEL_1D05: ;BCD subtraction subroutine
-	xor	a
-	ld	de, gameMem+$D29E
-	ld	hl, gameMem+$D2A1
-	ld	a, (de)
-	sub	(hl)
-	ret	c
-	jr	z, +_
-	jr	+++_
-_:	dec	hl
-	dec	de
-	ld	a, (de)
-	sub	(hl)
-	ret	c
-	jr	z, +_
-	jr	++_
-_:	dec	hl
-	dec	de
-	ld	a, (de)
-	sub	(hl)
-	ret	c
-	jr	nc, +_
-_:	ld	hl, Score
-	ld	de, gameMem+$D29F
-	ld	bc, $0003
-	ldir
-	ld	a, $02
-	ld	(gameMem+$D2B5), a
-	ret
-
-LABEL_1CC4:
-	ld	hl, DATA_1E76
-	jp	LABEL_1CD0
-
-LABEL_1CD0:
-	ld	a, (gameMem+$D292)
-	or	a
-	ret	nz
-	xor	a
-	ld	de, Score
-	ld	a, (de)
-	adc	a, (hl)
-	daa
-	ld	(de), a	;update first BCD byte
-	inc	de
-	inc	hl
-	ld	a, (de)
-	adc	a, (hl)
-	daa
-	ld	(de), a	;update second BCD byte
-	inc	de
-	inc	hl
-	ld	a, (de)
-	adc	a, (hl)
-	daa
-	ld	(de), a	;update third BCD byte
-	
-	jr	nc, +_		;score overflow. cap at 999,990
-	ld	hl, gameMem+$D29F
-	ld	(hl), $90
-	inc	hl
-	ld	(hl), $99
-	inc	hl
-	ld	(hl), $99
-	ld	a, $02
-	jr	++_
-_:	ld	a, $01
-_: 	ld	(gameMem+$D2B5), a
-	call	LABEL_1D05
-	jp	LABEL_1D34
-
-#define  GT_NEXT_LEVEL_BIT         4
-
-LABEL_1D34:
-	ld	hl, gameMem+$D2B6
-	ld	a, (hl)
-	or	a
-	ret	nz
-	ld	a, (gameMem+$D29E)
-	cp	$03
-	ret	c
-	ld	(hl), $01
-	ld	hl, LifeCounter
-	inc	(hl)
-	ld	a, (GlobalTriggers)
-	bit	GT_NEXT_LEVEL_BIT, a
-	ret	nz
-	jp	Engine_CapLifeCounterValue
-
-Engine_CapLifeCounterValue:	; $25AC 
-	ld	a, (gameMem+$D292)
-	or	a
-	ret	nz
-	
-	ld	a, (LifeCounter)
-	cp	9
-	jr	c, +_
-
-	ld	a, 9
-	
-_:	; calculate the sprite number to display
-	rlca
-	and	$1E
-	add	a, $10
-	ld	(VDP_WorkingSAT_HPOS + $69), a
-	ret
-
-.list
 
 DATA_B28_BFAC:
 

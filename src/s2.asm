@@ -25,11 +25,10 @@ g#include "includes/ti84pce.inc"
 ;
 ; NOTE: all addresses listed in this dissassembly refer to ver. 1.0
 ;
-#define Version = 2
 
 ;some basic sense-checking on the version variable
-#ifndef Version 2
-	#ifndef Version 1
+#ifndef Version = 2
+	#ifndef Version = 1
 		.echo "FAIL: Invalid build version!"
 	#endif
 #endif
@@ -198,7 +197,7 @@ _:	ei
 	jp	$0000
 
 .db "MS SONIC", $A5, "THE", $A5, "HEDGEHOG.2 "
-#ifdef Version 2
+#if Version = 2
 	.db "Ver2.20 1992/12/09"
 #else
 	.db "Ver1.00 1992/09/05"
@@ -561,140 +560,14 @@ VDP_ResetPalette_DisableLineInterrupt:	;$5B2
 	jp	z, ++_	
 	
 _:	push	hl
-	;write to palette RAM at address $E30200
-	ld	a, $00
-	ld	($E30200), a
 	;write the 16 colours to VRAM
 	ld	hl, DATA_65A
+	ld	de, CRAM
+	ld	bc, 16
+	ldir
 
-	ld	a, (hl)
-	ld	($E30200), a
 	inc	hl
-	nop
-	nop
-	nop
-	nop
-
 	ld	a, (hl)
-	ld	($E30201), a
-	inc	hl
-	nop
-	nop
-	nop
-	nop
-
-	ld	a, (hl)
-	ld	($E30202), a
-	inc	hl
-	nop
-	nop
-	nop
-	nop
-
-	ld	a, (hl)
-	ld	($E30203), a
-	inc	hl
-	nop
-	nop
-	nop
-	nop
-
-	ld	a, (hl)
-	ld	($E30204), a
-	inc	hl
-	nop
-	nop
-	nop
-	nop
-
-	ld	a, (hl)
-	ld	($E30205), a
-	inc	hl
-	nop
-	nop
-	nop
-	nop
-
-	ld	a, (hl)
-	ld	($E30206), a
-	inc	hl
-	nop
-	nop
-	nop
-	nop
-
-	ld	a, (hl)
-	ld	($E30207), a
-	inc	hl
-	nop
-	nop
-	nop
-	nop
-
-	ld	a, (hl)
-	ld	($E30208), a
-	inc	hl
-	nop
-	nop
-	nop
-	nop
-
-	ld	a, (hl)
-	ld	($E30209), a
-	inc	hl
-	nop
-	nop
-	nop
-	nop
-
-	ld	a, (hl)
-	ld	($E3020A), a
-	inc	hl
-	nop
-	nop
-	nop
-	nop
-
-	ld	a, (hl)
-	ld	($E3020B), a
-	inc	hl
-	nop
-	nop
-	nop
-	nop
-
-	ld	a, (hl)
-	ld	($E3020C), a
-	inc	hl
-	nop
-	nop
-	nop
-	nop
-
-	ld	a, (hl)
-	ld	($E3020D), a
-	inc	hl
-	nop
-	nop
-	nop
-	nop
-
-	ld	a, (hl)
-	ld	($E3020E), a
-	inc	hl
-	nop
-	nop
-	nop
-	nop
-
-	ld	a, (hl)
-	ld	($E3020F), a
-	inc	hl
-	nop
-	nop
-	nop
-	nop
-
 	ld	(Palette_UpdateTrig), a
 
 _:	pop	hl
@@ -1452,7 +1325,7 @@ LABEL_FB9:
 	call	Engine_SwapFrame2
  	call	CheckForBank		;page in bank 08.
 
-	ld	hl, gameMem+$38CC		;destination
+	ld	hl, $38CC		;destination
 	ld	de, Mappings_Title		;source
 	ld	bc, $1214				;row/col count
 	call	Engine_LoadCardMappings	;load the mappings into VRAM
@@ -1530,7 +1403,7 @@ _:	call	LABEL_107C
 	dec	bc	
 	ld	a, b
 	or	c
-	jp	nz, -_
+	jr	nz, -_
 
 	ret	
 
@@ -1539,7 +1412,6 @@ TitleScreen_ChangePressStartText:		; $1060
 	;page in the bank containing the mappings	
 	ld	hl, Bank08
  	call	CheckForBank
-
 	ld	a, $08	 
 	call	Engine_SwapFrame2
 
@@ -1565,8 +1437,6 @@ LABEL_107C:
 	pop	af
 	ret	
 
-#include	"player_sprite_defs.asm"
-	
 LABEL_1084:
 ;loads the player sprite tiles into VRAM
 Engine_LoadPlayerTiles:	;$10BF
@@ -1576,7 +1446,7 @@ Engine_LoadPlayerTiles:	;$10BF
 	ret	nz
 	ld	a, (gameMem+$D34F)	;which sprite?
 	or	a
-	jp	z, Engine_ClearPlayerTiles
+	jr	z, Engine_ClearPlayerTiles
 	ld	l, a			;calculate offset (aligned to 4-byte)
 	ld	h, $00
 	add	hl, hl
@@ -1599,393 +1469,15 @@ _:	add	hl, de
 	ld	a, $00
 	ld	(SegaVRAM), a
 	ld	hl, SegaVRAM
+
 Engine_LoadPlayerTiles_CopyTiles:		;copy 2 tiles (64 bytes) to vram
-	ld	a, (de)
+_:	ld	a, (de)
 	ld	(hl), a
 	inc	de
 	inc	hl
 	nop
+	djnz	-_
 
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	ld	a, (de)
-	ld	(hl), a
-	inc	de
-	inc	hl
-	nop
-
-	dec	b
-	jp	nz, Engine_LoadPlayerTiles_CopyTiles
 	ld	hl, gameMem+$D34E
 	res	7, (hl)
 	ret
@@ -1995,8 +1487,8 @@ Engine_LoadPlayerTiles_CopyTiles:		;copy 2 tiles (64 bytes) to vram
 ;*****************************************
 Engine_ClearPlayerTiles:
 	;set vram address to $0
-_:	ld	hl, SegaVRAM
-	ld	(hl), a
+	ld	hl, SegaVRAM
+_:	ld	(hl), a
 	inc	hl
 	ld	(hl), a
 	inc	hl
@@ -2614,12 +2106,13 @@ Engine_LoadMappings:		;$1982
 	ld	b, c
 	call	VDP_SetAddress
 
-_:	ld	a, (de)
-	; write tile index
 	push	de
 	ld	de, SegaVRAM
 	add	hl, de
 	pop	de
+
+_:	ld	a, (de)
+	; write tile index
 	ld	(hl), a
 	inc	de
 	inc	hl
@@ -2701,7 +2194,7 @@ VDP_WrapColumnAddress:		; $19B9
 ; -----------------------------------------------------------------------------
 VDP_WrapRowAddress: 
 	ld	a, h
-	cp	$3F		;check for overflow into SAT
+	cp	$4B		;check for overflow into SAT
 	ret	nz
 	ld	h, $38
 	ret
@@ -3072,7 +2565,7 @@ _:	ld	hl, gameMem+$D2A2
 	or	(hl)
 	jr	nz, ----_
 
-	ld	hl, SegaVRAM+$3C2A		;vram address
+	ld	hl, $3C2A		;vram address
 	ld	de, ScoreCard_Mappings_Blank	;mapping source
 	ld	bc, $0202		;rows,cols
 	call	Engine_LoadCardMappings
@@ -4521,7 +4014,7 @@ _:	ld	de, DATA_2D6C
 _:	ld	hl, gameMem+$39C0
 	ld	(gameMem+$D118), bc	;rows/cols
 	ld	(gameMem+$D11A), de	;pointer to mappings
-	ld	(SegaVRAM+$011C), hl	;VRAM address
+	ld	(gameMem+$D11C), hl	;VRAM address
 	ld	b, $14
 	call	TitleCard_ScrollTextFromLeft
 	ret
@@ -4532,7 +4025,7 @@ TitleCard_ScrollTextFromLeft:		;$26E1
 	halt
 	ld	bc, (gameMem+$D118)	;rows/cols
 	ld	de, (gameMem+$D11A)	;pointer to mappigns
-	ld	hl, (SegaVRAM+$011C)	;VRAM address
+	ld	hl, (gameMem+$D11C)	;VRAM address
 	call	Engine_LoadCardMappings
 	ld	bc, (gameMem+$D118)
 	ld	de, (gameMem+$D11A)
@@ -4639,7 +4132,7 @@ GameOverScreen_DrawScreen:		;27B4
 	call	Engine_SwapFrame2	;FIXME: this is probably unnecessary since the call to GameOverScreen_LoadTiles pages this in anyway
  	call	CheckForBank
 
-	ld	hl, SegaVRAM+$3AD0
+	ld	hl, $3AD0
 	ld	de, GameOverScreen_Data_TextMappings
 	ld	bc, $0212
 	call	Engine_LoadCardMappings
@@ -4659,7 +4152,7 @@ GameOverScreen_DrawScreen:		;27B4
 ContinueScreen_DrawScreen:		;27EE
 	di
 	call	Engine_ClearLevelAttributes			;clear data from $D15E->$D290 (level header?)
-	ld	de, SegaVRAM+$010A			;clear the screen to blank tile $0A (offset from $2000 in VRAM)
+	ld	de, $010A			;clear the screen to blank tile $0A (offset from $2000 in VRAM)
 	ld	hl, ScreenMap
 	ld	bc, $0380
 	call	VDP_Write
@@ -4671,7 +4164,7 @@ ContinueScreen_DrawScreen:		;27EE
 	call	Engine_SwapFrame2
  	call	CheckForBank
 
-	ld	hl, SegaVRAM+$3A50
+	ld	hl, $3A50
 	ld	de, ContinueScreen_Data_TextMappings
 	ld	bc, $0212
 	call	Engine_LoadCardMappings
@@ -5584,7 +5077,7 @@ Player_HandleFalling:		;$3456
 
 
 LABEL_3467:
-#ifdef Version 2
+#if Version = 2
 	res	7, (ix + Object.Flags04)
 	ld	hl, -256
 #else
@@ -5596,7 +5089,7 @@ LABEL_3467:
 	bit	1, (ix+$23)	;check to see if we're standing on something
 	ret	z
 
-#ifdef Version 1.0
+#if Version = 1
 	ld	hl, -256
 	ld	(ix + Object.VelX), l	;set Player.VelX
 	ld	(ix + Object.VelX + 1), h
@@ -6180,7 +5673,7 @@ _:	xor	a
 	ret
 
 _:
-#ifdef Version 2
+#if Version = 2
 	ld	a, (gameMem+$D501)
 	cp	PlayerState_Rolling
 	jr	z, --_
@@ -7163,10 +6656,7 @@ _:	; update the 3-byte x-position value
 	ld	(Player.VelX), hl
 	ret	
 
-
-.org UserMem+$3D16
-
-#ifdef Version 2
+#if Version = 2
 .db $D5, $C9
 #endif
 
@@ -7320,7 +6810,7 @@ LABEL_4109:
 	cp	$F0
 	jp	nc, LABEL_4135
 	
-#ifdef Version 2
+#if Version = 2
 	ld	hl, (gameMem+$D176)
 	ld	de, $0020
 	add	hl, de
@@ -7333,7 +6823,7 @@ LABEL_4109:
 	xor	a
 	sbc	hl, de
 	
-#ifdef Version 2
+#if Version = 2
 	jp	nc, +_
 	ld	(gameMem+$D514), de
 _:
@@ -7694,7 +7184,7 @@ LABEL_43C5:
 	ld	h, (hl)
 	ld	l, a
 	;push	de
-	ld	de, UserMem
+	ld	de, _START
 	add	hl, de
 	;pop	de
 	jp	(hl)
@@ -8267,7 +7757,7 @@ LABEL_47C9:
 	and	$BF
 	ret	nz
 
-#ifdef Version 2
+#if Version = 2
 	ld	a, (Player.State)
 	cp	PlayerState_EndOfLevel
 	ret	z
@@ -8289,7 +7779,7 @@ Collision_Monitor:			;$47F6
 	bit	3, a
 	jr	nz, Collision_Monitor_Invincibility
 	bit	6, a
-#ifdef Version 2
+#if Version = 2
 	jp	nz, LABEL_4884
 #else
 	jr	nz, LABEL_4884
@@ -8303,7 +7793,7 @@ Collision_Monitor_Rings:	;4817
 	daa	
 	ld	(RingCounter), a
 
-#ifdef Version 2
+#if Version = 2
 	call	Engine_UpdateRingCounterSprites
 	
 	ld	a, (RingCounter)
@@ -8315,7 +7805,7 @@ Collision_Monitor_Rings:	;4817
 	ld	(LifeCounter), a
 	jp	Engine_CapLifeCounterValue
 #else
-	jr	Engine_UpdateRingCounterSprites
+	jp	Engine_UpdateRingCounterSprites
 #endif
 
 Collision_Monitor_Life:	;482A
@@ -9639,10 +9129,10 @@ LABEL_5EFD:
 
 
 	cp	$F0					;jump if object >= $F0
-#ifdef Version 2
+#if Version = 2
 	jp	nc, LABEL_5F73
 #else
-	jr	nc, LABEL_5F51
+	jp	nc, LABEL_5F51
 #endif
 	
 	;FIXME: surplus op
@@ -9703,7 +9193,7 @@ LABEL_5F3D:
 	call	LABEL_617C
 	ret	
 
-#ifdef Version 2
+#if Version = 2
 LABEL_5F73:
 	cp	$FE
 	jp	z, $620F
@@ -9713,7 +9203,7 @@ LABEL_5F73:
 #endif
 
 
-#ifdef Version 1.0
+#if Version = 1
 LABEL_5F51:
 	and	$0F
 	add	a, a
@@ -9725,7 +9215,7 @@ LABEL_5F51:
 	inc	hl
 	ld	d, (hl)
 	ex	de, hl
-	ld	de, UserMem
+	ld	de, _START
 	add	hl, de
 	jp	(hl)
 
@@ -9999,7 +9489,7 @@ LABEL_6139:
 	or	l
 	ret	z
 	;push	de
-	ld	de, UserMem
+	ld	de, _START
 	add	hl, de
 	;pop	de
 	jp	(hl)
@@ -10228,7 +9718,7 @@ LABEL_62A7:
 	inc	hl
 	ld	h, (hl)
 	ld	l, a
-	ld	de, UserMem
+	ld	de, _START
 	add	hl, de
 	jp	(hl)
 	
@@ -10439,7 +9929,7 @@ Engine_AdjustPlayerAfterCollision:		;$63F1
 	inc	hl
 	ld	h, (hl)
 	ld	l, a
-	ld	de, UserMem
+	ld	de, _START
 	add	hl, de
 	jp	(hl)
 
@@ -10976,7 +10466,7 @@ Logic_ProcessCommand:			;$6675
 	inc	hl
 	ld	h, (hl)
 	ld	l, a
-	ld	de, UserMem
+	ld	de, _START
 	add	hl, de
 	jp	(hl)
 
@@ -11034,7 +10524,7 @@ Logic_Cmd_Call:	; $66B4
 	; jump to the function
 	ex	de, hl
 	;push	de
-	ld	de, UserMem
+	ld	de, _START
 	add	hl, de
 	;pop	de
 	jp	(hl)
@@ -11173,7 +10663,7 @@ LABEL_6791:
 	ld	hl, Engine_UpdateObject_Animation	;push this as the return address for the sub
 	push	hl
 	ex	de, hl
-	ld	de, UserMem
+	ld	de, _START
 	add	hl, de
 	jp	(hl)			;jump to subroutine
 
@@ -11540,7 +11030,7 @@ LABEL_6956:
 	inc	hl
 	ld	h, (hl)
 	ld	l, a
-	ld	de, UserMem
+	ld	de, _START
 	add	hl, de
 	jp	(hl)
 
@@ -11831,7 +11321,7 @@ LABEL_6B61:
 	ld	h, (hl)
 	ld	l, a
 	;push de
-	ld	de, UserMem
+	ld	de, _START
 	add	hl, de
 	;pop de
 	jp	(hl)
@@ -11943,7 +11433,7 @@ LABEL_6C3C:
 	inc	hl
 	ld	d, (hl)
 	ex	de, hl
-	ld	de, UserMem
+	ld	de, _START
 	add	hl, de
 	jp	(hl)
 
@@ -13616,7 +13106,7 @@ LABEL_75C5:
 	inc	hl
 	ld	d, (hl)
 	ex	de, hl
-	ld	de, UserMem
+	ld	de, _START
 	add	hl, de
 	jp	(hl)
 	
@@ -13743,6 +13233,8 @@ Engine_LoadLevelTiles:		;$763F
 	ld	l, (iy + 3)
 	ld	h, (iy + 4)
 	xor	a
+	ld	de, BankSlot2
+	add	hl, de
 	call	LoadTiles
 
 	; read the tileset header chain pointer into IY
@@ -13781,7 +13273,9 @@ _:	; check for the end-of-chain marker
 	ld	a, (iy + 0)
 	and	$80
 	
-	; decompress the tiles into VRAM
+	; decompress the tiles into VRAM	
+	ld	de, BankSlot2
+	add	hl, de
 	call	LoadTiles
 	
 	; move to the next tileset header entry
@@ -13804,7 +13298,7 @@ _:	; check for the end-of-chain marker
 Engine_LoadLevelPalette:		;$76AD
 	ld	a, (CurrentLevel)
 	ld	b, a
-	add	a,	a
+	add	a, a
 	add	a, b
 	ld	b, a
 	ld	a, (CurrentAct)
@@ -13847,9 +13341,6 @@ Engine_LoadLevelPalette:		;$76AD
 ;	None.
 ; -----------------------------------------------------------------------------
 LevelSelect_LoadFont:		; $76D7
-	; FIXME: DI with no corresponding EI
-	di
-	
 	; Page in the bank containing the font
 	ld	hl, Bank09
 	ld	a, $09
@@ -13935,10 +13426,12 @@ TitleCard_LoadTiles:		;76EB
 	ld	d, (hl)
 	ex	de, hl
 	xor	a
+	ld	de, BankSlot2
+	add	hl, de
 	call	LoadTiles		;load the tiles into VRAM
 	pop	de				;load the mappings into VRAM
 	ld	bc, $0810
-	ld	hl, SegaVRAM+$3B90
+	ld	hl, $3B90
 	; FIXME: use tail recursion here.
 	call	Engine_LoadCardMappings
 	ret
@@ -14188,7 +13681,7 @@ _:	ld	b, a			;b = number of tiles to copy
 
 							;set up to load data from $100 onwards
 	ld	d, $01 ;Engine_Data_ByteFlipLUT >> 8
-	ld	ix, UserMem
+	ld	ix, _START
 	add	ix, de
 	push	ix
 	pop	de
@@ -14516,7 +14009,7 @@ UpdateCyclingPaletteBank:		;$7D01
 	inc	hl
 	ld	d, (hl)
 	ex	de, hl
-	ld	de, UserMem
+	ld	de, _START
 	add	hl, de
 	jp	(hl)
 
@@ -14587,7 +14080,7 @@ _:	 ld	(iy+$02), a
 	 add	a, (iy+$02)
 	 ld	e, a
 	 ld	d, $00
-#ifdef Version 2
+#if Version = 2
 	 ld	hl, $AECA
 #else
 	 ld	hl, DATA_B30_AF4A
@@ -14641,7 +14134,7 @@ _:	ld	(iy+$02), a
 	add	a, (iy+$02)
 	ld	e, a
 	ld	d, $00
-#ifdef Version 2
+#if Version = 2
 	ld	hl, $AEC1
 #else
 	ld	hl, DATA_B30_AF41
@@ -14977,15 +14470,17 @@ _:	ld	(Engine_RingAnimFrame), a
 ROM_HEADER:				;$7FF0
 .db "TMR SEGA" 
 .db $00, $00			;reserved
-#ifdef Version 1
+#if Version = 1
 	.db $99, $5F		;checksum
 #else
 	.db $6C, $9E
 #endif
 .db $15, $90			;product code	
-#ifdef Version 1
+#if Version = 1
 	.db $00			;version
 #else
 	.db $01
 #endif
 .db $40				;region code/rom size
+
+#include "object_logic/bank28.asm"

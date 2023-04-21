@@ -134,7 +134,7 @@ VDP_SendRead:	   ; NOT NEEDED
 	;push  af		; FIXME: pointless stack activity/timing related?
 	;pop   af
 	
-	;ret
+	ret
 
 
 ; =============================================================================
@@ -159,6 +159,7 @@ VDP_WriteByte:	  ; Ported
 	add	hl, de
 	ld	(hl), a
 	pop	de
+	call	DrawScreen
 	ret
 
 
@@ -228,6 +229,7 @@ _:	ld	a, d
 	jr	nz, -_
 	
 	pop   de
+	call	DrawScreen
 	ret
 
 
@@ -268,7 +270,7 @@ _:	; write the low-order byte
 	ld	a, b
 	or	c
 	jr	nz, -_
-
+	call	DrawScreen
 	ret
 
 
@@ -309,7 +311,8 @@ _:	call  VDP_SetAddress
 	dec   bc
 	ld	a, b
 	or	c
-	jr	nz, -_	
+	jr	nz, -_
+	call	DrawScreen	
 	ret
 
 
@@ -442,6 +445,7 @@ _:	; copy a byte from RAM to the VDP
 
 	pop	bc
 	pop	de
+	call	DrawScreen
 	ret
 
 
@@ -567,11 +571,12 @@ VDP_UpdateSAT:	  ; Ported
 	ld	de, SegaVRAM+$3F80
 	ld	bc, $3F
 	ldir
+	call	DrawScreen
 	ret
 
 
 VDP_UpdateSAT_Descending:	; Ported
-	ld	(SaveSP2), sp
+	ld	(SaveSP), sp
 	; set the address pointer to the SAT
 	ld	a, VDP_SATAddress & $FF
 	ld	(VDP_SATAddress), a
@@ -606,7 +611,8 @@ _:	ldi
 	add	hl, sp
 	djnz -_
 
-	ld	sp, (SaveSP2)
+	ld	sp, (SaveSP)
+	call	DrawScreen
 	ret
 
 
@@ -692,5 +698,4 @@ _:	; set the vpos and clear the hpos and char code
 	; flag the SAT update trigger
 	ld	a, $FF
 	ld	(VDP_SATUpdateTrig), a
-
 	ret

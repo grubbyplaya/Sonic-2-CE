@@ -1,31 +1,31 @@
 Logic_UGZ3_Robotnik:			;$A39D
-.dw UGZ3_Robotnik_State_00
-.dw UGZ3_Robotnik_State_01
-.dw UGZ3_Robotnik_State_02
-.dw UGZ3_Robotnik_State_03
-.dw UGZ3_Robotnik_State_04
-.dw UGZ3_Robotnik_State_05
-.dw UGZ3_Robotnik_State_06
-.dw UGZ3_Robotnik_State_07
-.dw UGZ3_Robotnik_State_08
-.dw UGZ3_Robotnik_State_09
-.dw UGZ3_Robotnik_State_0A
-.dw UGZ3_Robotnik_State_0B
+.dl UGZ3_Robotnik_State_00
+.dl UGZ3_Robotnik_State_01
+.dl UGZ3_Robotnik_State_02
+.dl UGZ3_Robotnik_State_03
+.dl UGZ3_Robotnik_State_04
+.dl UGZ3_Robotnik_State_05
+.dl UGZ3_Robotnik_State_06
+.dl UGZ3_Robotnik_State_07
+.dl UGZ3_Robotnik_State_08
+.dl UGZ3_Robotnik_State_09
+.dl UGZ3_Robotnik_State_0A
+.dl UGZ3_Robotnik_State_0B
 
 Logic_UGZ3_CannonBall:			;$A3B5
-.dw UGZ3_CannonBall_State_00
-.dw UGZ3_CannonBall_State_01
+.dl UGZ3_CannonBall_State_00
+.dl UGZ3_CannonBall_State_01
 
 UGZ3_CannonBall_State_00:		;$A3B9
 .db $FF, $02
-	.dw UGZ3_CannonBall_State_00_Logic_01	;LABEL_B28_A3C8
+	.dl UGZ3_CannonBall_State_00_Logic_01	;LABEL_B28_A3C8
 .db $FF, $05		;change sprite state to $01
 	.db $01
 .db $FF, $03
 
 UGZ3_CannonBall_State_01:		;$A3C2
 .db $E0, $01
-	.dw UGZ3_CannonBall_State_01_Logic_01
+	.dl UGZ3_CannonBall_State_01_Logic_01
 .db $FF, $00
 
 UGZ3_CannonBall_State_00_Logic_01:		;$A3C8
@@ -110,13 +110,13 @@ _:	jp      VF_Engine_DisplayExplosionObject
 
 UGZ3_Robotnik_State_00:		;$A483
 .db $E0, $01
-	.dw UGZ3_Robotnik_State_00_Logic_01
+	.dl UGZ3_Robotnik_State_00_Logic_01
 .db $FF, $08
 	.db $17
 .db $01, $01
 	.dl VF_DoNothing
 .db $FF, $02
-	.dw UGZ3_Robotnik_State_00_Logic_02
+	.dl UGZ3_Robotnik_State_00_Logic_02
 .db $FF, $05
 	.db $01
 .db $01, $01
@@ -136,33 +136,33 @@ UGZ3_Robotnik_State_00_Logic_01:		;$A49B
 
 UGZ3_Robotnik_State_01:		;$A4AE
 .db $04, $03
-	.dw UGZ3_Robotnik_State_01_Logic_01
+	.dl UGZ3_Robotnik_State_01_Logic_01
 .db $04, $04
-	.dw UGZ3_Robotnik_State_01_Logic_01
+	.dl UGZ3_Robotnik_State_01_Logic_01
 .db $FF, $00
 
 UGZ3_Robotnik_State_02:		;$A4B8
 .db $04, $03
-	.dw UGZ_Robotnik_State_02_Logic_01
+	.dl UGZ_Robotnik_State_02_Logic_01
 .db $04, $04
-	.dw UGZ_Robotnik_State_02_Logic_01
+	.dl UGZ_Robotnik_State_02_Logic_01
 .db $FF, $00
 
 UGZ3_Robotnik_State_03:		;$A4C2
 .db $E0, $02
-	.dw UGZ3_Robotnik_State_03_Logic_01
+	.dl UGZ3_Robotnik_State_03_Logic_01
 .db $FF, $00
 
 UGZ3_Robotnik_State_04:		;$A4C8
 .db $E0, $02
-	.dw UGZ3_Robotnik_State_04_Logic_01
+	.dl UGZ3_Robotnik_State_04_Logic_01
 .db $FF, $00
 
 UGZ3_Robotnik_State_05:		;$A4CE
 .db $04, $03
-	.dw UGZ3_Robotnik_State_05_Logic_01
+	.dl UGZ3_Robotnik_State_05_Logic_01
 .db $04, $04
-	.dw UGZ3_Robotnik_State_05_Logic_01
+	.dl UGZ3_Robotnik_State_05_Logic_01
 .db $FF, $00
 
 UGZ3_Robotnik_State_06:		;$A4D8
@@ -179,7 +179,7 @@ UGZ3_Robotnik_State_06:		;$A4D8
 
 UGZ3_Robotnik_State_07:		;$A4EA
 .db $E0, $01
-	.dw UGZ3_Robotnik_State_07_Logic_01
+	.dl UGZ3_Robotnik_State_07_Logic_01
 .db $FF, $00
 
 UGZ3_Robotnik_State_08:		;$A4F0
@@ -193,41 +193,41 @@ UGZ3_Robotnik_State_08:		;$A4F0
 
 UGZ3_Robotnik_State_09:		;$A4FD
 .db $08, $03
-	.dw UGZ3_Robotnik_State_09_Logic_01
+	.dl UGZ3_Robotnik_State_09_Logic_01
 .db $08, $04
-	.dw UGZ3_Robotnik_State_09_Logic_01
+	.dl UGZ3_Robotnik_State_09_Logic_01
 .db $08, $03
-	.dw UGZ3_Robotnik_State_09_Logic_01
+	.dl UGZ3_Robotnik_State_09_Logic_01
 .db $FF, $06	;spawn an explosion object
 	.db Object_Explosion
 	.dw $FFFC	;offset from current object's hpos
 	.dw $FFF0	;offset from current object's vpos
 	.db $00	
 .db $08, $04
-	.dw UGZ3_Robotnik_State_09_Logic_01
+	.dl UGZ3_Robotnik_State_09_Logic_01
 .db $08, $03
-	.dw UGZ3_Robotnik_State_09_Logic_01
+	.dl UGZ3_Robotnik_State_09_Logic_01
 .db $FF, $06	;spawn an explosion object
 	.db Object_Explosion
 	.dw $0004
 	.dw $FFF8
 	.db $00
 .db $08, $04
-	.dw UGZ3_Robotnik_State_09_Logic_01
+	.dl UGZ3_Robotnik_State_09_Logic_01
 .db $FF, $00
 
 ;**************************
 ;*	lift player 
 UGZ3_Robotnik_State_0A:		;$A527
 .db $E0, $02
-	.dw UGZ3_Robotnik_State_0A_Logic_01
+	.dl UGZ3_Robotnik_State_0A_Logic_01
 .db $FF, $00
 
 ;**************************
 ;*	grab player
 UGZ3_Robotnik_State_0B:		;$A52D
 .db $E0, $02
-	.dw UGZ3_Robotnik_State_0B_Logic_01
+	.dl UGZ3_Robotnik_State_0B_Logic_01
 .db $FF, $00
 
 
@@ -478,14 +478,14 @@ UGZ3_Robotnik_SetPlayerPosition:		;$A74B
 
 
 Logic_UGZ3_Pincers:			;$A760
-.dw UGZ3_Pincers_State_00
-.dw UGZ3_Pincers_State_01
-.dw UGZ3_Pincers_State_02
-.dw UGZ3_Pincers_State_03
+.dl UGZ3_Pincers_State_00
+.dl UGZ3_Pincers_State_01
+.dl UGZ3_Pincers_State_02
+.dl UGZ3_Pincers_State_03
 
 UGZ3_Pincers_State_00:		;$A768
 .db $FF, $02
-	.dw UGZ3_Pincers_State_00_Logic_01
+	.dl UGZ3_Pincers_State_00_Logic_01
 .db $FF, $05
 	.db $01
 .db $E0, $00
@@ -494,18 +494,18 @@ UGZ3_Pincers_State_00:		;$A768
 
 UGZ3_Pincers_State_01:		;$A775
 .db $FF, $07
-	.dw UGZ3_Pincers_State_01_Logic_01
+	.dl UGZ3_Pincers_State_01_Logic_01
 	.dl LABEL_200 + $1B
 .db $FF, $07
-	.dw UGZ3_Pincers_State_01_Logic_02
+	.dl UGZ3_Pincers_State_01_Logic_02
 	.dl LABEL_200 + $1B
 .db $FF, $00
 
 UGZ3_Pincers_State_02:		;$A783:
 .db $08, $03
-	.dw UGZ3_Pincers_State_02_Logic_01
+	.dl UGZ3_Pincers_State_02_Logic_01
 .db $08, $05
-	.dw UGZ3_Pincers_State_02_Logic_01
+	.dl UGZ3_Pincers_State_02_Logic_01
 .db $FF, $00
 
 UGZ3_Pincers_State_03:		;$A78D
@@ -549,7 +549,7 @@ UGZ3_Pincers_State_03:		;$A78D
 .db $E0, $00
 	.dl VF_DoNothing
 .db $08, $00
-	.dw UGZ3_Pincers_State_03_Logic_01
+	.dl UGZ3_Pincers_State_03_Logic_01
 .db $FF, $00
 
 UGZ3_Pincers_State_00_Logic_01:		;$A7D7

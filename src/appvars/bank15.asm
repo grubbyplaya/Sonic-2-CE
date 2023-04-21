@@ -1,3 +1,5 @@
+.ORG $D09466
+
 Mappings32_ALZ2:
 ;#import "mappings\alz\mappings32_alz2.bin"
 #include "mappings\alz\mappings32_alz2.asm"

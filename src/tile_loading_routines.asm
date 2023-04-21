@@ -19,7 +19,7 @@ _LABEL_1AA6_22:
 	;if $D34C is set, each byte of decompressed data 
 	;at $D300 is treated as an index into the mirroring
 	;table stored at $0100.
-	ld	(gameMem+$D34C), a		
+	ld	(gameMem+$D34C), a
 	push	hl						;push the base address onto the stack
 	inc	hl						;read the tile data header
 	inc	hl
@@ -45,28 +45,28 @@ _LABEL_1AA6_22:
 	xor	a						;reset counter
 	ld	(BitFieldCount), a
 
-_:	call _GetCompressionType	;select the correct decompression method
+_:	call	_GetCompressionType	;select the correct decompression method
 								
 	cp	$00					;$00 - blank tile
 	jr	nz, +_
-	call WriteBlankTile			;write a blank tile to VRAM
+	call	WriteBlankTile			;write a blank tile to VRAM
 	jr	++++_
 	
 _:	cp	$02					;$02 - compressed tile
 	jr	nz, +_
-	call LoadCompressedTile
-	call WriteTileToVRAM
+	call	LoadCompressedTile
+	call	WriteTileToVRAM
 	jr	+++_
 	
 _:	cp	$03					;$03 - xor compressed tile
 	jr	nz, +_
-	call LoadCompressedTile
-	call XORDecode
-	call WriteTileToVRAM
+	call	LoadCompressedTile
+	call	XORDecode
+	call	WriteTileToVRAM
 	jr	++_
 	
-_:	call LoadUncompressedTile	;$01 - uncompressed tile
-	call WriteTileToVRAM
+_:	call	LoadUncompressedTile	;$01 - uncompressed tile
+	call	WriteTileToVRAM
 	
 _: 	ld	hl, (TileCount)			;decrement tile count
 	dec	hl
@@ -80,7 +80,7 @@ _: 	ld	hl, (TileCount)			;decrement tile count
 ;*	Load uncompressed tile (direct copy from $D346 to $D300).
 ;*************************************************************
 LoadUncompressedTile:
-	ld	hl, (SourcePointer)	;copy 32 bytes from source to $D300
+	ld	hl, (SourcePointer)	;copy 32 bytes from source to $D300	
 	ld	de, gameMem+$D300
 	ld	bc, $0020
 	ldir
@@ -93,6 +93,7 @@ LoadUncompressedTile:
 LoadCompressedTile:		;$1B1E
 	ld	ix, gameMem+$D300				;destination address for decompressed tile data
 	ld	hl, (SourcePointer)	;read the bitmask
+
 	ld	e, (hl)
 	inc	hl
 	ld	d, (hl)
@@ -107,7 +108,7 @@ _:	push	af
 	rr	c
 	rr	d
 	rr	e
-	jr	c, +_			;if previous lsb was 0, read a byte from (hl)
+	jr	c, +_		;if previous lsb was 0, read a byte from (hl)
 	ld	(ix+0), $00	;previous lsb was 0 - write $00 to (ix)
 	jr	++_
 _:	ld	a, (hl)		;read byte from (hl) and write to (ix)
@@ -124,7 +125,7 @@ _: 	inc	ix				;increment destination pointer
 ;*	Decode XOR'ed tile data.
 ;*************************************************************
 XORDecode:
-	ld	ix, $D300		;decode data at $D300
+	ld	ix, gameMem+$D300	;decode data at $D300
 	ld	b, $07
 _:	ld	a, (ix+0)		;xor byte at (ix+0) with byte at (ix+2)...
 	xor	(ix+2)
@@ -173,7 +174,7 @@ _:	dec	b
 	jp	m, +_	;jump if sign (<0)
 	rrca				;rotate previous compression type out
 	rrca
-	jp	-_
+	jr	-_
 _:	and	$03
 	push	af
 	ld	a, (BitFieldCount)
@@ -221,7 +222,7 @@ WriteMirroredTileToVRAM:
 	ld	b, $20
 _:	ld	e, (hl)		;read a byte of tile data from RAM
 	ld	d, $01 ;Engine_Data_ByteFlipLUT >> 8
-	ld	ix, UserMem
+	ld	ix, _START
 	add	ix, de
 	push	ix
 	pop	de

@@ -1,3 +1,5 @@
+.ORG $D09466
+
 Mappings32_SHZ1_3:
 ;#import "mappings\shz\mappings32_shz1_3.bin"
 #include "mappings\shz\mappings32_shz1_3.asm"

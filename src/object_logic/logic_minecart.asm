@@ -1,15 +1,15 @@
 Logic_Minecart:			;$88CF
-.dw Minecart_State_00
-.dw Minecart_State_01
-.dw Minecart_State_02
-.dw Minecart_State_03
-.dw Minecart_State_04
-.dw Minecart_State_05
-.dw Minecart_State_06
+.dl Minecart_State_00
+.dl Minecart_State_01
+.dl Minecart_State_02
+.dl Minecart_State_03
+.dl Minecart_State_04
+.dl Minecart_State_05
+.dl Minecart_State_06
 
 Minecart_State_00:			;$88DD
 .db $01, $00
-	.dw Minecart_State_00_Logic_01
+	.dl Minecart_State_00_Logic_01
 .db $FF, $00
 
 Minecart_State_01:			;$88E3
@@ -17,64 +17,64 @@ Minecart_State_01:			;$88E3
 	.dw $0000
 	.dw $0100
 .db $80, $01
-	.dw Minecart_State_01_Logic_01
+	.dl Minecart_State_01_Logic_01
 .db $FF, $00
 
 Minecart_State_02:			;$88EF
 .db $03, $01
-	.dw Minecart_State_02_Logic_01
+	.dl Minecart_State_02_Logic_01
 .db $03, $02
-	.dw Minecart_State_02_Logic_01
+	.dl Minecart_State_02_Logic_01
 .db $03, $03
-	.dw Minecart_State_02_Logic_01
+	.dl Minecart_State_02_Logic_01
 .db $03, $04
-	.dw Minecart_State_02_Logic_01
+	.dl Minecart_State_02_Logic_01
 .db $FF, $00
 
 Minecart_State_03:			;$8901
 .db $03, $04
-	.dw Minecart_State_03_Logic_01
+	.dl Minecart_State_03_Logic_01
 .db $03, $03
-	.dw Minecart_State_03_Logic_01
+	.dl Minecart_State_03_Logic_01
 .db $03, $02
-	.dw Minecart_State_03_Logic_01
+	.dl Minecart_State_03_Logic_01
 .db $03, $01
-	.dw Minecart_State_03_Logic_01
+	.dl Minecart_State_03_Logic_01
 .db $FF, $00
 
 Minecart_State_04:			;$8913
 .db $03, $01
-	.dw Minecart_State_04_Logic_01
+	.dl Minecart_State_04_Logic_01
 .db $03, $02
-	.dw Minecart_State_04_Logic_01
+	.dl Minecart_State_04_Logic_01
 .db $03, $03
-	.dw Minecart_State_04_Logic_01
+	.dl Minecart_State_04_Logic_01
 .db $03, $04
-	.dw Minecart_State_04_Logic_01
+	.dl Minecart_State_04_Logic_01
 .db $FF, $00
 
 Minecart_State_05:			;$8925
 .db $06, $01
-	.dw Minecart_State_05_Logic_01
+	.dl Minecart_State_05_Logic_01
 .db $06, $02
-	.dw Minecart_State_05_Logic_01
+	.dl Minecart_State_05_Logic_01
 .db $06, $03
-	.dw Minecart_State_05_Logic_01
+	.dl Minecart_State_05_Logic_01
 .db $06, $04
-	.dw Minecart_State_05_Logic_01
+	.dl Minecart_State_05_Logic_01
 .db $FF, $00
 
 Minecart_State_06:			;$8937
 .db $10, $05
-	.dw Minecart_State_06_Logic_01
+	.dl Minecart_State_06_Logic_01
 .db $03, $00
-	.dw Minecart_State_06_Logic_01
+	.dl Minecart_State_06_Logic_01
 .db $03, $05
-	.dw Minecart_State_06_Logic_01
+	.dl Minecart_State_06_Logic_01
 .db $03, $00
-	.dw Minecart_State_06_Logic_01
+	.dl Minecart_State_06_Logic_01
 .db $03, $05
-	.dw Minecart_State_06_Logic_01
+	.dl Minecart_State_06_Logic_01
 .db $FF, $01
 
 

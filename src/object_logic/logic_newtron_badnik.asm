@@ -1,83 +1,83 @@
 
 Logic_Newtron:			;$B314
-.dw Newtron_State_00
-.dw Newtron_State_01
-.dw Newtron_State_02
-.dw Newtron_State_03
-.dw Newtron_State_04
-.dw Newtron_State_05
+.dl Newtron_State_00
+.dl Newtron_State_01
+.dl Newtron_State_02
+.dl Newtron_State_03
+.dl Newtron_State_04
+.dl Newtron_State_05
 
 
 ;State 00 - initialiser
 Newtron_State_00:		;$B320
 .db $E0, $00
-	.dw Newtron_Init
+	.dl Newtron_Init
 .db $FF, $00
 
 ;State 01 - check player's proximity to the badnik
 Newtron_State_01:		;$B326
 .db $E0, $00
-	.dw Newtron_CheckProximity
+	.dl Newtron_CheckProximity
 .db $FF, $00
 
 ;State 02 - flash into view
 Newtron_State_02:		;$B32C
 .db $01, $04
-	.dw Newtron_DoNothing
+	.dl Newtron_DoNothing
 .db $06, $00
-	.dw Newtron_DoNothing
+	.dl Newtron_DoNothing
 .db $01, $04
-	.dw Newtron_DoNothing
+	.dl Newtron_DoNothing
 .db $05, $00
-	.dw Newtron_DoNothing
+	.dl Newtron_DoNothing
 .db $01, $04
-	.dw Newtron_DoNothing
+	.dl Newtron_DoNothing
 .db $04, $00
-	.dw Newtron_DoNothing
+	.dl Newtron_DoNothing
 .db $01, $04
-	.dw Newtron_DoNothing
+	.dl Newtron_DoNothing
 .db $03, $00
-	.dw Newtron_DoNothing
+	.dl Newtron_DoNothing
 .db $01, $04
-	.dw Newtron_DoNothing
+	.dl Newtron_DoNothing
 .db $02, $00
-	.dw Newtron_DoNothing
+	.dl Newtron_DoNothing
 .db $01, $04
-	.dw Newtron_DoNothing
+	.dl Newtron_DoNothing
 .db $01, $00
-	.dw Newtron_DoNothing
+	.dl Newtron_DoNothing
 .db $01, $03
-	.dw Newtron_DoNothing
+	.dl Newtron_DoNothing
 .db $01, $01
-	.dw Newtron_DoNothing
+	.dl Newtron_DoNothing
 .db $01, $03
-	.dw Newtron_DoNothing
+	.dl Newtron_DoNothing
 .db $01, $01
-	.dw Newtron_DoNothing
+	.dl Newtron_DoNothing
 .db $01, $03
-	.dw Newtron_DoNothing
+	.dl Newtron_DoNothing
 .db $01, $01
-	.dw Newtron_DoNothing
+	.dl Newtron_DoNothing
 .db $01, $03
-	.dw Newtron_DoNothing
+	.dl Newtron_DoNothing
 .db $01, $01
-	.dw Newtron_DoNothing
+	.dl Newtron_DoNothing
 .db $01, $03
-	.dw Newtron_DoNothing
+	.dl Newtron_DoNothing
 .db $01, $01
-	.dw Newtron_DoNothing
+	.dl Newtron_DoNothing
 .db $01, $03
-	.dw Newtron_DoNothing
+	.dl Newtron_DoNothing
 .db $01, $01
-	.dw Newtron_DoNothing
+	.dl Newtron_DoNothing
 .db $01, $03
-	.dw Newtron_DoNothing
+	.dl Newtron_DoNothing
 .db $01, $01
-	.dw Newtron_DoNothing
+	.dl Newtron_DoNothing
 .db $FF, $05		;set state to $03
 	.db $03
 .db $30, $01
-	.dw Newtron_DoNothing
+	.dl Newtron_DoNothing
 .db $FF, $00
 
 ;State 03 - fire a fireball
@@ -88,7 +88,7 @@ Newtron_State_03:		;$B39D
 	.dw $FFF8
 	.db $00
 .db $40, $02
-	.dw Newtron_CheckCollisions
+	.dl Newtron_CheckCollisions
 .db $FF, $05
 	.db $04			;set state = $04
 .db $01, $02
@@ -98,47 +98,47 @@ Newtron_State_03:		;$B39D
 ;State 05 - flash & disappear
 Newtron_State_04:		;$B3B5
 .db $01, $03
-	.dw Newtron_DoNothing2
+	.dl Newtron_DoNothing2
 .db $01, $01
-	.dw Newtron_DoNothing2
+	.dl Newtron_DoNothing2
 .db $01, $03
-	.dw Newtron_DoNothing2
+	.dl Newtron_DoNothing2
 .db $01, $01
-	.dw Newtron_DoNothing2
+	.dl Newtron_DoNothing2
 .db $01, $03
-	.dw Newtron_DoNothing2
+	.dl Newtron_DoNothing2
 .db $01, $00
-	.dw Newtron_DoNothing2
+	.dl Newtron_DoNothing2
 .db $01, $03
-	.dw Newtron_DoNothing2
+	.dl Newtron_DoNothing2
 .db $01, $00
-	.dw Newtron_DoNothing2
+	.dl Newtron_DoNothing2
 .db $01, $03
-	.dw Newtron_DoNothing2
+	.dl Newtron_DoNothing2
 .db $01, $00
-	.dw Newtron_DoNothing2
+	.dl Newtron_DoNothing2
 .db $01, $03
-	.dw Newtron_DoNothing2
+	.dl Newtron_DoNothing2
 .db $03, $00
-	.dw Newtron_DoNothing2
+	.dl Newtron_DoNothing2
 .db $01, $04
-	.dw Newtron_DoNothing2
+	.dl Newtron_DoNothing2
 .db $03, $00
-	.dw Newtron_DoNothing2
+	.dl Newtron_DoNothing2
 .db $01, $04
-	.dw Newtron_DoNothing2
+	.dl Newtron_DoNothing2
 .db $03, $00
-	.dw Newtron_DoNothing2
+	.dl Newtron_DoNothing2
 .db $FF, $05
 	.db $05		;set state to $05
 .db $01, $00
-	.dw Newtron_DoNothing2
+	.dl Newtron_DoNothing2
 .db $FF, $00
 
 
 Newtron_State_05:		;$B3FE
 .db $E0, $00
-	.dw Newtron_Destroy
+	.dl Newtron_Destroy
 .db $FF, $00
 
 

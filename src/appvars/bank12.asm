@@ -1,4 +1,4 @@
-#define	Version = 2
+.ORG $D09466
 
 Mappings32_GHZ:
 ;#import "mappings\ghz\mappings32_ghz.bin"
@@ -9,14 +9,14 @@ Mappings32_ALZ:
 #include "mappings\alz\mappings32_alz.asm"
 
 Layout_SHZ3:
-#ifdef Version=2
+#if Version = 2
 #import "layout\shz\layout_shz3.bin"
 #else
 #import "layout\shz\layout_shz3_og.bin"
 #endif
 
 Layout_GMZ3:
-#ifdef Version=2
+#if Version = 2
 #import "layout\gmz\layout_gmz3.bin"
 #else
 #import "layout\gmz\layout_gmz3_og.bin"

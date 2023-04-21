@@ -9,9 +9,9 @@
 ;*	the main boss object.								*
 ;********************************************************
 Logic_SHZ3_BirdRobot2:		;$9B15
-.dw SHZ3_BirdRobot2_State_00
-.dw SHZ3_BirdRobot2_State_01
-.dw SHZ3_BirdRobot2_State_02
+.dl SHZ3_BirdRobot2_State_00
+.dl SHZ3_BirdRobot2_State_01
+.dl SHZ3_BirdRobot2_State_02
 
 
 ;State 00 - initialiser
@@ -27,22 +27,22 @@ SHZ3_BirdRobot2_State_00:	;$9B1B
 ;State 01 - launch bird up
 SHZ3_BirdRobot2_State_01:	;$9B26
 .db $FF, $07
-	.dw SHZ3_BirdRobot2_SetAnimation_1
-	.dw SHZ3_BirdRobot2_LaunchUp
+	.dl SHZ3_BirdRobot2_SetAnimation_1
+	.dl SHZ3_BirdRobot2_LaunchUp
 .db $FF, $00
 
 
 ;State 02 - bounce bird towards player
 SHZ3_BirdRobot2_State_02:	;$9B2E
 .db $FF, $07
-	.dw SHZ3_BirdRobot2_SetAnimation_1
-	.dw SHZ3_BirdRobot2_MainLogic
+	.dl SHZ3_BirdRobot2_SetAnimation_1
+	.dl SHZ3_BirdRobot2_MainLogic
 .db $FF, $07
-	.dw SHZ3_BirdRobot2_SetAnimation_2
-	.dw SHZ3_BirdRobot2_MainLogic
+	.dl SHZ3_BirdRobot2_SetAnimation_2
+	.dl SHZ3_BirdRobot2_MainLogic
 .db $FF, $07
-	.dw SHZ3_BirdRobot2_SetAnimation_3
-	.dw SHZ3_BirdRobot2_MainLogic
+	.dl SHZ3_BirdRobot2_SetAnimation_3
+	.dl SHZ3_BirdRobot2_MainLogic
 .db $FF, $00
 
 
@@ -146,33 +146,33 @@ LABEL_B28_9BD5:
 ;*	small bird objects.							*
 ;************************************************
 Logic_SHZ3_EggCapsule:		;$9BDB
-.dw SHZ3_EggCapsule_State_00
-.dw SHZ3_EggCapsule_State_01
-.dw SHZ3_EggCapsule_State_02
+.dl SHZ3_EggCapsule_State_00
+.dl SHZ3_EggCapsule_State_01
+.dl SHZ3_EggCapsule_State_02
 
 ;State 0 - intialiser
 SHZ3_EggCapsule_State_00:	;$9BE1
 .db $FF, $02
-	.dw SHZ3_EggCapsule_Init
+	.dl SHZ3_EggCapsule_Init
 .db $FF, $03
 
 ;State 1
 SHZ3_EggCapsule_State_01:	;$9BE7
 .db $60, $01
-	.dw SHZ3_EggCapsule_CheckCollisions
+	.dl SHZ3_EggCapsule_CheckCollisions
 .db $FF, $06	;spawn a small bird object
 	.db Object_SHZ3_SmallBird2
 	.dw $0000
 	.dw $FFF8
 	.db $00
 .db $C0, $01
-	.dw SHZ3_EggCapsule_CheckCollisions
+	.dl SHZ3_EggCapsule_CheckCollisions
 .db $FF, $00
 
 ;State 2
 SHZ3_EggCapsule_State_02:	;$9BF9
 .db $E0, $01
-	.dw LABEL_B28_9C2B
+	.dl LABEL_B28_9C2B
 .db $FF, $00
 
 
@@ -218,19 +218,19 @@ LABEL_B28_9C2B:
 ;*	Logic for the main SHZ boss bird robot.		*
 ;************************************************
 Logic_SHZ3_Boss:		;$9C44
-.dw SHZ3_Boss_State_00
-.dw SHZ3_Boss_State_01
-.dw SHZ3_Boss_State_02
-.dw SHZ3_Boss_State_03
-.dw SHZ3_Boss_State_04
-.dw SHZ3_Boss_State_05
-.dw SHZ3_Boss_State_06
-.dw SHZ3_Boss_State_07
-.dw SHZ3_Boss_State_08
-.dw SHZ3_Boss_State_09
-.dw SHZ3_Boss_State_0A
-.dw SHZ3_Boss_State_0B
-.dw SHZ3_Boss_State_0C
+.dl SHZ3_Boss_State_00
+.dl SHZ3_Boss_State_01
+.dl SHZ3_Boss_State_02
+.dl SHZ3_Boss_State_03
+.dl SHZ3_Boss_State_04
+.dl SHZ3_Boss_State_05
+.dl SHZ3_Boss_State_06
+.dl SHZ3_Boss_State_07
+.dl SHZ3_Boss_State_08
+.dl SHZ3_Boss_State_09
+.dl SHZ3_Boss_State_0A
+.dl SHZ3_Boss_State_0B
+.dl SHZ3_Boss_State_0C
 ;NOTE: SHZ3_Boss_State_0D should come here but is missing.
 
 ;state 0 - initialiser
@@ -238,13 +238,13 @@ SHZ3_Boss_State_00:		;$9C5E
 .db $FF, $09
 	.db $09
 .db $FF, $02
-	.dw SHZ3_Boss_Init
+	.dl SHZ3_Boss_Init
 .db $FF, $03
 
 ;state 01 - lock the camera
 SHZ3_Boss_State_01:		;$9C67
 .db $E0, $00
-	.dw SHZ3_Boss_SetCamera
+	.dl SHZ3_Boss_SetCamera
 .db $FF, $00
 
 ;state 02 - load tiles & spawn small bird robots
@@ -259,7 +259,7 @@ SHZ3_Boss_State_02:		;$9C6D
 	.dw $FF30
 	.db $01
 .db $FF, $02
-	.dw SHZ3_Boss_StoreChildIndex
+	.dl SHZ3_Boss_StoreChildIndex
 .db $10, $00
 	.dl VF_DoNothing
 .db $FF, $06			;spawn a small bird object
@@ -268,7 +268,7 @@ SHZ3_Boss_State_02:		;$9C6D
 	.dw $FF30
 	.db $00
 .db $FF, $02
-	.dw SHZ3_Boss_StoreChildIndex
+	.dl SHZ3_Boss_StoreChildIndex
 .db $10, $00
 	.dl VF_DoNothing
 .db $FF, $06			;spawn a small bird object
@@ -277,7 +277,7 @@ SHZ3_Boss_State_02:		;$9C6D
 	.dw $FF30
 	.db $00
 .db $FF, $02
-	.dw SHZ3_Boss_StoreChildIndex
+	.dl SHZ3_Boss_StoreChildIndex
 .db $10, $00
 	.dl VF_DoNothing
 .db $FF, $06			;spawn a small bird object
@@ -286,7 +286,7 @@ SHZ3_Boss_State_02:		;$9C6D
 	.dw $FF30
 	.db $00
 .db $FF, $02
-	.dw SHZ3_Boss_StoreChildIndex
+	.dl SHZ3_Boss_StoreChildIndex
 .db $FF, $05
 	.db $03
 .db $10, $00
@@ -296,7 +296,7 @@ SHZ3_Boss_State_02:		;$9C6D
 ;state 3 - wait for player to destroy eggs & birds
 SHZ3_Boss_State_03:		;$9CB9
 .db $10, $00
-	.dw SHZ3_Boss_CheckNextState
+	.dl SHZ3_Boss_CheckNextState
 .db $FF, $00
 
 ;state 4 - spawn small bird robots
@@ -307,7 +307,7 @@ SHZ3_Boss_State_04:		;$9CBF
 	.dw $FF30
 	.db $00
 .db $FF, $02
-	.dw SHZ3_Boss_StoreChildIndex
+	.dl SHZ3_Boss_StoreChildIndex
 .db $10, $00
 	.dl VF_DoNothing
 .db $FF, $06			;spawn a small bird object (alt. logic)
@@ -316,7 +316,7 @@ SHZ3_Boss_State_04:		;$9CBF
 	.dw $FF30
 	.db $00
 .db $FF, $02
-	.dw SHZ3_Boss_StoreChildIndex
+	.dl SHZ3_Boss_StoreChildIndex
 .db $10, $00
 	.dl VF_DoNothing
 .db $FF, $06			;spawn a small bird object (alt. logic)
@@ -325,7 +325,7 @@ SHZ3_Boss_State_04:		;$9CBF
 	.dw $FF30
 	.db $00
 .db $FF, $02
-	.dw SHZ3_Boss_StoreChildIndex
+	.dl SHZ3_Boss_StoreChildIndex
 .db $10, $00
 	.dl VF_DoNothing
 .db $FF, $06			;spawn a small bird object (alt. logic)
@@ -334,7 +334,7 @@ SHZ3_Boss_State_04:		;$9CBF
 	.dw $FF30
 	.db $00
 .db $FF, $02
-	.dw SHZ3_Boss_StoreChildIndex
+	.dl SHZ3_Boss_StoreChildIndex
 .db $FF, $05			;set sprite state = $05
 	.db $05
 .db $10, $00
@@ -344,7 +344,7 @@ SHZ3_Boss_State_04:		;$9CBF
 ;state 5 - wait for player to destroy birds
 SHZ3_Boss_State_05:		;$9D04
 .db $10, $00
-	.dw SHZ3_Boss_CheckNextState
+	.dl SHZ3_Boss_CheckNextState
 .db $FF, $00
 
 ;state 6 - make player fall through cloud. move camera down
@@ -352,7 +352,7 @@ SHZ3_Boss_State_06:		;$9D0A
 .db $20, $00
 	.dl VF_DoNothing
 .db $10, $00
-	.dw SHZ3_Boss_MoveCameraDown
+	.dl SHZ3_Boss_MoveCameraDown
 .db $10, $00
 	.dl VF_DoNothing
 .db $FF, $00
@@ -368,7 +368,7 @@ SHZ3_Boss_State_07:		;$9D18
 	.dw $FFF4
 	.db $00
 .db $FF, $02
-	.dw SHZ3_Boss_StoreChildIndex
+	.dl SHZ3_Boss_StoreChildIndex
 .db $08, $00
 	.dl VF_DoNothing
 .db $FF, $06
@@ -377,7 +377,7 @@ SHZ3_Boss_State_07:		;$9D18
 	.dw $FFF4
 	.db $00
 .db  $FF, $02
-	.dw SHZ3_Boss_StoreChildIndex
+	.dl SHZ3_Boss_StoreChildIndex
 .db $10, $00
 	.dl VF_DoNothing
 .db $FF, $06
@@ -386,7 +386,7 @@ SHZ3_Boss_State_07:		;$9D18
 	.dw $FFF4
 	.db $00
 .db $FF, $02
-	.dw SHZ3_Boss_StoreChildIndex
+	.dl SHZ3_Boss_StoreChildIndex
 .db $08, $00
 	.dl VF_DoNothing
 .db $FF, $06
@@ -395,7 +395,7 @@ SHZ3_Boss_State_07:		;$9D18
 	.dw $FFF4
 	.db $00
 .db $FF, $02
-	.dw SHZ3_Boss_StoreChildIndex
+	.dl SHZ3_Boss_StoreChildIndex
 .db $80, $00
 	.dl VF_DoNothing
 .db $FF, $05		;set state = $08
@@ -408,14 +408,14 @@ SHZ3_Boss_State_07:		;$9D18
 ;state 8 - wait for player to destroy egg capsules & birds
 SHZ3_Boss_State_08:		;$9D65
 .db $10, $00
-	.dw SHZ3_Boss_CheckNextState
+	.dl SHZ3_Boss_CheckNextState
 .db $FF, $00
 
 
 ;state 9 - move the big bird up into view
 SHZ3_Boss_State_09:		;$9D6B
 .db $FF, $02
-	.dw SHZ3_Boss_SetInitialPosision
+	.dl SHZ3_Boss_SetInitialPosision
 .db $FF, $04			;set the boss' speed (move up)
 	.dw $0000			;horizontal
 	.dw $FF00			;vertical
@@ -439,41 +439,41 @@ SHZ3_Boss_State_09:		;$9D6B
 ;state 0A - main boss
 SHZ3_Boss_State_0A:		;$9D92
 .db $08, $02
-	.dw SHZ3_Boss_MainLogic
+	.dl SHZ3_Boss_MainLogic
 .db $08, $05
-	.dw SHZ3_Boss_MainLogic
+	.dl SHZ3_Boss_MainLogic
 .db $08, $02
-	.dw SHZ3_Boss_MainLogic
+	.dl SHZ3_Boss_MainLogic
 .db $08, $05
-	.dw SHZ3_Boss_MainLogic
+	.dl SHZ3_Boss_MainLogic
 .db $10, $01
-	.dw SHZ3_Boss_MainLogic
+	.dl SHZ3_Boss_MainLogic
 .db $10, $03
-	.dw SHZ3_Boss_MainLogic
+	.dl SHZ3_Boss_MainLogic
 .db $FF, $06			;spawn a fireball object
 	.db Object_SHZ3_Boss_Fireball
 	.dw $0010
 	.dw $FFD0
 	.db $00
 .db $10, $03
-	.dw SHZ3_Boss_MainLogic
+	.dl SHZ3_Boss_MainLogic
 .db $08, $02
-	.dw SHZ3_Boss_MainLogic
+	.dl SHZ3_Boss_MainLogic
 .db $08, $05
-	.dw SHZ3_Boss_MainLogic
+	.dl SHZ3_Boss_MainLogic
 .db $08, $02
-	.dw SHZ3_Boss_MainLogic
+	.dl SHZ3_Boss_MainLogic
 .db $08, $05
-	.dw SHZ3_Boss_MainLogic
+	.dl SHZ3_Boss_MainLogic
 .db $FF, $00
 
 
 ;state 0B - after boss <> player collision
 SHZ3_Boss_State_0B:		;$9DC8
 .db $03, $04
-	.dw SHZ3_Boss_CollisionWithPlayer
+	.dl SHZ3_Boss_CollisionWithPlayer
 .db $04, $06
-	.dw SHZ3_Boss_CollisionWithPlayer
+	.dl SHZ3_Boss_CollisionWithPlayer
 .db $FF, $00
 
 
@@ -522,7 +522,7 @@ SHZ3_Boss_State_0C:		;$9DD2
 .db $40, $06
 	.dl VF_Engine_UpdateObjectPosition
 .db $03, $04
-	.dw SHZ3_Boss_SetBossDestroyed
+	.dl SHZ3_Boss_SetBossDestroyed
 .db $FF, $00
 
 ;FIXME: Unused. State $0D does not exist in the above despatch table.
@@ -541,7 +541,7 @@ SHZ3_Boss_State_0D:		;$9EE2
 .db $20, $06
 	.dl VF_Engine_UpdateObjectPosition
 .db $03, $04
-	.dw SHZ3_Boss_SetBossDestroyed
+	.dl SHZ3_Boss_SetBossDestroyed
 .db $FF, $00
 
 
@@ -756,8 +756,8 @@ SHZ3_Boss_ReleaseCamera:	;$9F59
 ;*	Logic for the SHZ boss' fireballs objects	*
 ;************************************************
 Logic_SHZ3_Fireball:		;$9F67
-.dw SHZ3_Fireball_State_00
-.dw SHZ3_Fireball_State_01
+.dl SHZ3_Fireball_State_00
+.dl SHZ3_Fireball_State_01
 
 ;state 00 - initialiser
 SHZ3_Fireball_State_00:		;$9F6B
@@ -769,11 +769,11 @@ SHZ3_Fireball_State_00:		;$9F6B
 ;state 01 - main logic
 SHZ3_Fireball_State_01:		;$9F70
 .db $06, $01
-	.dw SHZ3_Fireball_MainLogic
+	.dl SHZ3_Fireball_MainLogic
 .db $06, $02
-	.dw SHZ3_Fireball_MainLogic
+	.dl SHZ3_Fireball_MainLogic
 .db $06, $03
-	.dw SHZ3_Fireball_MainLogic
+	.dl SHZ3_Fireball_MainLogic
 .db $FF, $00
 
 ;moves the fireball towards the player & destroys

@@ -3,7 +3,8 @@
 #include "object_logic\bank31_logic.asm"
 
 ;$BCCB
-;#include "player_sprite_defs.asm"
+#include	"player_sprite_defs.asm"
+	
 
 ;bank 31 is separate from s2.asm, so a few includes and routines are here to fix some bugs.
 .nolist
