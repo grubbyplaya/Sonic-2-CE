@@ -3,9 +3,9 @@
 
 
 DATA_B30_8E2B:
-.dw DATA_B30_8E31
-.dw DATA_B30_8E36
-.dw DATA_B30_8E4D
+.dl DATA_B30_8E31
+.dl DATA_B30_8E36
+.dl DATA_B30_8E4D
 
 DATA_B30_8E31:
 .db $FF, $05
@@ -16,20 +16,20 @@ DATA_B30_8E36:
 	.dw $FE00
 	.dw $0000
 .db $20, $01
-	.dw LABEL_B30_8E57
+	.dl LABEL_B30_8E57
 .db $FF, $05
 	.db  $02
 .db $FF, $02
-	.dw LABEL_B30_8E69
+	.dl LABEL_B30_8E69
 .db $20, $01
-	.dw LABEL_B30_8E57
+	.dl LABEL_B30_8E57
 .db $FF, $00
 
 DATA_B30_8E4D:
 .db $04, $03
-	.dw LABEL_B30_8EBB
+	.dl LABEL_B30_8EBB
 .db $04, $04
-	.dw LABEL_B30_8EBB
+	.dl LABEL_B30_8EBB
 .db $FF, $00
 
 LABEL_B30_8E57:
@@ -243,48 +243,48 @@ DATA_B30_8FC6:
 .db $D0, $8F
 DATA_B30_8FCA:
 .db $20, $00
-	.dw LABEL_B30_9020
+	.dl LABEL_B30_9020
 .db $FF, $03
 DATA_B30_8FD0:
 .db $FF, $04
 	.dw $FF00
 	.dw $0000
 .db $08, $01
-	.dw LABEL_B30_9026
+	.dl LABEL_B30_9026
 .db $08, $02
-	.dw LABEL_B30_9026
+	.dl LABEL_B30_9026
 .db $08, $01
-	.dw LABEL_B30_9026
+	.dl LABEL_B30_9026
 .db $08, $02
-	.dw LABEL_B30_9026
+	.dl LABEL_B30_9026
 .db $FF, $04
 	.dw $0000
 	.dw $0400
 .db $04, $01
-	.dw LABEL_B30_9026
+	.dl LABEL_B30_9026
 .db $04, $02
-	.dw LABEL_B30_9026
+	.dl LABEL_B30_9026
 .db $04, $01
-	.dw LABEL_B30_9026
+	.dl LABEL_B30_9026
 .db $04, $02
-	.dw LABEL_B30_9026
+	.dl LABEL_B30_9026
 .db $FF, $04
 	.dw $FC00
 	.dw $0000
 .db $04, $01
-	.dw LABEL_B30_9026
+	.dl LABEL_B30_9026
 .db $04, $02
-	.dw LABEL_B30_9026
+	.dl LABEL_B30_9026
 .db $04, $01
-	.dw LABEL_B30_9026
+	.dl LABEL_B30_9026
 .db $04, $02
-	.dw LABEL_B30_9026
+	.dl LABEL_B30_9026
 .db $04, $01
-	.dw LABEL_B30_9026
+	.dl LABEL_B30_9026
 .db $04, $02
-	.dw LABEL_B30_9026
+	.dl LABEL_B30_9026
 .db $20, $02
-	.dw LABEL_B30_9038
+	.dl LABEL_B30_9038
 .db $FF, $00
 
 LABEL_B30_9020:
@@ -307,22 +307,22 @@ LABEL_B30_9038:
 	ret	
 
 DATA_B30_903D:
-.dw DATA_B30_905D
-.dw DATA_B30_9069
-.dw DATA_B30_906F
-.dw DATA_B30_9075
-.dw DATA_B30_907F
-.dw DATA_B30_90A4
-.dw DATA_B30_90E5
-.dw DATA_B30_914D
-.dw DATA_B30_9157
-.dw DATA_B30_91FD
-.dw DATA_B30_920B
-.dw DATA_B30_9215
-.dw DATA_B30_921F
-.dw DATA_B30_9229
-.dw DATA_B30_9266
-.dw DATA_B30_9270
+.dl DATA_B30_905D
+.dl DATA_B30_9069
+.dl DATA_B30_906F
+.dl DATA_B30_9075
+.dl DATA_B30_907F
+.dl DATA_B30_90A4
+.dl DATA_B30_90E5
+.dl DATA_B30_914D
+.dl DATA_B30_9157
+.dl DATA_B30_91FD
+.dl DATA_B30_920B
+.dl DATA_B30_9215
+.dl DATA_B30_921F
+.dl DATA_B30_9229
+.dl DATA_B30_9266
+.dl DATA_B30_9270
 
 DATA_B30_905D:
 .db $FF, $08
@@ -330,128 +330,128 @@ DATA_B30_905D:
 .db $FF, $09
 	.db $09
 .db $E0, $01
-	.dw LABEL_B30_9285
+	.dl LABEL_B30_9285
 .db $FF, $03
 DATA_B30_9069:
 .db $E0, $01
-	.dw LABEL_B30_929B
+	.dl LABEL_B30_929B
 .db $FF, $00
 
 DATA_B30_906F:
 .db $E0, $01
-	.dw LABEL_B30_92B3
+	.dl LABEL_B30_92B3
 .db $FF, $00
 
 DATA_B30_9075:
 .db $80, $01
-	.dw LABEL_B30_934A
+	.dl LABEL_B30_934A
 .db $20, $01
-	.dw LABEL_B30_92D7
+	.dl LABEL_B30_92D7
 .db $FF, $00
 
 DATA_B30_907F:
 .db $10, $01
-	.dw LABEL_B30_934A
+	.dl LABEL_B30_934A
 .db $FF, $06
 	.db $53
 	.dw $FFF0
 	.dw $FFEA
 	.db $00
 .db $40, $02
-	.dw LABEL_B30_934A
+	.dl LABEL_B30_934A
 .db $FF, $06
 	.db $53
 	.dw $FFF0
 	.dw $FFDA
 	.db $04
 .db $C0, $01
-	.dw LABEL_B30_934A
+	.dl LABEL_B30_934A
 .db $FF, $05
 	.db $03
 .db $80, $02
-	.dw LABEL_B30_934A
+	.dl LABEL_B30_934A
 .db $FF, $00
 
 DATA_B30_90A4:
 .db $10, $01
-	.dw LABEL_B30_934A
+	.dl LABEL_B30_934A
 .db $FF, $06
 	.db $54
 	.dw $0000
 	.dw $FFFC
 	.db $00
 .db $18, $02
-	.dw LABEL_B30_934A
+	.dl LABEL_B30_934A
 .db $FF, $06
 	.db $54
 	.dw $0000
 	.dw $FFFC
 	.db $04
 .db $18, $02
-	.dw LABEL_B30_934A
+	.dl LABEL_B30_934A
 .db $FF, $06
 	.db $54
 	.dw $0000
 	.dw $FFFC
 	.db $00
 .db $18, $02
-	.dw LABEL_B30_934A
+	.dl LABEL_B30_934A
 .db $FF, $06
 	.db $54
 	.dw $0000
 	.dw $FFFC
 	.db $04
 .db $18, $02
-	.dw LABEL_B30_934A
+	.dl LABEL_B30_934A
 .db $60, $01
-	.dw LABEL_B30_934A
+	.dl LABEL_B30_934A
 .db $FF, $05
 	.db $03
 .db $80, $02
-	.dw LABEL_B30_934A
+	.dl LABEL_B30_934A
 .db $FF, $00
 
 DATA_B30_90E5:
 .db $FF, $02
-	.dw LABEL_B30_9136
+	.dl LABEL_B30_9136
 .db $04, $01
-	.dw LABEL_B30_9326
+	.dl LABEL_B30_9326
 .db $FF, $02
-	.dw LABEL_B30_913C
+	.dl LABEL_B30_913C
 .db $04, $02
-	.dw LABEL_B30_9326
+	.dl LABEL_B30_9326
 .db $FF, $02
-	.dw LABEL_B30_9136
+	.dl LABEL_B30_9136
 .db $06, $01
-	.dw LABEL_B30_9326
+	.dl LABEL_B30_9326
 .db $FF, $02
-	.dw LABEL_B30_913C
+	.dl LABEL_B30_913C
 .db $28, $02
-	.dw LABEL_B30_9326
+	.dl LABEL_B30_9326
 .db $FF, $02
-	.dw LABEL_B30_9136
+	.dl LABEL_B30_9136
 .db $FF, $02
-	.dw LABEL_B30_9142
+	.dl LABEL_B30_9142
 .db $10, $01
-	.dw LABEL_B30_9326
+	.dl LABEL_B30_9326
 .db $10, $02
-	.dw LABEL_B30_9326
+	.dl LABEL_B30_9326
 .db $10, $01
-	.dw LABEL_B30_9326
+	.dl LABEL_B30_9326
 .db $10, $02
-	.dw LABEL_B30_9326
+	.dl LABEL_B30_9326
 .db $10, $01
-	.dw LABEL_B30_9326
+	.dl LABEL_B30_9326
 .db $10, $02
-	.dw LABEL_B30_9326
+	.dl LABEL_B30_9326
 .db $FF, $05
 	.db $03
 .db $FF, $02
-	.dw LABEL_B30_9148
+	.dl LABEL_B30_9148
 .db $FF, $02
-	.dw LABEL_B30_913C
+	.dl LABEL_B30_913C
 .db $80, $02
-	.dw LABEL_B30_934A
+	.dl LABEL_B30_934A
 .db $FF, $00
 
 LABEL_B30_9136:
@@ -476,14 +476,14 @@ LABEL_B30_9148:
 
 DATA_B30_914D:
 .db $08, $03
-	.dw	LABEL_B30_933A
+	.dl LABEL_B30_933A
 .db $08, $04
-	.dw	LABEL_B30_933A
+	.dl LABEL_B30_933A
 .db $FF, $00
 
 DATA_B30_9157:
 .db $FF, $02
-	.dw LABEL_B30_913C
+	.dl LABEL_B30_913C
 .db $FF, $02
 	.dl LABEL_200 + $120
 .db $08, $03
@@ -525,7 +525,7 @@ DATA_B30_9157:
 	.dw $FFE8
 	.db $07
 .db $FF, $02
-	.dw LABEL_B30_91E9
+	.dl LABEL_B30_91E9
 .db $08, $0A
 	.dl LABEL_200 + $2A
 .db $FF, $06
@@ -534,12 +534,12 @@ DATA_B30_9157:
 	.dw $FFF4
 	.db $05
 .db $FF, $02
-	.dw LABEL_B30_91F3
+	.dl LABEL_B30_91F3
 .db $FF, $04
 	.dw $05A0
 	.dw $FC00
 .db $FF, $02
-	.dw LABEL_B30_91CA
+	.dl LABEL_B30_91CA
 .db $FF, $05
 	.db $09
 .db $08, $0A
@@ -577,32 +577,32 @@ LABEL_B30_91F3:
 
 DATA_B30_91FD:
 .db $FF, $02
-	.dw LABEL_B30_91CF
+	.dl LABEL_B30_91CF
 .db $08, $06
-	.dw LABEL_B30_9370
+	.dl LABEL_B30_9370
 .db $08, $07
-	.dw LABEL_B30_9370
+	.dl LABEL_B30_9370
 .db $FF, $00
 
 DATA_B30_920B:
 .db $08, $06
-	.dw LABEL_B30_93C2
+	.dl LABEL_B30_93C2
 .db $08, $07
-	.dw LABEL_B30_93C2
+	.dl LABEL_B30_93C2
 .db $FF, $00
 
 DATA_B30_9215:
 .db $08, $06
-	.dw LABEL_B30_9370
+	.dl LABEL_B30_9370
 .db $08, $07
-	.dw LABEL_B30_9370
+	.dl LABEL_B30_9370
 .db $FF, $00
 
 DATA_B30_921F:
 .db $08, $08
-	.dw LABEL_B30_9401
+	.dl LABEL_B30_9401
 .db $08, $09
-	.dw LABEL_B30_9401
+	.dl LABEL_B30_9401
 .db $FF, $00
 
 DATA_B30_9229:
@@ -626,9 +626,9 @@ DATA_B30_9229:
 .db $08, $09
 	.dl LABEL_200 + $2A
 .db $FF, $02
-	.dw LABEL_B30_9136
+	.dl LABEL_B30_9136
 .db $FF, $02
-	.dw LABEL_B30_9260
+	.dl LABEL_B30_9260
 .db $FF, $05
 	.db $0E
 .db $08, $09
@@ -643,9 +643,9 @@ LABEL_B30_9260:
 
 DATA_B30_9266:
 .db $02, $08
-	.dw LABEL_B30_942E
+	.dl LABEL_B30_942E
 .db $03, $00
-	.dw LABEL_B30_942E
+	.dl LABEL_B30_942E
 .db $FF, $00
 
 DATA_B30_9270:
@@ -654,11 +654,11 @@ DATA_B30_9270:
 .db $FF, $08
 	.db $1A
 .db $FF, $02
-	.dw LABEL_B30_913C
+	.dl LABEL_B30_913C
 .db $C0, $00
 	.dl LABEL_200 + $2A
 .db $E0, $00
-	.dw LABEL_B30_943A
+	.dl LABEL_B30_943A
 .db $FF, $00
 
 
@@ -722,17 +722,17 @@ LABEL_B30_92D7:
 	ret	
 
 DATA_B30_92F8:
-.dw DATA_B30_930E
-.dw DATA_B30_930E
-.dw DATA_B30_930E
-.dw DATA_B30_9316
-.dw DATA_B30_9316
-.dw DATA_B30_9316
-.dw DATA_B30_931E
-.dw DATA_B30_931E
-.dw DATA_B30_931E
-.dw DATA_B30_931E
-.dw DATA_B30_931E
+.dl DATA_B30_930E
+.dl DATA_B30_930E
+.dl DATA_B30_930E
+.dl DATA_B30_9316
+.dl DATA_B30_9316
+.dl DATA_B30_9316
+.dl DATA_B30_931E
+.dl DATA_B30_931E
+.dl DATA_B30_931E
+.dl DATA_B30_931E
+.dl DATA_B30_931E
 
 DATA_B30_930E:
 .db $04, $05, $06, $04, $05, $06, $04, $05
@@ -888,47 +888,47 @@ LABEL_B30_943A:
 	ret	
 
 DATA_B30_9456:
-.dw DATA_B30_946C
-.dw DATA_B30_9472
-.dw DATA_B30_949E
-.dw DATA_B30_94C4
-.dw DATA_B30_94FF
-.dw DATA_B30_9505
-.dw DATA_B30_9516
-.dw DATA_B30_9602
-.dw DATA_B30_960C
-.dw DATA_B30_9637
-.dw DATA_B30_9484
+.dl DATA_B30_946C
+.dl DATA_B30_9472
+.dl DATA_B30_949E
+.dl DATA_B30_94C4
+.dl DATA_B30_94FF
+.dl DATA_B30_9505
+.dl DATA_B30_9516
+.dl DATA_B30_9602
+.dl DATA_B30_960C
+.dl DATA_B30_9637
+.dl DATA_B30_9484
 
 DATA_B30_946C:
 .db $E0, $00
-	.dw LABEL_B30_9556
+	.dl LABEL_B30_9556
 .db $FF, $00
 
 DATA_B30_9472:
 .db $04, $0E
-	.dw LABEL_B30_95B0
+	.dl LABEL_B30_95B0
 .db $04, $0F
-	.dw LABEL_B30_95B0
+	.dl LABEL_B30_95B0
 .db $04, $10
-	.dw LABEL_B30_95B0
+	.dl LABEL_B30_95B0
 .db $04, $11
-	.dw LABEL_B30_95B0
+	.dl LABEL_B30_95B0
 .db $FF, $00
 
 DATA_B30_9484:
 .db $08, $0C
-	.dw LABEL_B30_95A0
+	.dl LABEL_B30_95A0
 .db $08, $0D
-	.dw LABEL_B30_95A0
+	.dl LABEL_B30_95A0
 .db $08, $0A
-	.dw LABEL_B30_95A0
+	.dl LABEL_B30_95A0
 .db $08, $0B
-	.dw LABEL_B30_95A0
+	.dl LABEL_B30_95A0
 .db $08, $0C
-	.dw LABEL_B30_95A0
+	.dl LABEL_B30_95A0
 .db $08, $0D
-	.dw LABEL_B30_95A0
+	.dl LABEL_B30_95A0
 .db $FF, $00
 
 DATA_B30_949E:
@@ -956,13 +956,13 @@ DATA_B30_94C4:
 .db $C0, $15
 	.dl LABEL_200 + $2A
 .db $FF, $02
-	.dw LABEL_B30_94DA
+	.dl LABEL_B30_94DA
 .db $20, $15
 	.dl LABEL_200 + $2A
 .db $E0, $15
 	.dl LABEL_200 + $2A
 .db $E0, $15
-	.dw LABEL_B30_94E0
+	.dl LABEL_B30_94E0
 .db $FF, $00
 
 
@@ -985,7 +985,7 @@ LABEL_B30_94E0:
 
 DATA_B30_94FF:
 .db $06, $12
-	.dw LABEL_B30_951C
+	.dl LABEL_B30_951C
 .db $FF, $00
 
 DATA_B30_9505
@@ -1115,14 +1115,14 @@ LABEL_B30_95FE:
 
 DATA_B30_9602:
 .db $02, $01
-	.dw LABEL_B30_942E
+	.dl LABEL_B30_942E
 .db $03, $00
-	.dw LABEL_B30_942E
+	.dl LABEL_B30_942E
 .db $FF, $00
 
 DATA_B30_960C:
 .db $FF, $02
-	.dw LABEL_B30_913C
+	.dl LABEL_B30_913C
 .db $FF, $04
 	.dw $0000
 	.dw $FFC0
@@ -1176,15 +1176,15 @@ DATA_B30_9637:
 .db $FF, $00
 
 DATA_B30_9671:
-.dw DATA_B30_9677
-.dw DATA_B30_96A6
-.dw DATA_B30_96E8
+.dl DATA_B30_9677
+.dl DATA_B30_96A6
+.dl DATA_B30_96E8
 
 DATA_B30_9677:
 .db $FF, $05
 	.db $01
 .db $E0, $00
-	.dw LABEL_B30_9680
+	.dl LABEL_B30_9680
 .db $FF, $00
 
 LABEL_B30_9680:
@@ -1205,17 +1205,17 @@ LABEL_B30_9680:
 
 DATA_B30_96A6:
 .db $06, $01
-	.dw LABEL_B30_96C0
+	.dl LABEL_B30_96C0
 .db $06, $02
-	.dw LABEL_B30_96C0
+	.dl LABEL_B30_96C0
 .db $06, $03
-	.dw LABEL_B30_96C0
+	.dl LABEL_B30_96C0
 .db $06, $04
-	.dw LABEL_B30_96C0
+	.dl LABEL_B30_96C0
 .db $06, $05
-	.dw LABEL_B30_96C0
+	.dl LABEL_B30_96C0
 .db $06, $06
-	.dw LABEL_B30_96C0
+	.dl LABEL_B30_96C0
 .db $FF, $00
 
 LABEL_B30_96C0:
@@ -1243,9 +1243,9 @@ DATA_B30_96E8:
 	.dw $FE00
 	.dw $0180
 .db $06, $01
-	.dw LABEL_B30_96F8
+	.dl LABEL_B30_96F8
 .db $06, $02
-	.dw LABEL_B30_96F8
+	.dl LABEL_B30_96F8
 .db $FF, $00
 
 
@@ -1254,17 +1254,17 @@ LABEL_B30_96F8:
 	ret	
 
 DATA_B30_96FC:
-.dw DATA_B30_9706
-.dw DATA_B30_9735
-.dw DATA_B30_976F
-.dw DATA_B30_9808
-.dw DATA_B30_981C
+.dl DATA_B30_9706
+.dl DATA_B30_9735
+.dl DATA_B30_976F
+.dl DATA_B30_9808
+.dl DATA_B30_981C
 
 DATA_B30_9706:
 .db $FF, $05
 	.db $01
 .db $E0, $00
-	.dw LABEL_B30_970F
+	.dl LABEL_B30_970F
 .db $FF, $00
 
 
@@ -1286,9 +1286,9 @@ LABEL_B30_970F:
 
 DATA_B30_9735:
 .db $06, $01
-	.dw LABEL_B30_973F
+	.dl LABEL_B30_973F
 .db $06, $02
-	.dw LABEL_B30_973F
+	.dl LABEL_B30_973F
 .db $FF, $00
 
 LABEL_B30_973F:
@@ -1318,78 +1318,78 @@ DATA_B30_976F:
 	.dw $0000
 	.dw $0000
 .db $08, $01
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $08, $02
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $08, $01
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $08, $02
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $08, $01
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $08, $02
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $08, $01
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $08, $02
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $FF, $04
 	.dw $0040
 	.dw $0000
 .db $06, $01
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $06, $02
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $FF, $04
 	.dw $0000
 	.dw $0000
 .db $06, $01
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $06, $02
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $06, $01
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $06, $02
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $06, $01
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $06, $02
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $FF, $04
 	.dw $FFE0
 	.dw $0000
 .db $06, $01
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $FF, $04
 	.dw $0000
 	.dw $0000
 .db $06, $02
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $06, $01
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $06, $02
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $06, $01
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $06, $02
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $06, $01
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $06, $02
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $06, $01
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $06, $02
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $FF, $04
 	.dw $0000
 	.dw $0000
 .db $06, $01
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $FF, $05
 	.db $03
 .db $06, $02
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $FF, $00
 
 DATA_B30_9808:
@@ -1397,9 +1397,9 @@ DATA_B30_9808:
 	.dw $0040
 	.dw $FFC0
 .db $06, $01
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $06, $02
-	.dw LABEL_B30_9818
+	.dl LABEL_B30_9818
 .db $FF, $00
 
 
@@ -1409,9 +1409,9 @@ LABEL_B30_9818:
 
 DATA_B30_981C:
 .db $06, $01
-	.dw LABEL_B30_9826
+	.dl LABEL_B30_9826
 .db $06, $02
-	.dw LABEL_B30_9826
+	.dl LABEL_B30_9826
 .db $FF, $00
 
 LABEL_B30_9826:

@@ -4,17 +4,17 @@
 ;*	counter.										*
 ;****************************************************
 Logic_HideTimerRings:			;$AF3B
-.dw HideTimerRings_State_00
-.dw HideTimerRings_State_01
+.dl HideTimerRings_State_00
+.dl HideTimerRings_State_01
 
 HideTimerRings_State_00:		;$AF3F
 .db $01, $00
-	.dw HideTimerRings_Init
+	.dl HideTimerRings_Init
 .db $FF, $00
 
 HideTimerRings_State_01:		;$AF45
 .db $80, $00
-	.dw HideTimerRings_MoveSprites
+	.dl HideTimerRings_MoveSprites
 .db $FF, $00
 
 
@@ -38,7 +38,7 @@ _:	dec	  (hl)			;move the sprite up
 	inc     hl				;move to the next sprite entry
 	djnz    -_
 
-	ld      hl, $DB38		;check the first sprite's vpos attribute
+	ld      hl, gameMem+$DB38		;check the first sprite's vpos attribute
 	ld      a, (hl)
 	cp      $D8
 	ret     nc				;return if the vpos attribute < 216

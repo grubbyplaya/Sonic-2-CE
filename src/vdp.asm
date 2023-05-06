@@ -13,9 +13,7 @@
 ; -----------------------------------------------------------------------------
 VDP_InitRegisters:
 	; loop 11 times to copy to each register
-	ld	b, $0B		; FIXME: more efficient to load BC with one opcode
-	; load C with the first latch byte
-	ld	c, $80
+	ld	bc, $0B
 	; load DE with a pointer to the RAM cached copies 
 	; of the VDP registers
 	ld	de, VDPRegister0
@@ -23,16 +21,7 @@ VDP_InitRegisters:
 	ld	hl, _VDP_InitRegisters_RegValues
 	ei
 	; loop over each register
-_:	ld	a, (hl)
-	ld   (Ports_VDP_Control), a
-	ld	(de), a
-	ld	a, c
-	ld   (Ports_VDP_Control), a
-	inc   c
-	inc   de
-	inc   hl
-	djnz  -_
-	
+	ldir	
 	ret
 
 _VDP_InitRegisters_RegValues:
@@ -103,11 +92,15 @@ VDP_ReadStatus:	 ; $1325
 ;	None.
 ; -----------------------------------------------------------------------------
 VDP_SetAddress:	 ; Ported
-	push  af	
+	push  af
+	push	hl	
 	ld	a, h
 	or	$40
 	ld	h, a
+	ld	de, SegaVRAM
+	add	hl, de
 	ld	(VRAMPointer), hl	
+	pop	hl
 	pop   af	
 	ret
 

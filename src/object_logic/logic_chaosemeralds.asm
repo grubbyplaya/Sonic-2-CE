@@ -1,19 +1,19 @@
 Logic_ChaosEmerald:            ;$B7D2
-.dw ChaosEmerald_State_00
-.dw ChaosEmerald_State_01
-.dw ChaosEmerald_State_02
+.dl ChaosEmerald_State_00
+.dl ChaosEmerald_State_01
+.dl ChaosEmerald_State_02
 
 
 ; constructor
 ChaosEmerald_State_00:      ;$B7D8
 .db $E0, $00
-    .dw ChaosEmerald_Init
+    .dl ChaosEmerald_Init
 .db $FF, $00
 
 ; main logic
 ChaosEmerald_State_01:      ;$B7DE
 .db $E0, $01
-    .dw ChaosEmerald_CheckCollisions
+    .dl ChaosEmerald_CheckCollisions
 .db $FF, $00
 
 ; destructor
@@ -21,7 +21,7 @@ ChaosEmerald_State_02:      ;$B7E4
 .db $F0, $00
     .dl VF_DoNothing
 .db $60, $00
-    .dw ChaosEmerald_Destruct
+    .dl ChaosEmerald_Destruct
 .db $FF, $00
 
 

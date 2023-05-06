@@ -1,5 +1,4 @@
-#define	Version=2
-
+.ORG $D09466
 Layout_UGZ3:
 #ifdef Version=2
 #import "layout\ugz\layout_ugz3.bin"

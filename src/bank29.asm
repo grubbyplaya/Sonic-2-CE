@@ -1,4 +1,5 @@
-#include	"includes/ti84pce.inc"
+.ORG $D09466
+
 #define gameMem 	cmdPixelShadow-$C000
 
 ;2 extra bytes from the ghz control sequence (unused).
@@ -45,7 +46,7 @@ _:	ld      (hl), a
 LABEL_B29_B40C:
 	ld      a, (gameMem+$D46D)
 	or      a
-	jp      nz, LABEL_B29_B422
+	jr      nz, LABEL_B29_B422
 	ld      hl, (gameMem+$D46F)
 	dec     hl
 	ld      (gameMem+$D46F), hl
@@ -59,7 +60,7 @@ LABEL_B29_B40C:
 
 LABEL_B29_B422:
 	dec     a
-	jp      z, LABEL_B29_B433
+	jr      z, LABEL_B29_B433
 	dec     a
 	jp      z, LABEL_B29_B4AF
 	dec     a
@@ -96,19 +97,19 @@ _:	xor     a
 	inc     de
 	ld      a, (hl)			;check for $FF byte
 	inc     a
-	jp      z, LABEL_B29_B4A9
+	jr      z, LABEL_B29_B4A9
 	dec     a
 	sub     $41				;convert from ASCII to char index
 	add     a, a
 	add     a, $12
 	cp      $45
-	jp      c, ++_
+	jr      c, ++_
 	ld      c, $46
 	cp      $E8
-	jp      z, +_
+	jr      z, +_
 	ld      c, $48
 	cp      $EA
-	jp      z, +_
+	jr      z, +_
 	ld      c, $4A
 _:	ld      a, c
 _:	ld      (de), a			;copy char to work RAM
@@ -151,15 +152,15 @@ LABEL_B29_B4AF:
 	ld      ix, gameMem+$D46F
 	ld      iy, gameMem+$DBA0
 _:	bit     7, (ix+$01)
-	jp      z, +_
+	jr      z, +_
 	ld      a, (ix+$02)
 	ld      h, (iy+$00)
 	sub     h
-	jp      c, +_
+	jr      c, +_
 	ld      a, (ix+$02)
 	ld      (iy+$00), a
 	xor     a
-	jp      ++_
+	jr      ++_
 _:	call    LABEL_B29_B4F5
 	xor     a
 	dec     a
@@ -199,7 +200,7 @@ LABEL_B29_B510:
 	dec     hl
 	ld      a, h
 	or      l
-	jp	  z, LABEL_B29_B51C
+	jr	  z, LABEL_B29_B51C
 	ld      (gameMem+$D46F), hl
 	ret     
 
@@ -218,3 +219,5 @@ DATA_B29_B542:
 
 EndSequence_Data_CreditsText:
 #include "end_credits.asm"
+
+#include	"includes/ti84pce.inc"

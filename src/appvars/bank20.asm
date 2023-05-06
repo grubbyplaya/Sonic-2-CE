@@ -21,7 +21,6 @@ Art_Tails_Skid:				;$B740
 Art_Tails_LookingUp:		;$B850
 #import "art\tails\art_tails_look_up.bin"
 
-
 Art_ChaosEmerald_Grey:		;$B960
 #import "art\items\art_ucmp_grey_emerald.bin"
 

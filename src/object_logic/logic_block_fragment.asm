@@ -1,15 +1,15 @@
 Logic_BlockFragment:
-.dw BlockFragment_State_00
-.dw BlockFragment_State_01
+.dl BlockFragment_State_00
+.dl BlockFragment_State_01
 
 BlockFragment_State_00:		;$AC25
 .db $01, $00
-	.dw BlockFragment_State_00_Logic_01
+	.dl BlockFragment_State_00_Logic_01
 .db $FF, $00
 
 BlockFragment_State_01		;$AC2E	
 .db $80, $01
-	.dw BlockFragment_State_01_Logic_01
+	.dl BlockFragment_State_01_Logic_01
 .db $FF, $00
 
 

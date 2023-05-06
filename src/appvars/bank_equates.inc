@@ -187,3 +187,140 @@
 #define Art_Badnik_Fish					$D0D28E
 
 ;Bank 17
+
+#define Art_Sonic_Gliding_Mirrored			$D09466
+#define Art_Sonic_Minecart_Mirrored			$D0B266
+
+;Bank 18
+
+#define Art_Sonic_Loop_Mirrored			$D09466
+#define Art_SEZ_Block					$D0D066
+#define Art_CEZ_Moving_Platform			$D0D0E6
+#define Art_CEZ_Rock					$D0D1AC
+
+;Bank 19
+
+#define Layout_GMZ1					$D09466
+#define Layout_GMZ2					$D0A0CF
+#define Layout_SEZ1					$D0AEF8
+#define Layout_SEZ2					$D0BE30
+#define Art_Intro_Tails					$D0CBD4
+#define Art_Intro_Tails_Eggman			$D0CE60
+
+;Bank 20
+
+#define Art_SEZ_Level_Tiles				$D09466
+#define Art_SEZ2_Level_Tiles				$D0A490
+#define Art_Boss_UGZ					$D0B568
+#define Art_End						$D0C2A8
+#define Art_Tails_Running				$D0C468
+#define Art_Tails_Skid					$D0CEE8
+#define Art_Tails_LookingUp				$D0D0A8
+#define Art_ChaosEmerald_Grey				$D0D268
+#define Art_ChaosEmerald_Blue				$D0D2E8
+#define Art_ChaosEmerald_Green			$D0D368
+#define Art_ChaosEmerald_Pink				$D0D3E8
+#define Art_ChaosEmerald_Red				$D0D468
+#define Art_ChaosEmerald_Yellow			$D0D4E8
+
+;Bank 21
+
+#define Art_ALZ_Level_Tiles				$D09466
+#define Art_ALZ2_Level_Tiles				$D0A556
+#define Art_CEZ_Level_Tiles				$D0B57C
+#define Art_CEZ3_Level_Tiles				$D0C2E4
+
+;Bank 22
+
+#define Mappings32_GMZ					$D09466
+#define Mappings32_SEZ1_3				$D0AEC6
+#define Mappings32_Ending				$D0C586
+
+;Bank 23
+
+#define Mappings32_SEZ2					$D09466
+#define Mappings32_CEZ3					$D0ACC6
+#define Art_SHZ2_Level_Tiles				$D0B666
+#define Layout_UGZ2					$D0C782
+
+;Bank 24
+
+#define Mappings32_CEZ1_2				$D09466
+#define Art_Title_Screen				$D0AB66
+#define Art_CEZ_Boss					$D0BF00
+#define Art_CEZ3_Cloud					$D0C902
+
+;Bank 25
+
+#define UGZ_Title_Pic_Art				$D09466
+#define SHZ_Title_Pic_Art				$D09E06
+#define ALZ_Title_Pic_Art				$D0A876
+#define GHZ_Title_Pic_Art				$D0B226
+#define GMZ_Title_Pic_Art				$D0B8AC
+#define SEZ_Title_Pic_Art				$D0C08C
+#define CEZ_Title_Pic_Art				$D0C50C
+
+#define UGZ_Title_Pic_Mappings			$D0CC6C
+#define SHZ_Title_Pic_Mappings			$D0CD6C
+#define ALZ_Title_Pic_Mappings			$D0CE6C
+#define GHZ_Title_Pic_Mappings			$D0CF6C
+#define GMZ_Title_Pic_Mappings			$D0D06C
+#define SEZ_Title_Pic_Mappings			$D0D16C
+#define CEZ_Title_Pic_Mappings			$D0D26C
+
+;Bank 26
+
+#define Art_GMZ_Boss					$D09466
+#define Art_SHZ_Boss					$D09DA6
+#define Art_ALZ_Boss					$D0AB66
+#define Art_GHZ_Boss					$D0B4E6
+#define Art_SHZ_Rock					$D0C7A6
+#define Art_Block_Fragment				$D0C8C6
+#define Art_Tails						$D0C8F0
+
+;Bank 27
+
+#define Layout_UGZ3					$D09466
+#define Layout_SEZ3					$D09AEA
+#define Layout_CEZ2					$D0A56A
+#define Layout_CEZ3					$D0B1F6
+#define Layout_Good_Ending				$D0B34C
+#define Layout_Bad_Ending				$D0B4C6
+#define Art_Ending_Tiles				$D0B637
+
+;Bank 28
+
+#include "appvars/bank28_equates.inc"
+
+;Bank 29
+
+#define DemoControlSequence_GHZ			$D09468
+#define DemoControlSequence_SHZ			$D0A466
+#define Art_Rings_UGZ					$D0B066
+#define Art_Rings_SHZ1_3				$D0B366
+#define Art_Rings_SHZ2					$D0B666
+#define Art_Rings_ALZ					$D0B966
+#define Art_Rings_GHZ					$D0BC66
+#define Art_Rings_GMZ					$D0BF66
+#define Art_Rings_SEZ					$D0C266
+#define Art_Rings_CEZ					$D0C566
+#define LABEL_B29_B400					$D0C866
+#define LABEL_B29_B40C					$D0C873
+#define LABEL_B29_B422					$D0C88D
+#define LABEL_B29_B433					$D0C8A0
+#define LABEL_B29_B4A9					$D0C91F
+#define LABEL_B29_B4AF					$D0C926
+#define LABEL_B29_B4F5					$D0C972
+#define LABEL_B29_B510					$D0C98E
+#define LABEL_B29_B51C					$D0C99C
+#define DATA_B29_B522					$D0C9A3
+#define DATA_B29_B542					$D0C9C3
+#define EndSequence_Data_CreditsText		$D0C9D3
+
+;Bank 30
+
+#include "appvars/bank30_equates.inc"
+
+;Bank 31
+
+#include "appvars/bank31_equates.inc"

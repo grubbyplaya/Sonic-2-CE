@@ -1,3 +1,5 @@
+.ORG $D09466
+
 Mappings32_CEZ1_2:
 ;#import "mappings\cez\mappings32_cez1_2.bin"
 #include "mappings\cez\mappings32_cez1_2.asm"

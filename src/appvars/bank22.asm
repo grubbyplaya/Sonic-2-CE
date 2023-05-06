@@ -1,3 +1,5 @@
+.ORG $D09466
+
 Mappings32_GMZ:
 ;#import "mappings/gmz/mappings32_gmz.bin"
 #include "mappings/gmz/mappings32_gmz.asm"

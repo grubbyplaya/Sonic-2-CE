@@ -1,3 +1,5 @@
+.ORG $D09466
+
 Mappings32_SEZ2:
 ;#import "mappings\sez\mappings32_sez2.bin"
 #include "mappings\sez\mappings32_sez2.asm"

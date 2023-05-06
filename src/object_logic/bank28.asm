@@ -1,3 +1,5 @@
+.ORG $D09466
+
 DATA_B28_8000:
 .dl DATA_B28_8030
 .dl DATA_B28_8036
@@ -6139,3 +6141,4 @@ _:	ret
 
 DATA_B28_BFAC:
 
+#include "s2.lab"

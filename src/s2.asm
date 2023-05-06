@@ -4,10 +4,6 @@ g#include "includes/ti84pce.inc"
  .db tExtTok, tAsm84CeCmp
 
 #include	"icon.asm"
-
-;#include	"appvars/banks.asm"	;uncomment to include game data. meant for debugging only.
-#include	"appvars.asm"
-#include	"appvars/bank_equates.asm"
 #include	"includes/defines.asm"
 #include	"includes/sms.asm"
 #include	"includes/structures.asm"
@@ -84,11 +80,11 @@ g#include "includes/ti84pce.inc"
 #define CRAM			$E30200
 #define WorkingCRAM		$E30220	;copy of Colour RAM maintained in work RAM.
 
-#define BankSlot0		gameMem+$0400
-#define BankSlot2		plotSScreen		;bank slot 3. In safeRAM instead of gameMem
+#define BankSlot1		saveSScreen		;ROM bank slot 1. Unused.
+#define BankSlot2		plotSScreen		;ROM bank slot 2.
 
 #define LastLevel		$07
-#define LastBankNumber		1 << 5 -1	; must be 2^n-1 since it is used in AND ops
+#define LastBankNumber	1 << 5 -1	; must be 2^n-1 since it is used in AND ops
 
 _START:
 	di
@@ -300,19 +296,16 @@ Engine_Reset:		; $0431
 ;	None.
 ; -----------------------------------------------------------------------------
 Engine_Initialise:
-	call	LABEL_12A3_4		; VDP region/tv detection?
-	;call	VDP_InitRegisters
 	;clear screen?
 	call	Engine_ClearPaletteRAM
 	call	Engine_ClearVRAM
+	call	LoadSave
 	call	Engine_LoadLevelTiles
 	call	LevelSelectCheck
-	;call	VDP_EnableFrameInterrupt
 	;set up 8bpp mode
 	ld	a, lcdBpp8
 	ld	(mpLcdCtrl), a
-	
-	;call	VDP_SetMode2Reg_DisplayOn
+
 LABEL_472:
 	ld	hl, gameMem+$D292
 	set	6, (hl)
@@ -1184,7 +1177,7 @@ _Load_Intro_Level:
 	ld	hl, Bank08			;load background scenery
 	ld	a, $08
 	call	Engine_SwapFrame2
-		call	CheckForBank
+	call	CheckForBank
 
 	ld	hl, $0200
 	call	VDP_SetAddress
@@ -1315,7 +1308,7 @@ LABEL_FB9:
 
 	ld	hl, $2000
 	call	VDP_SetAddress
-	ld	hl, Art_Tile_Screen	;title screen compressed art
+	ld	hl, Art_Title_Screen	;title screen compressed art
 	ld	a, 24
 	xor	a
 	call	LoadTiles			;load the tiles into VRAM
@@ -1557,12 +1550,6 @@ LABEL_129C:
 
 LABEL_12A3_4:
 	ld	bc, $0A96
-
-	;read the VDP status flags
-_:	ld	a, (Ports_VDP_Control)
-	and	a
-	; loop until vblank interrupt is set
-	jp	p, -_
 	
 	; busywait for a while
 _:	dec	bc
@@ -1570,16 +1557,9 @@ _:	dec	bc
 	or	b
 	jp	nz, -_
 
-	; read the VDP status flags again
-	ld	a, (Ports_VDP_Control)
-	and	a
-	ld	a, $01
-	;jump if pending frame interrupt
-	jp	m, +_
+	xor	a
 
-	dec	a
-
-_:	ld	(gameMem+$D12D), a
+	ld	(gameMem+$D12D), a
 	or	a
 	ret	nz
 	
@@ -2130,12 +2110,14 @@ _:	ld	a, (de)
 	and	$3F
 	jr	nz, +_
 	
+	pop	hl
 	push	de
 	ld	de, $0040
 	or	a
 	sbc	hl, de
 	call	VDP_SetAddress	;...and set VRAM pointer
 	pop	de
+	push	hl
 	
 _:	djnz	--_
 
@@ -2966,8 +2948,10 @@ Score_CalculateActTimeScore:		;$1EEE
 	jr	nc, +_
 	ld	a, $20
 
-_:	sub		$20					;subtract 20 seconds and use as
+_:	sub	$20					;subtract 20 seconds and use as
+	ld	l, a
 	add	a, a				;an index into array at $1F70
+	add	a, l
 	ld	l, a
 	ld	h, $00
 	ld	de, DATA_1F70
@@ -2976,7 +2960,14 @@ _:	sub		$20					;subtract 20 seconds and use as
 	ld	e, (hl)				;add the value to the score
 	inc	hl
 	ld	d, (hl)
+	push	hl
+	ld	hl, ramStart
+	add	hl, de
 	ex	de, hl
+	pop	hl
+	inc	hl
+	inc	hl
+
 	jp	Score_AddValue
 
 
@@ -3034,7 +3025,7 @@ _:	ld	l, a
 _:	xor		a
 	ld	(gameMem+$D2A6), a
 	ld	(gameMem+$D2A7), a
-	ld	hl, $D2A5
+	ld	hl, gameMem+$D2A5
 	jp	Score_AddValue
 	
 _:	ld	hl, DATA_1ED0
@@ -3681,8 +3672,10 @@ DemoSequence_ChangeLevel:
 	inc	a
 	and	$07
 	ld	(DemoNumber), a
+	ld	d, a
 	add	a, a
 	add	a, a
+	add	a, d
 	ld	l, a
 	ld	h, $00
 	ld	de, LevelDemoHeaders
@@ -3696,6 +3689,9 @@ DemoSequence_ChangeLevel:
 	ld	e, (hl)
 	inc	hl
 	ld	d, (hl)
+	ld	hl, ramStart
+	add	hl, de
+	ex	de, hl
 	ld	(NextControlByte), de	;where is the control sequence?
 	xor	a
 	ld	(CurrentAct), a		;default to the first act...
@@ -3708,50 +3704,50 @@ DemoSequence_ChangeLevel:
 
 LevelDemoHeaders:
 ;	Level
-;		|	Bank
-;		|	|	Control sequence pointer
+;	|	Bank
+;	|	|	Control sequence pointer
 ;	|----|----|--------|
 ;.db $01, $1D, $00, $90 ;SHZ demo
 
 ;SHZ demo
 .db $01
-.dl Bank29
-.dw DemoControlSequence_SHZ
+.db 29
+.dl DemoControlSequence_SHZ
 
 ;GHZ demo
 .db $03
-.dl Bank29
-.dw DemoControlSequence_GHZ
+.db 29
+.dl DemoControlSequence_GHZ
 
 ;ALZ demo
 .db $02
-.dl Bank08
+.db 08
 .dl DemoControlSequence_ALZ
 
 ;SEZ demo
 .db $05
-.dl Bank30
-.dw DemoControlSequence_SEZ
+.db 30
+.dl DemoControlSequence_SEZ
 
 ;SHZ demo
 .db $01
-.dl Bank29
-.dw DemoControlSequence_SHZ
+.db 29
+.dl DemoControlSequence_SHZ
 
 ;GHZ demo
 .db $03
-.dl Bank29
-.dw DemoControlSequence_GHZ
+.db 29
+.dl DemoControlSequence_GHZ
 
 ;ALZ demo
 .db $02
-.dl Bank08
+.db 08
 .dl DemoControlSequence_ALZ
 
 ;SEZ demo
 .db $05
-.dl Bank30
-.dw DemoControlSequence_SEZ
+.db 30
+.dl DemoControlSequence_SEZ
 
 
 LABEL_2530:
@@ -6678,13 +6674,13 @@ Data_AccelerationValues_Left_UnderWater:		; $3F16
 
 ;gradient delta-v values
 DATA_4016:
-.dl $0000
-.dl $FFE1
-.dl $001F
-.dl $FFE8
-.dl $0018
-.dl $FFF0
-.dl $0010
+.dw $0000
+.dw $FFE1
+.dw $001F
+.dw $FFE8
+.dw $0018
+.dw $FFF0
+.dw $0010
 
 LABEL_4024:
 	res	0, (ix+$03)
@@ -7175,6 +7171,7 @@ LABEL_43BF:
 LABEL_43C5:
 	ld	a, b
 	add	a, a
+	add	a, b
 	ld	e, a
 	ld	d, $00
 	ld	hl, DATA_43D3
@@ -7183,10 +7180,8 @@ LABEL_43C5:
 	inc	hl
 	ld	h, (hl)
 	ld	l, a
-	;push	de
-	ld	de, _START
+	ld	de, ramStart
 	add	hl, de
-	;pop	de
 	jp	(hl)
 
 DATA_43D3:
@@ -8517,7 +8512,7 @@ Engine_LoadLevelHeader:		;$553F
 	ld	d, (hl)
 	push	de
 	pop	iy
-	ld	ix, $D15E		;destination for the level header
+	ld	ix, gameMem+$D15E		;destination for the level header
 	
 	ld	a, (iy+$00)
 	ld	(ix+$04), a	;$D162		- Bank number for 32x32 mappings
@@ -8742,18 +8737,15 @@ _:	rrca
 	ld	de, Camera_MetatileColBuffer		;source of tile data
 	add	hl, de
 	
-	ld	b, $36			;tile count
-	ld	a, (SegaVRAM)		;VRAM data port
-	ld	c, a
+	ld	bc, $0036
 	
 _:	exx
-	ld	a, l			;set VRAM address
-	ld	(SegaVRAM+$0040), hl
+	call	VDP_SetAddress
 
 	add	hl, bc			;increment the VRAM address pointer
 	ld	a, h
 	cp	d				;check that the VRAM address pointer 
-	jp	c, +_			;is within bounds
+	jp	c, +_				;is within bounds
 	
 	sub	e				;pointer not within bounds - adjust value
 	ld	h, a
@@ -8781,7 +8773,7 @@ Engine_LoadMappings32_Row:	;$5920
 _:	add	hl, de			;add block's address to vertical offset value
 
 	exx
-	ld	de, $D1F8
+	ld	de, gameMem+$D1F8
 	exx
 	ld	b, $09
 _:	push	bc
@@ -8869,14 +8861,14 @@ _:	rrca
 	
 	dec	b				;scrolling left - decrement tile count
 		
-_:	ld	(VDP_ScreenMap), hl	;set up to write to the screen map in VRAM
+_:	ld	hl, VDP_ScreenMap	;set up to write to the screen map in VRAM
 
 _:	ld	a, (de)		;write the 2-byte tile value to VRAM
-	ld	(VDP_ScreenMap), a
+	ld	(hl), a
 	inc	de
 	inc	hl
 	ld	a, (de)
-	ld	(VDP_ScreenMap+1), a
+	ld	(hl), a
 	inc	de
 	inc	hl
 	ld	a, l
@@ -8887,7 +8879,7 @@ _:	ld	a, (de)		;write the 2-byte tile value to VRAM
 	ld	de, $0040
 	or	a
 	sbc	hl, de
-	ld	(SegaVRAM+$FFFE), hl
+	ld	($FFFE), hl
 	pop	de
 _:	djnz	--_
 
@@ -9203,10 +9195,13 @@ LABEL_5F73:
 #endif
 
 
-#if Version = 1
+#ifndef Version = 2
 LABEL_5F51:
 	and	$0F
+	ld	e, a
 	add	a, a
+	add	a, e
+	ld	e, a
 	ld	l, a
 	ld	h, $00
 	ld	de, DATA_5F60
@@ -9215,7 +9210,7 @@ LABEL_5F51:
 	inc	hl
 	ld	d, (hl)
 	ex	de, hl
-	ld	de, _START
+	ld	de, ramStart
 	add	hl, de
 	jp	(hl)
 
@@ -9709,7 +9704,9 @@ LABEL_62A7:
 	ret	c
 	cp	$20			;make sure that object type >= 20 & < 40
 	ret	nc
+	ld	e, a
 	add	a, a			;jump based on object type
+	add	a, e
 	ld	e, a
 	ld	d, $00
 	ld	hl, DATA_62BD
@@ -9718,7 +9715,7 @@ LABEL_62A7:
 	inc	hl
 	ld	h, (hl)
 	ld	l, a
-	ld	de, _START
+	ld	de, ramStart
 	add	hl, de
 	jp	(hl)
 	
@@ -9919,9 +9916,11 @@ Engine_AdjustPlayerAfterCollision:		;$63F1
 	ld	a, (ix+$21)	;check the object for collisions
 	and	$0F
 	ret	z				;return if no collisions
-	
+
+	ld	e, a
 	add	a, a			;calculate a jump based on the
-	ld	e, a			;type of collision
+	add	a, e			;type of collision
+	ld	e, a
 	ld	d, $00
 	ld	hl, DATA_6404
 	add	hl, de
@@ -9929,7 +9928,7 @@ Engine_AdjustPlayerAfterCollision:		;$63F1
 	inc	hl
 	ld	h, (hl)
 	ld	l, a
-	ld	de, _START
+	ld	de, ramStart
 	add	hl, de
 	jp	(hl)
 
@@ -10457,7 +10456,9 @@ Logic_ProcessCommand:			;$6675
 	inc	hl
 	ld	(ix+$0E), l		;store an updated pointer to the object's logic
 	ld	(ix+$0F), h
+	ld	l, a
 	add	a, a			;jump based on the value of the command byte
+	add	a, l
 	ld	l, a
 	ld	h, $00
 	ld	de, Logic_CommandVTable
@@ -10466,7 +10467,7 @@ Logic_ProcessCommand:			;$6675
 	inc	hl
 	ld	h, (hl)
 	ld	l, a
-	ld	de, _START
+	ld	de, ramStart
 	add	hl, de
 	jp	(hl)
 
@@ -11021,7 +11022,9 @@ LABEL_6956:
 	call	LABEL_6B61
 	ld	a, (gameMem+$D440)			;wind
 	and	$03
+	ld	e, a
 	add	a, a
+	add	a, e
 	ld	e, a
 	ld	d, $00
 	ld	hl, LABEL_6975
@@ -11030,7 +11033,7 @@ LABEL_6956:
 	inc	hl
 	ld	h, (hl)
 	ld	l, a
-	ld	de, _START
+	ld	de, ramStart
 	add	hl, de
 	jp	(hl)
 
@@ -11311,7 +11314,9 @@ LABEL_6B61:
 	ld	a, (hl)
 	inc	a
 	and	$07
+	ld	e, a
 	add	a, a
+	add	a, e
 	ld	e, a
 	ld	d, $00
 	ld	hl, LABEL_6B85
@@ -11321,7 +11326,7 @@ LABEL_6B61:
 	ld	h, (hl)
 	ld	l, a
 	;push de
-	ld	de, _START
+	ld	de, ramStart
 	add	hl, de
 	;pop de
 	jp	(hl)
@@ -11424,7 +11429,9 @@ LABEL_6C3C:
 	ld	a, (Cllsn_MetaTileSurfaceType)
 	ld	(gameMem+$D366), a
 	and	$7F
+	ld	l, a
 	add	a, a
+	add	a, l
 	ld	l, a
 	ld	h, $00
 	ld	de, Cllsn_MetaTileTriggerFuncPtrs
@@ -11433,7 +11440,7 @@ LABEL_6C3C:
 	inc	hl
 	ld	d, (hl)
 	ex	de, hl
-	ld	de, _START
+	ld	de, ramStart
 	add	hl, de
 	jp	(hl)
 
@@ -13097,8 +13104,10 @@ LABEL_75C5:
 	; fetch the metatile surface type
 	ld	a, (Cllsn_MetaTileSurfaceType)
 	and	$7F
+	ld	l, a
 	add	a, a			;calculate a jump based on the
-	ld	l, a			;block type
+	add	a, l			;block type
+	ld	l, a
 	ld	h, $00
 	ld	de, DATA_75E7
 	add	hl, de
@@ -13106,7 +13115,7 @@ LABEL_75C5:
 	inc	hl
 	ld	d, (hl)
 	ex	de, hl
-	ld	de, _START
+	ld	de, ramStart
 	add	hl, de
 	jp	(hl)
 	
@@ -13225,6 +13234,7 @@ Engine_LoadLevelTiles:		;$763F
 	call	Engine_SwapFrame2
 	
 	; set the vram address pointer
+	ld	hl, $0000
 	ld	l, (iy + 1)
 	ld	h, (iy + 2)
 	call	VDP_SetAddress
@@ -13297,9 +13307,7 @@ _:	; check for the end-of-chain marker
 ; -----------------------------------------------------------------------------
 Engine_LoadLevelPalette:		;$76AD
 	ld	a, (CurrentLevel)
-	ld	b, a
 	add	a, a
-	add	a, b
 	ld	b, a
 	ld	a, (CurrentAct)
 	add	a, b
@@ -13410,7 +13418,9 @@ TitleCard_LoadTiles:		;76EB
 	ld	hl, $0000
 	call	VDP_SetAddress
 	ld	a, (CurrentLevel)		;which level do we need the picture for?
-	add	a, a					;calcuate the offset into the pointer array
+	ld	l, a
+	add	a, a				;calcuate the offset into the pointer array
+	add	a, l
 	add	a, a
 	ld	l, a
 	ld	h, 0
@@ -13420,14 +13430,13 @@ TitleCard_LoadTiles:		;76EB
 	inc	hl
 	ld	d, (hl)
 	push	de
+	inc	hl
 	inc	hl			;get the pointer to the tiles
 	ld	e, (hl)
 	inc	hl
 	ld	d, (hl)
 	ex	de, hl
 	xor	a
-	ld	de, BankSlot2
-	add	hl, de
 	call	LoadTiles		;load the tiles into VRAM
 	pop	de				;load the mappings into VRAM
 	ld	bc, $0810
@@ -13551,16 +13560,6 @@ Engine_ClearVRAM:		; $77F3
 	ld	hl, $D40000
 	ld	de, $D40001
 	ld	bc, VRAMEnd-VRAM
-
-	; write 0s to VRAM
-_:	ld	a, e
-	ld	(hl), $00
-	ldir	
-
-	dec	bc
-	ld	a, b
-	or	c
-	jr	nz, -_
 
 	; FIXME: use tail recursion here.
 	; turn the display on
@@ -13710,7 +13709,9 @@ Engine_HandlePLC_NoBank:	;$78CA
 	jp	nc, Engine_HandlePLC_ChaosEmerald
 
 	sub	$10			;PLC between 0 and $10
+	ld	l, a
 	add	a, a			;load end-of-level art (boss/signpost)
+	add	a, l
 	ld	l, a
 	ld	h, $00
 	ld	de, PLC_EndOfLevelPatterns
@@ -13725,6 +13726,8 @@ Engine_HandlePLC_NoBank:	;$78CA
 ;parse a PLC descriptor and set the variables in RAM
 Engine_HandlePLC_ParseDescriptor:	;$78EB
 	ld	hl, (PLC_Descriptor)
+	ld	de, ramStart
+	add	hl, de
 
 	ld	a, (hl)				;check for the $FF terminator byte
 	cp	$FF
@@ -13779,28 +13782,28 @@ PLC_EndOfLevelPatterns:	;$7924
 ;	$aa, $bb, $cc, $cc, $dd, $dd, $FF
 
 PLC_EOL_PrisonCapsule:
-.dl Art_Prison_Capsule
+.db 07
 	.db $46
 	.dl $0C40
 	.dl Art_Prison_Capsule
 .db $FF ;End of boss prison capsule
 
 PLC_EOL_PrisonCapsuleAnimals:	;End of boss prison capsule animals
-.dl Art_Animals
+.db 07
 	.db $30
 	.dl $1500
 	.dl Art_Animals
 .db $FF
 
 PLC_EOL_SignPost:		;End-of-level signpost
-.dl Art_Signpost
+.dl 07
 	.db $64
 	.dl $0C40
 	.dl Art_Signpost
 .db $FF
 
 PLC_EOL_GMZ_Boss:
-.dl Bank26
+.db 26
 	.db $4A
 	.dl $0C40
 	.dl Art_GMZ_Boss
@@ -13811,43 +13814,43 @@ PLC_EOL_GMZ_Boss:
 .db $FF ;$794A - GMZ Boss
 
 PLC_EOL_SHZ_Boss:
-.dl Bank26
+.db 26
 	.db $6E
 	.dl $0C40
 	.dl Art_SHZ_Boss	;$8940
 .db $FF	;$795C - SHZ Boss
 
 PLC_EOL_ALZ_Boss:
-.dl Bank26
+.db 26
 	.db $4C
 	.dl $0C40
 	.dl Art_ALZ_Boss
-.dl Bank26 + $80	;mirror the tiles
+.db 26 + $80	;mirror the tiles
 	.db $4C
 	.dl $15C0
 	.dl Art_ALZ_Boss
 .db $FF	;$7963 - ALZ Boss
 
 PLC_EOL_GHZ_Boss:		;$7970 - GHZ Boss
-.dl Bank26
+.db 26
 	.db $96
 	.dl $0C40
 	.dl Art_GHZ_Boss	;$A080
 .db $FF
 
 PLC_EOL_UGZ_Boss:		;$7977 - UGZ Boss
-.dl Bank20
+.db 20
 	.db $6A
 	.dl $0C40
 	.dl Art_Boss_UGZ		;$A102
 .db $FF
 
 PLC_EOL_SEZ_Boss:
-.dl Bank07
+.db 07
 	.db $44
 	.dl $0C40
 	.dl Art_SilverSonic
-.dl Bank07 + $80		;mirror the tiles
+.db 07 + $80		;mirror the tiles
 	.db $44
 	.dl $14C0
 	.dl Art_SilverSonic
@@ -13857,7 +13860,7 @@ PLC_EOL_Unknown_2:
 .db $FF
 
 PLC_EOL_Unknown_3:
-.dl Bank26
+.db 26
 	.db $48
 	.dl $0C40
 	.dl Art_Tails	;$B48A
@@ -13897,11 +13900,14 @@ Engine_HandlePLC_ChaosEmerald:	;$7993
 Engine_HandlePLC_MonitorArt:	;$79C7
 	di	;Disable interrupts - we're accessing VRAM
 
-	ld	a, (Art_Monitors)		;swap in bank 7
+	ld	hl, Bank07	;swap in bank 7
+	call	CheckForBank
 	call	Engine_SwapFrame2
 
 	ld	a, (PatternLoadCue)	;calculate an offset into the pointer array
+	ld	l, a
 	add	a, a
+	add	a, l
 	ld	l, a
 	ld	h, $00
 	ld	de, Monitor_Art_Pointers-2
@@ -14000,7 +14006,9 @@ _:	push	bc
 
 UpdateCyclingPaletteBank:		;$7D01
 	ld	a, (iy+0)	;get palette index number
+	ld	l, a
 	add	a, a
+	add	a, l
 	ld	l, a
 	ld	h, $00
 	ld	de, UpdateCyclingPalette_JumpVectors
@@ -14009,7 +14017,7 @@ UpdateCyclingPaletteBank:		;$7D01
 	inc	hl
 	ld	d, (hl)
 	ex	de, hl
-	ld	de, _START
+	ld	de, ramStart
 	add	hl, de
 	jp	(hl)
 
@@ -14190,7 +14198,7 @@ _:	ld	(iy+$02), a
 	add	a, (iy+$02)
 	ld	e, a
 	ld	d, $00
-	ld	hl, DATA_B30_AF5C
+	ld	hl, Alt_Palette_GMZ_Conveyor
 	add	hl, de
 	ld	de, gameMem+$D4D3
 	ld	bc, $0003
@@ -14483,4 +14491,6 @@ ROM_HEADER:				;$7FF0
 #endif
 .db $40				;region code/rom size
 
-#include "object_logic/bank28.asm"
+;#include	"appvars/banks.asm"	;uncomment to include game data. meant for debugging only.
+#include	"appvars.asm"
+#include	"appvars/bank_equates.inc"

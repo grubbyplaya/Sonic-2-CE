@@ -1,26 +1,26 @@
 Logic_AirCountdown:		;$B07A
-.dw DATA_B31_B07E
+.dl DATA_B31_B07E
 
 DATA_B31_B07E:
 .db $01, $00
-	.dw AirCountdown_Init
+	.dl AirCountdown_Init
 .db $FF, $00
 
 DATA_B31_B084:
 .db $78, $06
-	.dw AirCountdown_Update
+	.dl AirCountdown_Update
 .db $78, $05
-	.dw AirCountdown_Update
+	.dl AirCountdown_Update
 .db $78, $04
-	.dw AirCountdown_Update
+	.dl AirCountdown_Update
 .db $78, $03
-	.dw AirCountdown_Update
+	.dl AirCountdown_Update
 .db $78, $02
-	.dw AirCountdown_Update
+	.dl AirCountdown_Update
 .db $78, $01
-	.dw AirCountdown_Update
+	.dl AirCountdown_Update
 .db $02, $01
-	.dw AirCountdown_TimerExpired
+	.dl AirCountdown_TimerExpired
 .db $FF, $01
 
 AirCountdown_Init:		;$B0B4
@@ -81,16 +81,16 @@ AirCountdown_TimerExpired:		;$B109
 	ld	(iy+$19), $00
 
 	ld	hl, $0000			;reset inertia?
-	ld	($D36F), hl
+	ld	(gameMem+$D36F), hl
 
 	res	1, (iy+$22)			;clear "collision at bottom" flag
 
-	ld	($DD04), a
+	ld	(gameMem+$DD04), a
 
 	pop	iy
 
-	ld	hl, ($D176)			;lock camera
-	ld	($D27E), hl
+	ld	hl, (gameMem+$D176)		;lock camera
+	ld	(gameMem+$D27E), hl
 
 	ld	(ix+$00), $FF		;destroy object
 	ret

@@ -4,8 +4,10 @@
 ;	Used by routine at $10BF to load player tile art into VRAM.
 ;================================================================
 
-#macro .dstruct args name BankNum VRAMAddress LineCount
-.db BankNum, VRAMAddress, LineCount
+#macro .dstruct(name, BankNum, VRAMAddress, LineCount)
+.db BankNum
+.dw VRAMAddress
+.db LineCount
 #endmacro
 
 Data_PlayerSprites:

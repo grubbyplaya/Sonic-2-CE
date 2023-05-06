@@ -62,6 +62,7 @@ DrawScreenMap:
 	ld	ixl, $00	;y position of tile (in tiles)
 
 _:	push	bc
+	inc	hl
 	bit	3, (hl)	
 	jr	z, +_
 
@@ -98,26 +99,24 @@ _:	ld	ixh, $00
 GetTileCoordinates:
 	push	hl
 	ld	a, ixl
-	ld	h, a
-	ld	l, $00
-	ld	e, $FF
-
-	push	bc
-	call	Engine_Multiply_8_by_8u
-	pop	bc
-	add	hl, de
+	ld	h, l
+	ld	l, $00	;multiply HL by $0100
+	
+	push	hl
+	push	de
+	pop	hl
 	add	hl, hl
 	add	hl, hl
 	add	hl, hl	;HL stores the Y coordinate
+	pop	hl
 
 	push	hl
-	ld	d, $00
-	ld	e, ixh
-	ld	hl, $0008	;width of tile
-
-	push	bc
-	call	Engine_Multiply_8_by_8u
-	pop	bc
+	ld	h, $00
+	ld	a, ixh
+	ld	l, a
+	add	hl, hl
+	add	hl, hl
+	add	hl, hl	;multiply HL by 8
 
 	ex	de, hl	;DE has the X coordinate
 	pop	hl		;HL has the Y coordinate
@@ -130,12 +129,12 @@ DrawSAT:
 	ld	iy, SAT	;y position
 	ld	ix, SAT+$80	;x position
 	ld	b, $40	;number of SAT entries
-_:	ld	h, $FF
-	ld	e, (iy)
-	push	bc
-	call	Engine_Multiply_8_by_8u
-	add	hl, de
-	pop	bc
+
+_:	ld	h, $00
+	ld	l, (iy)
+	ld	h, l
+	ld	l, $00	;multiply HL by $0100
+
 	ld	d, $00
 	ld	e, (ix)
 	add	hl, de	;HL now has the sprite's coordinate
@@ -147,11 +146,9 @@ _:	ld	h, $FF
 	push	hl
 
 	ld	a, (ix)
-	ld	e, a
-	ld	h, $20
-	push	bc
-	call	Engine_Multiply_8_by_8u
-	pop	bc
+	ld	l, a
+	ld	h, $00
+	call	MultiplyHLBy32
 	
 	ld	de, SegaVRAM
 	add	hl, de	;HL now points to the selected tile
@@ -161,31 +158,34 @@ _:	ld	h, $FF
 	ret
 
 GetScrollOffsets:	;gets the screen map offsets
-	ld	h, 	$FF
+	ld	hl, $0000
 	ld	a, (BackgroundYScroll)
-	ld	e, a
-	call	Engine_Multiply_8_by_8u
-	ld	d, $00
+	ld	h, a
 	ld	a, (BackgroundXScroll)
-	ld	e, a
+	ld	l, a
+	ld	de, RenderedScreenMap
 	add	hl, de
 	ret
 
 GetTilePointer:	;makes DE a pointer to the selected tile
-	ld	e, $20
-	inc	hl
-	ld	a, (hl)
 	dec	hl
+	ld	a, (hl)
 	push	hl
 	ld	l, a
 	ld	h, $00
-	push	bc
-	call	Engine_Multiply_8_by_8u
-	pop	bc
+	call	MultiplyHLBy32
 	ld	de, SegaVRAM+$2000
 	add	hl, de
 	ex	de, hl
 	pop	hl
+	ret
+
+MultiplyHLBy32:
+	add	hl, hl
+	add	hl, hl
+	add	hl, hl
+	add	hl, hl
+	add	hl, hl
 	ret
 
 ; =============================================================================
@@ -202,9 +202,9 @@ GetTilePointer:	;makes DE a pointer to the selected tile
 
 ConvertBGTileTo8bpp:
 	ld	(SaveSP), sp
-	ex de, hl
-	ld sp, hl
-	ex de, hl
+	ex	de, hl
+	ld	sp, hl
+	ex	de, hl
 	ld	c, $20
 	ld	(cursorImage), hl
 _:	ld	a, (hl)
@@ -214,7 +214,7 @@ _:	ld	a, (hl)
 	res	6, a
 	res	7, a
 	cp	$00
-	jr z, +_
+	jr	z, +_
 	ld	h, 0
 	ld	l, a
 	ld	de, CRAM		;load DE into palette
@@ -258,15 +258,15 @@ _:	ld	hl, (cursorImage)
 	dec	c
 	ld	a, c
 	cp	$00
-	jr	nz,	 ----_
+	jr	nz, ----_
 	ld	sp, (SaveSP)
 	ret
 	
 ConvertFGTileTo8bpp:
 	ld	(SaveSP), sp
-	ex de, hl
-	ld sp, hl
-	ex de, hl
+	ex	de, hl
+	ld	sp, hl
+	ex	de, hl
 	ld	c, $20
 	ld	(cursorImage), hl
 _:	ld	a, (hl)
@@ -276,7 +276,7 @@ _:	ld	a, (hl)
 	res	6, a
 	res	7, a
 	cp	$00
-	jr z, +_
+	jr	z, +_
 	ld	h, 0
 	ld	l, a
 	ld	de, CRAM+$10	;load DE into palette
@@ -320,6 +320,6 @@ _:	ld	hl, (cursorImage)
 	dec	c
 	ld	a, c
 	cp	$00
-	jr	nz,	----_
+	jr	nz, ----_
 	ld	sp, (SaveSP)
 	ret

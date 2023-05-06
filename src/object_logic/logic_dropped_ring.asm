@@ -1,38 +1,38 @@
 Logic_DroppedRing:		;$AF72
 DATA_B31_AF72:
-.dw DATA_B31_AF78
-.dw DATA_B31_AF7E
-.dw DATA_B31_AF90
+.dl DATA_B31_AF78
+.dl DATA_B31_AF7E
+.dl DATA_B31_AF90
 
 DATA_B31_AF78:
 .db $01, $00 
-	.dw LABEL_B31_AFAA
+	.dl LABEL_B31_AFAA
 .db $FF, $00
 
 DATA_B31_AF7E:
 .db $04, $01
-	.dw LABEL_B31_B017
+	.dl LABEL_B31_B017
 .db $04, $02
-	.dw LABEL_B31_B017
+	.dl LABEL_B31_B017
 .db $04, $03
-	.dw LABEL_B31_B017
+	.dl LABEL_B31_B017
 .db $04, $04
-	.dw LABEL_B31_B017
+	.dl LABEL_B31_B017
 .db $FF, $00
 
 DATA_B31_AF90:
 .db $04, $05
-	.dw LABEL_B31_B079
+	.dl LABEL_B31_B079
 .db $04, $06
-	.dw LABEL_B31_B079
+	.dl LABEL_B31_B079
 .db $04, $05
-	.dw LABEL_B31_B079
+	.dl LABEL_B31_B079
 .db $04, $06
-	.dw LABEL_B31_B079
+	.dl LABEL_B31_B079
 .db $04, $05
-	.dw LABEL_B31_B079
+	.dl LABEL_B31_B079
 .db $04, $06
-	.dw LABEL_B31_B079
+	.dl LABEL_B31_B079
 .db $FF, $01
 
 

@@ -1,7 +1,7 @@
 CheckForBank: 			;it's bankin' time
  	call	StoreRegisters
-	call 	_Mov9toOP1
- 	call 	_ChkFindSym
+	call	_Mov9toOP1
+ 	call	_ChkFindSym
 	call	DataFound
 	call	PutBankinSlot2
 	call	RestoreRegisters
@@ -19,7 +19,7 @@ SegaSP:	;used to exit the game
 	.dl	$062391
 
 SaveSP:
-	.dl	$221022
+	.dl	$102292
 
 SaveSP2:	;exists to optimize VDP_UpdateSAT_Descending in vdp.asm
 	.dl	$112492
@@ -41,31 +41,30 @@ StoreRegisters:		;stores registers in RAM
 	push	iy
 	ret
 
-;PutBankinSlot1:	;unused, since Sonic 2 only uses one ROM bank.
-	;ex	de, hl		;point hl to appvar
-	;ld	de, BankSlot1	;point de to bank slot	
-	;ld	bc, 17
-	;add	hl, bc
-	;push	hl
-	;pop	ix
-	;ld	b, (ix+1)
-	;ld	c, (ix)
-	;inc	hl
-	;inc	hl
-	;ldir				;copy appvar to bank slot
-	;call	_Arc_Unarc		;archive appvar
-	;ret
+PutBankinSlot1:	;unused, since Sonic 2 only swaps out ROM bank 2.
+	ex	de, hl		;point hl to appvar
+	ld	de, BankSlot1	;point de to bank slot	
+	ld	bc, 17
+	add	hl, bc		;offset hl to entry data
+	push	hl
+	ld	c, (hl)
+	inc	hl
+	ld	b, (hl)
+	inc	hl
+	ldir				;copy appvar to bank slot
+	call	_Arc_Unarc		;archive appvar
+	ret
 
 PutBankinSlot2:
 	ex	de, hl		;point hl to appvar
 	ld	de, BankSlot2	;point de to bank slot	
 	ld	bc, 17
-	add	hl, bc
+	add	hl, bc		;offset hl to entry data
+
 	push	hl
-	pop	ix
-	ld	b, (ix+1)
-	ld	c, (ix)
+	ld	c, (hl)
 	inc	hl
+	ld	b, (hl)
 	inc	hl
 	ldir				;copy appvar to bank slot
 	call	_Arc_Unarc		;archive appvar
@@ -74,26 +73,24 @@ PutBankinSlot2:
 ExitGame:
 	ld	hl, SaveFile
 	call	_Mov9toOP1
-	call _ChkFindSym
-	call c, MakeSave
-	call nc, LoadSave
+	call	_ChkFindSym
+	call	c, MakeSave
+	call	nc, SaveGame
 	ld	sp, (SegaSP)
 	ret	
 
 MakeSave:
 	ld	hl, SaveFile
-	call _Mov9toOP1
-	ld	hl, 9
-	call _CreateAppvar
-	ld	hl, SaveFile
-	call _Mov9toOP1
-	call _Arc_Unarc
+	call	_Mov9toOP1
+	ld	hl, 10
+	call	_CreateAppvar
+	call	SaveGame
 	ret
 
 LoadSave:
-	ld  hl, SaveFile
-	call _Mov9toOP1
-	call _Arc_Unarc
+	ld	hl, SaveFile
+	call	_Mov9toOP1
+	call	_Arc_Unarc
 	
 	ex	de, hl
 	ld	de, Score
@@ -111,15 +108,17 @@ LoadSave:
 	ldi
 	ld	de, EmeraldFlags
 	ldi
+	ld	a, (de)
+	ld	(gameMem+$D292), a
 	ld	hl, SaveFile
 	call	_Mov9toOP1
-	call _Arc_Unarc
+	call	_Arc_Unarc
 	ret
 
 SaveGame:
 	ld	hl, SaveFile
-	call _Mov9toOP1
-	call _Arc_Unarc
+	call	_Mov9toOP1
+	call	_Arc_Unarc
 
 	ld	hl, Score
 	ldi
@@ -135,9 +134,12 @@ SaveGame:
 	ldi
 	ld	hl, EmeraldFlags
 	ldi
+	xor	a
+	bit	1, a
+	ld	(de), a
 	ld	hl, SaveFile
-	call _Mov9toOP1
-	call _Arc_Unarc
+	call	_Mov9toOP1
+	call	_Arc_Unarc
 	ret
 
 ;Appvar Headers

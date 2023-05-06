@@ -1,38 +1,38 @@
 Logic_ALZ_Bubble:		;$B13F
-.dw ALZ_Bubble_State_00
-.dw ALZ_Bubble_State_01
-.dw ALZ_Bubble_State_02
-.dw ALZ_Bubble_State_03
-.dw ALZ_Bubble_State_04
-.dw ALZ_Bubble_State_05
-.dw ALZ_Bubble_State_06
-.dw ALZ_Bubble_State_07
-.dw ALZ_Bubble_State_08
-.dw ALZ_Bubble_State_09
-.dw ALZ_Bubble_State_0A
+.dl ALZ_Bubble_State_00
+.dl ALZ_Bubble_State_01
+.dl ALZ_Bubble_State_02
+.dl ALZ_Bubble_State_03
+.dl ALZ_Bubble_State_04
+.dl ALZ_Bubble_State_05
+.dl ALZ_Bubble_State_06
+.dl ALZ_Bubble_State_07
+.dl ALZ_Bubble_State_08
+.dl ALZ_Bubble_State_09
+.dl ALZ_Bubble_State_0A
 
 
 ALZ_Bubble_State_00:	;$B155
 .db $FF, $02
-	.dw LABEL_B31_B22D
+	.dl LABEL_B31_B22D
 .db $FF, $03		;calls the do-nothing stub (?)
 
 ALZ_Bubble_State_01:	;$B15B
 .db $10, $00
 	.dl VF_DoNothing
 .db $FF, $07
-	.dw LABEL_B31_B375
+	.dl LABEL_B31_B375
 	.dl VF_DoNothing
 .db $FF, $07
-	.dw LABEL_B31_B375
+	.dl LABEL_B31_B375
 	.dl VF_DoNothing
 .db $FF, $07
-	.dw LABEL_B31_B375
+	.dl LABEL_B31_B375
 	.dl VF_DoNothing
 .db $FF, $02
-	.dw LABEL_B31_B3BD
+	.dl LABEL_B31_B3BD
 .db $FF, $02
-	.dw Logic_ALZ_Bubble_SetPosition
+	.dl Logic_ALZ_Bubble_SetPosition
 .db $FF, $06
 	.db $0A
 	.dw $0000
@@ -42,70 +42,70 @@ ALZ_Bubble_State_01:	;$B15B
 	.dw $0000
 	.dw $FF80
 .db $C0, $04
-	.dw LABEL_B31_B245		;updates horizontal speed
+	.dl LABEL_B31_B245		;updates horizontal speed
 .db $FF, $05
 	.db $02
 .db $01, $04
-	.dw LABEL_B31_B245		;updates horizontal speed
+	.dl LABEL_B31_B245		;updates horizontal speed
 .db $FF, $00
 
 ALZ_Bubble_State_02:	;$B194
 .db $E0, $04
-	.dw LABEL_B31_B24C
+	.dl LABEL_B31_B24C
 .db $FF, $00
 
 ALZ_Bubble_State_03:	;$B19A
 .db $10, $00
 	.dl VF_DoNothing
 .db $FF, $02
-	.dw Logic_ALZ_Bubble_SetPosition
+	.dl Logic_ALZ_Bubble_SetPosition
 .db $FF, $04
 	.dw $0000
 	.dw $FF60
 .db $10, $03
-	.dw Logic_Bubble_SetHorizontalSpeed
+	.dl Logic_Bubble_SetHorizontalSpeed
 .db $10, $02
-	.dw Logic_Bubble_SetHorizontalSpeed
+	.dl Logic_Bubble_SetHorizontalSpeed
 .db $FF, $05
 	.db $04
 .db $10, $02
-	.dw Logic_Bubble_SetHorizontalSpeed
+	.dl Logic_Bubble_SetHorizontalSpeed
 .db $FF, $00
 
 ALZ_Bubble_State_04:	;$B1B9
 .db $10, $01
-	.dw	LABEL_B31_B250
+	.dl LABEL_B31_B250
 .db $FF, $00
 
 ALZ_Bubble_State_05:	;$B1BF
 .db $20, $00
 	.dl VF_DoNothing
 .db $FF, $02
-	.dw Logic_ALZ_Bubble_SetPosition
+	.dl Logic_ALZ_Bubble_SetPosition
 .db $FF, $07
-	.dw LABEL_B31_B375
+	.dl LABEL_B31_B375
 	.dl VF_DoNothing
 .db $FF, $07
-	.dw LABEL_B31_B375
+	.dl LABEL_B31_B375
 	.dl VF_DoNothing
 .db $FF, $04
 	.dw $0000
 	.dw $FF80
 .db $10, $03
-	.dw Logic_Bubble_SetHorizontalSpeed
+	.dl Logic_Bubble_SetHorizontalSpeed
 .db $10, $02
-	.dw Logic_Bubble_SetHorizontalSpeed
+	.dl Logic_Bubble_SetHorizontalSpeed
 .db $10, $01
-	.dw Logic_Bubble_SetHorizontalSpeed
+	.dl Logic_Bubble_SetHorizontalSpeed
 .db $FF, $05
 	.db $06		;set state = $06
 .db $10, $01
-	.dw Logic_Bubble_SetHorizontalSpeed
+	.dl Logic_Bubble_SetHorizontalSpeed
 .db $FF, $00
 
 ALZ_Bubble_State_06:	;$B1EE
 .db $10, $05
-	.dw LABEL_B31_B272
+	.dl LABEL_B31_B272
 .db $FF, $00
 
 ALZ_Bubble_State_07:	;$B1F4
@@ -113,36 +113,36 @@ ALZ_Bubble_State_07:	;$B1F4
 	.dw $0000
 	.dw $FF80
 .db $FF, $02
-	.dw Logic_ALZ_Bubble_GetPlayerPos
+	.dl Logic_ALZ_Bubble_GetPlayerPos
 .db $FF, $02
-	.dw Logic_ALZ_Bubble_SetPosition
+	.dl Logic_ALZ_Bubble_SetPosition
 .db $FF, $02
-	.dw LABEL_B31_B35E
+	.dl LABEL_B31_B35E
 .db $10, $03
-	.dw Logic_Bubble_SetHorizontalSpeed
+	.dl Logic_Bubble_SetHorizontalSpeed
 .db $FF, $05
 	.db $08
 .db $10, $03
-	.dw	Logic_Bubble_SetHorizontalSpeed
+	.dl Logic_Bubble_SetHorizontalSpeed
 .db $FF, $00
 
 ALZ_Bubble_State_08:	;$B213
 .db $E0, $06
-	.dw	LABEL_B31_B3D2
+	.dl LABEL_B31_B3D2
 .db $FF, $00
 
 ALZ_Bubble_State_09:	;$B219
 .db $10, $01
-	.dw	Logic_Bubble_SetHorizontalSpeed
+	.dl Logic_Bubble_SetHorizontalSpeed
 .db $30, $00
 	.dl VF_DoNothing
 .db $30, $00
-	.dw LABEL_B31_B4CE
+	.dl LABEL_B31_B4CE
 .db $FF, $00
 
 ALZ_Bubble_State_0A:	;$B227
 .db $E0, $00
-	.dw LABEL_B31_B2B6
+	.dl LABEL_B31_B2B6
 .db $FF, $00
 
 LABEL_B31_B22D:
@@ -440,7 +440,7 @@ LABEL_B31_B3FE:
 	ld      de, $0002
 	add     ix, de
 	dec     b
-	jp      nz, LABEL_B31_B3FE
+	jr      nz, LABEL_B31_B3FE
 	pop     ix
 	ret     
 
@@ -459,20 +459,20 @@ LABEL_B31_B4A0:
 	ld      h, (ix+$15)
 	xor     a
 	sbc     hl, de			;calculate object's position on screen
-	jp      c, LABEL_B31_B4CE	;jump if object not on screen
+	jr      c, LABEL_B31_B4CE	;jump if object not on screen
 	ld      a, h
 	cp      $02
 	jp      nc, LABEL_B31_B4CE
 	ld      a, (CurrentAct)
 	dec     a
-	jp      z, LABEL_B31_B4D3
+	jr      z, LABEL_B31_B4D3
 	ld      de, $FFD0
 	ld      bc, $0000
 	call    VF_Engine_GetCollisionValueForBlock
 	cp      $00
-	jp      z, LABEL_B31_B4CE
+	jr      z, LABEL_B31_B4CE
 	cp      $81
-	jp      z, LABEL_B31_B4CE
+	jr      z, LABEL_B31_B4CE
 	ret
 	
 LABEL_B31_B4CE:			;destroy the object
