@@ -198,12 +198,15 @@ WriteBlankTile:
 ;*	Write the decompressed tile data (at $D300) to VRAM
 ;*************************************************************
 WriteTileToVRAM:
-	ld   a, (gameMem+$D34C)
-	or   a
-	jp   nz, WriteMirroredTileToVRAM
-	ld   hl, gameMem+$D300		;copy 32 bytes from $D300 to VRAM
-	ld   bc, $0020
-	ld	ix, (VRAMPointer)
+	ld	a, (gameMem+$D34C)
+	or	a
+	jr	nz, WriteMirroredTileToVRAM
+	ld	hl, gameMem+$D300		;copy 32 bytes from $D300 to VRAM
+	ld	bc, $0020
+	ld	ixl, (VRAMPointer)
+	ld	ixh, (VRAMPointer+1)
+	ld	de, SegaVRAM
+	add	ix, de
 	push	ix
 	pop	de
 	ldir
@@ -218,6 +221,11 @@ VRAMPointer:
 ;************************************************************
 WriteMirroredTileToVRAM:
 	ld	hl, gameMem+$D300
+	mlt	iy
+	ld	iyl, (VRAMPointer)
+	ld	iyh, (VRAMPointer+1)
+	ld	de, SegaVRAM
+	add	iy, de
 	ld	b, $20
 _:	ld	e, (hl)		;read a byte of tile data from RAM
 	ld	d, $01 ;Engine_Data_ByteFlipLUT >> 8
@@ -226,12 +234,9 @@ _:	ld	e, (hl)		;read a byte of tile data from RAM
 	push	ix
 	pop	de
 	ld	a, (de)		;"flip" the byte by using it as an
-						;index into the array at $100 and
-						;retrieving the value
-	ld	ix, (VRAMPointer)
-	ld	(ix), a
-	push	hl
-	pop	hl
+				;index into the array at $100 and
+				;retrieving the value
+	ld	(iy), a
 	inc	hl
 	djnz -_
 	ret

@@ -22,24 +22,23 @@ _:	call	DrawScreenMap	;set up double buffering
 	call	DrawSAT
 	ld	a, 192		;length of SMS screen
 	ld	ix, $40		;size of letterbox
+
 	ld	hl, RenderedScreenMap
-	ld	de, VRAM+$1E20
+	ld	de, VRAM+$1E20	;first pixel within letterbox
 _:	ld	bc, $0100
 	ldir
 
 	add	ix, de
 	push	ix
 	pop	de
-	dec	a
-	ld	b, a		
-	djnz	-_
+	dec	a	
+	jr	nz, -_
 	call	Engine_HandleVBlank
 
 	call	RestoreRegisters
 	ret
 
 ClearScreen:
-	push	af
 	ld	hl, VRAM
 	ld	de, VRAM+1
 	ld	bc, 320*240
@@ -57,9 +56,9 @@ DrawScreenMap:
 	ldir
 
 	ld	hl, ScreenMap
-	ld	bc, 32*32
+	ld	bc, 32*28
 	ld	ixh, $00	;x position of tile (in tiles)
-	ld	ixl, $00	;y position of tile (in tiles)
+	ld	ixl, $00	;y position (in tiles)
 
 _:	push	bc
 	inc	hl
@@ -92,73 +91,31 @@ _:	inc	hl
 _:	ld	ixh, $00
 	ld	a, 27
 	cp	ixl
-	ret	z	;exit if IXL is at the last row
+	ret	z	;return if IXL is at the last row
 	inc	ixl
 	jr	----_
 
 GetTileCoordinates:
 	push	hl
+	ld	l, $08
 	ld	a, ixl
-	ld	h, l
-	ld	l, $00	;multiply HL by $0100
-	
-	push	hl
-	push	de
-	pop	hl
-	add	hl, hl
-	add	hl, hl
-	add	hl, hl	;HL stores the Y coordinate
-	pop	hl
+	ld	h, a
+	mlt	hl
+	ld	h, l ;H has the Y coordinate
 
-	push	hl
-	ld	h, $00
+	ld	e, $08
 	ld	a, ixh
-	ld	l, a
-	add	hl, hl
-	add	hl, hl
-	add	hl, hl	;multiply HL by 8
-
-	ex	de, hl	;DE has the X coordinate
-	pop	hl		;HL has the Y coordinate
-	add	hl, de
-	ex	de, hl
-	pop	hl		;bring back the tile pointer
-	ret
+	ld	d, a
+	mlt	de	;DE has the X coordinate
 	
-DrawSAT:
-	ld	iy, SAT	;y position
-	ld	ix, SAT+$80	;x position
-	ld	b, $40	;number of SAT entries
-
-_:	ld	h, $00
-	ld	l, (iy)
-	ld	h, l
-	ld	l, $00	;multiply HL by $0100
-
-	ld	d, $00
-	ld	e, (ix)
-	add	hl, de	;HL now has the sprite's coordinate
-	inc	ix		;IX now has the tile to draw
-	inc	iy
-	
+	ld	l, e
 	ld	de, RenderedScreenMap
 	add	hl, de
-	push	hl
-
-	ld	a, (ix)
-	ld	l, a
-	ld	h, $00
-	call	MultiplyHLBy32
-	
-	ld	de, SegaVRAM
-	add	hl, de	;HL now points to the selected tile
-	pop	de
-	call	ConvertFGTileTo8bpp
-	djnz	-_
+	ex	de, hl	;DE has the tile's coordinate
+	pop	hl		;bring back the tile pointer
 	ret
 
 GetScrollOffsets:	;gets the screen map offsets
-	ld	hl, $0000
 	ld	a, (BackgroundYScroll)
 	ld	h, a
 	ld	a, (BackgroundXScroll)
@@ -171,27 +128,46 @@ GetTilePointer:	;makes DE a pointer to the selected tile
 	dec	hl
 	ld	a, (hl)
 	push	hl
+	ld	h, $20
 	ld	l, a
-	ld	h, $00
-	call	MultiplyHLBy32
+	mlt	hl
+
 	ld	de, SegaVRAM+$2000
 	add	hl, de
 	ex	de, hl
 	pop	hl
 	ret
+	
+DrawSAT:
+	ld	iy, SAT		;y position
+	ld	ix, SAT+$80	;x position
+	ld	b, $40		;number of SAT entries
 
-MultiplyHLBy32:
-	add	hl, hl
-	add	hl, hl
-	add	hl, hl
-	add	hl, hl
-	add	hl, hl
+_:	mlt	hl 		;clear HLU
+	ld	h, (iy)
+	ld	l, (ix)		;HL now has the sprite's coordinate
+	inc	ix		;IX now has the tile to draw
+	inc	iy
+	
+	ld	de, RenderedScreenMap
+	add	hl, de
+	push	hl
+
+	ld	h, $20		;size of tile
+	ld	l, (ix)
+	mlt	hl
+	ld	de, SegaVRAM
+	add	hl, de		;HL now points to the selected tile
+	pop	de		;DE has the tile's coordinates
+
+	call	ConvertFGTileTo8bpp
+	djnz	-_
 	ret
 
 ; =============================================================================
 ;	In:
 ;	HL	- Pointer to pattern.
-;	SP	- Position of tile.
+;	DE	- Position of tile.
 ;	B	- Row count.
 ;	C	- Column count.
 ;	ld:
@@ -205,19 +181,18 @@ ConvertBGTileTo8bpp:
 	ex	de, hl
 	ld	sp, hl
 	ex	de, hl
+
 	ld	c, $20
 	ld	(cursorImage), hl
+
 _:	ld	a, (hl)
 	ld	(CursorImage-1), a	;save byte
-	res	4, a		;remove bits 4-7
-	res	5, a
-	res	6, a
-	res	7, a
-	cp	$00
+	and	%11110000		;remove bits 4-7
 	jr	z, +_
+
 	ld	h, 0
 	ld	l, a
-	ld	de, CRAM		;load DE into palette
+	ld	de, CRAM	;load DE into palette
 	add	hl, de		;use HL as offset into palette
 	ld	a, (hl)		;load result into A
 	push	af ;draw pixel
@@ -225,11 +200,7 @@ _:	ld	a, (hl)
 	pop	af
 	
 _:	ld	a, (CursorImage-1)	;get back the byte
-	res	0, a		;remove bits 0-3
-	res	1, a
-	res	2, a
-	res	3, a
-	cp	$00
+	and	%00001111		;remove bits 0-3
 	jr	z, +_
 	rlca			;offset result into bits 0-3
 	rlca
@@ -237,17 +208,17 @@ _:	ld	a, (CursorImage-1)	;get back the byte
 	rlca
 	ld	h, 0
 	ld	l, a
-	ld	de, CRAM		;load DE into palette
+	ld	de, CRAM	;load DE into palette
 	add	hl, de		;use HL as offset into palette
 	ld	a, (hl)		;load result into A
+
 	push	af ;draw pixel
 	inc	sp
 	pop	af
-
-_:	bit	0, c	;is C a multiple of 2?
-	jr	nz, +_	;jump if not
-	bit	1, c	;is C a multiple of 4?
-	jr	nz, +_
+	
+_:	ld	a, c
+	and	%00010011
+	jr	nz, +_	;jump if C is a multiple of 4 or $20
 
 	ld	hl, $00F8
 	add	hl, sp
@@ -267,49 +238,46 @@ ConvertFGTileTo8bpp:
 	ex	de, hl
 	ld	sp, hl
 	ex	de, hl
+
 	ld	c, $20
 	ld	(cursorImage), hl
+
 _:	ld	a, (hl)
 	ld	(CursorImage-1), a	;save byte
-	res	4, a			;remove bits 4-7
-	res	5, a
-	res	6, a
-	res	7, a
-	cp	$00
+	and	%11110000			;remove bits 4-7
 	jr	z, +_
+
 	ld	h, 0
 	ld	l, a
 	ld	de, CRAM+$10	;load DE into palette
 	add	hl, de		;use HL as offset into palette
 	ld	a, (hl)		;load result into A
+
 	push	af ;draw pixel
 	inc	sp
 	pop	af
 	
 _:	ld	a, (CursorImage-1)	;get back the byte
-	res	0, a		;remove bits 0-3
-	res	1, a
-	res	2, a
-	res	3, a
-	cp	$00
+	and	%00001111	;remove bits 0-3
 	jr	z, +_
 	rlca			;offset result into bits 0-3
 	rlca
 	rlca
 	rlca
+
 	ld	h, 0
 	ld	l, a
 	ld	de, CRAM+$10	;load DE into palette
 	add	hl, de		;use HL as offset into palette
 	ld	a, (hl)		;load result into A
+
 	push	af ;draw pixel
 	inc	sp
 	pop	af
 
-_:	bit	0, c	;is C a multiple of 2?
-	jr	nz, +_	;jump if not
-	bit	1, c	;is C a multiple of 4?
-	jr	nz, +_
+_:	ld	a, c
+	and	%00010011
+	jr	nz, +_		;jump if C is a multiple of 4 or $20
 
 	ld	hl, $00F8
 	add	hl, sp

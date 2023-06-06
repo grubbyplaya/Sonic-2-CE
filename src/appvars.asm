@@ -2,27 +2,16 @@ CheckForBank: 			;it's bankin' time
  	call	StoreRegisters
 	call	_Mov9toOP1
  	call	_ChkFindSym
-	call	DataFound
+	call	c, ExitGame
 	call	PutBankinSlot2
 	call	RestoreRegisters
 	ret
-
-DataFound:
-	ld de, $42616E	;Store "Ban" in DE
-	call	_ChkInRam	;check in RAM
-	jr	z, +_		;jump if exists
-	call	_Arc_Unarc
-	call	_ChkInRam
-_:	ret
 
 SegaSP:	;used to exit the game
 	.dl	$062391
 
 SaveSP:
 	.dl	$102292
-
-SaveSP2:	;exists to optimize VDP_UpdateSAT_Descending in vdp.asm
-	.dl	$112492
 
 StoreRegisters:		;stores registers in RAM
 	di
@@ -45,21 +34,20 @@ PutBankinSlot1:	;unused, since Sonic 2 only swaps out ROM bank 2.
 	ex	de, hl		;point hl to appvar
 	ld	de, BankSlot1	;point de to bank slot	
 	ld	bc, 17
-	add	hl, bc		;offset hl to entry data
+	add	hl, bc		;offset hl to actual data
 	push	hl
 	ld	c, (hl)
 	inc	hl
 	ld	b, (hl)
 	inc	hl
 	ldir				;copy appvar to bank slot
-	call	_Arc_Unarc		;archive appvar
 	ret
 
 PutBankinSlot2:
 	ex	de, hl		;point hl to appvar
 	ld	de, BankSlot2	;point de to bank slot	
 	ld	bc, 17
-	add	hl, bc		;offset hl to entry data
+	add	hl, bc		;offset hl to actual data
 
 	push	hl
 	ld	c, (hl)
@@ -67,15 +55,16 @@ PutBankinSlot2:
 	ld	b, (hl)
 	inc	hl
 	ldir				;copy appvar to bank slot
-	call	_Arc_Unarc		;archive appvar
 	ret
 
 ExitGame:
 	ld	hl, SaveFile
 	call	_Mov9toOP1
 	call	_ChkFindSym
-	call	c, MakeSave
-	call	nc, SaveGame
+	call	SaveGame
+	;exit 8bpp mode
+	ld	a, lcdBpp16
+	ld	(mpLcdCtrl), a
 	ld	sp, (SegaSP)
 	ret	
 
@@ -84,12 +73,13 @@ MakeSave:
 	call	_Mov9toOP1
 	ld	hl, 10
 	call	_CreateAppvar
-	call	SaveGame
 	ret
 
 LoadSave:
 	ld	hl, SaveFile
 	call	_Mov9toOP1
+	call	_ChkFindSym	;check for a save file
+	jp	c, MakeSave	;make one if it doesn't exist
 	call	_Arc_Unarc
 	
 	ex	de, hl

@@ -2,12 +2,12 @@
 ;to load the locate the compressed art for each zone.
 
 	#define TilesetHeader.BankNum		$00		;ROM bank to load tiles from
-	#define TilesetHeader.VRAMAddress	 	$01		;Address to copy tiles to
+	#define TilesetHeader.VRAMAddress	$01		;Address to copy tiles to
 	#define TilesetHeader.SourceAddress	$03
 	#define TilesetHeader.Entries		$05	;pointer to the chain of tileset entries
 
 	#define TilesetEntry.BankNum		$00	;ROM Bank to load from. Bit 7 is the indexed tiles flag that is passed to the LoadTiles routine.
-	#define TilesetEntry.VRAMAddress		$01	;Address to copy tiles to
+	#define TilesetEntry.VRAMAddress	$01	;Address to copy tiles to
 	#define TilesetEntry.SourceAddress	$03
 
 ;Used by the sprite loading routine at $10BF  
@@ -21,17 +21,17 @@
 ;  LEVEL STRUCTURE & FLAGS
 ; -----------------------------------------------------------------------------
 	#define LevelDescriptor.ViewportFlags	$00
-	#define LevelDescriptor.ix01		$01
+	#define LevelDescriptor.ix01			$01
 	#define LevelDescriptor.MetaTileX		$02 ; x-index of metatile (see: Engine_Mappings_GetBlockXY)
 	#define LevelDescriptor.MetaTileY		$03 ; y-index of metatile (see: Engine_Mappings_GetBlockXY)
 	#define LevelDescriptor.MetaTileBank	$04
-	#define LevelDescriptor.LayoutBank	$05
-	#define LevelDescriptor.MetaTilePtr	$06
+	#define LevelDescriptor.LayoutBank		$05
+	#define LevelDescriptor.MetaTilePtr		$06
 	#define LevelDescriptor.LayoutPtr		$08
-	#define LevelDescriptor.StrideTable	$0A
+	#define LevelDescriptor.StrideTable		$0A
 	#define LevelDescriptor.WidthNeg		$0C
-	#define LevelDescriptor.Width		$0E
-	#define LevelDescriptor.DataOffset	$10
+	#define LevelDescriptor.Width			$0E
+	#define LevelDescriptor.DataOffset		$10
 
 
 
@@ -55,13 +55,13 @@
 	#define Object.Flags03		$03	; $03
 	#define Object.Flags04		$04	; $04
 	#define Object.SpriteCount	$05	; $05
-	#define Object.AnimFrame	$06   	; $06
+	#define Object.AnimFrame	$06   ; $06
 	#define Object.FrameCounter	$07	; $07
 	#define Object.RightFacingIdx	$08	; $08
 	#define Object.LeftFacingIdx 	$09	; $09
 	#define Object.ix0A		$0A  	; movement flags?
 	#define Object.ix0B		$0B
-	#define Object.LogicPtr	$0C 	; $0C - Pointer to logic subroutine.
+	#define Object.LogicPtr		$0C 	; $0C - Pointer to logic subroutine.
 	#define Object.LogicSeqPtr	$0E	; $0E - Pointer to logic sequence data
 	#define Object.SubPixelX	$10	; $10 - fractional part of xpos
 	#define Object.X			$11	; $11 - x pos in level
@@ -83,7 +83,7 @@
 	#define Object.ix27		$27
 	#define Object.SprMappgPtr	$28	; $28 - pointer to sprite mapping data for current anim frame
 	#define Object.SprOffsets	$2A  	; $2A - pointer to sprite SAT offsets (2 words in object anim data)
-	#define Object.Width		$2C   	; $2C
+	#define Object.Width		$2C   ; $2C
 	#define Object.Height		$2D	; $2D
 	#define Object.FlashCounter	$2E	; $2E - counter used to toggle sprite visibility
 	#define Object.ix2F		#2F
@@ -97,8 +97,8 @@
 	#define Object.D537		$37
 	#define Object.D538		$38
 	#define Object.D539		$39
-	#define Object.InitialX	$3A	; $3A - initial x coordinate
-	#define Object.InitialY	$3C	; $3C - initial y coordinate
+	#define Object.InitialX		$3A	; $3A - initial x coordinate
+	#define Object.InitialY		$3C	; $3C - initial y coordinate
 	#define Object.ActvObjIdx	$3E  	; $3E - index of object within active objects array
 	#define Object.ix3F		$3F
 

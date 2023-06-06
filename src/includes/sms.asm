@@ -18,20 +18,19 @@
 ;  Input Bitfield
 ; ---------------------------------------------------------
 
-BTN_UP_BIT=kbitUp
-BTN_DOWN_BIT=kbitDown
-BTN_LEFT_BIT=kbitLeft
-BTN_RIGHT_BIT=kbitRight
-BTN_1_BIT=kbit2nd	
-BTN_2_BIT=kbitAlpha
+#define    BTN_UP_BIT          kbitUp
+#define    BTN_DOWN_BIT        kbitDown
+#define    BTN_LEFT_BIT        kbitLeft
+#define    BTN_RIGHT_BIT       kbitRight
+#define    BTN_1_BIT           kbit2nd
+#define    BTN_2_BIT           kbitAlpha
 
-BTN_UP=kbdUp
-BTN_DOWN=kbdDown
-BTN_LEFT=kbdLeft
-BTN_RIGHT=kbdRight
-BTN_1=kbit2nd
-BTN_2=kbitAlpha
-
+#define    BTN_UP              1 << BTN_UP_BIT
+#define    BTN_DOWN            1 << BTN_DOWN_BIT
+#define    BTN_LEFT            1 << BTN_LEFT_BIT
+#define    BTN_RIGHT           1 << BTN_RIGHT_BIT
+#define    BTN_1               (1 << BTN_1_BIT)
+#define    BTN_2               (1 << BTN_2_BIT)
 
 ; =========================================================
 ;  Display Mode Bitfields

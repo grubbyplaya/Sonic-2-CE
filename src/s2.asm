@@ -1,4 +1,4 @@
-g#include "includes/ti84pce.inc"
+#include "includes/ti84pce.inc"
  .assume ADL = 1
  .org userMem - 2
  .db tExtTok, tAsm84CeCmp
@@ -555,7 +555,7 @@ VDP_ResetPalette_DisableLineInterrupt:	;$5B2
 _:	push	hl
 	;write the 16 colours to VRAM
 	ld	hl, DATA_65A
-	ld	de, CRAM
+	ld	de, WorkingCRAM
 	ld	bc, 16
 	ldir
 
@@ -585,7 +585,7 @@ Engine_PauseHandler:
 	jr	nz, +_
 	
 	ld	a, (GlobalTriggers)
-	and	$FF = GT_1
+	and	%11111101
 	cp	GT_GAMEOVER
 	jr	nz, +_
 	
@@ -1728,6 +1728,7 @@ Engine_UpdateObjectVPOS:		;$1842
 	ld	iy, (Engine_UpdateSpriteAttribs_vpos_ptr)		;SAT VPOS
 	
 	; read the vertical offset value from the anim mapping data
+	ld	hl, ramStart
 	ld	h, (ix + Object.SprOffsets + 1) 
 	ld	l, (ix + Object.SprOffsets)
 	ld	e, (hl)
@@ -1826,6 +1827,7 @@ Engine_UpdateObjectHPOS:		;$1896
 	ld	iy, (Engine_UpdateSpriteAttribs_hpos_ptr)		;SAT HPOS pointer
 	
 	; fetch the sprite offset pointer from the object structure
+	ld	hl, ramStart
 	ld	h, (ix + Object.SprOffsets + 1)
 	ld	l, (ix + Object.SprOffsets)
 	; adjust the pointer past the vertical offset word
@@ -9195,7 +9197,7 @@ LABEL_5F73:
 #endif
 
 
-#ifndef Version = 2
+#if Version = 1
 LABEL_5F51:
 	and	$0F
 	ld	e, a
