@@ -15,19 +15,19 @@
 	#define PaletteResetTrg				gameMem+$D131
 	#define unk_04					gameMem+$D132
 	#define LevelAttributes				gameMem+$D15D
-	#define LevelAttributes.ViewportFlags	gameMem+$D15D
+	#define LevelAttributes.ViewportFlags		gameMem+$D15D
 	#define LevelAttributes.ix01			gameMem+$D15E
 	#define LevelAttributes.MetaTileX		gameMem+$D15F ; x-index of metatile (see: Engine_Mappings_GetBlockXY)
 	#define LevelAttributes.MetaTileY		gameMem+$D160 ; y-index of metatile (see: Engine_Mappings_GetBlockXY)
-	#define LevelAttributes.MetaTileBank	gameMem+$D161
-	#define LevelAttributes.LayoutBank		gameMem+$D162
-	#define LevelAttributes.MetaTilePtr		gameMem+$D163
-	#define LevelAttributes.LayoutPtr		gameMem+$D165
-	#define LevelAttributes.StrideTable		gameMem+$D167
-	#define LevelAttributes.WidthNeg		gameMem+$D169
-	#define LevelAttributes.Width			gameMem+$D171
-	#define LevelAttributes.DataOffset		gameMem+$D173
-	#define unk_05					gameMem+$D174
+	#define LevelAttributes.MetaTileBank		gameMem+$D162
+	#define LevelAttributes.LayoutBank		gameMem+$D163
+	#define LevelAttributes.MetaTilePtr		gameMem+$D164
+	#define LevelAttributes.LayoutPtr		gameMem+$D166
+	#define LevelAttributes.StrideTable		gameMem+$D168
+	#define LevelAttributes.WidthNeg		gameMem+$D16A
+	#define LevelAttributes.Width			gameMem+$D16C
+	#define LevelAttributes.DataOffset		gameMem+$D16E
+	#define unk_05					gameMem+$D170
 ;----------------------------------------------------------
 ; =========================================================
 ;  VDP Variables
@@ -41,78 +41,78 @@
 	#define unk_06			gameMem+$D203
 	#define CurrentMetaTileAddr	gameMem+$D23D
 
-#define  Engine_ObjCharCodePtr	gameMem+$D110
+#define  Engine_ObjCharCodePtr		gameMem+$D110
 
 #define  VDP_SATUpdateTrig		gameMem+$D134
-#define  Engine_InterruptServiced	gameMem+$D135       ; byte - set when the interrupt has been serviced
-#define  Engine_InputFlags		gameMem+$D138       ; byte - current controller input flags
-#define  Engine_InputFlagsLast	gameMem+$D147       ; byte - input flags from the previous frame
-#define  Camera_X				gameMem+$D174       ; word
-#define  Camera_Y				gameMem+$D176       ; word
-#define  Camera_MetatileColBuffer	gameMem+$D178       ; 64 b - a buffer to hold tile data from a column of metatiles.
+#define  Engine_InterruptServiced	gameMem+$D135	; byte - set when the interrupt has been serviced
+#define  Engine_InputFlags		gameMem+$D138	; byte - current controller input flags
+#define  Engine_InputFlagsLast		gameMem+$D147	; byte - input flags from the previous frame
+#define  Camera_X			gameMem+$D174	; word
+#define  Camera_Y			gameMem+$D176	; word
+#define  Camera_MetatileColBuffer	gameMem+$D178	; 64 b - a buffer to hold tile data from a column of metatiles.
 
-#define  Camera_MetatilePtr		gameMem+$D278       ; word - points to a metatile in the layout data (see: Engine_Mappings_GetBlockXY)
+#define  Camera_MetatilePtr		gameMem+$D278	; word - points to a metatile in the layout data (see: Engine_Mappings_GetBlockXY)
 
-#define  GlobalTriggers			gameMem+$D293       ; byte - bitfield of various trigger flags (e.g. load level, kill player, etc).
-#define  CurrentLevel			gameMem+$D295       ; byte - current level number
-#define  CurrentAct			gameMem+$D296       ; byte - current act number
-#define  LivesOnEntry			gameMem+$D297       ; byte - player's life counter on entry to the level
-#define  LifeCounter			gameMem+$D298       ; byte - player's life counter
-#define  RingCounter			gameMem+$D299       ; byte - player's ring counter (BCD)
+#define  GlobalTriggers			gameMem+$D293	; byte - bitfield of various trigger flags (e.g. load level, kill player, etc).
+#define  CurrentLevel			gameMem+$D295	; byte - current level number
+#define  CurrentAct			gameMem+$D296	; byte - current act number
+#define  LivesOnEntry			gameMem+$D297	; byte - player's life counter on entry to the level
+#define  LifeCounter			gameMem+$D298	; byte - player's life counter
+#define  RingCounter			gameMem+$D299	; byte - player's ring counter (BCD)
 
-#define  ContinueCounter		gameMem+$D2BD       ; byte - number of continues remaining.
-#define  EmeraldFlags			gameMem+$D2C5       ; byte - one bit flag for each emerald.
-#define  HasEmeraldTrg			gameMem+$D2C6       ; byte - set by the chaos emerald collision routines.
-#define  VDP_DefaultTileAttribs	gameMem+$D2C7       ; byte
+#define  ContinueCounter		gameMem+$D2BD	; byte - number of continues remaining.
+#define  EmeraldFlags			gameMem+$D2C5	; byte - one bit flag for each emerald.
+#define  HasEmeraldTrg			gameMem+$D2C6	; byte - set by the chaos emerald collision routines.
+#define  VDP_DefaultTileAttribs		gameMem+$D2C7	; byte
 
-#define  Engine_CollisionDataPtr	gameMem+$D2D4       ; word - pointer to collision data for current level
+#define  Engine_CollisionDataPtr	gameMem+$D2D4	; word - pointer to collision data for current level
 
 #define  Engine_DemoSeq_Bank		gameMem+$D2D8
 
-#define  Engine_RingAnimFrame		gameMem+$D351       ; byte - ring animation frame number.
-#define  Cllsn_RingBlock		gameMem+$D352       ; byte - used by ring<>player collision routines to store ring metatile number.
-#define  Cllsn_MetatileIndex		gameMem+$D353       ; byte - the metatile number stored at (Cllsn_LevelMapBlockPtr)
-#define  Cllsn_LevelMapBlockPtr	gameMem+$D354       ; word - pointer to the current metatile block in the level data
-#define  Cllsn_AdjustedX		gameMem+$D356       ; word - object's x-coordinate + an adjustment value
-#define  Cllsn_AdjustedY		gameMem+$D358       ; word - object's y-coordinate + an adjustment value
-#define  Cllsn_MetaTileX		gameMem+$D35A       ; word - metatile's x coordinate
-#define  Cllsn_MetaTileY		gameMem+$D35C       ; word - metatile's y coordinate
-#define  Cllsn_MetaTileSurfaceType	gameMem+$D35E       ; byte - surface type value for the colliding metatile.
-#define  Cllsn_HeaderPtr3		gameMem+$D35F       ; word - 3rd pointer in the metatile's collision header
-#define  Cllsn_CollisionValueY	gameMem+$D361       ; byte - vertical collision value for the current position within the metatile.
-#define  Cllsn_CollisionValueX	gameMem+$D362       ; byte - horizontal collision value for the current position within the metatile.
+#define  Engine_RingAnimFrame		gameMem+$D351	; byte - ring animation frame number.
+#define  Cllsn_RingBlock		gameMem+$D352	; byte - used by ring<>player collision routines to store ring metatile number.
+#define  Cllsn_MetatileIndex		gameMem+$D353	; byte - the metatile number stored at (Cllsn_LevelMapBlockPtr)
+#define  Cllsn_LevelMapBlockPtr		gameMem+$D354	; word - pointer to the current metatile block in the level data
+#define  Cllsn_AdjustedX		gameMem+$D356	; word - object's x-coordinate + an adjustment value
+#define  Cllsn_AdjustedY		gameMem+$D358	; word - object's y-coordinate + an adjustment value
+#define  Cllsn_MetaTileX		gameMem+$D35A	; word - metatile's x coordinate
+#define  Cllsn_MetaTileY		gameMem+$D35C	; word - metatile's y coordinate
+#define  Cllsn_MetaTileSurfaceType	gameMem+$D35E	; byte - surface type value for the colliding metatile.
+#define  Cllsn_HeaderPtr3		gameMem+$D35F	; word - 3rd pointer in the metatile's collision header
+#define  Cllsn_CollisionValueY		gameMem+$D361	; byte - vertical collision value for the current position within the metatile.
+#define  Cllsn_CollisionValueX		gameMem+$D362	; byte - horizontal collision value for the current position within the metatile.
 
 
-#define  Engine_UpdateSpriteAttribs_vpos_ptr   	gameMem+$D369       ; word
-#define  Engine_UpdateSpriteAttribs_hpos_ptr   	gameMem+$D36B       ; word
-#define  Player_MaxVelX			     		gameMem+$D36D       ; word
-#define  Player_DeltaVX			    		gameMem+$D36F       ; word - player object x delta-v?
-#define  Player_MetaTileDeltaVX                	gameMem+$D371       ; word - delta-v for platform (gradient/slope)
+#define  Engine_UpdateSpriteAttribs_vpos_ptr   	gameMem+$D369	; word
+#define  Engine_UpdateSpriteAttribs_hpos_ptr   	gameMem+$D36B	; word
+#define  Player_MaxVelX			     	gameMem+$D36D	; word
+#define  Player_DeltaVX			    	gameMem+$D36F	; word - player object x delta-v?
+#define  Player_MetaTileDeltaVX		  	gameMem+$D371	; word - delta-v for platform (gradient/slope)
 
-#define  Engine_UpdateSpriteAttribs_adj_pos  	gameMem+$D393       ; word
-#define  Engine_RingArt_Src				gameMem+$D395       ; word - pointer to uncompressed ring art data.
-#define  Engine_RingArt_Dest				gameMem+$D397	; word - vram destination pointer for ring art tiles.
+#define  Engine_UpdateSpriteAttribs_adj_pos  	gameMem+$D393	; word
+#define  Engine_RingArt_Src			gameMem+$D395	; word - pointer to uncompressed ring art data.
+#define  Engine_RingArt_Dest			gameMem+$D397	; word - vram destination pointer for ring art tiles.
 
-#define  Player_HurtTrigger				gameMem+$D3A8       ; byte - trigger causes player to lose rings or die
-#define  Player_FlashCounter				gameMem+$D3A9       ; byte
+#define  Player_HurtTrigger			gameMem+$D3A8	; byte - trigger causes player to lose rings or die
+#define  Player_FlashCounter			gameMem+$D3A9	; byte
 
-#define  Engine_MonitorCllsnType			gameMem+$D39D       ; byte - set by monitor collision routines to indicate monitor type.
+#define  Engine_MonitorCllsnType		gameMem+$D39D	; byte - set by monitor collision routines to indicate monitor type.
 
-#define  Player_UnderwaterFlag			gameMem+$D467       ; byte
-#define  Player_AirTimerLo				gameMem+$D468       ; byte
-#define  Player_AirTimerHi				gameMem+$D469       ; byte - incremented when lo byte = $78 (~2 seconds)
+#define  Player_UnderwaterFlag			gameMem+$D467	; byte
+#define  Player_AirTimerLo			gameMem+$D468	; byte
+#define  Player_AirTimerHi			gameMem+$D469	; byte - incremented when lo byte = $78 (~2 seconds)
 
-#define  Player_KillTrigger				gameMem+$D49F       ; byte - causes player to die, regardless of ring count.
+#define  Player_KillTrigger			gameMem+$D49F	; byte - causes player to die, regardless of ring count.
 
-#define  UpdatePalettesOnly				gameMem+$D4A3
+#define  UpdatePalettesOnly			gameMem+$D4A3
 
-#define  Engine_PowerUpTimer				gameMem+$D4A0       ; byte - timer for invincibility
+#define  Engine_PowerUpTimer			gameMem+$D4A0	; byte - timer for invincibility
 
-#define  Engine_DynPalette_0				gameMem+$D4A6       ; byte
+#define  Engine_DynPalette_0			gameMem+$D4A6	; byte
 
-#define  Engine_DynPalette_1				gameMem+$D4AE       ; byte
+#define  Engine_DynPalette_1			gameMem+$D4AE	; byte
 
-#define  Palette_UpdateTrig				gameMem+$D4EA       ; causes a CRAM update with the next vblank
+#define  Palette_UpdateTrig			gameMem+$D4EA	; causes a CRAM update with the next vblank
 
 
 ; ---------------------------------------------------------
@@ -135,9 +135,9 @@ PlayerObj:
 	#define Player.LogicPtr			gameMem+$D50C	;	$D50C - Pointer to logic subroutine.
 	#define Player.LogicSeqPtr		gameMem+$D50E	; 	$D50E - Pointer to logic sequence data
 	#define Player.SubPixelX		gameMem+$D510	; 	$D510 - fractional part of xpos
-	#define Player.X				gameMem+$D511	; 	$D511 - x pos in level
+	#define Player.X			gameMem+$D511	; 	$D511 - x pos in level
 	#define Player.SubPixelY		gameMem+$D513	; 	$D513 - fractional part of ypos
-	#define Player.Y				gameMem+$D514	; 	$D514 - y pos in level
+	#define Player.Y			gameMem+$D514	; 	$D514 - y pos in level
 	#define Player.VelX			gameMem+$D516	; 	$D516 - x velocity (Q8.8)
 	#define Player.VelY			gameMem+$D518	; 	$D518 - y velocity (Q8.8)
 	#define Player.ScreenX			gameMem+$D51A	; 	$D51A - x offset on screen
@@ -176,6 +176,6 @@ PlayerObj:
 ; ---------------------------------------------------------
 
 
-#define  VDP_WorkingSAT            gameMem+$DB00
-#define  VDP_WorkingSAT_VPOS       VDP_WorkingSAT
-#define  VDP_WorkingSAT_HPOS       VDP_WorkingSAT + 64
+#define  VDP_WorkingSAT	  	gameMem+$DB00
+#define  VDP_WorkingSAT_VPOS	VDP_WorkingSAT
+#define  VDP_WorkingSAT_HPOS	VDP_WorkingSAT + 64

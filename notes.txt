@@ -650,10 +650,10 @@ Bitfield at $D521    -    Collision flags - Object <> Object
       1  |                              |
       2  |                              |
       3  |                              |
-      4     |  Collision at top edge       |  No collision at top edge
+      4  |  Collision at top edge       |  No collision at top edge
       5  |  Collision at bottom edge    |  No collision at bottom edge        
-      6     |  Collision at right edge     |  No collision at right edge
-      7     |  Collision at left edge      |  No collision at left edge
+      6  |  Collision at right edge     |  No collision at right edge
+      7  |  Collision at left edge      |  No collision at left edge
     -----+------------------------------+------------------------------------
     
     
@@ -662,7 +662,7 @@ Bitfield at $D521    -    Collision flags - Object <> Object
      Bit | Action when Set              | Action when Reset                   |
     -----+------------------------------+-------------------------------------
       0     |  Collision at top edge       |  No collision at top edge
-      1  |  Collision at bottom edge    |  No collision at bottom edge        
+      1	    |  Collision at bottom edge    |  No collision at bottom edge        
       2     |  Collision at right edge     |  No collision at right edge
       3     |  Collision at left edge      |  No collision at left edge
       4     |                              |
@@ -678,7 +678,7 @@ Bitfield at $D522    -    Collision flags - Object <> Background tiles
      Bit | Action when Set              | Action when Reset                   |
     -----+------------------------------+-------------------------------------
       0     |  Collision at top edge       |  No collision at top edge
-      1  |  Collision at bottom edge    |  No collision at bottom edge        
+      1     |  Collision at bottom edge    |  No collision at bottom edge        
       2     |  Collision at right edge     |  No collision at right edge
       3     |  Collision at left edge      |  No collision at left edge
       4     |                              |

@@ -1,8 +1,8 @@
 ;These defines are used by the level loading routines 
 ;to load the locate the compressed art for each zone.
 
-	#define TilesetHeader.BankNum		$00		;ROM bank to load tiles from
-	#define TilesetHeader.VRAMAddress	$01		;Address to copy tiles to
+	#define TilesetHeader.BankNum		$00	;ROM bank to load tiles from
+	#define TilesetHeader.VRAMAddress	$01	;Address to copy tiles to
 	#define TilesetHeader.SourceAddress	$03
 	#define TilesetHeader.Entries		$05	;pointer to the chain of tileset entries
 
@@ -13,18 +13,18 @@
 ;Used by the sprite loading routine at $10BF  
 ;to load the playersprites into VRAM at $0000.
 
-	#define SpriteDef.BankNum			$00
+	#define SpriteDef.BankNum		$00
 	#define SpriteDef.SourceAddress		$01
-	#define SpriteDef.LineCount			$03	;LineCount = TileCount/2 (two tiles are copied for each line).
+	#define SpriteDef.LineCount		$03	;LineCount = TileCount/2 (two tiles are copied for each line).
 
 ; =============================================================================
 ;  LEVEL STRUCTURE & FLAGS
 ; -----------------------------------------------------------------------------
-	#define LevelDescriptor.ViewportFlags	$00
+	#define LevelDescriptor.ViewportFlags		$00
 	#define LevelDescriptor.ix01			$01
 	#define LevelDescriptor.MetaTileX		$02 ; x-index of metatile (see: Engine_Mappings_GetBlockXY)
 	#define LevelDescriptor.MetaTileY		$03 ; y-index of metatile (see: Engine_Mappings_GetBlockXY)
-	#define LevelDescriptor.MetaTileBank	$04
+	#define LevelDescriptor.MetaTileBank		$04
 	#define LevelDescriptor.LayoutBank		$05
 	#define LevelDescriptor.MetaTilePtr		$06
 	#define LevelDescriptor.LayoutPtr		$08
@@ -64,9 +64,9 @@
 	#define Object.LogicPtr		$0C 	; $0C - Pointer to logic subroutine.
 	#define Object.LogicSeqPtr	$0E	; $0E - Pointer to logic sequence data
 	#define Object.SubPixelX	$10	; $10 - fractional part of xpos
-	#define Object.X			$11	; $11 - x pos in level
+	#define Object.X		$11	; $11 - x pos in level
 	#define Object.SubPixelY	$13	; $13 - fractional part of ypos
-	#define Object.Y			$14	; $14 - y pos in level
+	#define Object.Y		$14	; $14 - y pos in level
 	#define Object.VelX		$16 	; $16 - x velocity (Q8.8)
 	#define Object.VelY		$18	; $18 - y velocity (Q8.8)
 	#define Object.ScreenX		$1A	; $1A - x offset on screen

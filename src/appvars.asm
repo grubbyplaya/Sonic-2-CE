@@ -1,5 +1,17 @@
 CheckForBank: 			;it's bankin' time
  	call	StoreRegisters
+
+	ld	a, (Frame2Page)
+	sub	$04
+	mlt	hl
+	add	a, a
+	add	a, a
+	add	a, a
+	ld	l, a
+	ld	h, $00
+	ld	de, Bank04
+	add	hl, de
+
 	call	_Mov9toOP1
  	call	_ChkFindSym
 	call	c, ExitGame
@@ -28,6 +40,7 @@ StoreRegisters:		;stores registers in RAM
 	push	hl
 	push	ix
 	push	iy
+	ld	sp, (SaveSP)
 	ret
 
 PutBankinSlot1:	;unused, since Sonic 2 only swaps out ROM bank 2.
@@ -220,4 +233,3 @@ Bank30:
 
 Bank31:
 	.db	AppVarObj, "Bank31", 0
-

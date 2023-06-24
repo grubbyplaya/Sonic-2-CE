@@ -1,10 +1,11 @@
-;3 KB of VRAM is unused. 
+;These routines take data from VDP RAM
+;and interprets them into a usable frame.
+
+;3 KB of VRAM is unused.
 ;Double buffering takes up 48 KB
 ;The screen itself is 75 KB
 ;VDP RAM is 16 kB in size
 
-;These routines take data from VDP RAM
-;and interprets them into a usable image.
 
 ;Screen Map starts at X Scroll - $FF
 ;Y Scroll is normal. No need to interpret
@@ -82,7 +83,7 @@ _:	inc	hl
 	jr	z, +_
 	inc	ixh
 
-	dec   bc
+	dec	bc
 	ld	a, b
 	or	c
 	jr	nz, ---_
@@ -112,10 +113,10 @@ GetTileCoordinates:
 	ld	de, RenderedScreenMap
 	add	hl, de
 	ex	de, hl	;DE has the tile's coordinate
-	pop	hl		;bring back the tile pointer
+	pop	hl	;bring back the tile pointer
 	ret
 
-GetScrollOffsets:	;gets the screen map offsets
+GetScrollingOffsets:	;gets the screen map offsets
 	ld	a, (BackgroundYScroll)
 	ld	h, a
 	ld	a, (BackgroundXScroll)
@@ -124,7 +125,7 @@ GetScrollOffsets:	;gets the screen map offsets
 	add	hl, de
 	ret
 
-GetTilePointer:	;makes DE a pointer to the selected tile
+GetTilePointer:		;makes DE a pointer to the selected tile
 	dec	hl
 	ld	a, (hl)
 	push	hl
@@ -147,7 +148,7 @@ _:	mlt	hl 		;clear HLU
 	ld	h, (iy)
 	ld	l, (ix)		;HL now has the sprite's coordinate
 	inc	ix		;IX now has the tile to draw
-	inc	iy
+	inc	iy		;IY has the next loop's Y position
 	
 	ld	de, RenderedScreenMap
 	add	hl, de
@@ -156,10 +157,10 @@ _:	mlt	hl 		;clear HLU
 	ld	h, $20		;size of tile
 	ld	l, (ix)
 	mlt	hl
+	inc	ix
 	ld	de, SegaVRAM
 	add	hl, de		;HL now points to the selected tile
 	pop	de		;DE has the tile's coordinates
-
 	call	ConvertFGTileTo8bpp
 	djnz	-_
 	ret
@@ -186,8 +187,8 @@ ConvertBGTileTo8bpp:
 	ld	(cursorImage), hl
 
 _:	ld	a, (hl)
-	ld	(CursorImage-1), a	;save byte
-	and	%11110000		;remove bits 4-7
+	ld	mb, a		;save byte
+	and	%00001111	;remove bits 4-7
 	jr	z, +_
 
 	ld	h, 0
@@ -199,8 +200,8 @@ _:	ld	a, (hl)
 	inc	sp
 	pop	af
 	
-_:	ld	a, (CursorImage-1)	;get back the byte
-	and	%00001111		;remove bits 0-3
+_:	ld	a, mb		;get back the byte
+	and	%11110000	;remove bits 0-3
 	jr	z, +_
 	rlca			;offset result into bits 0-3
 	rlca
@@ -218,7 +219,7 @@ _:	ld	a, (CursorImage-1)	;get back the byte
 	
 _:	ld	a, c
 	and	%00010011
-	jr	nz, +_	;jump if C is a multiple of 4 or $20
+	jr	nz, +_		;jump if C isn't a multiple of 4 or $20
 
 	ld	hl, $00F8
 	add	hl, sp
@@ -243,8 +244,8 @@ ConvertFGTileTo8bpp:
 	ld	(cursorImage), hl
 
 _:	ld	a, (hl)
-	ld	(CursorImage-1), a	;save byte
-	and	%11110000			;remove bits 4-7
+	ld	mb, a	;save byte
+	and	%11110000		;remove bits 4-7
 	jr	z, +_
 
 	ld	h, 0
@@ -257,7 +258,7 @@ _:	ld	a, (hl)
 	inc	sp
 	pop	af
 	
-_:	ld	a, (CursorImage-1)	;get back the byte
+_:	ld	a, mb		;get back the byte
 	and	%00001111	;remove bits 0-3
 	jr	z, +_
 	rlca			;offset result into bits 0-3

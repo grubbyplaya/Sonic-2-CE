@@ -94,7 +94,6 @@ VDP_ReadStatus:	 ; $1325
 VDP_SetAddress:	 ; Ported
 	push	af	
 	ld	a, h
-	or	$40
 	ld	(VRAMPointer+1), a
 	ld	a, l
 	ld	(VRAMPointer), a	
