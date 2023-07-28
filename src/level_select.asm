@@ -395,8 +395,7 @@ _DrawCursor:
 	add  hl, de
 	ld   de, _TileMappings	;source
 	ld   bc, $0301			;rows/cols
-	call Engine_LoadCardMappings	;copy to VRAM
-	ret
+	jp   Engine_LoadCardMappings	;copy to VRAM
 
 _TileMappings:
 ;.db $00, $01, SegaVRAM+$3C, $01, $00, $01

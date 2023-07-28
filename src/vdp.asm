@@ -94,6 +94,7 @@ VDP_ReadStatus:	 ; $1325
 VDP_SetAddress:	 ; Ported
 	push	af	
 	ld	a, h
+	and	$3F
 	ld	(VRAMPointer+1), a
 	ld	a, l
 	ld	(VRAMPointer), a	
@@ -144,8 +145,7 @@ VDP_WriteByte:		; Ported
 	add	hl, de
 	ld	(hl), a
 	pop	de
-	call	DrawScreen
-	ret
+	jp	DrawScreen
 
 
 ; =============================================================================
@@ -189,33 +189,24 @@ VDP_ReadByte:		; Ported
 ;	A, BC
 ; -----------------------------------------------------------------------------
 VDP_WriteAndSkip:		; Ported
+	call	VDP_SetAddress
 	push	de
-	call	VDP_SetAddress	
-	ld	d, a
 	ld	de, SegaVRAM
-	add	hl, de
+	add	hl, de	
 	pop	de
-	push	de
 
-_:	ld	a, d
-	; write the data to VRAM
-	ld	(hl), a
-	push	af
-	pop	af
-	
+_:	; write the data to VRAM
+	ld	(hl), a	
 	; skip the next VRAM address
 	inc	hl
 	inc	hl
 	
 	; decrement BC and loop back if != 0
-	dec	bc
 	ld	a, b
 	or	c
 	jr	nz, -_
-	
-	pop	de
-	call	DrawScreen
-	ret
+
+	jp	DrawScreen
 
 
 ; =============================================================================
@@ -253,8 +244,7 @@ _:	; write the low-order byte
 	ld	a, b
 	or	c
 	jr	nz, -_
-	call	DrawScreen
-	ret
+	jp	DrawScreen
 
 
 ; =============================================================================
@@ -278,9 +268,7 @@ VDP_Copy:	 ; Ported and optimized
 	pop	de
 	;copy the source to VDP RAM
 	ldir
-	call	DrawScreen	
-	ret
-
+	jp	DrawScreen
 
 ; =============================================================================
 ;	VDP_SetMode2Reg_DisplayOn()
@@ -318,7 +306,7 @@ VDP_SetMode2Reg_DisplayOff:
 	ld	a, (hl)
 	; set each of the flags except for the "Display Visible" bit
 	; i.e. leave the display turned off
-	and	VDP_DisplayVisibleBit = $FF
+	and	$BF	;VDP_DisplayVisibleBit ~ $FF
 	ld	(hl), a
 	ret
 
@@ -356,7 +344,7 @@ VDP_EnableFrameInterrupt:
 VDP_DisableFrameInterrupt:		; $13AA
 	ld	hl, VDPRegister1
 	ld	a, (hl)
-	and	VDP_FrameInterruptsBit = $FF
+	and	$DF	;VDP_FrameInterruptsBit ~ $FF
 	ld	(hl), a
 	ret
 
@@ -383,7 +371,7 @@ VDP_DrawText:		; Ported and optimized
 	add	hl, de
 	pop	de
 
-	ex	de, hl	
+	ex	de, hl
 _:	ldi	;write a char to the VDP memory
 	inc	de
 	
@@ -398,9 +386,7 @@ _:	ldi	;write a char to the VDP memory
 	ld	a, c
 	or	b
 	jr	nz, -_
-	call	DrawScreen
-	ret
-
+	jp	DrawScreen
 
 ; =============================================================================
 ;	VDP_UNKNOWN(uint16 vdp_address, uint16 char_ptr, uint16 count)	UNUSED
@@ -524,8 +510,7 @@ VDP_UpdateSAT:		; Ported
 	ld	de, SegaVRAM+$3F80
 	ld	bc, $40
 	ldir
-	call	DrawScreen
-	ret
+	jp	DrawScreen
 
 
 VDP_UpdateSAT_Descending:	; Ported
@@ -565,8 +550,7 @@ _:	ldi
 	djnz -_
 
 	ld	sp, (SaveSP)
-	call	DrawScreen
-	ret
+	jp	DrawScreen
 
 
 ; =============================================================================

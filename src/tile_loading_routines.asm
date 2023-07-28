@@ -29,6 +29,7 @@ _LABEL_1AA6_22:
 	ld	a, (hl)
 	ld	(TileCount+1), a		;tilecount hi-byte 
 	inc	hl
+	mlt	de
 	ld	e, (hl)
 	inc	hl
 	ld	d, (hl)				;compression definition pointer (http://forums.sonicretro.org/index.php?showtopic=11509)
@@ -36,6 +37,9 @@ _LABEL_1AA6_22:
 	ld	(SourcePointer), hl		;tile data pointer
 	pop	hl
 	add	hl, de				;add the relative compression definition pointer to the base address
+	ld	bc, $8000
+	or	a
+	sbc	hl, bc
 	ld	(FlagPointer), hl		;store the compression definition pointer
 	ld	hl, gameMem+$D320		;clear RAM $D320->$D340
 	ld	de, gameMem+$D321
@@ -219,7 +223,7 @@ VRAMPointer:	;stores the VDP address pointer
 ;*	Write tile data to VRAM. Data at $D300 is treated as an	*
 ;*	index into the mirroring data at $0100.					*
 ;************************************************************
-WriteMirroredTileToVRAM:	;FIXME: What'd you do to this, Grubby?
+WriteMirroredTileToVRAM:
 	ld	b, $20
 _:	ld	e, (hl)		;read a byte of tile data from RAM
 	ld	d, $01 ;Engine_Data_ByteFlipLUT >> 8

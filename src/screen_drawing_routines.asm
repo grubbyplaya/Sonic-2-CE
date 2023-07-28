@@ -35,9 +35,7 @@ _:	ld	bc, $0100
 	dec	a	
 	jr	nz, -_
 	call	Engine_HandleVBlank
-
-	call	RestoreRegisters
-	ret
+	jp	RestoreRegisters
 
 ClearScreen:
 	ld	hl, VRAM

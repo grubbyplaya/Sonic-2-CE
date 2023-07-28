@@ -11,9 +11,11 @@ Arrow keys - Move Sonic
 2nd/Alpha - Jump
 
 # To Do
-
-Port VDP routines to the TI-84+ CE (sprite and palette routines are done)
-
-Make an equates file for all of the labels in the appvars folder (~20% done)
-
-(NOT NEEDED) Expand the original game's 256x192 resolution into the 84+ CE's 320x240 resolution
+ - [x] Get the code to assemble using SPASM
+ - [x] Reimplement SMS mappers with TI-OS routines
+ - [x] Move all SMS RAM pointers to CE RAM
+ - [x] Replace original 6bpp palettes with 8bpp ones
+ - [x] Add an equate file for the ROM banks
+ - [ ] Add emulated VDP routines (80% done)
+ - [ ] Fix remaining pointer issues and runtime errors (~25% done)
+ - [ ] (NOT NEEDED) expand the rendering area to fill the 84+ CE's screen

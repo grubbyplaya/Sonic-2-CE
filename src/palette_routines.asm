@@ -2,13 +2,13 @@
 
 ;Variables used by palette control/update routines
 
-#define PaletteFadeTime	gameMem+$D2C8	;TODO: Check this one
+#define PaletteFadeTime		gameMem+$D2C8	;TODO: Check this one
 #define BgPaletteControl	gameMem+$D4E6	;Triggers background palette fades (bit 6 = to black, bit 7 = to colour).
 #define BgPaletteIndex		gameMem+$D4E7	;Current background palette (index into array of palettes)
 #define FgPaletteControl	gameMem+$D4E8	;Triggers foreground palette fades (bit 6 = to black, bit 7 = to colour).
 #define FgPaletteIndex		gameMem+$D4E9	;Current foreground palette (index into array of palettes)
-#define WorkingCRAM		$E30220	;copy of Colour RAM maintained in work RAM.
-#define Palette_UpdateTrig	gameMem+$D4EA       ; causes a CRAM update with the next vblank
+#define WorkingCRAM		$E30220		;copy of Colour RAM maintained in work RAM.
+#define Palette_UpdateTrig	gameMem+$D4EA	; causes a CRAM update with the next vblank
 
 Palette_Update:
 	ld	hl, gameMem+$D2C9		;counter for smooth fade

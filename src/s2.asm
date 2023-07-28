@@ -7,7 +7,7 @@
 #include	"includes/defines.asm"
 #include	"includes/sms.asm"
 #include	"includes/structures.asm"
-#include	"includes/objects.asm"			;values for objects
+#include	"includes/objects.asm"		;values for objects
 #include	"includes/player_states.asm"	;values for player object state
 #include	"includes/level_values.asm"
 #include	"includes/macros.asm"
@@ -30,22 +30,22 @@
 #endif
 ;=====================================================================
 
-#define gameMem 			cmdPixelShadow-$C000	;Master System RAM
+#define gameMem 		cmdPixelShadow-$C000	;Master System RAM
 
-#define LevelDataStart			gameMem+$C001
+#define LevelDataStart		gameMem+$C001
 
-#define BackgroundXScroll		gameMem+$D172
-#define BackgroundYScroll		gameMem+$D173
+#define BackgroundXScroll	gameMem+$D172
+#define BackgroundYScroll	gameMem+$D173
 
-#define CameraOffsetX			gameMem+$D288
-#define CameraOffsetY			gameMem+$D289		;used for moving the camera when looking up or down
+#define CameraOffsetX		gameMem+$D288
+#define CameraOffsetY		gameMem+$D289		;used for moving the camera when looking up or down
 
-#define Score				gameMem+$D29C		;score stored in 3-byte BCD
+#define Score			gameMem+$D29C		;score stored in 3-byte BCD
 
-#define LevelTimerTrigger		gameMem+$D2B8		;level timer update trigger
-#define LevelTimer			gameMem+$D2B9
+#define LevelTimerTrigger	gameMem+$D2B8		;level timer update trigger
+#define LevelTimer		gameMem+$D2B9
 
-#define IdleTimer			gameMem+$D3B4
+#define IdleTimer		gameMem+$D3B4
 
 ;Variables used by the continue screen
 #define ContinueScreen_Count	gameMem+$D2C4
@@ -59,11 +59,11 @@
 
 
 ;Variables used by palette control/update routines
-#define PaletteFadeTime			gameMem+$D2C8		;TODO: Check this one
-#define BgPaletteControl		gameMem+$D4E6		;Triggers background palette fades (bit 6 = to black, bit 7 = to colour).
-#define BgPaletteIndex			gameMem+$D4E7		;Current background palette (index into array of palettes)
-#define FgPaletteControl		gameMem+$D4E8		;Triggers foreground palette fades (bit 6 = to black, bit 7 = to colour).
-#define FgPaletteIndex			gameMem+$D4E9		;Current foreground palette (index into array of palettes)
+#define PaletteFadeTime		gameMem+$D2C8	;TODO: Check this one
+#define BgPaletteControl	gameMem+$D4E6	;Triggers background palette fades (bit 6 = to black, bit 7 = to colour).
+#define BgPaletteIndex		gameMem+$D4E7	;Current background palette (index into array of palettes)
+#define FgPaletteControl	gameMem+$D4E8	;Triggers foreground palette fades (bit 6 = to black, bit 7 = to colour).
+#define FgPaletteIndex		gameMem+$D4E9	;Current foreground palette (index into array of palettes)
 
 ;VDP Values
 #define ScreenMap		SegaVRAM+$3800		;location of the screen map (name table)
@@ -78,13 +78,13 @@
 #define RenderedScreenMap	VRAM + $12C00			;256x192 framebuffer
 #define SegaVRAM		RenderedScreenMap + $E000	;Master System VDP RAM
 #define CRAM			$E30200
-#define WorkingCRAM		$E30220			;copy of Colour RAM maintained in work RAM.
+#define WorkingCRAM		$E30220				;copy of Colour RAM maintained in work RAM.
 
-#define BankSlot1		saveSScreen		;ROM bank slot 1. Unused.
-#define BankSlot2		plotSScreen		;ROM bank slot 2.
+#define BankSlot1		saveSScreen			;ROM bank slot 1. Unused.
+#define BankSlot2		plotSScreen			;ROM bank slot 2.
 
 #define LastLevel		$07
-#define LastBankNumber	1 << 5 -1	; must be 2^n-1 since it is used in AND ops
+#define LastBankNumber		1 << 5 -1			; must be 2^n-1 since it is used in AND ops
 
 _START:
 	di
@@ -94,7 +94,7 @@ _START:
 	ld	(hl), $00
 	ldir	
 	im	1
-	ld	sp, gameMem+$DFF0
+	ld	sp, gameMem+$E00B
 	;set page-2 to map to ROM as specified in register $FFFF
 	xor	a
 	ld	(gameMem+$FFFC), a
@@ -171,6 +171,10 @@ LABEL_69:
 ;	ld:
 ;	None.
 ; -----------------------------------------------------------------------------
+
+_error_msg:
+	.db "ERROR"
+
 Engine_ErrorTrap:		;$0073
 	call	VDP_ClearScreen
 	ld	a, $01
@@ -179,17 +183,13 @@ Engine_ErrorTrap:		;$0073
 	ld	de, _error_msg
 	ld	bc, $05
 	call	VDP_DrawText
-	jr	+_
-
-_error_msg:
-	.db "ERROR"
 
 	; hang for 180 frames
-_:	ld	b, $B4
+	ld	b, $B4
 _:	ei
 	halt
 	djnz	-_
-	jp	$0000
+	jp	_START
 
 .db "MS SONIC", $A5, "THE", $A5, "HEDGEHOG.2 "
 #if Version = 2
@@ -263,7 +263,7 @@ DATA_330:
 Engine_Reset:		; $0431
 	di
 	; reset the stack pointer
-	ld	sp, gameMem+$DFF0
+	ld	sp, gameMem+$E00B
 	
 	; init the VDP
 	call	VDP_SetMode2Reg_DisplayOff
@@ -298,11 +298,9 @@ Engine_Initialise:
 	call	Engine_ClearPaletteRAM
 	call	Engine_ClearVRAM
 	call	LoadSave
+
 	call	Engine_LoadLevelTiles
 	call	LevelSelectCheck
-	;set up 8bpp mode
-	ld	a, lcdBpp8
-	ld	(mpLcdCtrl), a
 
 LABEL_472:
 	ld	hl, gameMem+$D292
@@ -448,7 +446,7 @@ _:	call	VDP_UpdateSAT
 	bit	1, a				;check whether game is paused
 	
 	;load ROM bank-9 into frame-2 and call the palette update code
-	ld 	a, 09
+	ld 	a, 9
 	call	Engine_SwapFrame2
 	call	Palette_Update
 	
@@ -473,7 +471,7 @@ _:	call	VDP_UpdateSAT
 ; VBlank Epilogue
 
 RestoreRegisters:
-	ld	sp, gameMem+$DFD2
+	ld	sp, pixelShadow-$1B
 	pop	iy
 	pop	ix
 	pop	hl
@@ -486,7 +484,6 @@ RestoreRegisters:
 	pop	af
 	ex	af, af'
 	pop	af
-	ei
 	ld	sp, (saveSP)
 ; -------------------------------------
 	ret
@@ -532,10 +529,10 @@ _DATA_05AA:
 .db $FE, $00, $FE, $FE, $02, $02, $00, $02
 
 
-;****************************************************
+;********************************************************
 ;*	Disables VDP line interrupts and initialises	*
-;*	colour RAM with the data at $65A.				*
-;****************************************************
+;*	colour RAM with the data at $65A.		*
+;********************************************************
 VDP_ResetPalette_DisableLineInterrupt:	;$5B2
 	di
 	
@@ -1372,8 +1369,7 @@ TitleScreen_ChangePressStartText:		; $1060
 _:	ld	hl, $3C8C			;vram destination
 	ld	bc, $0114			;rows/cols
 	;load the mappings into VRAM
-	call	Engine_LoadCardMappings
-	ret
+	jp	Engine_LoadCardMappings
 
 LABEL_107C:
 	ld	hl, gameMem+$D292
@@ -1403,9 +1399,8 @@ Engine_LoadPlayerTiles:	;$10BF
 	jr	z, +_
 	ld	de, Data_PlayerSprites_Mirrored - $04
 _:	add	hl, de
-	ld	a, (hl)
- 	call	Engine_SwapFrame2
 	ld	a, (hl)		;bank number
+ 	call	Engine_SwapFrame2
 	inc	hl
 	mlt	de
 	ld	e, (hl)		;art pointer
@@ -1418,7 +1413,7 @@ _:	add	hl, de
 	ld	hl, BankSlot2-$8000
 	add	hl, de		;calculate new pointer for DE
 	ex	de, hl
-	ld	de, SegaVRAM
+	ld	hl, SegaVRAM
 
 Engine_LoadPlayerTiles_CopyTiles:		;copy 2 tiles (64 bytes) to vram
 	ldir
@@ -1468,8 +1463,7 @@ Engine_SwapFrame2:
 LABEL_129C:
 	ld	(Frame2Page), a
 	ld	(gameMem+$FFFF), a
-	call	CheckForBank
-	ret
+	jp	CheckForBank
 
 
 LABEL_12A3_4:
@@ -1479,7 +1473,7 @@ LABEL_12A3_4:
 _:	dec	bc
 	ld	a, c
 	or	b
-	jp	nz, -_
+	jr	nz, -_
 
 	xor	a
 
@@ -2472,8 +2466,7 @@ _:	ld	hl, gameMem+$D2A2
 	ld	hl, $3C2A		;vram address
 	ld	de, ScoreCard_Mappings_Blank	;mapping source
 	ld	bc, $0202		;rows,cols
-	call	Engine_LoadCardMappings
-	ret
+	jp	Engine_LoadCardMappings
 
 Score_AddBadnikValue:		;$1CB8
 	ld	hl, Score_BadnikValue
@@ -3551,7 +3544,7 @@ LABEL_247B:
 	ld	(GlobalTriggers), a
 	ld	(CurrentLevel), a
 	ld	(CurrentAct), a
-	ld	hl, $D292
+	ld	hl, gameMem+$D292
 	bit	7, (hl)
 	jr	z, +_
 
@@ -3840,8 +3833,7 @@ _:	ei
 	djnz	-_
 	call	TitleCard_LoadText
 	call	TitleCard_LoadActLogoMappings
-	call	TitleCard_LoadZoneText
-	ret
+	jp	TitleCard_LoadZoneText
 
 ;****************************************
 ;* Loads the mappings for the zone name *
@@ -3873,8 +3865,7 @@ _:	ld	(gameMem+$D11B), de
 	ld	hl, gameMem+$3900
 	ld	(gameMem+$D11E), hl
 	ld	b, $1C
-	call	TitleCard_ScrollTextFromLeft
-	ret
+	jp	TitleCard_ScrollTextFromLeft
 
 ;****************************************
 ;* Loads the mappings for the act logo	*
@@ -3898,8 +3889,7 @@ TitleCard_LoadActLogoMappings:	;$2688
 	ld	hl, SegaVRAM+$39FE		;VRAM destination
 	ld	(gameMem+$D11E), hl
 	ld	b, $0E			;count
-	call	TitleCard_ScrollActLogo
-	ret
+	jp	TitleCard_ScrollActLogo
 
 ;****************************************
 ;* Loads the mappings for the "Zone"	*
@@ -3924,8 +3914,7 @@ _:	ld	hl, gameMem+$39C0
 	ld	(gameMem+$D11B), de	;pointer to mappings
 	ld	(gameMem+$D11E), hl	;VRAM address
 	ld	b, $14
-	call	TitleCard_ScrollTextFromLeft
-	ret
+	jp	TitleCard_ScrollTextFromLeft
 
 TitleCard_ScrollTextFromLeft:		;$26E1
 	push	bc
@@ -4099,8 +4088,7 @@ ContinueScreen_LoadNumberMappings:		;282B
 	ex	de, hl
 	ld	hl, $3B5E				;load the mappings into VRAM
 	ld	bc, $0202
-	call	Engine_LoadCardMappings
-	ret
+	jp	Engine_LoadCardMappings
 
 	
 LABEL_2849:	;TODO: unused?
@@ -4145,7 +4133,7 @@ _:	ld	a, (kbdG1)		;check for button press
 ScrollingText_LoadSATValues:		;2880
 	ld	hl, $0078
 	ld	(gameMem+$D3BA), hl
-	ld	hl, gameMem+$DB00		;working copy of SAT VPos attributes
+	ld	hl, gameMem+$DB00	;working copy of SAT VPos attributes
 	ld	b, $08			;set vpos to $18 for 8 sprites
 	ld	a, $18
 _:	ld	(hl), a
@@ -4159,7 +4147,7 @@ _:	ld	(hl), a
 	ld	hl, gameMem+$DB40		;working copy of SAT Hpos/char codes
 	ld	de, ScrollingText_Data_CharCodes
 	ld	b, $10			;update 16 sprites
-_:	ld	a, (de)		;copy char code to wokring copy of SAT
+_:	ld	a, (de)			;copy char code to wokring copy of SAT
 	ld	(hl), a
 	inc	hl
 	ld	a, $82			;set HPOS = $82
@@ -4181,8 +4169,8 @@ ScrollingText_Data_CharCodes:	;$28B4
 
 ScrollingText_UpdateWorkingSAT:
 LABEL_28C4:
-	ld	hl, $DB40		;HPOS/char
-	ld	de, $DB00		;VPOS
+	ld	hl, gameMem+$DB40	;HPOS/char
+	ld	de, gameMem+$DB00	;VPOS
 	ld	b, $10			;update 16 sprite entries
 _:	ld	a, (hl)		;do we have a sprite here?
 	or	a
@@ -4919,7 +4907,7 @@ _:	inc	(hl)
 	or	a
 	jr	z, +_
 	ld	hl, $FCC0
-_:	ld	(gameMem+$D518), hl
+_:	ld	(gameMem+$D519), hl
 _:	call	LABEL_3A62
 	ld	a, (Player.StateNext)
 	cp	PlayerState_Jumping
@@ -5515,11 +5503,11 @@ Player_PlayHurtAnimation:		;$37EA
 	bit	0, (ix+$22)
 	jr	z, +_
 	ld	hl, $0000
-_:	ld	(gameMem+$D518), hl	;move sprite up
+_:	ld	(gameMem+$D519), hl	;move sprite up
 	ld	hl, $0100
 	bit	3, (ix+$23)
 	jp	nz, +_
-	ld	hl, $FF00
+	ld	hl, -256
 	ld	(gameMem+$D516), hl	;move sprite back
 _:	ld	hl, $0000
 	ld	(Player_DeltaVX), hl
@@ -6795,7 +6783,7 @@ LABEL_424A:
 	ld	de, $0010
 	and	$08
 	jr	nz, +_
-	ld	de, $FFF0
+	ld	de, -16
 	ld	hl, (gameMem+$D3C7)
 	add	hl, de
 	ld	e, l
@@ -6835,8 +6823,7 @@ _:	ld	a, (gameMem+$D3C6)
 	add	a, a
 	add	a, a
 	ld	(ix+$0B), a
-	call	LABEL_64D4
-	ret
+	jp	LABEL_64D4
 
 LABEL_42B7:
 	ld	a, (gameMem+$D3C6)
@@ -6885,8 +6872,9 @@ _:	sla	e
 	ex	de, hl
 	xor	a
 	sbc	hl, de
-	ld	l, h
-	ld	h, $FF
+	ld	a, h
+	ld	hl, -1
+	ld	l, a
 LABEL_4310:
 	ld	de, (gameMem+$D3C9)
 	ld	a, d
@@ -6942,8 +6930,9 @@ _:	sla	e
 	ex	de, hl
 	xor	a
 	sbc	hl, de
-	ld	l, h
-	ld	h, $FF
+	ld	a, h
+	ld	hl, -1
+	ld	l, a
 LABEL_437A:
 	ld	de, (gameMem+$D3CB)
 	add	hl, de
@@ -7343,7 +7332,7 @@ LABEL_464B:
 LABEL_464D:
 	call	LABEL_469D
 	ld	hl, $0000
-	ld	(gameMem+$D518), hl
+	ld	(gameMem+$D519), hl
 	ld	hl, $0600
 	ld	(gameMem+$D516), hl
 	ret
@@ -7351,7 +7340,7 @@ LABEL_464D:
 LABEL_465D:
 	call	LABEL_469D
 	ld	hl, $0000
-	ld	(gameMem+$D518), hl
+	ld	(gameMem+$D519), hl
 	ld	hl, $FA00
 	ld	(gameMem+$D516), hl
 	ret
@@ -7359,7 +7348,7 @@ LABEL_465D:
 LABEL_466D:
 	call	LABEL_468D
 	ld	hl, $0600
-	ld	(gameMem+$d518), hl
+	ld	(gameMem+$D519), hl
 	ld	hl, $0000
 	ld	(gameMem+$d516), hl
 	ret
@@ -7367,7 +7356,7 @@ LABEL_466D:
 LABEL_467D:
 	call	LABEL_468D
 	ld	hl, $FA00
-	ld	(gameMem+$D518), hl
+	ld	(gameMem+$D519), hl
 	ld	hl, $0000
 	ld	(gameMem+$D516), hl
 	ret
@@ -7382,9 +7371,10 @@ LABEL_468D:
 	ret
 
 LABEL_469D:
+	mlt	hl
 	ld	l, (ix+$14)
 	ld	h, (ix+$15)
-	ld	de, $FFF0
+	ld	de, -16
 	add	hl, de
 	ld	a, l
 	and	$E0
@@ -7404,7 +7394,7 @@ LABEL_46BB:
 ;called on initial collision with mine cart
 LABEL_46C0:
 	res	7, (ix+$04)
-	ld	hl, $D3A0
+	ld	hl, gameMem+$D3A0
 	ld	(hl), $00
 	inc	hl
 	ld	(hl), $02
@@ -7460,8 +7450,8 @@ LABEL_4727:
 	ld	(gameMem+$D516), hl
 	ld	l, (iy+$18)
 	ld	h, (iy+$19)
-	ld	(gameMem+$D518), hl
-	ld	hl, $D503
+	ld	(gameMem+$D519), hl
+	ld	hl, gameMem+$D503
 	set	1, (hl)
 	call	Player_CheckHorizontalLevelCollision
 	ld	a, (iy+$3F)
@@ -7865,38 +7855,38 @@ LABEL_498A:
 
 ;enable camera movement
 Engine_ReleaseCamera:		;$49AA
-	ld	hl, $D15E
+	ld	hl, gameMem+$D15E
 	set	7, (hl)
 	ret
 
 ;lock camera movement
 Engine_LockCamera:			;$49B0
-	ld	hl, $D15E
+	ld	hl, gameMem+$D15E
 	res	7, (hl)
 	ld	hl, (gameMem+$D174)
 	ld	(gameMem+$D280), hl
 	ret
 
-;************************************************
-;*	Set the camera position and lock in place.	*
-;*												*
-;*	ld	BC		Horizontal camera offset.		*
+;****************************************************************
+;*	Set the camera position and lock in place.		*
+;*								*
+;*	ld	BC		Horizontal camera offset.	*
 ;*	ld	DE		Vertical camera offset.		*
-;*	destroys	HL								*
-;************************************************
+;*	destroys:	HL					*
+;****************************************************************
 Engine_SetCameraAndLock:		;$49BC
-	ld	hl, $D15E
+	ld	hl, gameMem+$D15E
 	set	7, (hl)		;lock camera
-	ld	hl, $D15F
+	ld	hl, gameMem+$D15F
 	set	0, (hl)		;update camera pos
 	ld	(gameMem+$D2CE), bc	;horizontal camera offset
 	ld	(gameMem+$D2D0), de	;vertical camera offset
 	ret
 
 LABEL_49CF:
-	ld	hl, $D15E
+	ld	hl, gameMem+$D15E
 	set	7, (hl)
-	ld	hl, $D15F
+	ld	hl, gameMem+$D15F
 	res	0, (hl)
 	ret
 
@@ -7980,7 +7970,7 @@ Engine_CalculateBgScroll:		;$4A7C
 	ld	hl, (gameMem+$D176)	;Calculate the vertical scroll value
 	ld	de, $0011
 	add	hl, de
-	ld	de, $00E0		;224 (screen height)
+	ld	e, $E0		;224 (screen height)
 _:	xor	a
 	sbc	hl, de
 	jr	nc, -_
@@ -8113,7 +8103,7 @@ _:	; make sure that we dont overflow the space allocated for the
 	; decompressed data (gameMem+$C001 -> $CFFF)
 	ld	a, d
 	and	$F0
-	cp	$C0
+	cp	$73
 	;cp	LevelLayout >> 8
 	jr	nz, Engine_LoadLevel_DrawScreen
 	
@@ -8137,7 +8127,7 @@ _:	; make sure that we dont overflow the space allocated for the
 _:	; check array bounds again
 	ld	a, d
 	and	$F0
-	cp	$C0	;cp	LevelLayout >> 8
+	cp	$73	;cp	LevelLayout >> 8
 	jr	nz, Engine_LoadLevel_DrawScreen
 	
 	; read the data byte and copy it into RAM
@@ -8367,8 +8357,7 @@ Engine_LoadLevelHeader:		;$553F
 	ld	(gameMem+$D288), a
 	ld	a, $78
 	ld	(gameMem+$D289), a
-	call	Engine_CalculateCameraBounds
-	ret	
+	jp	Engine_CalculateCameraBounds	
 
 #include "level_headers.asm"
 
@@ -8749,8 +8738,8 @@ _:	ld	l,a
 	cp	$F7
 	jr	nc, +_
 	ld	a, $F8
-_:	ld	l, a
-	ld	h, $FF
+_:	ld	hl, -1
+	ld	l, a
 	ld	de, (Camera_X)
 	add	hl, de
 	ld	(gameMem+$D284), hl
@@ -8794,8 +8783,8 @@ LABEL_5E24:
 	cp	$F7
 	jr	nc, +_
 	ld	a, $F8
-_:	ld	l, a
-	ld	h, $FF
+_:	ld	hl, -1
+	ld	l, a
 	ld	de, (Camera_Y)
 	add	hl, de
 	ld	(gameMem+$D286), hl
@@ -8897,7 +8886,7 @@ Engine_UpdateAllObjects:
 LABEL_5EE4:
 	xor	a
 	ld	(gameMem+$D521), a		;reset player object's collision flags
-	ld	ix, $D540		;get pointer to first, non-player, object descriptor
+	ld	ix, gameMem+$D540		;get pointer to first, non-player, object descriptor
 	ld	b, $13			;number of descriptors to iterate over
 _:	push	bc
 	di	
@@ -8960,8 +8949,7 @@ LABEL_5F29: ;badniks & minecart
 	call	Engine_SwapFrame2
 
 	call	LABEL_6139
-	call	LABEL_617C
-	ret	
+	jp	LABEL_617C	
 
 LABEL_5F3D:
 	ld	a, 30
@@ -8972,8 +8960,7 @@ LABEL_5F3D:
 	call	Engine_SwapFrame2
 
 	call	LABEL_6139
-	call	LABEL_617C
-	ret	
+	jp	LABEL_617C	
 
 #if Version = 2
 LABEL_5F73:
@@ -9399,13 +9386,13 @@ LABEL_623F:
 
 Engine_DeallocateObject:		;$6248
 	ld	a, (ix+$3E)		;get the index of this object
-	or	a				;in the active objects array
+	or	a			;in the active objects array
 	jp	z, +_
 
 	dec	a
 	ld	e, a
 	ld	d, $00
-	ld	hl, $D400		;pointer to the active objects array
+	ld	hl, gameMem+$D400	;pointer to the active objects array
 	add	hl, de
 	ld	(hl), $00		;remove the object from the array
 
@@ -9616,12 +9603,12 @@ LABEL_636B:
 	jr	nz, +_
 	bit	1, a
 	jr	nz, ++_
-	ld	hl, (gameMem+$D518)
+	ld	hl, (gameMem+$D519)
 	ld	a, l
 	or	h
 	jr	z, ++_
 _:	ld	hl, $FC00		;set vertical speed
-	ld	(gameMem+$D518), hl
+	ld	(gameMem+$D519), hl
 _: 	ld	a, PlayerState_JumpFromRamp
 	ld	(gameMem+$D502), a
 	ld	bc, $0400
@@ -9934,7 +9921,7 @@ LABEL_6544:
 	sbc	hl, de
 _:	push	hl
 	pop	bc
-	ld	de, $FFEF
+	ld	de, -17
 	call	Engine_GetCollisionValueForBlock		;collide with background tiles
 	cp	$81
 	jr	z, LABEL_656B
@@ -10006,30 +9993,30 @@ _:	set	4, (ix+$04)	;flag object moving left
 	ret
 
 
-;****************************************************************
+;************************************************************************
 ;*	Moves object A towards player on the x-axis by calculating	*
 ;*	the direction to move A and setting its speed accordingly.	*
-;*	Will try to set speed to $0400								*
-;*																*
-;*	ld	DE		Adjustment value to apply to B's h-pos.		*
+;*	Will try to set speed to $0400					*
+;*									*
+;*	ld	DE		Adjustment value to apply to B's h-pos.	*
 ;*	ld BC		Actual horiz. velocity applied to object A.	*
-;*	destroys	A, DE, HL										*
-;****************************************************************
+;*	destroys	A, DE, HL					*
+;************************************************************************
 Logic_MoveHorizontalTowardsPlayerAt0400:	;$65AC
 	ld	hl, (gameMem+$D511)
 	ld	bc, $0400
 	;FALL THROUGH
 
-;****************************************************************
-;*	Moves object A horizontally towards object B by calculating *
-;*	the direction to move A and setting its speed accordingly.	*
-;*																*
-;*	ld	HL		Object B's horizontal position.				*
+;********************************************************************************
+;*	Moves object A horizontally towards object B by calculating		*
+;*	the direction to move A and setting its speed accordingly.		*
+;*										*
+;*	ld	HL		Object B's horizontal position.			*
 ;*	ld	DE		Adjustment value to apply to B's h-pos.		*
 ;*	ld	BC		Desired horiz. velocity to apply to object A.	*
-;*	ld BC		Actual horiz. velocity applied to object A.	*
-;*	destroys	A, DE, HL										*
-;****************************************************************
+;*	ld BC		Actual horiz. velocity applied to object A.		*
+;*	destroys	A, DE, HL						*
+;********************************************************************************
 Logic_MoveHorizontalTowardsObject:		;$65B5
 	bit	4, (ix+$04)	;which direction is the object facing
 	jr	z, +_		;jump if facing right
@@ -10075,17 +10062,17 @@ _:	ld	(ix+$17), b		;set object's horizontal velocity
 	ret	
 
 
-;****************************************************************
+;********************************************************************************
 ;*	Moves object A towards object B on the Y-axis by			*
-;*	calculating the direction to move A and setting its speed	*
-;*	accordingly.												*
-;*																*
-;*	ld	HL		Object B's vertical position.					*
+;*	calculating the direction to move A and setting its speed		*
+;*	accordingly.								*
+;*										*
+;*	ld	HL		Object B's vertical position.			*
 ;*	ld	DE		Adjustment value to apply to B's v-pos.		*
 ;*	ld	BC		Desired vert. velocity to apply to object A.	*
 ;*	ld BC		Actual vert. velocity applied to object A.		*
-;*	destroys	A, DE, HL										*
-;****************************************************************
+;*	destroys	A, DE, HL						*
+;********************************************************************************
 Logic_MoveVerticalTowardsObject:		;$65EB
 	add	hl, de			;adjust object B's vpos
 	ld	a, l
@@ -10200,8 +10187,7 @@ _:	ld	h, $00				;create 4 fragment objects
 
 	; restore the previously saved page
 	pop	af
-	call	Engine_SwapFrame2
-	ret	
+	jp	Engine_SwapFrame2	
 
 	
 ;interprets a command in the object logic
@@ -10938,7 +10924,7 @@ _:	inc	ix
 LABEL_6A7E:
 	ld	l, (ix+$00)
 	ld	h, (ix+$01)
-	ld	de, $FFFC
+	ld	de, -4
 	add	hl, de
 	ld	(ix+$00), l
 	ld	(ix+$01), h
@@ -11222,14 +11208,14 @@ LABEL_6CA1:
 LABEL_6CA2:				;hit vertical spring
 	bit	1, (ix+$22)
 	ret	z
-	ld	hl, $F880		;jump velocity
+	ld	hl, -1920		;jump velocity
 	jp	Player_SetState_VerticalSpring	
 
 
 LABEL_6CAD:				;diagonal spring
 	bit	1, (ix+$22)
 	ret	z
-	ld	hl, $F880
+	ld	hl, -1920
 	set	4, (ix+$04)
 	ld	a, (gameMem+$d365)
 	cp	$80
@@ -11238,11 +11224,11 @@ LABEL_6CAD:				;diagonal spring
 	res	4, (ix+$04)
 _:	ld	(ix+$16), l		;horizontal velocity
 	ld	(ix+$17), h
-	ld	hl, $FAF0
+	ld	hl, -1296
 	ld	a, (CurrentLevel)
 	cp	$03				;check to see if we're on GHZ
 	jr	z, +_
-	ld	hl, $F900			
+	ld	hl, -1792			
 _:	jp	Player_SetState_DiagonalSpring
 
 
@@ -11261,8 +11247,8 @@ LABEL_6CE2:				;hit spikes
 LABEL_6CF7:				;hit breakable block
 	bit	1, (ix+$03)
 	ret	z				;return if player is not rolling
-	ld	hl, $FBC0
-	ld	(gameMem+$D518), hl	;set vertical speed
+	ld	hl, -1088
+	ld	(gameMem+$D519), hl	;set vertical speed
 	res	1, (ix+$22)
 	set	0, (ix+$03)
 	jp	Player_CollideBreakableBlock_UpdateMappings	;update level layout
@@ -11413,7 +11399,7 @@ LABEL_6DED:
 	ld	a, l
 	cpl	
 	ld	l, a
-	ld	(gameMem+$D518), hl
+	ld	(gameMem+$D519), hl
 	jp	Player_SetState_JumpFromRamp
 
 ;launch from ramp with negative velocity
@@ -11437,7 +11423,7 @@ LABEL_6E10:
 	ld	a, l
 	cpl	
 	ld	l, a
-	ld	(gameMem+$D518), hl
+	ld	(gameMem+$D519), hl
 	jp	Player_SetState_JumpFromRamp
 	
 LABEL_6E30:
@@ -11897,7 +11883,7 @@ Engine_Collision_AdjustVerticalPos:	;70C7
 ;*	player object and a level block.				*
 ;****************************************************
 Player_CheckHorizontalLevelCollision:		;$7102
-	ld	hl, $D522
+	ld	hl, gameMem+$D522
 	res	2, (hl)		;clear "right-edge collision" flag
 	res	3, (hl)		;clear "left-edge collision" flag
 ;first check for a collision at the left edge of the player object
@@ -11905,7 +11891,7 @@ Player_CheckHorizontalLevelCollision:		;$7102
 	call	Player_CheckHorizontalLevelCollision_Left
 	
 	ld	bc, $000A		;check for a collision at the right-hand
-	ld	de, $FFF4		;edge of the player
+	ld	de, -12			;edge of the player
 	call	Engine_GetCollisionDataForBlock
 	ld	a, (Cllsn_MetaTileSurfaceType)
 	cp	$81	;solid block
@@ -11970,8 +11956,8 @@ _:	add	a, c			;collision value += position on block
 ;********************************************************
 Player_CheckHorizontalLevelCollision_Left:
 LABEL_7172:
-	ld	bc, $FFF6		;check for collision at left-hand
-	ld	de, $FFF4		;edge of player
+	ld	bc, -10			;check for collision at left-hand
+	ld	de, -12			;edge of player
 	call	Engine_GetCollisionDataForBlock
 	ld	a, (Cllsn_MetaTileSurfaceType)		;get block type
 	cp	$81	;solid block
@@ -12061,7 +12047,7 @@ _:	cp	$03			;check player's speed
 	neg	
 	cp	$07
 	jr	nc, Player_CollideBreakableBlock_UpdateMappings
-	ld	bc, $FFC0
+	ld	bc, -64
 	add	hl, bc
 	ld	(gameMem+$D516), hl
 
@@ -12188,7 +12174,7 @@ Player_CollideSpikeBlock_PlayerHurt:	;$72AA
 	bit	7, (ix+$03)
 	ret	nz
 	ld	hl, $0100
-	ld	(gameMem+$D518), hl
+	ld	(gameMem+$D519), hl
 	jp	Player_SetState_Hurt
 
 
@@ -12202,7 +12188,7 @@ Player_CheckTopLevelCollision:			;$72B8
 	res	0, (ix+$22)
 	
 	ld	bc, $0000		;check for collision at top edge
-	ld	de, $FFE8		;of player object
+	ld	de, -24			;of player object
 	call	Engine_GetCollisionDataForBlock
 	
 	ld	a, (Cllsn_MetaTileSurfaceType)		;get block type
@@ -12254,7 +12240,7 @@ _:	cp	c
 
 LABEL_7314:
 	ld	hl, $0100
-	ld	(gameMem+$D518), hl
+	ld	(gameMem+$D519), hl
 	ret	
 
 
@@ -12264,7 +12250,7 @@ LABEL_7314:
 ;************************************************************
 Player_CollideTopVerticalSpring:	;$731B
 	ld	hl, $0780
-	ld	(gameMem+$D518), hl	;set player vertical speed
+	ld	(gameMem+$D519), hl	;set player vertical speed
 	jp	Player_SetState_JumpFromRamp
 
 
@@ -12313,10 +12299,10 @@ _:	cp	c
 	jp	Player_SetState_Hurt
 
 
-;************************************************************
-;*	Handle a vertical collision with a pipe block (e.g.		*
-;*	ALZ2 or SEZ)											*
-;************************************************************
+;****************************************************************
+;*	Handle a vertical collision with a pipe block (e.g.	*
+;*	ALZ2 or SEZ)						*
+;****************************************************************
 Player_CollideVerticalWithPipeBlock:		;$736F
 	ld	a, (Cllsn_MetatileIndex)		;copy current block value
 	ld	(gameMem+$D367), a		;here
@@ -12325,10 +12311,10 @@ Player_CollideVerticalWithPipeBlock:		;$736F
 
 LABEL_7378:
 	ld	bc, $0000
-	ld	de, $FFE6
+	ld	de, -26
 	bit	0, (ix+$07)
 	jr	z, +_
-	ld	de, $FFF0
+	ld	de, -16
 _:	ld	a, (gameMem+$D465)			;copy the previous collision value.
 	ld	(gameMem+$D466), a
 	call	Engine_GetCollisionValueForBlock	;collide with background tiles
@@ -12338,11 +12324,11 @@ _:	ld	a, (gameMem+$D465)			;copy the previous collision value.
 	jp	Player_ALZ_WaterBounce
 
 
-;********************************************************
+;****************************************************************
 ;*	Handles a player-ring block collision. Increments	*
 ;*	the ring counter and updates the level layout to	*
-;*	remove the ring.									*
-;********************************************************
+;*	remove the ring.					*
+;****************************************************************
 Player_CollideWithRingBlock:			;$739A
 	; swap in the bank with the metatiles
 	ld	a, (LevelAttributes.MetaTileBank)
@@ -12355,6 +12341,7 @@ Player_CollideWithRingBlock:			;$739A
 	sub	$70				
 	ld	(Cllsn_RingBlock), a 
 	
+	mlt	hl
 	ld	l, a
 	ld	h, $00
 	add	hl, hl
@@ -12673,9 +12660,7 @@ Engine_GetCollisionDataForBlock:		;$7481
 	
 	; restore the saved page
 	pop	af
-	call	Engine_SwapFrame2
-	ret	
-
+	jp	Engine_SwapFrame2	
 
 ; =============================================================================
 ; Engine_GetCollisionValueForBlock(uint16 object_ptr, int16 x_adj, int16 y_adj)
@@ -12799,7 +12784,7 @@ Engine_GetCollisionData_CleanUp:			;$759F
 	ret	
 
 Engine_GetCollisionData_HandleOverflow:	;$75AA
-	ld	hl, $CFFF		;store as address of block
+	ld	hl, gameMem+$CFFF	;store as address of block
 	ld	(Cllsn_LevelMapBlockPtr), hl
 	ld	a, $FF			;store as value of block
 	ld	(Cllsn_MetatileIndex), a
@@ -12918,22 +12903,21 @@ Engine_LoadLevelTiles:		;$763F
 	call	Engine_SwapFrame2
 	
 	; set the vram address pointer
-	mlt	hl
 	ld	l, (iy + 1)
 	ld	h, (iy + 2)
 	call	VDP_SetAddress
 	
 	; read the tile source pointer and copy to vram
+	ld	hl, ramStart
 	ld	l, (iy + 3)
 	ld	h, (iy + 4)
 	xor	a
-	ld	de, BankSlot2-$8000
-	add	hl, de
 	call	LoadTiles
 
 	; read the tileset header chain pointer into IY
-	ld	l, (iy + 5)
-	ld	h, (iy + 6)
+	ld	hl, ramStart
+	ld	l, (iy + 6)
+	ld	h, (iy + 7)
 	push	hl
 	pop	iy
 	
@@ -12958,8 +12942,7 @@ _:	; check for the end-of-chain marker
 	di
 	call	VDP_SetAddress
 	
-	; read the source data pointer. 
-	mlt	hl
+	; read the source data pointer.
 	ld	l, (iy + 3)
 	ld	h, (iy + 4)
 	
@@ -12969,12 +12952,10 @@ _:	; check for the end-of-chain marker
 	and	$80
 	
 	; decompress the tiles into VRAM	
-	ld	de, BankSlot2-$8000
-	add	hl, de
 	call	LoadTiles
 	
 	; move to the next tileset header entry
-	ld	bc, $0005
+	ld	bc, $0006
 	add	iy, bc
 	jr	-_
 
@@ -13048,10 +13029,7 @@ LevelSelect_LoadFont:		; $76D7
 	ld	hl, Art_LevelSelect_Font
 	xor	a
 	; FIXME: Use tail recursion here.
-	call	LoadTiles
-	ret
-
-
+	jp	LoadTiles
 
 TitleCard_LoadTiles:		;76EB
 	di
@@ -13120,8 +13098,7 @@ TitleCard_LoadTiles:		;76EB
 	ld	bc, $0810
 	ld	hl, $3B90
 	; FIXME: use tail recursion here.
-	call	Engine_LoadCardMappings
-	ret
+	jp	Engine_LoadCardMappings
 
 
 TitleCard_PicturePointers:
@@ -13156,8 +13133,7 @@ GameOverScreen_LoadTiles:	;777D
 	ld	hl, GameOverScreen_Data_GameOverTiles
 	xor	a
 	; FIXME: use tail recursion here.
-	call	LoadTiles					;load the art
-	ret
+	jp	LoadTiles					;load the art
 
 ;Used by end of game sequence?
 ContinueScreen_LoadTiles:	;7791
@@ -13170,8 +13146,7 @@ ContinueScreen_LoadTiles:	;7791
 	ld	hl, ContinueScreen_Data_ContinueTiles
 	xor	a
 	; FIXME: use tail recursion here.
-	call	LoadTiles
-	ret
+	jp	LoadTiles
 
 ContinueScreen_LoadNumberTiles:	;77A5
 	di
@@ -13184,8 +13159,7 @@ ContinueScreen_LoadNumberTiles:	;77A5
 	ld	hl, ContinueScreen_Data_NumberTiles
 	xor	a
 	; FIXME: use tail recursion here.
-	call	LoadTiles
-	ret
+	jp	LoadTiles
 
 ScoreCard_LoadMappings:	;77B9
 	ld	hl, $3B90
@@ -13210,9 +13184,7 @@ ScoreCard_LoadMappings:	;77B9
 	call	LABEL_1D4F
 	call	LABEL_1D60
 	; FIXME: use tail recursion here.
-	call	LABEL_1D6F
-	ret
-
+	jp	LABEL_1D6F
 
 ; =============================================================================
 ;	Engine_ClearVRAM()
@@ -13231,15 +13203,13 @@ Engine_ClearVRAM:		; $77F3
 	call	VDP_SetMode2Reg_DisplayOff
 	
 	; prep the counter
-	ld	hl, $D40000
-	ld	de, $D40001
+	ld	hl, VRAM
+	ld	de, VRAM+1
 	ld	bc, VRAMEnd-VRAM
 
 	; FIXME: use tail recursion here.
 	; turn the display on
-	call	VDP_SetMode2Reg_DisplayOn
-	ret
-
+	jp	VDP_SetMode2Reg_DisplayOn
 
 ; =============================================================================
 ;	Engine_ClearPaletteRAM()
@@ -13254,8 +13224,8 @@ Engine_ClearVRAM:		; $77F3
 Engine_ClearPaletteRAM:	; $782D
 	di
 	;write to CRAM at address $E30200
-	ld	hl, $E30200
-	ld	de, $E30201
+	ld	hl, CRAM
+	ld	de, CRAM+1
 	;write $0 to VRAM
 	ld	(hl), $00
 	;loop 32 times
@@ -13480,7 +13450,7 @@ PLC_EOL_GMZ_Boss:
 	.db $4A
 	.dw $0C40
 	.dl Art_GMZ_Boss
-.dl Bank26 + $80			;mirror the tiles
+.db 26 + $80			;mirror the tiles
 	.db $4A
 	.dw $1580
 	.dl Art_GMZ_Boss
@@ -13809,10 +13779,11 @@ UpdateCyclingPalette_Lava:		;$7DA7
 _:	ld	(iy+$02), a
 	add	a, a
 	add	a, (iy+$02)
+	mlt	de
 	ld	e, a
 	ld	d, $00
 #if Version = 2
-	ld	hl, $AEC1
+	ld	hl, BankSlot2+$2EC1
 #else
 	ld	hl, DATA_B30_AF41
 #endif
@@ -14016,8 +13987,7 @@ _:	ld	de, WorkingCRAM + $09
 	ld	(Palette_UpdateTrig), a
 
 	pop	af				;page the previous bank bank in
-	call	Engine_SwapFrame2
-	ret
+	jp	Engine_SwapFrame2
 
 LABEL_7F46:	;update the palette for the end sequence
 	ld	l, (iy+$04)

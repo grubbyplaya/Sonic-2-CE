@@ -1,7 +1,5 @@
 CheckForBank: 			;it's bankin' time
  	call	StoreRegisters
-
-	ld	a, (Frame2Page)
 	sub	$04
 	mlt	hl
 	add	a, a
@@ -16,6 +14,8 @@ CheckForBank: 			;it's bankin' time
  	call	_ChkFindSym
 	call	c, ExitGame
 	call	PutBankinSlot2
+	ld	(SaveSP), sp
+	ex	af, af'
 	call	RestoreRegisters
 	ret
 
@@ -28,7 +28,7 @@ SaveSP:
 StoreRegisters:		;stores registers in RAM
 	di
 	ld	(SaveSP), sp
-	ld	sp, gameMem+$DFF0
+	ld	sp, pixelShadow
 	ex	af, af'
 	push	af
 	push	bc
@@ -41,6 +41,7 @@ StoreRegisters:		;stores registers in RAM
 	push	ix
 	push	iy
 	ld	sp, (SaveSP)
+	ex	af, af'
 	ret
 
 PutBankinSlot1:	;unused, since Sonic 2 only swaps out ROM bank 2.
@@ -115,8 +116,7 @@ LoadSave:
 	ld	(gameMem+$D292), a
 	ld	hl, SaveFile
 	call	_Mov9toOP1
-	call	_Arc_Unarc
-	ret
+	jp	_Arc_Unarc
 
 SaveGame:
 	ld	hl, SaveFile
@@ -137,13 +137,11 @@ SaveGame:
 	ldi
 	ld	hl, EmeraldFlags
 	ldi
-	xor	a
-	bit	1, a
+	ld	a, $01
 	ld	(de), a
 	ld	hl, SaveFile
 	call	_Mov9toOP1
-	call	_Arc_Unarc
-	ret
+	jp	_Arc_Unarc
 
 ;Appvar Headers
 

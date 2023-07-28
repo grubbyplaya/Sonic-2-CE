@@ -3,7 +3,7 @@
 
 ;Bank 04
 
-#define Art_Sonic						$D09466
+#define Art_Sonic					$D09466
 #define Art_ALZ_Bubble					$D0CC66
 #define Art_Badnik_Pig					$D0CD96
 #define Art_Unused_Numbers				$D0D096
@@ -35,17 +35,17 @@
 #define Art_Monitor_6					$D09EEE
 #define Art_Monitor_7					$D09FAE
 #define Art_Monitor_8					$D0A06E
-#define Art_Rings						$D0A12E
-#define Art_GHZ_Moving_Platform			$D0A2FE
+#define Art_Rings					$D0A12E
+#define Art_GHZ_Moving_Platform				$D0A2FE
 #define Art_SHZ_Glider					$D0A3F8
 #define Art_Prison_Capsule				$D0A674
 #define Art_Animals					$D0AF34
-#define Art_Scrolling_Text_Background		$D0B534
+#define Art_Scrolling_Text_Background			$D0B534
 #define Art_Signpost					$D0B588
 #define Art_Minecart					$D0C208
 #define Art_SilverSonic					$D0C54C
 #define Art_SHZ_Log					$D0CDCC
-#define Art_SHZ_Moving_Platform			$D0CE16
+#define Art_SHZ_Moving_Platform				$D0CE16
 
 ;Bank 08
 
@@ -60,7 +60,7 @@
 #define Art_Title_Sonic_Hand				$D0BE08
 #define Art_Title_Tails_Face				$D0C098
 #define Mappings_Title					$D0C208
-#define DemoControlSequence_ALZ			$D0C4D8
+#define DemoControlSequence_ALZ				$D0C4D8
 
 ;Bank 09
 
@@ -69,7 +69,7 @@
 #define Palette_Reset					$D094B3
 #define Palette_FadeToColour				$D094C5
 #define Palette_FadeToBlack				$D0952A
-#define Palette_CalculateOffset			$D09583
+#define Palette_CalculateOffset				$D09583
 #define Palette_811F					$D09593
 #define Palette_812F					$D095A3
 #define Palette_813F					$D095B3
@@ -109,17 +109,17 @@
 #define Palette_853F					$D097D3
 #define Palette_Ending_Sonic				$D097E3
 #define Palette_837F					$D097F3
-#define Palette_Ending_Sequence			$D09803
+#define Palette_Ending_Sequence				$D09803
 #define LoopMotionData					$D09883
 #define Art_LevelSelect_Font				$D0A193
 #define Art_TitleCard_Text_Tiles			$D0A593
 #define Art_TitleCard_Unknown				$D0B433
-#define Art_TitleCard_Unknown2			$D0B4C9
-#define Art_UGZ_Level_Tiles				$D0B519
+#define Art_TitleCard_Unknown2				$D0B4C9
+#define Art_UGZ_Level_Tiles				$D0B518
 #define Art_SHZ_Yellow_Bird				$D0C551
 #define Art_ALZ_Spike					$D0C5D1
-#define Art_GMZ_Moving_Platform			$D0C6C3
-#define Art_SEZ_Moving_Platform			$D0C753
+#define Art_GMZ_Moving_Platform				$D0C6C3
+#define Art_SEZ_Moving_Platform				$D0C753
 #define Art_Badnik_Newtron				$D0C85D
 #define Art_Badnik_Bomb					$D0CBDD
 #define Art_UGZ_Unknown					$D0CD0B
@@ -171,10 +171,10 @@
 #define Mappings32_UGZ					$D0B2E6
 #define GameOverScreen_Data_GameOverTiles		$D0C9E6
 #define ContinueScreen_Data_ContinueTiles		$D0CBD6
-#define ContinueScreen_Data_NumberTiles		$D0CDC0
+#define ContinueScreen_Data_NumberTiles			$D0CDC0
 #define GameOverScreen_Data_TextMappings		$D0D1E4
 #define ContinueScreen_Data_TextMappings		$D0D22C
-#define ContinueScreen_Data_NumberMappings	$D0D274
+#define ContinueScreen_Data_NumberMappings		$D0D274
 
 ;Bank 16
 
@@ -193,9 +193,9 @@
 
 ;Bank 18
 
-#define Art_Sonic_Loop_Mirrored			$D09466
+#define Art_Sonic_Loop_Mirrored				$D09466
 #define Art_SEZ_Block					$D0D066
-#define Art_CEZ_Moving_Platform			$D0D0E6
+#define Art_CEZ_Moving_Platform				$D0D0E6
 #define Art_CEZ_Rock					$D0D1AC
 
 ;Bank 19
@@ -205,7 +205,7 @@
 #define Layout_SEZ1					$D0AEF8
 #define Layout_SEZ2					$D0BE30
 #define Art_Intro_Tails					$D0CBD4
-#define Art_Intro_Tails_Eggman			$D0CE60
+#define Art_Intro_Tails_Eggman				$D0CE60
 
 ;Bank 20
 
@@ -218,10 +218,10 @@
 #define Art_Tails_LookingUp				$D0D0A8
 #define Art_ChaosEmerald_Grey				$D0D268
 #define Art_ChaosEmerald_Blue				$D0D2E8
-#define Art_ChaosEmerald_Green			$D0D368
+#define Art_ChaosEmerald_Green				$D0D368
 #define Art_ChaosEmerald_Pink				$D0D3E8
 #define Art_ChaosEmerald_Red				$D0D468
-#define Art_ChaosEmerald_Yellow			$D0D4E8
+#define Art_ChaosEmerald_Yellow				$D0D4E8
 
 ;Bank 21
 
@@ -260,13 +260,13 @@
 #define SEZ_Title_Pic_Art				$D0C08C
 #define CEZ_Title_Pic_Art				$D0C50C
 
-#define UGZ_Title_Pic_Mappings			$D0CC6C
-#define SHZ_Title_Pic_Mappings			$D0CD6C
-#define ALZ_Title_Pic_Mappings			$D0CE6C
-#define GHZ_Title_Pic_Mappings			$D0CF6C
-#define GMZ_Title_Pic_Mappings			$D0D06C
-#define SEZ_Title_Pic_Mappings			$D0D16C
-#define CEZ_Title_Pic_Mappings			$D0D26C
+#define UGZ_Title_Pic_Mappings				$D0CC6C
+#define SHZ_Title_Pic_Mappings				$D0CD6C
+#define ALZ_Title_Pic_Mappings				$D0CE6C
+#define GHZ_Title_Pic_Mappings				$D0CF6C
+#define GMZ_Title_Pic_Mappings				$D0D06C
+#define SEZ_Title_Pic_Mappings				$D0D16C
+#define CEZ_Title_Pic_Mappings				$D0D26C
 
 ;Bank 26
 
@@ -276,7 +276,7 @@
 #define Art_GHZ_Boss					$D0B4E6
 #define Art_SHZ_Rock					$D0C7A6
 #define Art_Block_Fragment				$D0C8C6
-#define Art_Tails						$D0C8F0
+#define Art_Tails					$D0C8F0
 
 ;Bank 27
 
@@ -294,8 +294,8 @@
 
 ;Bank 29
 
-#define DemoControlSequence_GHZ			$D09468
-#define DemoControlSequence_SHZ			$D0A466
+#define DemoControlSequence_GHZ				$D09468
+#define DemoControlSequence_SHZ				$D0A466
 #define Art_Rings_UGZ					$D0B066
 #define Art_Rings_SHZ1_3				$D0B366
 #define Art_Rings_SHZ2					$D0B666
@@ -315,7 +315,7 @@
 #define LABEL_B29_B51C					$D0C99C
 #define DATA_B29_B522					$D0C9A3
 #define DATA_B29_B542					$D0C9C3
-#define EndSequence_Data_CreditsText		$D0C9D3
+#define EndSequence_Data_CreditsText			$D0C9D3
 
 ;Bank 30
 
