@@ -24,14 +24,14 @@ DATA_B31_B084:
 .db $FF, $01
 
 AirCountdown_Init:		;$B0B4
-	ld	hl, (gameMem+$D511)			;copy player's hpos
-	ld	(ix+$11), l			;to this object
+	ld	hl, (gameMem+$D511)	;copy player's hpos
+	ld	(ix+$11), l		;to this object
 	ld	(ix+$12), h
 
-	ld	hl, (gameMem+$D514)			;copy player's vpos
-	ld	bc, gameMem+$FFDE			;subtract 34
+	ld	hl, (gameMem+$D514)	;copy player's vpos
+	ld	bc, -34			;subtract 34
 	add	hl, bc
-	ld	(ix+$14), l			;and set this object's vpos
+	ld	(ix+$14), l		;and set this object's vpos
 	ld	(ix+$15), h
 
 	ld	(ix+$08), $0E		;set vram tile indices
@@ -44,12 +44,12 @@ AirCountdown_Init:		;$B0B4
 
 
 AirCountdown_Update:		;$B0DB
-	ld	hl, (gameMem+$D511)			;copy player's hpos
+	ld	hl, (gameMem+$D511)		;copy player's hpos
 	ld	(ix+$11), l			;to this object
 	ld	(ix+$12), h
 
-	ld	hl, (gameMem+$D514)			;copy player's hpos
-	ld	bc, gameMem+$FFD8			;subtract 40
+	ld	hl, (gameMem+$D514)		;copy player's hpos
+	ld	bc, -40				;subtract 40
 	add	hl, bc
 	ld	(ix+$14), l			;and set as this object's hpos
 	ld	(ix+$15), h
@@ -59,25 +59,25 @@ AirCountdown_Update:		;$B0DB
 	jr	z, +_
 	set	7, (ix+$04)
 
-_:	ld	a, (gameMem+$D469)			;check the air timer
+_:	ld	a, (gameMem+$D469)		;check the air timer
 	or	a
-	ret	nz					;return if air timer != 0
+	ret	nz				;return if air timer != 0
 
-	ld	(ix+$00), $FF		;destroy this object
+	ld	(ix+$00), $FF			;destroy this object
 	ret
 
 
 AirCountdown_TimerExpired:		;$B109
 	push    iy
 	
-	ld	iy, gameMem+$D500			;set the player object's state
+	ld	iy, gameMem+$D500		;set the player object's state
 	ld	(iy+$02), PlayerState_Drowning
 	
 	set	0, (iy+$03)			;set flag - player in air
 
 	ld	(iy+$04), $00
 	
-	ld	(iy+$18), $00		;reset player vertical speed
+	ld	(iy+$18), $00			;reset player vertical speed
 	ld	(iy+$19), $00
 
 	ld	hl, $0000			;reset inertia?
@@ -92,5 +92,5 @@ AirCountdown_TimerExpired:		;$B109
 	ld	hl, (gameMem+$D176)		;lock camera
 	ld	(gameMem+$D27E), hl
 
-	ld	(ix+$00), $FF		;destroy object
+	ld	(ix+$00), $FF			;destroy object
 	ret

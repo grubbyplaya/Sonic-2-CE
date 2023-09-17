@@ -33,8 +33,8 @@ DATA_B30_8E4D:
 .db $FF, $00
 
 LABEL_B30_8E57:
-	call	LABEL_200 + $57
-	call	LABEL_200 + $5A
+	call	VF_Engine_UpdateObjectPosition
+	call	VF_Engine_CheckCollision
 	ld	a, (ix+$21)
 	and	$0F
 	ret	z
@@ -44,7 +44,7 @@ LABEL_B30_8E57:
 
 LABEL_B30_8E69:
 	ld	(ix+$1F), $03
-	ld	hl, gameMem+$0080
+	ld	hl, $0080
 	ld	(ix+$0A), l
 	ld	(ix+$0B), h
 	ld	a, (gameMem+$D2B9)
@@ -52,6 +52,7 @@ LABEL_B30_8E69:
 	add	a, a
 	add	a, a
 	add	a, (ix+$3F)
+	mlt	de
 	ld	e, a
 	ld	d, $00
 	ld	hl, DATA_B30_8E9B
@@ -85,7 +86,7 @@ LABEL_B30_8EBB:
 	and	$01
 	ld	de, $0040
 	jr	z, +_
-	ld	de, gameMem+$FFC0
+	ld	de, $FFC0
 _:  	ld	l, (ix+$16)
 	ld	h, (ix+$17)
 	add	hl, de
@@ -122,9 +123,9 @@ LABEL_B30_8EFB:
 	ld	(ix+$0B), h
 	ld	a, (ix+$1F)
 	and	$02
-	ld	de, gameMem+$0040
+	ld	de, $0040
 	jr	z, +_
-	ld	de, gameMem+$FFC0
+	ld	de, -64
 _: 	ld	l, (ix+$18)
 	ld	h, (ix+$19)
 	add	hl, de
@@ -142,7 +143,7 @@ _: 	ld	l, (ix+$18)
 	cpl	
 	ld	l, a
 	xor	a
-	sbc	hl, de
+	sbc.s	hl, de
 	jp	c, LABEL_B30_8F4B
 	res	1, (ix+$1f)
 	jp	LABEL_B30_8F4B
@@ -157,7 +158,7 @@ LABEL_B30_8F4B:
 	ld	a, (ix+$1e)
 	add	a, $04
 	ld	(ix+$1e), a
-	ld	hl, $D3CE
+	ld	hl, gameMem+$D3CE
 	xor	a
 	ld	(hl), a
 	inc	hl
@@ -198,12 +199,12 @@ LABEL_B30_8F7D:
 	ld	e, a
 	add	a, $c0
 	ld	d, $00
-	ld	hl, gameMem+$0330
+	ld	hl, $0330
 	add	hl, de
 	ld	c, (hl)
 	ld	e, a
 	ld	d, $00
-	ld	hl, gameMem+$0330
+	ld	hl, $0330
 	add	hl, de
 	ld	a, (hl)
 	sra	a
@@ -293,8 +294,8 @@ LABEL_B30_9020:
 	ret	
 
 LABEL_B30_9026:
-	call	LABEL_200 + $57
-	call	LABEL_200 + $5A
+	call	VF_Engine_UpdateObjectPosition
+	call	VF_Engine_CheckCollision
 	ld	a, (ix+$21)
 	and	$0f
 	ret	z
@@ -485,40 +486,40 @@ DATA_B30_9157:
 .db $FF, $02
 	.dl LABEL_B30_913C
 .db $FF, $02
-	.dl LABEL_200 + $120
+	.dl LABEL_1CCA
 .db $08, $03
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $08, $04
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $08, $03
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $08, $04
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $08, $03
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $08, $04
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $FF, $06
 	.db $0F
 	.dw $0008
 	.dw $FFC0
 	.db $03
 .db $08, $03
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $FF, $06
 	.db $0F
 	.dw $FFF8
 	.dw $FFC2
 	.db $03
 .db $08, $04
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $FF, $06
 	.db $0F
 	.dw $0004
 	.dw $FFE8
 	.db $07
 .db $08, $03
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $FF, $06
 	.db $0F
 	.dw $FFFC
@@ -527,7 +528,7 @@ DATA_B30_9157:
 .db $FF, $02
 	.dl LABEL_B30_91E9
 .db $08, $0A
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $FF, $06
 	.db $0F
 	.dw $0000
@@ -543,7 +544,7 @@ DATA_B30_9157:
 .db $FF, $05
 	.db $09
 .db $08, $0A
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $FF, $00
 
 LABEL_B30_91CA:
@@ -556,7 +557,7 @@ LABEL_B30_91CF:
 	ret	nz
 	ld	l, (ix+$14)
 	ld	h, (ix+$15)
-	ld	de, $ffd0
+	ld	de, $FFD0
 	add	hl, de
 	ld	(ix+$14), l
 	ld	(ix+$15), h
@@ -564,15 +565,15 @@ LABEL_B30_91CF:
 	ret	
 
 LABEL_B30_91E9:
-	ld	bc, (gameMem)
-	ld	de, gameMem+$FFC0
-	call	LABEL_200 + $0111
+	ld	bc, $0000
+	ld	de, -64
+	call	VF_Engine_RemoveBreakableBlock
 	ret
 
 LABEL_B30_91F3:
 	ld	bc, $0000
-	ld	de, $fff0
-	call	LABEL_200 + $0111
+	ld	de, -16
+	call	VF_Engine_RemoveBreakableBlock
 	ret
 
 DATA_B30_91FD:
@@ -607,24 +608,24 @@ DATA_B30_921F:
 
 DATA_B30_9229:
 .db $40, $09
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $40, $09
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $FF, $04
 	.dw $0000
 	.dw $FFC0
 .db $88, $08
-	.dl LABEL_200 + $57
+	.dl VF_Engine_UpdateObjectPosition
 .db $FF, $04
 	.dw $0000
 	.dw $0040
 .db $08, $08
-	.dl LABEL_200 + $57
+	.dl VF_Engine_UpdateObjectPosition
 .db $FF, $04
 	.dw $0000
 	.dw $0000
 .db $08, $09
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $FF, $02
 	.dl LABEL_B30_9136
 .db $FF, $02
@@ -632,7 +633,7 @@ DATA_B30_9229:
 .db $FF, $05
 	.db $0E
 .db $08, $09
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $FF, $00
 
 
@@ -650,13 +651,13 @@ DATA_B30_9266:
 
 DATA_B30_9270:
 .db $08, $00
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $FF, $08
 	.db $1A
 .db $FF, $02
 	.dl LABEL_B30_913C
 .db $C0, $00
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $E0, $00
 	.dl LABEL_B30_943A
 .db $FF, $00
@@ -679,12 +680,12 @@ LABEL_B30_929B:
 	ret	c
 	ld	bc, $0200
 	ld	de, $00c0
-	call	LABEL_200 + $F6
+	call	VF_Engine_SetCameraAndLock
 	ld	(ix+$02), $02
 	ret	
 
 LABEL_B30_92B3:
-	call	LABEL_200 + $1B
+	call	LABEL_6355
 	ld	(ix+$21), $00
 	ld	hl, (gameMem+$d174)
 	ld	de, $0200
@@ -693,7 +694,7 @@ LABEL_B30_92B3:
 	ld	a, h
 	or	l
 	ret	nz
-	call	LABEL_200 + $F3
+	call	LABEL_49CF
 	ld	hl, $0200
 	ld	(gameMem+$d282), hl		;set max camera x position
 	ld	(gameMem+$d280), hl		;set min camera x position
@@ -704,9 +705,9 @@ LABEL_B30_92D7:
 	call	LABEL_B30_934A
 	inc	(ix+$1e)
 	ld	a, (ix+$24)
-	add	a, a
 	ld	e, a
-	ld	d, $00
+	ld	d, $03
+	mlt	de
 	ld	hl, DATA_B30_92F8
 	add	hl, de
 	ld	a, (hl)
@@ -755,7 +756,7 @@ LABEL_B30_9326:
 	ret	
 
 LABEL_B30_933A:
-	call	LABEL_200 + $1B
+	call	LABEL_6355
 	ld	(ix+$21), $00
 	dec	(ix+$1f)
 	ret	nz
@@ -763,7 +764,7 @@ LABEL_B30_933A:
 	ret	
 
 LABEL_B30_934A:
-	call	LABEL_200 + $1B
+	call	LABEL_6355
 	ld	a, (ix+$21)
 	and	$0f
 	ret	z
@@ -783,22 +784,22 @@ LABEL_B30_9365:
 
 LABEL_B30_9370:
 	call	LABEL_B30_940F
-	call	LABEL_200 + $57
+	call	VF_Engine_UpdateObjectPosition
 	bit	7, (ix+$19)
 	jp	z, LABEL_B30_9386
 	ld	de, $0028
 	ld	bc, $0600
-	call	LABEL_200 + $0F
+	call	VF_Engine_SetObjectVerticalSpeed
 	ret	
 
 LABEL_B30_9386:
 	ld	de, $0080
 	ld	bc, $0600
-	call	LABEL_200 + $0F
+	call	VF_Engine_SetObjectVerticalSpeed
 	ld	hl, $0180
 	ld	(ix+$16), l
 	ld	(ix+$17), h
-	call	LABEL_200 + $60
+	call	LABEL_75C5
 	bit	1, (ix+$22)
 	ret	z
 	ld	hl, $0000
@@ -824,8 +825,8 @@ LABEL_B30_93C2:
 	ld	hl, $0300
 	ld	(ix+$18), l
 	ld	(ix+$19), h
-	call	LABEL_200 + $60
-	call	LABEL_200 + $57
+	call	LABEL_75C5
+	call	VF_Engine_UpdateObjectPosition
 	ld	l, (ix+$11)
 	ld	h, (ix+$12)
 	ld	de, $044C
@@ -933,34 +934,34 @@ DATA_B30_9484:
 
 DATA_B30_949E:
 .db $08, $14
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $08, $14
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $08, $14
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $08, $14
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $20, $15
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $E0, $15
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $E0, $15
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $E0, $15
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $E0, $15
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $FF, $00
 
 DATA_B30_94C4:
 .db $C0, $15
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $FF, $02
 	.dl LABEL_B30_94DA
 .db $20, $15
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $E0, $15
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $E0, $15
 	.dl LABEL_B30_94E0
 .db $FF, $00
@@ -990,26 +991,26 @@ DATA_B30_94FF:
 
 DATA_B30_9505
 .db $E0, $13
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $E0, $13
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $E0, $13
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $FF, $05
 	.db $06
 .db $FF, $00
 
 DATA_B30_9516:
 .db $E0, $13
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $FF, $00
 
 
 LABEL_B30_951C:
 	ld	de, $0040
 	ld	bc, $0600
-	call	LABEL_200 + $0F
-	call	LABEL_200 + $57
+	call	VF_Engine_SetObjectVerticalSpeed
+	call	VF_Engine_UpdateObjectPosition
 	ld	l, (ix+$14)
 	ld	h, (ix+$15)
 	bit	7, h
@@ -1059,7 +1060,7 @@ LABEL_B30_9568:
 	ld	(ix+$09), $1C
 	ld	(ix+$08), $4A
 	ld	hl, (gameMem+$D511)
-	ld	de, gameMem+$FFE0
+	ld	de, $FFE0
 	add	hl, de
 	ld	(ix+$11), l
 	ld	(ix+$12), h
@@ -1067,7 +1068,7 @@ LABEL_B30_9568:
 
 LABEL_B30_95A0:
 	ld	hl, (gameMem+$d511)
-	ld	de, gameMem+$ffe0
+	ld	de, $Ffe0
 	add	hl, de
 	ld	(ix+$11), l
 	ld	(ix+$12), h
@@ -1089,7 +1090,7 @@ _:  	add	hl, de
 	jp	LABEL_B30_95E0
 
 LABEL_B30_95D1:
-	ld	hl, gameMem+$2800
+	ld	hl, $2800
 	xor	a
 	sbc	hl, de
 	jp	nc, LABEL_B30_95E0
@@ -1110,7 +1111,7 @@ LABEL_B30_95E0:
 	jp	LABEL_B30_95FE
 
 LABEL_B30_95FE:
-	call	LABEL_200 + $57
+	call	VF_Engine_UpdateObjectPosition
 	ret	
 
 DATA_B30_9602:
@@ -1127,52 +1128,52 @@ DATA_B30_960C:
 	.dw $0000
 	.dw $FFC0
 .db $08, $01
-	.dl LABEL_200 + $57
+	.dl VF_Engine_UpdateObjectPosition
 .db $FF, $04
 	.dw $0000
 	.dw $0040
 .db $88, $01
-	.dl LABEL_200 + $57
+	.dl VF_Engine_UpdateObjectPosition
 .db $FF, $04
 	.dw $0000
 	.dw $0000
 .db $08, $01
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $FF, $05
 	.db $09
 .db $03, $01
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $FF, $00
 
 DATA_B30_9637:
 .db $08, $01
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $08, $02
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $08, $01
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $08, $02
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $40, $03
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $08, $08
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $08, $03
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $08, $08
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $08, $03
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $10, $08
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $08, $03
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $10, $08
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $E0, $08
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $E0, $08
-	.dl LABEL_200 + $2A
+	.dl VF_DoNothing
 .db $FF, $00
 
 DATA_B30_9671:
@@ -1250,7 +1251,7 @@ DATA_B30_96E8:
 
 
 LABEL_B30_96F8:
-	call	LABEL_200 + $57
+	call	VF_Engine_UpdateObjectPosition
 	ret	
 
 DATA_B30_96FC:
@@ -1404,7 +1405,7 @@ DATA_B30_9808:
 
 
 LABEL_B30_9818:
-	call	LABEL_200 + $57
+	call	VF_Engine_UpdateObjectPosition
 	ret	
 
 DATA_B30_981C:

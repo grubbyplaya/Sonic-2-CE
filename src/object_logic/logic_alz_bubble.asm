@@ -197,10 +197,10 @@ LABEL_B31_B272:
 	ret     z
 	cp      $21
 	ret     z
-	ld      hl, (gameMem+$D511)		;get player's hpos
+	ld      hl, (Player.X)		;get player's hpos
 	ld      (ix+$11), l		;set as object's hpos
 	ld      (ix+$12), h
-	ld      hl, (gameMem+$D514)		;get player's vpos
+	ld      hl, (Player.Y)		;get player's vpos
 	ld      (ix+$14), l		;set as object's vpos
 	ld      (ix+$15), h
 	ld      a, PlayerState_ALZ_Bubble
@@ -208,21 +208,26 @@ LABEL_B31_B272:
 	xor     a
 	ld      (gameMem+$D521), a
 	ld      (gameMem+$D503), a
-	ld      (ix+$02), $0A	;set the bubble's state to $0A
-	ld      hl, $FF00		;set vertical speed to -256
+	ld      (ix+$02), $0A		;set the bubble's state to $0A
+	ld      hl, -256		;set vertical speed to -256
 	ld      (ix+$18), l
 	ld      (ix+$19), h
 	ret     
 
 LABEL_B31_B2B6:
+	push	iy
+	ld	iy, PlayerObj
 	call    LABEL_B31_B3D2
 	call    LABEL_B31_B311
 	ld      l, (ix+$11)
 	ld      h, (ix+$12)
-	ld      (gameMem+$D511), hl		;move player to bubble's hpos
+	ld      (iy+$11), l		;move player to bubble's hpos
+	ld	(iy+$12), h
 	ld      l, (ix+$14)		
 	ld      h, (ix+$15)
-	ld      (gameMem+$D514), hl		;move player to bubble's vpos
+	ld      (iy+$14), l		;move player to bubble's vpos
+	ld	(iy+$15), h
+	pop	iy
 	ld      a, (ix+$00)
 	cp      $0A
 	jp      nz, LABEL_B31_B307
@@ -258,8 +263,8 @@ LABEL_B31_B30C:
 	ret     
 
 LABEL_B31_B311:
-	ld      a, (kbdG7)
-	and     kbitLeft | kbitRight	;check for left/right buttons
+	ld      a, (Engine_InputFlags)
+	and     BTN_LEFT | BTN_RIGHT	;check for left/right buttons
 	jr      z, LABEL_B31_B341
 	ld      hl, $0100		;move right
 	and     $08
@@ -278,13 +283,13 @@ _:	ld      (ix+$16), l		;set horizontal speed
 	ld      (ix+$18), l		;restore vertical speed
 	ld      (ix+$19), h
 LABEL_B31_B341:
-	ld      a, (kbdG7)
+	ld      a, (Engine_InputFlags)
 	ld      b, a
 	ld      hl, $FF00
-	and     kbitUp			;is up button pressed?
+	and     BTN_UP			;is up button pressed?
 	jr      nz, +_
 	ld      a, b
-	and     kbitDown				;is down button pressed
+	and     BTN_DOWN		;is down button pressed?
 	ld      hl, $FF80
 	jr      z, +_
 	ld      hl, $FFD0
@@ -329,11 +334,11 @@ Logic_ALZ_Bubble_SetPosition:		;$B38D
 	ret     
 
 Logic_ALZ_Bubble_GetPlayerPos:		;$B3A6
-	ld      hl, (gameMem+$D511)		;copy player's hpos to IX+$3A
+	ld      hl, (Player.X)		;copy player's hpos to IX+$3A
 	ld      (ix+$3A), l
 	ld      (ix+$3B), h
-	ld      hl, (gameMem+$D514)		;copy player's vpos-24 to IX+$3C
-	ld      de, $FFE8
+	ld      hl, (Player.Y)		;copy player's vpos-24 to IX+$3C
+	ld      de, -24
 	add     hl, de
 	ld      (ix+$3C), l
 	ld      (ix+$3D), h
@@ -364,7 +369,7 @@ Logic_Bubble_SetHorizontalSpeed:	;$B3D9
 	ld      hl, $0040		;horiz speed = 64
 	bit     4, (ix+$1E)		;16th frame?
 	jp      z, +_
-	ld      hl, $FFC0	;horiz speed = -64
+	ld      hl, $FFC0		;horiz speed = -64
 _:	ld      (ix+$16), l
 	ld      (ix+$17), h
 	call    VF_Engine_UpdateObjectPosition
@@ -385,17 +390,16 @@ LABEL_B31_B3FE:
 	add     a, a
 	add     a, b
 	dec     a
-	add     a, a
-	add     a, a
 	ld      e, a
-	ld      d, $00
+	ld      d, $04
+	mlt	de
 	ld      hl, DATA_B31_B470
 	add     hl, de
 	ld      e, (hl)
 	inc     hl
 	ld      d, (hl)
 	push    hl
-	ld      hl, $FFF4
+	ld      hl, -12
 	add     hl, de
 	ld      a, (gameMem+$D2B9)
 	and     $0F
@@ -454,7 +458,7 @@ DATA_B31_B470:
 
 
 LABEL_B31_B4A0:
-	ld      de, (gameMem+$D176)		;vert cam pos
+	ld      de, (gameMem+$D176)	;vert cam pos
 	ld      l, (ix+$14)		;get vpos
 	ld      h, (ix+$15)
 	xor     a
@@ -465,7 +469,7 @@ LABEL_B31_B4A0:
 	jp      nc, LABEL_B31_B4CE
 	ld      a, (CurrentAct)
 	dec     a
-	jr      z, LABEL_B31_B4D3
+	ret	z
 	ld      de, $FFD0
 	ld      bc, $0000
 	call    VF_Engine_GetCollisionValueForBlock
@@ -477,7 +481,4 @@ LABEL_B31_B4A0:
 	
 LABEL_B31_B4CE:			;destroy the object
 	ld      (ix+$00), $ff
-	ret     
-
-LABEL_B31_B4D3:
 	ret

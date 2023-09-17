@@ -145,7 +145,7 @@ VDP_WriteByte:		; Ported
 	add	hl, de
 	ld	(hl), a
 	pop	de
-	jp	DrawScreen
+	ret
 
 
 ; =============================================================================
@@ -205,8 +205,7 @@ _:	; write the data to VRAM
 	ld	a, b
 	or	c
 	jr	nz, -_
-
-	jp	DrawScreen
+	ret
 
 
 ; =============================================================================
@@ -244,7 +243,7 @@ _:	; write the low-order byte
 	ld	a, b
 	or	c
 	jr	nz, -_
-	jp	DrawScreen
+	ret
 
 
 ; =============================================================================
@@ -268,7 +267,7 @@ VDP_Copy:	 ; Ported and optimized
 	pop	de
 	;copy the source to VDP RAM
 	ldir
-	jp	DrawScreen
+	ret
 
 ; =============================================================================
 ;	VDP_SetMode2Reg_DisplayOn()
@@ -386,7 +385,7 @@ _:	ldi	;write a char to the VDP memory
 	ld	a, c
 	or	b
 	jr	nz, -_
-	jp	DrawScreen
+	ret
 
 ; =============================================================================
 ;	VDP_UNKNOWN(uint16 vdp_address, uint16 char_ptr, uint16 count)	UNUSED
@@ -510,7 +509,7 @@ VDP_UpdateSAT:		; Ported
 	ld	de, SegaVRAM+$3F80
 	ld	bc, $40
 	ldir
-	jp	DrawScreen
+	ret
 
 
 VDP_UpdateSAT_Descending:	; Ported
@@ -550,7 +549,7 @@ _:	ldi
 	djnz -_
 
 	ld	sp, (SaveSP)
-	jp	DrawScreen
+	ret
 
 
 ; =============================================================================
@@ -599,7 +598,7 @@ VDP_ClearScreen:	 ;$17AC
 	ld	bc, $0380
 	ld	de, $0100
 	call	VDP_Write
-
+	;FALL THROUGH
 
 ; =============================================================================
 ;	VDP_ClearSAT()

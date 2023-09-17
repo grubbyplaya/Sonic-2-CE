@@ -52,7 +52,7 @@ PrisonCapsule_State_01:		;$9043
 	.dl PrisonCapsule_AdjustVelocities_a96_s64
 .db $02, $01
 	.dl PrisonCapsule_AdjustVelocities_s96_s64
-.db	$04, $01
+.db $04, $01
 	.dl PrisonCapsule_AdjustVelocities_s96_s64
 .db $04, $01
 	.dl PrisonCapsule_AdjustVelocities_a96_s64
@@ -64,7 +64,7 @@ PrisonCapsule_State_01:		;$9043
 	.dl PrisonCapsule_AdjustVelocities_a96_a64
 .db $04, $01
 	.dl PrisonCapsule_AdjustVelocities_s96_a64
-.db	$04, $01
+.db $04, $01
 	.dl PrisonCapsule_AdjustVelocities_s96_s64
 .db $04, $01
 	.dl PrisonCapsule_AdjustVelocities_a96_s64
@@ -91,7 +91,7 @@ PrisonCapsule_State_02:		;$90A5
 .db $10, $03
 	.dl PrisonCapsule_SetEndOfLevel
 .db $FF, $02
-	.dl LABEL_200 + $2D		;TODO: resets ix+$1F. what's 1f used for?
+	.dl LABEL_64B1		;TODO: resets ix+$1F. what's 1f used for?
 .db $FF, $05
 	.db $03
 .db $0C, $03
@@ -176,10 +176,9 @@ PrisonCapsule_MoveDown:		;$912E
 	call    VF_Engine_UpdateObjectPosition
 	
 	ld      a, (CurrentLevel)		;get a pointer to the capsule's
-	add     a, a					;original v-pos for the current level
-	add     a, a
-	ld      e, a
-	ld      d, $00
+	ld      e, a				;original v-pos for the current level
+	ld      d, $04
+	mlt	de
 	ld      hl, Data_PrisonCapsule_CameraPositions
 	add     hl, de
 	inc     hl
@@ -198,13 +197,13 @@ PrisonCapsule_MoveDown:		;$912E
 	and     $80
 	ret     nz
 
-	xor     a						;move object back up
+	xor     a					;move object back up
 	sbc     hl, de
 	ret     nc
 	
 	ld      (ix+$02), $01			;set state = $01
 	
-	ld      hl, $0000				;set vertical speed to 0
+	ld      hl, $0000			;set vertical speed to 0
 	ld      (ix+$18), l
 	ld      (ix+$19), h
 	ret     
@@ -216,14 +215,14 @@ PrisonCapsule_LockCamera:		;$916E
 	set     7, (ix+$03)
 	res     6, (ix+$04)			;clear the "hide object" flag
 	
-	ld      hl, (gameMem+$D176)			;get vertical cam position
-	ld      de, $FFD8			;subtract 40 from cam pos
+	ld      hl, (gameMem+$D176)		;get vertical cam position
+	ld      de, -40				;subtract 40 from cam pos
 	add     hl, de
 
 	ld      (ix+$14), l			;set object's vertical pos so that
 	ld      (ix+$15), h			;it appears offscreen (above)
 	
-	ld      de, (gameMem+$D174)			;get horiz. cam position
+	ld      de, (Camera_X)			;get horiz. cam position
 	ld      l, (ix+$11)			;get object's h-pos
 	ld      h, (ix+$12)
 	xor     a
@@ -242,10 +241,9 @@ PrisonCapsule_LockCamera:		;$916E
 _:	ld      (ix+$02), $05		;set state = $05
 
 	ld      a, (CurrentLevel)	;work out where to lock the camera
-	add     a, a				;calculate an index into the array
-	add     a, a
-	ld      e, a
-	ld      d, $00
+	ld      e, a			;calculate an index into the array
+	ld      d, $04
+	mlt	de
 	ld      hl, Data_PrisonCapsule_CameraPositions
 	add     hl, de
 
@@ -290,6 +288,7 @@ PrisonCapsule_SetEndOfLevel:	;$91D7
 _:	ld      a, (ix+$1E)			;make the capsule vibrate
 	inc     (ix+$1E)
 	and     $06
+	mlt	de
 	ld      e, a
 	ld      d, $00
 	ld      hl, DATA_B28_9207
@@ -440,7 +439,7 @@ PrisonCapsule_CreateAnimal:		;$92A7
 	add     a, (ix+$1F)
 	
 	inc     (ix+$1F)			;increment the animal counter
-	
+	mlt	de
 	ld      e, a
 	ld      d, $00
 	ld      hl, DATA_B28_92FA

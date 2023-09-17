@@ -176,7 +176,7 @@ Newtron_CheckCollisions		;$B426
 	call    VF_Engine_CheckCollision
 	ld      a, (ix+$21)
 	and     $0F
-	jp      nz, Newtron_CheckDestroy
+	jr      nz, Newtron_CheckDestroy
 	ret     
 
 ;FIXME: could be replaced with call to Newtron_DoNothing

@@ -27,11 +27,11 @@
 	#define LevelDescriptor.MetaTileBank		$04
 	#define LevelDescriptor.LayoutBank		$05
 	#define LevelDescriptor.MetaTilePtr		$06
-	#define LevelDescriptor.LayoutPtr		$08
-	#define LevelDescriptor.StrideTable		$0A
-	#define LevelDescriptor.WidthNeg		$0C
-	#define LevelDescriptor.Width			$0E
-	#define LevelDescriptor.DataOffset		$10
+	#define LevelDescriptor.LayoutPtr		$09
+	#define LevelDescriptor.StrideTable		$0C
+	#define LevelDescriptor.WidthNeg		$0F
+	#define LevelDescriptor.Width			$13
+	#define LevelDescriptor.DataOffset		$16
 
 
 
@@ -40,8 +40,8 @@
 #define LVP_SCROLL_DOWN			1
 #define LVP_SCROLL_LEFT			2
 #define LVP_SCROLL_RIGHT		3
-#define LVP_ROW_UPDATE_PENDING	4
-#define LVP_COL_UPDATE_PENDING	5
+#define LVP_ROW_UPDATE_PENDING		4
+#define LVP_COL_UPDATE_PENDING		5
 #define LVP_CAMERA_UPDATE_RQD	 	6
 #define LVP_CAMERA_LOCKED		7
 

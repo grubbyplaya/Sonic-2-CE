@@ -1,3 +1,5 @@
+.ORG $D09466
+
 Art_Intro_Sequence:		;$8000
 #import "art\intro_title\art_intro_sequence.bin"
 
@@ -5,7 +7,7 @@ Art_Beta_Title:			;$86A0
 #import "art\intro_title\art_beta_title.bin"
 
 Mappings32_Intro:		;$93B0
-#import "mappings\intro_title\mappings32_intro.bin"
+#include "mappings\intro_title\mappings32_intro.asm"
 
 Mappings32_Title:		;$96E0
 #import "mappings\intro_title\mappings32_title.bin"

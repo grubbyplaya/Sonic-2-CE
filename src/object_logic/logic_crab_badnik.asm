@@ -162,7 +162,7 @@ Crab_State_01_Logic_02:		;$853C
 	bit     6, (ix+$04)
 	ret     nz
 	call    VF_Engine_UpdateObjectPosition
-	call    LABEL_200 + $60
+	call    LABEL_75C5
 	call    VF_Engine_CheckCollision
 	call    Logic_CheckBackgroundCollision
 	bit     0, a
@@ -182,7 +182,7 @@ Crab_State_02_Logic_02:		;$8568
 	bit     6, (ix+$04)
 	ret     nz
 	call    VF_Engine_UpdateObjectPosition
-	call    LABEL_200 + $60
+	call    LABEL_75C5
 	call    VF_Engine_CheckCollision
 	call    Logic_CheckBackgroundCollision
 	bit     0, a
@@ -194,7 +194,7 @@ _:	jp      LABEL_B28_8594
 Crab_State_03_Logic_01:		;$8584
 	ld      (ix+$1E), $00
 	call    VF_Engine_UpdateObjectPosition
-	call    LABEL_200 + $60
+	call    LABEL_75C5
 	call    VF_Engine_CheckCollision
 	jp      LABEL_B28_8594
 

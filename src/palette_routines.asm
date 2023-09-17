@@ -164,11 +164,8 @@ _:	inc	iy
 Palette_CalculateOffset:	;$8110
 	ld	a, (ix+$01)	;get the palette index number
 	ld	l, a		;calculate the offset into the array
-	ld	h, $00
-	add	hl, hl
-	add	hl, hl
-	add	hl, hl
-	add	hl, hl
+	ld	h, $10
+	mlt	hl
 	ld	de, Palettes
 	add	hl, de
 	ret

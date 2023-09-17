@@ -1,8 +1,9 @@
 @echo off
-set /P VersionType=What version are you building? (1 = Hard, 2 = Easy): 
+set /P VersionType=What version are you building? (1 = Normal, 2 = Easy): 
 cd src
 echo Assembling game...
 spasm64 -E -D Version=%VersionType% s2.asm bin/sonic2.8xp
+spasm64 -E appvars/s2save.asm bin/S2Save.8xv
 
 echo Bulding ROM Banks...
 spasm64 -E -D Version=%VersionType% appvars/bank04.asm bin/bank04.8xv

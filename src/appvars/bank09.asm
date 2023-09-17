@@ -62,4 +62,4 @@ Art_GMZ_Spikes:				;BCB1
 Art_ALZ_Big_Bubble:			;BD51
 #import "art\level\alz\art_alz_big_bubble.bin"
 
-#include	"includes/ti84pce.inc"
+#include "includes/ti84pce.inc"

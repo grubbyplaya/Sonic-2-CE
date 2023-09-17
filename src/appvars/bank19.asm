@@ -1,12 +1,12 @@
 Layout_GMZ1:
-#ifdef Version=2
+#if Version=2
 #import "layout\gmz\layout_gmz1_2.2.bin"
 #else
 #import "layout\gmz\layout_gmz1.bin"
 #endif
 
 Layout_GMZ2:
-#ifdef Version=2
+#if Version=2
 #import "layout\gmz\layout_gmz2_ce.bin"
 #else
 #import "layout\gmz\layout_gmz2.bin"

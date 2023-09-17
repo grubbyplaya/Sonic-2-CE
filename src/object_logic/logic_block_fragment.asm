@@ -15,10 +15,8 @@ BlockFragment_State_01		;$AC2E
 
 BlockFragment_State_00_Logic_01:		;$AC34
 	ld      l, (ix+$3F)
-	ld      h, $00
-	add     hl, hl
-	add     hl, hl
-	add     hl, hl
+	ld      h, $08
+	mlt	hl
 	ld      de, DATA_B31_AC98
 	ld      a, (gameMem+$D517)		;hi-byte of player velocity
 	and     a

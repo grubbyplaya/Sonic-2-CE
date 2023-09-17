@@ -105,7 +105,7 @@ Object_AnimFrameMappings:
 ;	Animation sequences for Sonic object
 ;=============================================
 DATA_B31_80C0:
-.dl AnimData_BlankFrame		;sequence 00 
+.dl AnimData_BlankFrame			;sequence 00 
 .dl DATA_B31_8188			;sequence 01
 .dl DATA_B31_8193			;sequence 02
 .dl DATA_B31_819E			;sequence 03

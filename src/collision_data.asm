@@ -27,7 +27,7 @@ Cllsn_Data_CollisionHeaders:
 .dl DATA_B30_9D09	; $19 -'
 .dl DATA_B30_9D11	; $1A -.
 .dl DATA_B30_9D19	; $1B   > Top-left quater circle
-.dl DATA_B30_9D21   ; $1C -'
+.dl DATA_B30_9D21	; $1C -'
 .dl DATA_B30_9D29
 .dl DATA_B30_9D31
 .dl DATA_B30_9D39	

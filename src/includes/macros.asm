@@ -9,18 +9,11 @@
 ;	None.
 ; -----------------------------------------------------------------------------
 
-#macro wait_1s
-	ld	a, ($F30000)
-	ld	b, a
-_:	ld	a, ($F30000)
-	cp	b
-	jr	z, -_
-#endmacro
-
-#macro wait_1s_og	;replaced for timing reasons
+#macro wait_1s	;wait a second
 	ld	b, Time_1Second
-_:	ei
-	halt
+_:	ei	
+	ld	a, $80
+	call	Engine_WaitForInterrupt
 	djnz	-_
 #endmacro
 ; =============================================================================

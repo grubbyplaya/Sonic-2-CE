@@ -37,17 +37,17 @@ DATA_B31_AF90:
 
 
 LABEL_B31_AFAA:
-	ld	  hl, (gameMem+$D511)		;move sprite to 16-pixels above player
+	ld	hl, (Player.X)		;move sprite to 16-pixels above player
 	ld      (ix+$11), l		;set sprite's hpos
 	ld      (ix+$12), h
-	ld      hl, (gameMem+$D514)
-	ld      de, $FFF0
+	ld      hl, (Player.Y)
+	ld      de, -16
 	add     hl, de			;subtract $10
 	ld      (ix+$14), l		;set sprite's vpos
 	ld      (ix+$15), h
 	ld      l, (ix+$3F)
-	ld      h, $00
-	add     hl, hl
+	ld      h, $02
+	mlt	hl
 	ex      de, hl
 	ld      hl, DATA_B31_AFFB	;set horizontal speed
 	add     hl, de
@@ -80,8 +80,8 @@ DATA_B31_B009:
 
 
 LABEL_B31_B017:
-	ld	  l, (ix+$18)			;add 32 to sprite's horizontal speed
-	ld	  h, (ix+$19)
+	ld	l, (ix+$18)			;add 32 to sprite's horizontal speed
+	ld	h, (ix+$19)
 	ld      de, $0020
 	add     hl, de
 	ld      (ix+$18), l
@@ -93,7 +93,7 @@ LABEL_B31_B017:
 	call    VF_Engine_UpdateObjectPosition
 	res     1, (ix+$22)
 	bit     7, (ix+$19)
-	call    z, LABEL_200 + $60
+	call    z, LABEL_75C5
 	bit     1, (ix+$22)
 	jr      z, +_
 	res     6, (ix+$03)

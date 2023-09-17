@@ -160,9 +160,11 @@ Tileset_UGZ:
 .db 16
 	.dw $1300
 	.dl Art_Badnik_Motobug
+
 .db 16 + $80	;mirror tiles
 	.dw $1500
 	.dl Art_Badnik_Motobug 
+
 .db 09 + $80	;mirror tiles
 	.dw $1700
 	.dl Art_Badnik_Newtron

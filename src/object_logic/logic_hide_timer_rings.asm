@@ -29,19 +29,19 @@ HideTimerRings_Init:			;AF4B
 
 HideTimerRings_MoveSprites:		;$AF58
 	bit     0, (ix+$07)		;get frame display counter
-	ret     z				;return if counter % 2 == 0
+	ret     z			;return if counter % 2 == 0
 
 	ld      hl, gameMem+$DB38	;start at the 56th SAT vpos entry
 	ld      b, $08			;and work backwards
 
-_:	dec	  (hl)			;move the sprite up
-	inc     hl				;move to the next sprite entry
+_:	dec	(hl)			;move the sprite up
+	inc     hl			;move to the next sprite entry
 	djnz    -_
 
-	ld      hl, gameMem+$DB38		;check the first sprite's vpos attribute
+	ld      hl, gameMem+$DB38	;check the first sprite's vpos attribute
 	ld      a, (hl)
 	cp      $D8
-	ret     nc				;return if the vpos attribute < 216
+	ret     nc			;return if the vpos attribute < 216
 
-	ld      (ix+$00), $FF	;destroy this object
+	ld      (ix+$00), $FF		;destroy this object
 	ret

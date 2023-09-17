@@ -559,14 +559,14 @@ _:	ld      (ix+$16), l
 	ld      d, (ix+$3b)
 	xor     a
 	sbc     hl, de
-	jp      nc, LABEL_B28_840E
+	jp	nc, LABEL_B28_840E
 	res     0, (ix+$1e)
 	ret     
 
 LABEL_B28_840E:
 	ld		a, h
 	or		a
-	jp		nz, LABEL_B28_840E
+	jr		nz, LABEL_B28_840E
 	ld		a, l
 	cp		(ix+$3F)
 	ret		c
@@ -611,7 +611,7 @@ SHZ_YellowBird_State_01_Logic:		;$8618
 	ld      a, (gameMem+$D523)
 	cp      $06
 	ret     nz
-	ld      a, (gameMem+$D137)		;a = controller flags
+	ld      a, (Engine_InputFlags)	;a = controller flags
 	cp      $08
 	ret     nz
 	ld      (ix+$02), $02	;set state = $02
@@ -865,7 +865,7 @@ LABEL_B28_881E:
 	jp      nc, LABEL_B28_8889
 	ld      l, (ix+$11)
 	ld      h, (ix+$12)
-	ld      (gameMem+$D3c9), hl
+	ld      (gameMem+$D3C9), hl
 	ld      de, $0028
 	add     hl, de
 	ld      de, (gameMem+$D511)
@@ -876,19 +876,20 @@ LABEL_B28_881E:
 	jr      z, +_
 	ld      l, $00
 _:	ld      a, l
-	cp      $4f
+	cp      $4F
 	jr      c, +_
 	ld      a, $4f
 _:  	and     $f8
 	rrca    
 	rrca    
 	rrca    
+	mlt	de
 	ld      e, a
 	ld      d, $00
 	ld      hl, DATA_B28_88BB
 	add     hl, de
 	ld      a, (hl)
-	ld      (gameMem+$D3c6), a
+	ld      (gameMem+$D3C6), a
 _:	ret     
 
 LABEL_B28_8889:
@@ -912,12 +913,13 @@ _: 	and     $f8
 	rrca    
 	rrca    
 	rrca    
+	mlt	de
 	ld      e, a
 	ld      d, $00
 	ld      hl, DATA_B28_88C5
 	add     hl, de
 	ld      a, (hl)
-	ld      (gameMem+$D3c6), a
+	ld      (gameMem+$D3C6), a
 	ret
 
 DATA_B28_88BB:
@@ -1057,6 +1059,7 @@ _:   	and     $f8
 	rrca    
 	rrca    
 	rrca    
+	mlt	de
 	ld      e, a
 	ld      d, $00
 	ld      hl, DATA_B28_8CA1
@@ -1087,6 +1090,7 @@ _:  	and     $f8
 	rrca    
 	rrca    
 	rrca    
+	mlt	de
 	ld      e, a
 	ld      d, $00
 	ld      hl, DATA_B28_8CAB
@@ -1120,10 +1124,10 @@ LABEL_B28_8CBF:
 
 LABEL_B28_8CC9:
 	ld      (ix+$02), $01
-	ld      hl, $8000
-	ld      (ix+$0a), h
-	ld      (ix+$3f), l
-	ld      (ix+$1f), $00
+	ld      hl, BankSlot2
+	ld      (ix+$0A), h
+	ld      (ix+$3F), l
+	ld      (ix+$1F), $00
 	ret     
 
 LABEL_B28_8CDB:
@@ -1910,6 +1914,7 @@ LABEL_B28_9663:
 	ld      a, (gameMem+$D511)
 	and     $03
 	add     a, b
+	mlt	de
 	ld      e, a
 	ld      d, $00
 	ld      hl, DATA_B28_967D
@@ -2503,10 +2508,9 @@ LABEL_B28_9AA1:
 	ld      (ix+$14), l
 	ld      (ix+$15), h
 	ld      a, (ix+$3f)
-	add     a, a
-	add     a, a
 	ld      e, a
-	ld      d, $00
+	ld      d, $04
+	mlt	de
 	ld      hl, DATA_B28_9AD1
 	add     hl, de
 	ld      e, (hl)
@@ -3431,9 +3435,9 @@ LABEL_B28_AA21:
 	add     a, b
 	add     a, c
 	and     $03
-	add     a, a
 	ld      e, a
-	ld      d, $00
+	ld      d, $03
+	mlt	de
 	ld      hl, DATA_B28_AA4B
 	add     hl, de
 	ld      a, (hl)
@@ -3471,7 +3475,7 @@ LABEL_B28_AA65:
 LABEL_B28_AA7C:
 	ld      a, (gameMem+$D2b9)
 	and     $01
-	jp      z, LABEL_B28_AA88
+	jr	z, LABEL_B28_AA88
 	ld      (ix+$02), $03
 	ret     
 
@@ -6104,8 +6108,8 @@ LABEL_B28_BF47:
 	ld      a, (ix+$21)
 	and     $0f
 	jp      z, LABEL_B28_BF6E
-	ld      hl, gameMem$D3A8
-	ld      a, $ff
+	ld      hl, gameMem+$D3A8
+	ld      a, $FF
 	ld      (hl), a
 	jp      LABEL_B28_BFA4
 
@@ -6127,7 +6131,7 @@ LABEL_B28_BF6E:
 	add     hl, de
 	ld      (ix+$19), h
 	ld      (ix+$18), l
-	ld      a, (ix+$1e)
+	ld      a, (ix+$1E)
 	add     a, $01
 	ld      (ix+$1e), a
 	cp      $06

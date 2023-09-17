@@ -85,7 +85,7 @@ DATA_B31_B51D:
 
 
 LABEL_B31_B523:
-	ld	hl, (gameMem+$D174)			;copy camera hpos
+	ld	hl, (Camera_X)			;copy camera hpos
 	ld	(ix+$11), l			;to this object's hpos
 	ld	(ix+$12), h
 
@@ -103,30 +103,30 @@ LABEL_B31_B53E:
 	ld	a, (ix+$1F)
 	and	$0F
 	ld	l, a
-	ld	h, $00
-	add	hl, hl
+	ld	h, $02
+	mlt	hl
 	ld	bc, DATA_B31_B590
 	add	hl, bc
 	ld	c, (hl)
 	inc	hl
 	ld	b, (hl)
 
-	ld	hl, (gameMem+$D174)			;get camera hpos
+	ld	hl, (Camera_X)			;get camera hpos
 	add	hl, bc
 	ld	(ix+$11), l			;set this object's hpos
 	ld	(ix+$12), h
 
 	ld	l, (ix+$14)			;copy object's vpos...
 	ld	h, (ix+$15)
-	ld	($D4A4), hl			;to the act's water level
+	ld	(gameMem+$D4A4), hl		;to the act's water level
 
-	ld	hl, (gameMem+$D176)			;get camera vpos
+	ld	hl, (Camera_Y)			;get camera vpos
 	ld	de, $0040			;add 64
 	add	hl, de
-	ld	de, (gameMem+$D4A4)			;compare with act's water level
+	ld	de, (gameMem+$D4A4)		;compare with act's water level
 	xor	a
 	sbc	hl, de
-	jp	nc, LABEL_B31_B584	;jump if camera below water level
+	jp	nc, LABEL_B31_B584		;jump if camera below water level
 	
 	dec	hl
 	ld	a, h
@@ -138,7 +138,7 @@ LABEL_B31_B53E:
 	
 	ld	a, h
 	or	a
-	jp	nz, LABEL_B31_B58A		
+	jp	nz, LABEL_B31_B584		
 	ld	a, l
 	ld	(gameMem+$D132), a
 	ret	
@@ -148,10 +148,6 @@ LABEL_B31_B584:
 	ld	(gameMem+$D132), a
 	ret	
 
-LABEL_B31_B58A:
-	ld	b, $FF		;FIXME: identical to subroutine at B584
-	ld	(gameMem+$D132), a
-	ret	
 
 DATA_B31_B590:
 .db $00, $00, $80, $00, $10, $00, $90, $00
@@ -257,7 +253,7 @@ FallingSpike_State_04:		;$BAE4
 .db $FF, $06
 	.db $1A
 	.dw $0000
-	.dw	$0000
+	.dw $0000
 	.db $00
 .db $FF, $05
 	.db $05
@@ -293,7 +289,7 @@ LABEL_B31_BB0B:
 	ld	bc, $0600
 	call	VF_Engine_SetObjectVerticalSpeed
 	call	VF_Engine_UpdateObjectPosition
-	call	LABEL_200 + $60
+	call	LABEL_75C5
 	bit	1, (ix+$22)
 	ret	z
 
@@ -328,23 +324,23 @@ LABEL_B31_BB5C:
 
 LABEL_B31_BB61:
 	bit	6, (ix+$04)
-	ret	nz				;return if object is not visible
+	ret	nz			;return if object is not visible
 
-	ld	hl, (gameMem+$D514)		;get player's vpos
+	ld	hl, (gameMem+$D514)	;get player's vpos
 	ld	e, (ix+$14)		;get spikes' vpos
 	ld	d, (ix+$15)
 	xor	a
 	sbc	hl, de			;compare player's vpos to spikes' vpos
-	ret	c				;return if spikes are below player
+	ret	c			;return if spikes are below player
 
 	ld	a, h
 	or	a
-	ret	nz				;return if hi-byte != 0 (not close enough)
+	ret	nz			;return if hi-byte != 0 (not close enough)
 
 	ld	b, l
 	srl	b
 
-	ld	de, (gameMem+$D516)		;get player's horizontal speed
+	ld	de, (gameMem+$D516)	;get player's horizontal speed
 
 	bit	7, d
 	jr	z, +_
@@ -543,7 +539,7 @@ IntroTree_AdjustHpos:		;$BC8E
 
 LABEL_B31_BCA2:
 	bit	6, (ix+$04)
-	ret	nz					;return if object is not visible
+	ret	nz				;return if object is not visible
 	
 	ld	l, (ix+$1A)			;check the object's horizontal position
 	ld	h, (ix+$1B)			;on screen and return if it is < $40
@@ -556,11 +552,10 @@ LABEL_B31_BCA2:
 	ld	h, (ix+$12)
 	ld	bc, $00C0			;add a random value between
 	ld	a, r				;$00C0 and $00DF to the object's
-	and	$1F					;hpos
+	and	$1F				;hpos
 	add	a, c
 	ld	c, a
 	add	hl, bc
 	ld	(ix+$11), l
 	ld	(ix+$12), h
-
 	ret

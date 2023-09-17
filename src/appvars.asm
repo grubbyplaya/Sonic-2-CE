@@ -1,22 +1,18 @@
 CheckForBank: 			;it's bankin' time
  	call	StoreRegisters
-	sub	$04
-	mlt	hl
-	add	a, a
-	add	a, a
-	add	a, a
+	sub	$03
 	ld	l, a
-	ld	h, $00
-	ld	de, Bank04
+	ld	h, $08
+	mlt	hl
+	ld	de, SaveFile
 	add	hl, de
 
 	call	_Mov9toOP1
  	call	_ChkFindSym
-	call	c, ExitGame
+	jp	c, ExitGame
 	call	PutBankinSlot2
-	ld	(SaveSP), sp
 	ex	af, af'
-	call	RestoreRegisters
+_:	call	RestoreRegisters
 	ret
 
 SegaSP:	;used to exit the game
@@ -44,56 +40,59 @@ StoreRegisters:		;stores registers in RAM
 	ex	af, af'
 	ret
 
-PutBankinSlot1:	;unused, since Sonic 2 only swaps out ROM bank 2.
+RestoreRegisters:
+	ld	(SaveSP), sp
+	ld	sp, pixelShadow-$1B
+	pop	iy
+	pop	ix
+	pop	hl
+	pop	de
+	pop	bc
+	exx
+	pop	hl
+	pop	de
+	pop	bc
+	pop	af
+	ex	af, af'
+	pop	af
+	ld	sp, (SaveSP)
+	ret
+
+PutBankinSlot1:	;unused, since ROM bank 1 is always alloted to SMPS.
 	ex	de, hl		;point hl to appvar
 	ld	de, BankSlot1	;point de to bank slot	
-	ld	bc, 17
+	ld	bc, 16
 	add	hl, bc		;offset hl to actual data
-	push	hl
 	ld	c, (hl)
 	inc	hl
 	ld	b, (hl)
 	inc	hl
-	ldir				;copy appvar to bank slot
+	ldir			;copy appvar to bank slot
 	ret
 
 PutBankinSlot2:
 	ex	de, hl		;point hl to appvar
 	ld	de, BankSlot2	;point de to bank slot	
-	ld	bc, 17
+	ld	bc, 16
 	add	hl, bc		;offset hl to actual data
-
-	push	hl
 	ld	c, (hl)
 	inc	hl
 	ld	b, (hl)
 	inc	hl
-	ldir				;copy appvar to bank slot
+	ldir			;copy appvar to bank slot
 	ret
 
 ExitGame:
-	ld	hl, SaveFile
-	call	_Mov9toOP1
-	call	_ChkFindSym
 	call	SaveGame
 	;exit 8bpp mode
-	ld	a, lcdBpp16
+	ld	a, (lcdNormalMode)
 	ld	(mpLcdCtrl), a
 	ld	sp, (SegaSP)
-	ret	
-
-MakeSave:
-	ld	hl, SaveFile
-	call	_Mov9toOP1
-	ld	hl, 10
-	call	_CreateAppvar
 	ret
 
 LoadSave:
 	ld	hl, SaveFile
-	call	_Mov9toOP1
-	call	_ChkFindSym	;check for a save file
-	jp	c, MakeSave	;make one if it doesn't exist
+	call	_Mov9toOP1	;check for a save file
 	call	_Arc_Unarc
 	
 	ex	de, hl
@@ -121,8 +120,7 @@ LoadSave:
 SaveGame:
 	ld	hl, SaveFile
 	call	_Mov9toOP1
-	call	_Arc_Unarc
-
+	jp	_Arc_Unarc
 	ld	hl, Score
 	ldi
 	ldi
@@ -139,14 +137,12 @@ SaveGame:
 	ldi
 	ld	a, $01
 	ld	(de), a
-	ld	hl, SaveFile
-	call	_Mov9toOP1
 	jp	_Arc_Unarc
 
 ;Appvar Headers
 
 SaveFile:
-	.db	AppvarObj, "S2SAVE", 0
+	.db	AppvarObj, "S2Save", 0
 
 Bank04:
 	.db	AppvarObj, "Bank04", 0

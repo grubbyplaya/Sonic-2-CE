@@ -6,7 +6,7 @@
 ;********************************************************
 ;*	Logic for the second type of bouncing bird robot.	*
 ;*	These are spawned by the egg capsules rather than	*
-;*	the main boss object.								*
+;*	the main boss object.					*
 ;********************************************************
 Logic_SHZ3_BirdRobot2:		;$9B15
 .dl SHZ3_BirdRobot2_State_00
@@ -100,7 +100,7 @@ SHZ3_BirdRobot2_MainLogic:	;$9B79
 	call    VF_Engine_SetObjectVerticalSpeed
 	
 	ld      hl, $0200		;bounce speed threshold
-	call    LABEL_200 + $12		;make the bird bounce
+	call    LABEL_631A		;make the bird bounce
 	
 	jr      nz, ++_
 	
@@ -250,7 +250,7 @@ SHZ3_Boss_State_01:		;$9C67
 ;state 02 - load tiles & spawn small bird robots
 SHZ3_Boss_State_02:		;$9C6D
 .db $FF, $08
-	.db $14				;set tile load trigger
+	.db $14			;set tile load trigger
 .db $40, $00
 	.dl VF_DoNothing
 .db $FF, $06			;spawn a small bird object
@@ -563,7 +563,7 @@ SHZ3_Boss_StoreChildIndex:	;$9E46
 	ld      de, gameMem+$D3BC		;$D3BC for an empty slot
 _:	ld      a, (de)
 	or      a				;is element empty?
-	jp      z, +_
+	jr      z, +_
 	inc     de				;move to the next element
 	djnz    -_
 	ret
@@ -606,14 +606,14 @@ _:	xor     a
 
 
 SHZ3_Boss_Init:				;$9E74
-	ld      a, $FF				;set boss mode flag?
+	ld      a, $FF			;set boss mode flag?
 	ld      (gameMem+$D4A2), a
-	xor     a					;clear the "destroy children" trigger
+	xor     a			;clear the "destroy children" trigger
 	ld      (gameMem+$D46A), a
 	
-	ld      a, (ix+$3F)			;if the option byte is set in
-	or      a					;the sprite layout the game will
-	jp      nz, +_				;jump here and crash!
+	ld      a, (ix+$3F)		;if the option byte is set in
+	or      a			;the sprite layout the game will
+	jr	nz, +_			;jump here and crash!
 	
 	ld      (ix+$02), $01		;set state = $01
 	ld      (ix+$24), $06		;set the hit counter
@@ -632,11 +632,11 @@ SHZ3_Boss_SetCamera:		;$9E95
 	ld      d, (ix+$12)
 	xor     a
 	sbc     hl, de
-	ret     c					;return if player is to object's left
+	ret     c				;return if player is to object's left
 	ld      bc, $0814			;new camera x-pos
 	ld      de, $003E			;new camera y-pos
 	call    VF_Engine_SetCameraAndLock
-	ld      (ix+$02), $02		;set state = $02
+	ld      (ix+$02), $02			;set state = $02
 	ret     
 
 
@@ -650,22 +650,22 @@ SHZ3_Boss_CheckNextState:		;$9EB0
 _:	ld      a, (de)				;or the value at (DE) with C
 	or      c
 	ld      c, a
-	inc     de					;move to the next element
+	inc     de				;move to the next element
 	djnz    -_
 	
 	ld      a, c				;if C is non-zero there are child
-	or      a					;objects that the player should
-	ret     nz					;destroy first
+	or      a				;objects that the player should
+	ret     nz				;destroy first
 	
 	ld      a, (ix+$01)			;there are no more child objects -
-	inc     a					;move to the next state
+	inc     a				;move to the next state
 	ld      (ix+$02), a
 	ret     
 
 
 ;Moves the camera down & makes player fall through to the lower area
 SHZ3_Boss_MoveCameraDown:		;$9EC8
-	call    LABEL_200 + $F3
+	call    LABEL_49CF
 	
 	ld      hl, (gameMem+$D280)		;set max camera Y pos to min cam y pos
 	ld      (gameMem+$D282), hl
@@ -691,21 +691,21 @@ SHZ3_Boss_SetInitialPosision:	;$9EDB
 SHZ3_Boss_MainLogic:			;$9EEE
 	call    VF_Engine_UpdateObjectPosition
 	call    SHZ3_Boss_SetVelocities
-	call    LABEL_200 + $1B		;check collisions
+	call    LABEL_6355		;check collisions
 	ld      a, (ix+$21)
 	and     $0F
-	ret     z					;return if there were no collisions
+	ret     z			;return if there were no collisions
 	ld      (ix+$1F), $40
-	set     5, (ix+$04)			;flash the object
+	set     5, (ix+$04)		;flash the object
 	ld      (ix+$02), $0B		;set state = $0B
 	ret     
 
 
 ;calculates & sets horizontal & vertical velocities
 SHZ3_Boss_SetVelocities:		;$9F0A
-	ld      hl, (gameMem+$D511)			;get player's hpos...
-	ld      de, $FFC0			;...and subtract 64.
-								;move the boss towards the player
+	ld      hl, (gameMem+$D511)		;get player's hpos...
+	ld      de, -64				;...and subtract 64.
+						;move the boss towards the player
 	add     hl, de				;player's adjusted hpos
 	ld      de, $0000			;no further adjustment
 	ld      bc, $00C0			;desired speed
@@ -726,7 +726,7 @@ _:	ld      (ix+$18), c			;set vertical speed
 SHZ3_Boss_CollisionWithPlayer:	;$9F31
 	call    VF_Engine_UpdateObjectPosition
 	call    SHZ3_Boss_SetVelocities
-	call    LABEL_200 + $1B		;check collisions
+	call    LABEL_6355		;check collisions
 	xor     a
 	ld      (ix+$21), a			;reset the collision flags
 	dec     (ix+$1f)			;flash counter?
@@ -790,20 +790,20 @@ SHZ3_Fireball_MainLogic:	;$9F7E
 _:	call    VF_Engine_UpdateObjectPosition
 	
 	ld      hl, (gameMem+$D514)		;get player's vpos
-	ld      de, $FFE8		;Adjustment value for HL
-	ld      bc, $00C0		;desired vert. velocity
+	ld      de, $FFE8			;Adjustment value for HL
+	ld      bc, $00C0			;desired vert. velocity
 	call    VF_Logic_MoveVerticalTowardsObject
 	
 	ld      bc, $0180		;set horizontal velocity
 	ld      (ix+$16), c
 	ld      (ix+$17), b
 
-	ld      hl, (gameMem+$D174)		;hl = camera horiz. pos + 1
+	ld      hl, (gameMem+$D174)	;hl = camera horiz. pos + 1
 	inc     h
 	ld      e, (ix+$11)		;de = fireball's hpos
 	ld      d, (ix+$12)
 	xor     a
 	sbc     hl, de
-	ret     nc				;return if fireball is still on screen
-	ld      (ix+$00), $FF	;destroy the fireball object
+	ret     nc			;return if fireball is still on screen
+	ld      (ix+$00), $FF		;destroy the fireball object
 	ret     

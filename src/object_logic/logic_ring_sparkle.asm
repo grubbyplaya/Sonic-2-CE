@@ -20,7 +20,7 @@ RingSparkle_State_01:	;$ABEB:
 
 LABEL_B31_ABFD:
 	ld	hl, (gameMem+$D35A)
-	ld		a, l
+	ld	a, l
 	and     $F0
 	add     a, $06
 	ld      (ix+$11), a

@@ -4,7 +4,7 @@
 ;  This file contains memory address definitions for variables.
 ; -----------------------------------------------------------------------------
 
-	#define LevelLayout				gameMem+$C001
+	#define LevelLayout				cmdPixelShadow-$0396
 	#define unk_01					gameMem+$D001
 	#define Frame1Page 				gameMem+$D12A
 	#define Frame2Page				gameMem+$D12B
@@ -19,24 +19,24 @@
 	#define LevelAttributes.ix01			gameMem+$D15E
 	#define LevelAttributes.MetaTileX		gameMem+$D15F ; x-index of metatile (see: Engine_Mappings_GetBlockXY)
 	#define LevelAttributes.MetaTileY		gameMem+$D160 ; y-index of metatile (see: Engine_Mappings_GetBlockXY)
-	#define LevelAttributes.MetaTileBank		gameMem+$D162
-	#define LevelAttributes.LayoutBank		gameMem+$D163
-	#define LevelAttributes.MetaTilePtr		gameMem+$D164
+	#define LevelAttributes.MetaTileBank		gameMem+$D161
+	#define LevelAttributes.LayoutBank		gameMem+$D162
+	#define LevelAttributes.MetaTilePtr		gameMem+$D163
 	#define LevelAttributes.LayoutPtr		gameMem+$D166
-	#define LevelAttributes.StrideTable		gameMem+$D168
-	#define LevelAttributes.WidthNeg		gameMem+$D16A
-	#define LevelAttributes.Width			gameMem+$D16C
-	#define LevelAttributes.DataOffset		gameMem+$D16E
-	#define unk_05					gameMem+$D170
+	#define LevelAttributes.StrideTable		gameMem+$D169
+	#define LevelAttributes.WidthNeg		gameMem+$D16C
+	#define LevelAttributes.Width			gameMem+$D16F
+	#define LevelAttributes.DataOffset		gameMem+$D173
+	#define unk_05					gameMem+$D176
 ;----------------------------------------------------------
 ; =========================================================
 ;  VDP Variables
 ;----------------------------------------------------------
-	#define VDP_VScroll		gameMem+$D176
-	#define VDP_HScroll 		gameMem+$D177
-	#define VDP_ViewportX		gameMem+$D178
-	#define VDP_ViewportY		gameMem+$D17A
-	#define VDP_TileColBuffer 	gameMem+$D17B    ; holds a column of tile indices before copying to the VDP
+	#define VDP_VScroll		gameMem+$D177
+	#define VDP_HScroll 		gameMem+$D178
+	#define VDP_ViewportX		gameMem+$D179
+	#define VDP_ViewportY		gameMem+$D17C
+	#define VDP_TileColBuffer 	gameMem+$D17F    ; holds a column of tile indices before copying to the VDP
 	#define VDP_TileRowBuffer 	gameMem+$D1BB    ; holds a row of tile indices before copying to the VDP
 	#define unk_06			gameMem+$D203
 	#define CurrentMetaTileAddr	gameMem+$D23D
@@ -45,11 +45,11 @@
 
 #define  VDP_SATUpdateTrig		gameMem+$D134
 #define  Engine_InterruptServiced	gameMem+$D135	; byte - set when the interrupt has been serviced
-#define  Engine_InputFlags		gameMem+$D138	; byte - current controller input flags
+#define  Engine_InputFlags		gameMem+$D137	; byte - current controller input flags
 #define  Engine_InputFlagsLast		gameMem+$D147	; byte - input flags from the previous frame
 #define  Camera_X			gameMem+$D174	; word
-#define  Camera_Y			gameMem+$D176	; word
-#define  Camera_MetatileColBuffer	gameMem+$D178	; 64 b - a buffer to hold tile data from a column of metatiles.
+#define  Camera_Y			gameMem+$D177	; word
+#define  Camera_MetatileColBuffer	gameMem+$D17A	; 64 b - a buffer to hold tile data from a column of metatiles.
 
 #define  Camera_MetatilePtr		gameMem+$D278	; word - points to a metatile in the layout data (see: Engine_Mappings_GetBlockXY)
 
@@ -73,25 +73,25 @@
 #define  Cllsn_RingBlock		gameMem+$D352	; byte - used by ring<>player collision routines to store ring metatile number.
 #define  Cllsn_MetatileIndex		gameMem+$D353	; byte - the metatile number stored at (Cllsn_LevelMapBlockPtr)
 #define  Cllsn_LevelMapBlockPtr		gameMem+$D354	; word - pointer to the current metatile block in the level data
-#define  Cllsn_AdjustedX		gameMem+$D356	; word - object's x-coordinate + an adjustment value
-#define  Cllsn_AdjustedY		gameMem+$D358	; word - object's y-coordinate + an adjustment value
-#define  Cllsn_MetaTileX		gameMem+$D35A	; word - metatile's x coordinate
-#define  Cllsn_MetaTileY		gameMem+$D35C	; word - metatile's y coordinate
-#define  Cllsn_MetaTileSurfaceType	gameMem+$D35E	; byte - surface type value for the colliding metatile.
-#define  Cllsn_HeaderPtr3		gameMem+$D35F	; word - 3rd pointer in the metatile's collision header
-#define  Cllsn_CollisionValueY		gameMem+$D361	; byte - vertical collision value for the current position within the metatile.
-#define  Cllsn_CollisionValueX		gameMem+$D362	; byte - horizontal collision value for the current position within the metatile.
+#define  Cllsn_AdjustedX		gameMem+$D357	; word - object's x-coordinate + an adjustment value
+#define  Cllsn_AdjustedY		gameMem+$D35A	; word - object's y-coordinate + an adjustment value
+#define  Cllsn_MetaTileX		gameMem+$D35D	; word - metatile's x coordinate
+#define  Cllsn_MetaTileY		gameMem+$D360	; word - metatile's y coordinate
+#define  Cllsn_MetaTileSurfaceType	gameMem+$D363	; byte - surface type value for the colliding metatile.
+#define  Cllsn_HeaderPtr3		gameMem+$D364	; word - 3rd pointer in the metatile's collision header
+#define  Cllsn_CollisionValueY		gameMem+$D367	; byte - vertical collision value for the current position within the metatile.
+#define  Cllsn_CollisionValueX		gameMem+$D368	; byte - horizontal collision value for the current position within the metatile.
 
 
 #define  Engine_UpdateSpriteAttribs_vpos_ptr   	gameMem+$D369	; word
-#define  Engine_UpdateSpriteAttribs_hpos_ptr   	gameMem+$D36B	; word
-#define  Player_MaxVelX			     	gameMem+$D36D	; word
-#define  Player_DeltaVX			    	gameMem+$D36F	; word - player object x delta-v?
-#define  Player_MetaTileDeltaVX		  	gameMem+$D371	; word - delta-v for platform (gradient/slope)
+#define  Engine_UpdateSpriteAttribs_hpos_ptr   	gameMem+$D36C	; word
+#define  Player_MaxVelX			     	gameMem+$D36F	; word
+#define  Player_DeltaVX				gameMem+$D372	; word - player object x delta-v?
+#define  Player_MetaTileDeltaVX			gameMem+$D375	; word - delta-v for platform (gradient/slope)
 
 #define  Engine_UpdateSpriteAttribs_adj_pos  	gameMem+$D393	; word
-#define  Engine_RingArt_Src			gameMem+$D395	; word - pointer to uncompressed ring art data.
-#define  Engine_RingArt_Dest			gameMem+$D397	; word - vram destination pointer for ring art tiles.
+#define  Engine_RingArt_Src			gameMem+$D396	; word - pointer to uncompressed ring art data.
+#define  Engine_RingArt_Dest			gameMem+$D399	; word - vram destination pointer for ring art tiles.
 
 #define  Player_HurtTrigger			gameMem+$D3A8	; byte - trigger causes player to lose rings or die
 #define  Player_FlashCounter			gameMem+$D3A9	; byte
@@ -118,7 +118,7 @@
 ; ---------------------------------------------------------
 #define  Engine_ObjectSlots			gameMem+$D500
 
-PlayerObj:
+	#define PlayerObj			Engine_ObjectSlots
 	#define Player				gameMem+$D500
 	#define Player.ObjID			gameMem+$D500	; 	$D500 - object number
 	#define Player.State			gameMem+$D501	; 	$D501

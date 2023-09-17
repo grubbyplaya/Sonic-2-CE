@@ -80,12 +80,12 @@ Minecart_State_06:			;$8937
 
 ;setup the minecart 
 Minecart_State_00_Logic_01:		;$894D
-	ld		(ix+$02), $01	;set state to $01
+	ld	(ix+$02), $01	;set state to $01
 	ret
 
 Minecart_State_01_Logic_01:		;$8952
-	bit		6, (ix+$04)
-	ret		nz
+	bit	6, (ix+$04)
+	ret	nz
 	call    LABEL_B28_8ABD
 	jp      z, LABEL_B28_8AAE
 LABEL_B28_895D:
@@ -109,7 +109,7 @@ Minecart_State_02_Logic_01:		;$8971
 	ld      (ix+$17), h
 _:	ld      bc, $0010
 	ld      de, $FFF0
-	call    LABEL_200 + $63
+	call    VF_Engine_GetCollisionValueForBlock
 	ld      a, (gameMem+$D353)
 	ld      hl, DATA_B28_8B0C
 	ld      bc, $001B
@@ -118,7 +118,7 @@ _:	ld      bc, $0010
 	call    LABEL_B28_8ABD
 	bit     1, (ix+$22)
 	jp      nz, LABEL_B28_8AAE
-	ld      (ix+$02), $04	;set state to "falling"
+	ld      (ix+$02), $04		;set state to "falling"
 	ld      hl, $0000
 	ld      (ix+$18), l		;set vertical speed
 	ld      (ix+$19), h
@@ -150,7 +150,7 @@ Minecart_State_03_Logic_01:		;$89B4
 	ld      (ix+$17), h
 _:	ld      bc, $FFF0
 	ld      de, $FFF0
-	call    LABEL_200 + $63
+	call    VF_Engine_GetCollisionValueForBlock
 	ld      a, (gameMem+$D353)
 	ld      hl, DATA_B28_8B0C
 	ld      bc, $001B
@@ -174,7 +174,7 @@ Minecart_State_04_Logic_01:		;$8A0B
 	jr      z, +_
 	ld      bc, $FFF0
 _:	ld      de, $FFF0
-	call    LABEL_200 + $63
+	call    VF_Engine_GetCollisionValueForBlock
 	ld      a, (gameMem+$D353)
 	ld      hl, DATA_B28_8B0C
 	ld      bc, $001B
@@ -232,10 +232,10 @@ Minecart_State_06_Logic_01:		;$8AA5
 
 LABEL_B28_8AAE:
 	call    VF_Engine_UpdateObjectPosition
-	call    LABEL_200 + $60
+	call    LABEL_75C5
 	ld      a, (gameMem+$D353)
 	ld      (gameMem+$D368), a
-	jp      LABEL_200 + $0C
+	jp      VF_Logic_CheckDestroyObject
 
 LABEL_B28_8ABD:
 	bit     6, (ix+$03)
@@ -281,7 +281,7 @@ LABEL_B28_8B27:
 _:	push    hl
 	pop     bc
 	ld      de, $FFE0
-	call    LABEL_200 + $63
+	call    VF_Engine_GetCollisionValueForBlock
 	cp      $81
 	jp      z, LABEL_B28_8B4A
 	cp      $8D

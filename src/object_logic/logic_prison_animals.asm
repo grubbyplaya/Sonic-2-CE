@@ -81,7 +81,7 @@ _:	ld      (ix+$17), d
 
 PrisonAnimals_UpdateSpeed:		;$93D9
 	bit     6, (ix+$04)			;destroy the object if not visible
-	jp      nz, PrisonAnimals_Destroy
+	jr      nz, PrisonAnimals_Destroy
 
 	ld      de, $0040			;update the object's vertical speed
 	ld      bc, $0600
@@ -102,7 +102,7 @@ PrisonAnimals_UpdateSpeed:		;$93D9
 	ex      de, hl				;DE = object's vertical speed
 	ld      hl, $0040
 	xor     a
-	sbc     hl, de				;subtract 64 from vertical speed
+	sbc.s     hl, de			;subtract 64 from vertical speed
 	jr      c, +_				;jump if speed now < 0
 	
 	ld      hl, $0000			;set speed = 0
@@ -114,4 +114,4 @@ _:	ld      (ix+$18), l			;set vertical speed
 
 PrisonAnimals_Destroy:			;$9414
 	ld      (ix+$00), $FF		;destroy the object
-	ret     
+	ret

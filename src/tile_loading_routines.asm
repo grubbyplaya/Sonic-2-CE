@@ -37,9 +37,6 @@ _LABEL_1AA6_22:
 	ld	(SourcePointer), hl		;tile data pointer
 	pop	hl
 	add	hl, de				;add the relative compression definition pointer to the base address
-	ld	bc, $8000
-	or	a
-	sbc	hl, bc
 	ld	(FlagPointer), hl		;store the compression definition pointer
 	ld	hl, gameMem+$D320		;clear RAM $D320->$D340
 	ld	de, gameMem+$D321
@@ -209,14 +206,20 @@ WriteTileToVRAM:
 
 	ld	bc, $0020
 	ld	ix, (VRAMPointer)
+	push	ix
 	ld	de, SegaVRAM
 	add	ix, de
+
 	push	ix
 	pop	de
+	pop	ix
+	add	ix, bc
 	ldir
+
+	ld	(VRAMPointer), ix
 	ret
 
-VRAMPointer:	;stores the VDP address pointer
+VRAMPointer:	;self modifying code that stores the VDP address pointer
 	.dl $00BEEF
 
 ;************************************************************
@@ -224,21 +227,26 @@ VRAMPointer:	;stores the VDP address pointer
 ;*	index into the mirroring data at $0100.					*
 ;************************************************************
 WriteMirroredTileToVRAM:
+	push	iy
 	ld	b, $20
-_:	ld	e, (hl)		;read a byte of tile data from RAM
-	ld	d, $01 ;Engine_Data_ByteFlipLUT >> 8
-	ld	ix, _START
+	ld	ix, Engine_Data_ByteFlipLUT
+	ld	iy, (VRAMPointer)
+
+_:	mlt	de
+	ld	e, (hl)		;read a byte of tile data from RAM
+	ld	d, $00
 	add	ix, de
 
-	ld	iy, (VRAMPointer)
-	ld	de, SegaVRAM
-	add	iy, de
 	push	iy
-	pop	de	
-	ld	a, (de)		;"flip" the byte by using it as an
-				;index into the array at $100 and
-				;retrieving the value
-	ld	(ix), a
+	ld	de, SegaVRAM
+	add	iy, de	
+	ld	a, (ix)		;"flip" the byte by using it as an		
+	ld	(iy), a		;index into the array at $100 and
+	inc	ix		;retrieving the value
 	inc	hl
+	pop	iy
+	inc	iy
+	ld	(VRAMPointer), iy
 	djnz	-_
+	pop	iy
 	ret

@@ -60,9 +60,9 @@ Explosion_State_01_Logic_01:		;$B6EE
 
 Explosion_State_01_Logic_03:		;$B6EF
 	bit     6, (ix+$3F)
-	jp      nz, LABEL_B31_B702
+	jr      nz, LABEL_B31_B702
 	bit     7, (ix+$3F)
-	jp      nz, LABEL_B31_B70B
+	jr      nz, LABEL_B31_B70B
 	ld      (ix+$00), $FF
 	ret     
 
