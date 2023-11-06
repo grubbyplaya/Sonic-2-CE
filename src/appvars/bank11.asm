@@ -1,4 +1,4 @@
-.ORG $D09466
+.ORG $8000
 
 Mappings32_SHZ1_3:
 ;#import "mappings\shz\mappings32_shz1_3.bin"

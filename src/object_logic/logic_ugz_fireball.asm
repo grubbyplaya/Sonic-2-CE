@@ -1,44 +1,45 @@
+.assume ADL=0
 Logic_UGZ_Fireball:		;$B5B0
-.dl UGZ_Fireball_State_00
-.dl UGZ_Fireball_State_01
-.dl UGZ_Fireball_State_02
-.dl UGZ_Fireball_State_03
-.dl UGZ_Fireball_State_04
-.dl UGZ_Fireball_State_05
+.dw UGZ_Fireball_State_00
+.dw UGZ_Fireball_State_01
+.dw UGZ_Fireball_State_02
+.dw UGZ_Fireball_State_03
+.dw UGZ_Fireball_State_04
+.dw UGZ_Fireball_State_05
 
 ;state 0 - initialiser
 UGZ_Fireball_State_00:	;$B5BC
 .db $FF, $02
-	.dl UGZ_Fireball_Init
+	.dw UGZ_Fireball_Init
 .db $FF, $03		;do-nothing stub
 ;fall through
 
 ;state 1 - adjust vertical speed
 UGZ_Fireball_State_01:	;$B5C2
 .db $20, $01
-	.dl UGZ_Fireball_AdjustVerticalSpeed
+	.dw UGZ_Fireball_AdjustVerticalSpeed
 .db $FF, $00
 
 ;state 2 - adjust vertical speed & check vpos against initial
 UGZ_Fireball_State_02:	;$B5C8
 .db $20, $02
-	.dl UGZ_Fireball_AdjustVerticalSpeed_CheckPos
+	.dw UGZ_Fireball_AdjustVerticalSpeed_CheckPos
 .db $FF, $00
 
 ;state 3 - wait a while then change state to 1
 UGZ_Fireball_State_03:	;$B5CE
 .db $40, $00
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $05		;set state = 01
 	.db $01
 .db $40, $00
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $00
 
 ;state 4 - wait for object to become visible
 UGZ_Fireball_State_04:	;$B5DB
 .db $E0, $00
-	.dl UGZ_Fireball_WaitForVisible
+	.dw UGZ_Fireball_WaitForVisible
 .db $FF, $00
 
 ;state 5 - checks collisions. waits for object
@@ -48,7 +49,7 @@ UGZ_Fireball_State_05:	;$B5E1
 	.dw $0200
 	.dw $0000
 .db $E0, $03
-	.dl UGZ_Fireball_ResetHorizontalPos
+	.dw UGZ_Fireball_ResetHorizontalPos
 .db $FF, $00
 
 
@@ -144,6 +145,6 @@ UGZ_Fireball_CheckCollision:		;$B67C
 	ret     z				;return if no collision
 	
 	ld      a, $FF			;set "player hurt" trigger
-	ld      (gameMem+$D3A8), a
+	ld      ($D3A8), a
 
 	ret     

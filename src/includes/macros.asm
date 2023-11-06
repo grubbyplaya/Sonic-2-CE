@@ -11,9 +11,8 @@
 
 #macro wait_1s	;wait a second
 	ld	b, Time_1Second
-_:	ei	
-	ld	a, $80
-	call	Engine_WaitForInterrupt
+_:	ei
+	halt
 	djnz	-_
 #endmacro
 ; =============================================================================
@@ -27,8 +26,8 @@ _:	ei
 ;	None.
 ; -----------------------------------------------------------------------------
 #macro Engine_FillMemory args value
-	ld	hl, gameMem+$C001
-	ld	de, gameMem+$C002
+	ld	hl, $C001
+	ld	de, $C002
 	ld	bc, $1FEE
 	ld	(hl), value
 	ldir

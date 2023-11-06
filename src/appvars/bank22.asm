@@ -1,4 +1,4 @@
-.ORG $D09466
+.ORG $8000
 
 Mappings32_GMZ:
 ;#import "mappings/gmz/mappings32_gmz.bin"

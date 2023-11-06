@@ -1,32 +1,33 @@
+.assume ADL=0
 Logic_Explosion:			;$B68E
-.dl Explosion_State_00
-.dl Explosion_State_01
-.dl Explosion_State_01
+.dw Explosion_State_00
+.dw Explosion_State_01
+.dw Explosion_State_01
 
 Explosion_State_00:			;$B694
 .db $01, $00
-	.dl LABEL_B31_B6D9
+	.dw LABEL_B31_B6D9
 .db $FF, $00
 
 
 ;Used for state 1 and state 2
 Explosion_State_01:			;$B69A
 .db $04, $01
-	.dl Explosion_State_01_Logic_01
+	.dw Explosion_State_01_Logic_01
 .db $04, $02
-	.dl Explosion_State_01_Logic_01
+	.dw Explosion_State_01_Logic_01
 .db $04, $03
-	.dl Explosion_State_01_Logic_01
+	.dw Explosion_State_01_Logic_01
 .db $04, $02
-	.dl Explosion_State_01_Logic_01
+	.dw Explosion_State_01_Logic_01
 .db $04, $01
-	.dl Explosion_State_01_Logic_01
+	.dw Explosion_State_01_Logic_01
 .db $FF, $02
-	.dl Explosion_State_01_Logic_02
+	.dw Explosion_State_01_Logic_02
 .db $01, $01
-	.dl Explosion_State_01_Logic_01
+	.dw Explosion_State_01_Logic_01
 .db $80, $00
-	.dl Explosion_State_01_Logic_03
+	.dw Explosion_State_01_Logic_03
 .db $FF, $00
 
 

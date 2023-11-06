@@ -61,11 +61,7 @@ Palette_ALZ1_3:
 #import "palettes\palette_alz1_3.bin"
 
 Palette_ALZ2:
-#ifdef Version=2
-#import "palettes\palette_alz2_gg.bin"
-#else
 #import "palettes\palette_alz2.bin"
-#endif
 
 Palette_GHZ:
 #import "palettes\palette_ghz.bin"
@@ -98,53 +94,26 @@ Palette_82DF:
 #import "palettes\palette_82DF.bin"
 
 Palette_TitleCard_UGZ:
-#ifdef Version=2
-#import "palettes\palette_titlecard_ugz_ce.bin"
-#else
 #import "palettes\palette_titlecard_ugz.bin"
-#endif
 
 Palette_TitleCard_SHZ:
-#ifdef Version=2
-#import "palettes\palette_titlecard_shz_ce.bin"
-#else
 #import "palettes\palette_titlecard_shz.bin"
-#endif
+
 
 Palette_TitleCard_ALZ:
-#ifdef Version=2
-#import "palettes\palette_titlecard_alz_ce.bin"
-#else
 #import "palettes\palette_titlecard_alz.bin"
-#endif
 
 Palette_TitleCard_GHZ:
-#ifdef Version=2
-#import "palettes\palette_titlecard_ghz_ce.bin"
-#else
 #import "palettes\palette_titlecard_ghz.bin"
-#endif
 
 Palette_TitleCard_GMZ:
-#ifdef Version=2
-#import "palettes\palette_titlecard_gmz_ce.bin"
-#else
 #import "palettes\palette_titlecard_gmz.bin"
-#endif
 
 Palette_TitleCard_SEZ:
-#ifdef Version=2
-#import "palettes\palette_titlecard_sez_ce.bin"
-#else
 #import "palettes\palette_titlecard_sez.bin"
-#endif
 
 Palette_TitleCard_CEZ:
-#ifdef Version=2
-#import "palettes\palette_titlecard_cez_ce.bin"
-#else
 #import "palettes\palette_titlecard_cez.bin"
-#endif
 
 Palette_835F:
 #import "palettes\palette_ending_0.bin"
@@ -164,5 +133,4 @@ Palette_Ending_Sequence:
 #import "palettes\palette_ending_6.bin"
 #import "palettes\palette_ending_7.bin"
 #import "palettes\palette_ending_8.bin"
-
-
+Palette_End:

@@ -1,4 +1,4 @@
-.ORG $D09466
+.ORG $8000
 
 #include "object_animations.asm"
 
@@ -7,4 +7,7 @@
 ;$BCCB
 #include	"player_sprite_defs.asm"
 
-#include	"s2.lab"
+#if Listing=0
+#include "s2.lab"
+#endif
+#undef Listing

@@ -1,106 +1,107 @@
+.assume ADL=0
 Logic_Crab:				;$841C
-.dl Crab_State_00
-.dl Crab_State_01
-.dl Crab_State_02
-.dl Crab_State_03
+.dw Crab_State_00
+.dw Crab_State_01
+.dw Crab_State_02
+.dw Crab_State_03
 Logic_CrabProjectile:	;$8424
-.dl CrabProjectile_State_00		;DATA_B28_8597
-.dl CrabProjectile_State_01		;DATA_B28_859D
+.dw CrabProjectile_State_00		;DATA_B28_8597
+.dw CrabProjectile_State_01		;DATA_B28_859D
 
 Crab_State_00:		;$8428
 .db $01, $00
-	.dl Crab_State_00_Logic_01
+	.dw Crab_State_00_Logic_01
 .db $FF, $00
 
 Crab_State_01:		;$842E
 .db $FF, $02
-	.dl Crab_State_01_Logic_01
+	.dw Crab_State_01_Logic_01
 .db $06, $01
-	.dl Crab_State_01_Logic_02
+	.dw Crab_State_01_Logic_02
 .db $06, $02
-	.dl Crab_State_01_Logic_02
+	.dw Crab_State_01_Logic_02
 .db $06, $01
-	.dl Crab_State_01_Logic_02
+	.dw Crab_State_01_Logic_02
 .db $06, $02
-	.dl Crab_State_01_Logic_02
+	.dw Crab_State_01_Logic_02
 .db $06, $01
-	.dl Crab_State_01_Logic_02
+	.dw Crab_State_01_Logic_02
 .db $06, $02
-	.dl Crab_State_01_Logic_02
+	.dw Crab_State_01_Logic_02
 .db $06, $01
-	.dl Crab_State_01_Logic_02
+	.dw Crab_State_01_Logic_02
 .db $06, $02
-	.dl Crab_State_01_Logic_02
+	.dw Crab_State_01_Logic_02
 .db $06, $01
-	.dl Crab_State_01_Logic_02
+	.dw Crab_State_01_Logic_02
 .db $06, $02
-	.dl Crab_State_01_Logic_02
+	.dw Crab_State_01_Logic_02
 .db $06, $01
-	.dl Crab_State_01_Logic_02
+	.dw Crab_State_01_Logic_02
 .db $06, $02
-	.dl Crab_State_01_Logic_02
+	.dw Crab_State_01_Logic_02
 .db $06, $01
-	.dl Crab_State_01_Logic_02
+	.dw Crab_State_01_Logic_02
 .db $06, $02
-	.dl Crab_State_01_Logic_02
+	.dw Crab_State_01_Logic_02
 .db $06, $01
-	.dl Crab_State_01_Logic_02
+	.dw Crab_State_01_Logic_02
 .db $06, $02
-	.dl Crab_State_01_Logic_02
+	.dw Crab_State_01_Logic_02
 .db $06, $01
-	.dl Crab_State_01_Logic_02
+	.dw Crab_State_01_Logic_02
 .db $06, $02
-	.dl Crab_State_01_Logic_02
+	.dw Crab_State_01_Logic_02
 .db $FF, $05
 	.db $02		;change object state
 .db $06, $02
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $00
 
 
 Crab_State_02:			;$8483
 .db $FF, $02
-	.dl Crab_State_02_Logic_01
+	.dw Crab_State_02_Logic_01
 .db $06, $01
-	.dl Crab_State_02_Logic_02
+	.dw Crab_State_02_Logic_02
 .db $06, $02
-	.dl Crab_State_02_Logic_02
+	.dw Crab_State_02_Logic_02
 .db $06, $01
-	.dl Crab_State_02_Logic_02
+	.dw Crab_State_02_Logic_02
 .db $06, $02
-	.dl Crab_State_02_Logic_02
+	.dw Crab_State_02_Logic_02
 .db $06, $01
-	.dl Crab_State_02_Logic_02
+	.dw Crab_State_02_Logic_02
 .db $06, $02
-	.dl Crab_State_02_Logic_02
+	.dw Crab_State_02_Logic_02
 .db $06, $01
-	.dl Crab_State_02_Logic_02
+	.dw Crab_State_02_Logic_02
 .db $06, $02
-	.dl Crab_State_02_Logic_02
+	.dw Crab_State_02_Logic_02
 .db $06, $01
-	.dl Crab_State_02_Logic_02
+	.dw Crab_State_02_Logic_02
 .db $06, $02
-	.dl Crab_State_02_Logic_02
+	.dw Crab_State_02_Logic_02
 .db $06, $01
-	.dl Crab_State_02_Logic_02
+	.dw Crab_State_02_Logic_02
 .db $06, $02
-	.dl Crab_State_02_Logic_02
+	.dw Crab_State_02_Logic_02
 .db $06, $01
-	.dl Crab_State_02_Logic_02
+	.dw Crab_State_02_Logic_02
 .db $06, $02
-	.dl Crab_State_02_Logic_02
+	.dw Crab_State_02_Logic_02
 .db $06, $01
-	.dl Crab_State_02_Logic_02
+	.dw Crab_State_02_Logic_02
 .db $06, $02
-	.dl Crab_State_02_Logic_02
+	.dw Crab_State_02_Logic_02
 .db $06, $01
-	.dl Crab_State_02_Logic_02
+	.dw Crab_State_02_Logic_02
 .db $06, $02
-	.dl Crab_State_02_Logic_02
+	.dw Crab_State_02_Logic_02
 .db $FF, $05		;set state to $01
 	.db $01
 .db $06, $02
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $00
 
 
@@ -109,7 +110,7 @@ Crab_State_03:			;$84D8
 	.dw $0000
 	.dw $0000
 .db $40, $03
-	.dl Crab_State_03_Logic_01
+	.dw Crab_State_03_Logic_01
 .db $FF, $06		;spawn a fireball projectile
 	.db Object_CrabProjectile
 	.dw $0000
@@ -121,11 +122,11 @@ Crab_State_03:			;$84D8
 	.dw $0000
 	.db $01
 .db $40, $03
-	.dl Crab_State_03_Logic_01
+	.dw Crab_State_03_Logic_01
 .db $FF, $05
 	.db $01			;set state
 .db $20, $01
-	.dl Crab_State_03_Logic_01
+	.dw Crab_State_03_Logic_01
 .db $FF, $00
 
 
@@ -203,14 +204,14 @@ LABEL_B28_8594:
 
 CrabProjectile_State_00:		;$8597
 .db $01, $00
-	.dl CrabProjectile_State_00_Logic_01
+	.dw CrabProjectile_State_00_Logic_01
 .db $FF, $00
 
 CrabProjectile_State_01:		;$859D
 .db $04, $01
-	.dl CrabProjectile_State_01_Logic_01
+	.dw CrabProjectile_State_01_Logic_01
 .db $04, $02
-	.dl CrabProjectile_State_01_Logic_01
+	.dw CrabProjectile_State_01_Logic_01
 .db $FF, $00
 
 
@@ -244,5 +245,5 @@ _:	call    VF_Engine_CheckCollision
 	and     $0F
 	ret     z
 	ld      a, $FF
-	ld      (gameMem+$D3A8), a
+	ld      ($D3A8), a
 	ret     

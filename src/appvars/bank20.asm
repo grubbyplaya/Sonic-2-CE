@@ -1,3 +1,5 @@
+.ORG $8000
+
 Art_SEZ_Level_Tiles:		;$8000
 #import "art\level\sez\art_sez_level_tiles.bin"
 

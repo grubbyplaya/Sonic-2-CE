@@ -1,38 +1,39 @@
+.assume ADL=0
 Logic_UGZ3_Robotnik:			;$A39D
-.dl UGZ3_Robotnik_State_00
-.dl UGZ3_Robotnik_State_01
-.dl UGZ3_Robotnik_State_02
-.dl UGZ3_Robotnik_State_03
-.dl UGZ3_Robotnik_State_04
-.dl UGZ3_Robotnik_State_05
-.dl UGZ3_Robotnik_State_06
-.dl UGZ3_Robotnik_State_07
-.dl UGZ3_Robotnik_State_08
-.dl UGZ3_Robotnik_State_09
-.dl UGZ3_Robotnik_State_0A
-.dl UGZ3_Robotnik_State_0B
+.dw UGZ3_Robotnik_State_00
+.dw UGZ3_Robotnik_State_01
+.dw UGZ3_Robotnik_State_02
+.dw UGZ3_Robotnik_State_03
+.dw UGZ3_Robotnik_State_04
+.dw UGZ3_Robotnik_State_05
+.dw UGZ3_Robotnik_State_06
+.dw UGZ3_Robotnik_State_07
+.dw UGZ3_Robotnik_State_08
+.dw UGZ3_Robotnik_State_09
+.dw UGZ3_Robotnik_State_0A
+.dw UGZ3_Robotnik_State_0B
 
 Logic_UGZ3_CannonBall:			;$A3B5
-.dl UGZ3_CannonBall_State_00
-.dl UGZ3_CannonBall_State_01
+.dw UGZ3_CannonBall_State_00
+.dw UGZ3_CannonBall_State_01
 
 UGZ3_CannonBall_State_00:		;$A3B9
 .db $FF, $02
-	.dl UGZ3_CannonBall_State_00_Logic_01	;LABEL_B28_A3C8
+	.dw UGZ3_CannonBall_State_00_Logic_01	;LABEL_B28_A3C8
 .db $FF, $05		;change sprite state to $01
 	.db $01
 .db $FF, $03
 
 UGZ3_CannonBall_State_01:		;$A3C2
 .db $E0, $01
-	.dl UGZ3_CannonBall_State_01_Logic_01
+	.dw UGZ3_CannonBall_State_01_Logic_01
 .db $FF, $00
 
 UGZ3_CannonBall_State_00_Logic_01:		;$A3C8
 	ld      a, $FF
-	ld      (gameMem+$D4A2), a
+	ld      ($D4A2), a
 	ld      hl, $0100
-	ld      a, (gameMem+$D2B9)
+	ld      a, ($D2B9)
 	ld      e, a
 	ld      d, $00
 	add     hl, de
@@ -47,7 +48,7 @@ UGZ3_CannonBall_State_01_Logic_01:		;$A3DE
 	and     $0F
 	jr      z, LABEL_B28_A3F4
 	ld      a, $FF
-	ld      (gameMem+$D3A8), a
+	ld      ($D3A8), a
 	jp      VF_Engine_DisplayExplosionObject
 
 LABEL_B28_A3F4:
@@ -83,7 +84,7 @@ _:	ld      h, (ix+$12)		;get horizontal pos
 	xor     a
 	sbc     hl, de
 	ret     c				;return if vpos < $120
-	ld      a, (gameMem+$D46B)
+	ld      a, ($D46B)
 	call    VF_Engine_GetObjectDescriptorPointer
 	push    hl
 	pop     iy
@@ -100,7 +101,7 @@ _:	ld      h, (ix+$12)		;get horizontal pos
 	ld      (iy+$1e), $40
 	dec     (iy+$24)
 	jp      nz, VF_Engine_DisplayExplosionObject
-	ld      a, (gameMem+$D46A)
+	ld      a, ($D46A)
 	call    VF_Engine_GetObjectDescriptorPointer
 	push    hl
 	pop     iy
@@ -110,23 +111,23 @@ _:	jp      VF_Engine_DisplayExplosionObject
 
 UGZ3_Robotnik_State_00:		;$A483
 .db $E0, $01
-	.dl UGZ3_Robotnik_State_00_Logic_01
+	.dw UGZ3_Robotnik_State_00_Logic_01
 .db $FF, $08
 	.db $17
 .db $01, $01
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $02
-	.dl UGZ3_Robotnik_State_00_Logic_02
+	.dw UGZ3_Robotnik_State_00_Logic_02
 .db $FF, $05
 	.db $01
 .db $01, $01
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $03
 
 
 UGZ3_Robotnik_State_00_Logic_01:		;$A49B
 	ld      (ix+$07), $e0
-	ld      hl, (gameMem+$D514)
+	ld      hl, ($D514)
 	ld      de, $0210
 	xor     a
 	sbc     hl, de
@@ -136,98 +137,98 @@ UGZ3_Robotnik_State_00_Logic_01:		;$A49B
 
 UGZ3_Robotnik_State_01:		;$A4AE
 .db $04, $03
-	.dl UGZ3_Robotnik_State_01_Logic_01
+	.dw UGZ3_Robotnik_State_01_Logic_01
 .db $04, $04
-	.dl UGZ3_Robotnik_State_01_Logic_01
+	.dw UGZ3_Robotnik_State_01_Logic_01
 .db $FF, $00
 
 UGZ3_Robotnik_State_02:		;$A4B8
 .db $04, $03
-	.dl UGZ_Robotnik_State_02_Logic_01
+	.dw UGZ_Robotnik_State_02_Logic_01
 .db $04, $04
-	.dl UGZ_Robotnik_State_02_Logic_01
+	.dw UGZ_Robotnik_State_02_Logic_01
 .db $FF, $00
 
 UGZ3_Robotnik_State_03:		;$A4C2
 .db $E0, $02
-	.dl UGZ3_Robotnik_State_03_Logic_01
+	.dw UGZ3_Robotnik_State_03_Logic_01
 .db $FF, $00
 
 UGZ3_Robotnik_State_04:		;$A4C8
 .db $E0, $02
-	.dl UGZ3_Robotnik_State_04_Logic_01
+	.dw UGZ3_Robotnik_State_04_Logic_01
 .db $FF, $00
 
 UGZ3_Robotnik_State_05:		;$A4CE
 .db $04, $03
-	.dl UGZ3_Robotnik_State_05_Logic_01
+	.dw UGZ3_Robotnik_State_05_Logic_01
 .db $04, $04
-	.dl UGZ3_Robotnik_State_05_Logic_01
+	.dw UGZ3_Robotnik_State_05_Logic_01
 .db $FF, $00
 
 UGZ3_Robotnik_State_06:		;$A4D8
 .db $10, $03
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $06		;spawn a cannon ball
 	.db Object_UGZ_CannonBall
 	.dw $0000
 	.dw $0018
 	.db $00
 .db $E0, $04
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $00
 
 UGZ3_Robotnik_State_07:		;$A4EA
 .db $E0, $01
-	.dl UGZ3_Robotnik_State_07_Logic_01
+	.dw UGZ3_Robotnik_State_07_Logic_01
 .db $FF, $00
 
 UGZ3_Robotnik_State_08:		;$A4F0
 .db $20, $01
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $05
 	.db $09
 .db $10, $01
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $00
 
 UGZ3_Robotnik_State_09:		;$A4FD
 .db $08, $03
-	.dl UGZ3_Robotnik_State_09_Logic_01
+	.dw UGZ3_Robotnik_State_09_Logic_01
 .db $08, $04
-	.dl UGZ3_Robotnik_State_09_Logic_01
+	.dw UGZ3_Robotnik_State_09_Logic_01
 .db $08, $03
-	.dl UGZ3_Robotnik_State_09_Logic_01
+	.dw UGZ3_Robotnik_State_09_Logic_01
 .db $FF, $06	;spawn an explosion object
 	.db Object_Explosion
 	.dw $FFFC	;offset from current object's hpos
 	.dw $FFF0	;offset from current object's vpos
 	.db $00	
 .db $08, $04
-	.dl UGZ3_Robotnik_State_09_Logic_01
+	.dw UGZ3_Robotnik_State_09_Logic_01
 .db $08, $03
-	.dl UGZ3_Robotnik_State_09_Logic_01
+	.dw UGZ3_Robotnik_State_09_Logic_01
 .db $FF, $06	;spawn an explosion object
 	.db Object_Explosion
 	.dw $0004
 	.dw $FFF8
 	.db $00
 .db $08, $04
-	.dl UGZ3_Robotnik_State_09_Logic_01
+	.dw UGZ3_Robotnik_State_09_Logic_01
 .db $FF, $00
 
 ;**************************
 ;*	lift player 
 UGZ3_Robotnik_State_0A:		;$A527
 .db $E0, $02
-	.dl UGZ3_Robotnik_State_0A_Logic_01
+	.dw UGZ3_Robotnik_State_0A_Logic_01
 .db $FF, $00
 
 ;**************************
 ;*	grab player
 UGZ3_Robotnik_State_0B:		;$A52D
 .db $E0, $02
-	.dl UGZ3_Robotnik_State_0B_Logic_01
+	.dw UGZ3_Robotnik_State_0B_Logic_01
 .db $FF, $00
 
 
@@ -235,9 +236,9 @@ UGZ3_Robotnik_State_00_Logic_02:		;A553
 	push    ix
 	pop     hl
 	call    VF_Engine_GetObjectIndexFromPointer
-	ld      (gameMem+$D46A), a		;store the sprite number
+	ld      ($D46A), a		;store the sprite number
 	set     7, (ix+$03)
-	ld      hl, (gameMem+$D174)
+	ld      hl, ($D174)
 	ld      de, $0120
 	add     hl, de
 	ld      (ix+$11), l		;set horizontal pos
@@ -247,11 +248,11 @@ UGZ3_Robotnik_State_00_Logic_02:		;A553
 UGZ3_Robotnik_State_01_Logic_01:		;$A54E
 	call    VF_Engine_SetMinimumCameraX		;lock camera
 	ld      de, $0000
-	ld      hl, (gameMem+$D511)
+	ld      hl, ($D511)
 	ld      bc, $06C0
 	call    VF_Logic_MoveHorizontalTowardsObject	;set horizontal position
 	call    VF_Engine_UpdateObjectPosition
-	ld      hl, (gameMem+$D176)			;vert. cam pos?
+	ld      hl, ($D176)			;vert. cam pos?
 	ld      de, $0050
 	add     hl, de
 	ld      (ix+$14), l			;set vertical position 80 pixels
@@ -265,7 +266,7 @@ UGZ3_Robotnik_State_01_Logic_01:		;$A54E
 
 UGZ_Robotnik_State_02_Logic_01		;$A57F
 	call    VF_Engine_SetMinimumCameraX
-	ld      hl, (gameMem+$D511)
+	ld      hl, ($D511)
 	ld      (ix+$11), l
 	ld      (ix+$12), h
 	ld      hl, $0E00
@@ -283,10 +284,10 @@ UGZ_Robotnik_State_02_Logic_01		;$A57F
 ;*	Deals with the part where Robotnik grabs sonic.	*
 ;****************************************************
 UGZ3_Robotnik_State_0B_Logic_01:		;$A5A5
-	ld      hl, (gameMem+$D511)		;get player's horizontal pos
+	ld      hl, ($D511)		;get player's horizontal pos
 	ld      (ix+$11), l		;set as this sprite's hpos
 	ld      (ix+$12), h
-	ld      hl, (gameMem+$D514)		;get player's vertical position
+	ld      hl, ($D514)		;get player's vertical position
 	ld      de, $FFE0		;subtract 32 and set as this sprite's vpos
 	add     hl, de
 	ld      (ix+$14), l
@@ -297,7 +298,7 @@ UGZ3_Robotnik_State_0B_Logic_01:		;$A5A5
 	ret     c				;return if it is
 	ld      (ix+$02), $0A
 	ld      a, PlayerState_UGZ_Boss
-	ld      (gameMem+$D502), a
+	ld      ($D502), a
 	ld      hl, $0000		;set vertical velocity to 0
 	ld      (ix+$18), l
 	ld      (ix+$19), h
@@ -325,14 +326,14 @@ UGZ3_Robotnik_State_0A_Logic_01:		;$A5D5
 	sbc     hl, de
 	ret     c
 	ld      (ix+$02), $03	;set sprite state to $03
-	ld      a, (gameMem+$D137)
+	ld      a, ($D137)
 	cp      $22				;check for down + 2 buttons
 	ret     nz
-	ld      a, (gameMem+$D2BA)
+	ld      a, ($D2BA)
 	cp      $09
 	ret     nz
 	ld      a, PlayerState_Falling
-	ld      (gameMem+$D502), a
+	ld      ($D502), a
 	ld      (ix+$02), $05
 	ret     
 
@@ -428,7 +429,7 @@ _:	ld      (ix+$16), l		;set horizontal velocity
 	sbc     hl, de			;is the horiz. pos $DB0?
 	ret     c
 	ld      (ix+$02), $08	;set the state to $08
-	ld      a, (gameMem+$D46B)		;get the bomb's sprite index
+	ld      a, ($D46B)		;get the bomb's sprite index
 	call    VF_Engine_GetObjectDescriptorPointer
 	push    hl
 	pop     iy
@@ -469,94 +470,94 @@ UGZ3_Robotnik_SetPlayerPosition:		;$A74B
 	ld      l, (ix+$11)		;get horizontal position
 	ld      h, (ix+$12)
 	add     hl, de
-	ld      (gameMem+$D511), hl		;set sonic's horizontal position
+	ld      ($D511), hl		;set sonic's horizontal position
 	ld      l, (ix+$14)		;get vertical position
 	ld      h, (ix+$15)
 	add     hl, bc
-	ld      (gameMem+$D514), hl		;set sonic's vertical position
+	ld      ($D514), hl		;set sonic's vertical position
 	ret
 
 
 Logic_UGZ3_Pincers:			;$A760
-.dl UGZ3_Pincers_State_00
-.dl UGZ3_Pincers_State_01
-.dl UGZ3_Pincers_State_02
-.dl UGZ3_Pincers_State_03
+.dw UGZ3_Pincers_State_00
+.dw UGZ3_Pincers_State_01
+.dw UGZ3_Pincers_State_02
+.dw UGZ3_Pincers_State_03
 
 UGZ3_Pincers_State_00:		;$A768
 .db $FF, $02
-	.dl UGZ3_Pincers_State_00_Logic_01
+	.dw UGZ3_Pincers_State_00_Logic_01
 .db $FF, $05
 	.db $01
 .db $E0, $00
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $03
 
 UGZ3_Pincers_State_01:		;$A775
 .db $FF, $07
-	.dl UGZ3_Pincers_State_01_Logic_01
-	.dl LABEL_200 + $1B
+	.dw UGZ3_Pincers_State_01_Logic_01
+	.dw LABEL_200 + $1B
 .db $FF, $07
-	.dl UGZ3_Pincers_State_01_Logic_02
-	.dl LABEL_200 + $1B
+	.dw UGZ3_Pincers_State_01_Logic_02
+	.dw LABEL_200 + $1B
 .db $FF, $00
 
 UGZ3_Pincers_State_02:		;$A783:
 .db $08, $03
-	.dl UGZ3_Pincers_State_02_Logic_01
+	.dw UGZ3_Pincers_State_02_Logic_01
 .db $08, $05
-	.dl UGZ3_Pincers_State_02_Logic_01
+	.dw UGZ3_Pincers_State_02_Logic_01
 .db $FF, $00
 
 UGZ3_Pincers_State_03:		;$A78D
 .db $FF, $02
-	.dl VF_Score_AddBossValue
+	.dw VF_Score_AddBossValue
 .db $08, $04
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $06	;spawn an explosion sprite
 	.db Object_Explosion
 	.dw $000C
 	.dw $FFEC
 	.db $05
 .db $08, $04
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $06	;spawn an explosion sprite
 	.db Object_Explosion
 	.dw $FFF4
 	.dw $FFEC
 	.db $05
 .db $08, $04
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $06	;spawn an explosion sprite
 	.db Object_Explosion
 	.dw $0004
 	.dw $FFE8
 	.db $05
 .db $08, $04
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $06	;spawn an explosion sprite
 	.db Object_Explosion
 	.dw $FFFC
 	.dw $FFE8
 	.db $05
 .db $08, $04
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $06	;spawn an explosion sprite
 	.db Object_Explosion
 	.dw $0000
 	.dw $FFE4
 	.db $05
 .db $E0, $00
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $08, $00
-	.dl UGZ3_Pincers_State_03_Logic_01
+	.dw UGZ3_Pincers_State_03_Logic_01
 .db $FF, $00
 
 UGZ3_Pincers_State_00_Logic_01:		;$A7D7
 	push    ix
 	pop     hl
 	call    VF_Engine_GetObjectIndexFromPointer
-	ld      (gameMem+$D46B), a
+	ld      ($D46B), a
 	ld      (ix+$24), $06
 	ret     
 

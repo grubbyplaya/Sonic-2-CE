@@ -1,3 +1,5 @@
+.ORG $8000
+
 Art_Sonic_Loop_Mirrored:
 #import "art\sonic\art_ucmp_sonic_loop_mirrored.bin"
 

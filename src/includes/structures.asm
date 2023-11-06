@@ -27,11 +27,11 @@
 	#define LevelDescriptor.MetaTileBank		$04
 	#define LevelDescriptor.LayoutBank		$05
 	#define LevelDescriptor.MetaTilePtr		$06
-	#define LevelDescriptor.LayoutPtr		$09
-	#define LevelDescriptor.StrideTable		$0C
-	#define LevelDescriptor.WidthNeg		$0F
-	#define LevelDescriptor.Width			$13
-	#define LevelDescriptor.DataOffset		$16
+	#define LevelDescriptor.LayoutPtr		$08
+	#define LevelDescriptor.StrideTable		$0A
+	#define LevelDescriptor.WidthNeg		$0C
+	#define LevelDescriptor.Width			$0E
+	#define LevelDescriptor.DataOffset		$10
 
 
 

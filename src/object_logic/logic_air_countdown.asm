@@ -1,34 +1,35 @@
+.assume ADL=0
 Logic_AirCountdown:		;$B07A
-.dl DATA_B31_B07E
+.dw DATA_B31_B07E
 
 DATA_B31_B07E:
 .db $01, $00
-	.dl AirCountdown_Init
+	.dw AirCountdown_Init
 .db $FF, $00
 
 DATA_B31_B084:
 .db $78, $06
-	.dl AirCountdown_Update
+	.dw AirCountdown_Update
 .db $78, $05
-	.dl AirCountdown_Update
+	.dw AirCountdown_Update
 .db $78, $04
-	.dl AirCountdown_Update
+	.dw AirCountdown_Update
 .db $78, $03
-	.dl AirCountdown_Update
+	.dw AirCountdown_Update
 .db $78, $02
-	.dl AirCountdown_Update
+	.dw AirCountdown_Update
 .db $78, $01
-	.dl AirCountdown_Update
+	.dw AirCountdown_Update
 .db $02, $01
-	.dl AirCountdown_TimerExpired
+	.dw AirCountdown_TimerExpired
 .db $FF, $01
 
 AirCountdown_Init:		;$B0B4
-	ld	hl, (gameMem+$D511)	;copy player's hpos
+	ld	hl, ($D511)	;copy player's hpos
 	ld	(ix+$11), l		;to this object
 	ld	(ix+$12), h
 
-	ld	hl, (gameMem+$D514)	;copy player's vpos
+	ld	hl, ($D514)	;copy player's vpos
 	ld	bc, -34			;subtract 34
 	add	hl, bc
 	ld	(ix+$14), l		;and set this object's vpos
@@ -44,11 +45,11 @@ AirCountdown_Init:		;$B0B4
 
 
 AirCountdown_Update:		;$B0DB
-	ld	hl, (gameMem+$D511)		;copy player's hpos
+	ld	hl, ($D511)		;copy player's hpos
 	ld	(ix+$11), l			;to this object
 	ld	(ix+$12), h
 
-	ld	hl, (gameMem+$D514)		;copy player's hpos
+	ld	hl, ($D514)		;copy player's hpos
 	ld	bc, -40				;subtract 40
 	add	hl, bc
 	ld	(ix+$14), l			;and set as this object's hpos
@@ -59,7 +60,7 @@ AirCountdown_Update:		;$B0DB
 	jr	z, +_
 	set	7, (ix+$04)
 
-_:	ld	a, (gameMem+$D469)		;check the air timer
+_:	ld	a, ($D469)		;check the air timer
 	or	a
 	ret	nz				;return if air timer != 0
 
@@ -70,7 +71,7 @@ _:	ld	a, (gameMem+$D469)		;check the air timer
 AirCountdown_TimerExpired:		;$B109
 	push    iy
 	
-	ld	iy, gameMem+$D500		;set the player object's state
+	ld	iy, $D500		;set the player object's state
 	ld	(iy+$02), PlayerState_Drowning
 	
 	set	0, (iy+$03)			;set flag - player in air
@@ -81,16 +82,16 @@ AirCountdown_TimerExpired:		;$B109
 	ld	(iy+$19), $00
 
 	ld	hl, $0000			;reset inertia?
-	ld	(gameMem+$D36F), hl
+	ld	($D36F), hl
 
 	res	1, (iy+$22)			;clear "collision at bottom" flag
 
-	ld	(gameMem+$DD04), a
+	ld	($DD04), a
 
 	pop	iy
 
-	ld	hl, (gameMem+$D176)		;lock camera
-	ld	(gameMem+$D27E), hl
+	ld	hl, ($D176)		;lock camera
+	ld	($D27E), hl
 
 	ld	(ix+$00), $FF			;destroy object
 	ret

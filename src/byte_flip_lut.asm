@@ -1,3 +1,4 @@
+.ASSUME ADL=0
 ;****************************************************************
 ;*  The following table serves as a lookup table that is used   *
 ;*  by tile loading routines to mirror tiles horizontally on    *

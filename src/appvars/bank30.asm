@@ -1,4 +1,4 @@
-.ORG $D09466
+.ORG $8000
 
 ;routines to load a level's object layout
 #include "object_layout_routines.asm"
@@ -8,11 +8,10 @@
 DATA_B30_9841:
 #include "collision_data.asm"
 
-
-#include "cycling_palette_data.asm"
-
-
 DemoControlSequence_SEZ:
 #import "demo\demo_control_sequence_sez.bin"
 
+#if Listing=0
 #include "s2.lab"
+#endif
+#undef Listing

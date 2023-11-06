@@ -1,4 +1,4 @@
-.ORG $D09466
+.ORG $8000
 
 Mappings32_GHZ:
 ;#import "mappings\ghz\mappings32_ghz.bin"

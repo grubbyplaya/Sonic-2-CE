@@ -1,33 +1,34 @@
+.assume ADL=0
 DATA_B28_8762:
-.dl LABEL_B28_876A
-.dl LABEL_B28_8770
-.dl LABEL_B28_8776
-.dl LABEL_B28_877C
+.dw LABEL_B28_876A
+.dw LABEL_B28_8770
+.dw LABEL_B28_8776
+.dw LABEL_B28_877C
 
 LABEL_B28_876A:
 .db $01, $00
-	.dl LABEL_B28_878E
+	.dw LABEL_B28_878E
 .db $FF, $00
 
 LABEL_B28_8770:
 .db $F0, $01
-	.dl LABEL_B28_8793
+	.dw LABEL_B28_8793
 .db $FF, $00
 
 LABEL_B28_8776:
 .db $F0, $00
-	.dl LABEL_B28_87B3
+	.dw LABEL_B28_87B3
 .db $FF, $00
 
 LABEL_B28_877C:
 .db $08, $01
-	.dl LABEL_B28_87EF
+	.dw LABEL_B28_87EF
 .db $08, $02
-	.dl LABEL_B28_87EF
+	.dw LABEL_B28_87EF
 .db $08, $03
-	.dl LABEL_B28_87EF
+	.dw LABEL_B28_87EF
 .db $08, $04
-	.dl LABEL_B28_87EF
+	.dw LABEL_B28_87EF
 .db $FF, $00
 
 
@@ -48,7 +49,7 @@ LABEL_B28_8793:
     
 	ld      a, $11
 	ld      (Player.StateNext), a
-	call    LABEL_200 + $7E
+	call    LABEL_4037
 	ld      (ix + Object.StateNext), $02
 	set     7, (ix+$04)
 	ret     

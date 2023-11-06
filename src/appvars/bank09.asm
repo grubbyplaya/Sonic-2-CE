@@ -1,9 +1,4 @@
-.ORG $D09466
-
-#include "palette_routines.asm"
-
-Palettes:
-#include "includes\palettes.asm"
+.ORG $8000
 
 LoopMotionData:		;$840F
 #import "misc\data_loop_motion.bin"
@@ -61,5 +56,3 @@ Art_GMZ_Spikes:				;BCB1
 
 Art_ALZ_Big_Bubble:			;BD51
 #import "art\level\alz\art_alz_big_bubble.bin"
-
-#include "includes/ti84pce.inc"

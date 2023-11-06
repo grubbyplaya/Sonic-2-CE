@@ -1,3 +1,4 @@
+.ASSUME ADL=0
 DATA_B30_AF41:	;ugz lava palette
 .db $0F, $0B, $07, $07, $0F, $0B, $0B, $07	; $1700-$1707
 .db $0F
@@ -12,6 +13,7 @@ DATA_B30_AF53:
 .db $3D, $3F, $3E, $3E, $3D, $3F	; $1710-$1717
 .db $3F, $3E, $3D
 
+Alt_Palette_GMZ_Conveyor:
 DATA_B30_AF5C:
 .db $15, $2A, $3F, $3F, $15	; $1718-$171F
 

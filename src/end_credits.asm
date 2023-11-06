@@ -1,3 +1,4 @@
+.ASSUME ADL=0
 ;each line must be padded to 16 bytes
 .db "CAST    SONIC   "
 .db "                "

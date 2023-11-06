@@ -1,3 +1,4 @@
+.ASSUME ADL=0
 ;********************************************************************
 ;*	Precalculated row address offsets for different level widths.	*
 ;*	Each row of 32x32 blocks starts at $C001 + <offset>.			*

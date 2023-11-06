@@ -1,5 +1,5 @@
 Tails_Icon:
-#if	Version = 2
+#if Version = 2
 	jp	_START
 	.db	1								
 	.db	16, 16								

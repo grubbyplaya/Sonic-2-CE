@@ -1,15 +1,16 @@
+.assume ADL=0
 Logic_BlockFragment:
-.dl BlockFragment_State_00
-.dl BlockFragment_State_01
+.dw BlockFragment_State_00
+.dw BlockFragment_State_01
 
 BlockFragment_State_00:		;$AC25
 .db $01, $00
-	.dl BlockFragment_State_00_Logic_01
+	.dw BlockFragment_State_00_Logic_01
 .db $FF, $00
 
 BlockFragment_State_01		;$AC2E	
 .db $80, $01
-	.dl BlockFragment_State_01_Logic_01
+	.dw BlockFragment_State_01_Logic_01
 .db $FF, $00
 
 
@@ -18,7 +19,7 @@ BlockFragment_State_00_Logic_01:		;$AC34
 	ld      h, $08
 	mlt	hl
 	ld      de, DATA_B31_AC98
-	ld      a, (gameMem+$D517)		;hi-byte of player velocity
+	ld      a, ($D517)		;hi-byte of player velocity
 	and     a
 	jp      p, +_
 	ld      de, DATA_B31_ACB8
@@ -28,7 +29,7 @@ _:	add     hl, de
 	ld      d, (hl)
 	inc     hl
 	ex      de, hl
-	ld      bc, (gameMem+$D35A)
+	ld      bc, ($D35A)
 	add     hl, bc
 	ld      (ix+$11), l		;set sprite's hpos
 	ld      (ix+$12), h
@@ -38,7 +39,7 @@ _:	add     hl, de
 	ld      d, (hl)
 	inc     hl
 	ex      de, hl
-	ld      bc, (gameMem+$D35C)
+	ld      bc, ($D35C)
 	add     hl, bc
 	ld      (ix+$14), l		;set sprite's vpos
 	ld      (ix+$15), h
@@ -80,7 +81,7 @@ DATA_B31_ACB8:
 BlockFragment_State_01_Logic_01:		;$ACD8
 	bit     6, (ix+$04)
 	jp      nz, VF_Engine_DeallocateObject
-	ld      bc, gameMem+$1000
-	ld      de, gameMem+$00C0
+	ld      bc, $1000
+	ld      de, $00C0
 	call    VF_Engine_SetObjectVerticalSpeed
 	jp      VF_Engine_UpdateObjectPosition

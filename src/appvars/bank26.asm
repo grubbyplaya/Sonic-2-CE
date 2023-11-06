@@ -1,3 +1,5 @@
+.ORG $8000
+
 Art_GMZ_Boss:
 #import "art\boss\art_ucmp_gmz_boss.bin"
 

@@ -1,3 +1,5 @@
+.ORG $8000
+
 Layout_ALZ1:
 #import "layout\alz\layout_alz1.bin"
 

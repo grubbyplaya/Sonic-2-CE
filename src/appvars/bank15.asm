@@ -1,4 +1,4 @@
-.ORG $D09466
+.ORG $8000
 
 Mappings32_ALZ2:
 ;#import "mappings\alz\mappings32_alz2.bin"

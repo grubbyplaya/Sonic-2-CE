@@ -1,3 +1,4 @@
+.ASSUME ADL=0
 
 	;Sprite Arrangements -
 	;Two words at each position represent the vertical and horizontal

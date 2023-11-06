@@ -1,11 +1,11 @@
-
+.assume ADL=0
 #include "object_logic/logic_titlescreen_objects.asm"
 
 
 DATA_B30_8E2B:
-.dl DATA_B30_8E31
-.dl DATA_B30_8E36
-.dl DATA_B30_8E4D
+.dw DATA_B30_8E31
+.dw DATA_B30_8E36
+.dw DATA_B30_8E4D
 
 DATA_B30_8E31:
 .db $FF, $05
@@ -16,20 +16,20 @@ DATA_B30_8E36:
 	.dw $FE00
 	.dw $0000
 .db $20, $01
-	.dl LABEL_B30_8E57
+	.dw LABEL_B30_8E57
 .db $FF, $05
 	.db  $02
 .db $FF, $02
-	.dl LABEL_B30_8E69
+	.dw LABEL_B30_8E69
 .db $20, $01
-	.dl LABEL_B30_8E57
+	.dw LABEL_B30_8E57
 .db $FF, $00
 
 DATA_B30_8E4D:
 .db $04, $03
-	.dl LABEL_B30_8EBB
+	.dw LABEL_B30_8EBB
 .db $04, $04
-	.dl LABEL_B30_8EBB
+	.dw LABEL_B30_8EBB
 .db $FF, $00
 
 LABEL_B30_8E57:
@@ -39,7 +39,7 @@ LABEL_B30_8E57:
 	and	$0F
 	ret	z
 	ld	a, $FF
-	ld	(gameMem+$D3A8), a
+	ld	($D3A8), a
 	ret	
 
 LABEL_B30_8E69:
@@ -47,7 +47,7 @@ LABEL_B30_8E69:
 	ld	hl, $0080
 	ld	(ix+$0A), l
 	ld	(ix+$0B), h
-	ld	a, (gameMem+$D2B9)
+	ld	a, ($D2B9)
 	and	$06
 	add	a, a
 	add	a, a
@@ -158,7 +158,7 @@ LABEL_B30_8F4B:
 	ld	a, (ix+$1e)
 	add	a, $04
 	ld	(ix+$1e), a
-	ld	hl, gameMem+$D3CE
+	ld	hl, $D3CE
 	xor	a
 	ld	(hl), a
 	inc	hl
@@ -244,48 +244,48 @@ DATA_B30_8FC6:
 .db $D0, $8F
 DATA_B30_8FCA:
 .db $20, $00
-	.dl LABEL_B30_9020
+	.dw LABEL_B30_9020
 .db $FF, $03
 DATA_B30_8FD0:
 .db $FF, $04
 	.dw $FF00
 	.dw $0000
 .db $08, $01
-	.dl LABEL_B30_9026
+	.dw LABEL_B30_9026
 .db $08, $02
-	.dl LABEL_B30_9026
+	.dw LABEL_B30_9026
 .db $08, $01
-	.dl LABEL_B30_9026
+	.dw LABEL_B30_9026
 .db $08, $02
-	.dl LABEL_B30_9026
+	.dw LABEL_B30_9026
 .db $FF, $04
 	.dw $0000
 	.dw $0400
 .db $04, $01
-	.dl LABEL_B30_9026
+	.dw LABEL_B30_9026
 .db $04, $02
-	.dl LABEL_B30_9026
+	.dw LABEL_B30_9026
 .db $04, $01
-	.dl LABEL_B30_9026
+	.dw LABEL_B30_9026
 .db $04, $02
-	.dl LABEL_B30_9026
+	.dw LABEL_B30_9026
 .db $FF, $04
 	.dw $FC00
 	.dw $0000
 .db $04, $01
-	.dl LABEL_B30_9026
+	.dw LABEL_B30_9026
 .db $04, $02
-	.dl LABEL_B30_9026
+	.dw LABEL_B30_9026
 .db $04, $01
-	.dl LABEL_B30_9026
+	.dw LABEL_B30_9026
 .db $04, $02
-	.dl LABEL_B30_9026
+	.dw LABEL_B30_9026
 .db $04, $01
-	.dl LABEL_B30_9026
+	.dw LABEL_B30_9026
 .db $04, $02
-	.dl LABEL_B30_9026
+	.dw LABEL_B30_9026
 .db $20, $02
-	.dl LABEL_B30_9038
+	.dw LABEL_B30_9038
 .db $FF, $00
 
 LABEL_B30_9020:
@@ -300,7 +300,7 @@ LABEL_B30_9026:
 	and	$0f
 	ret	z
 	ld	a, $ff
-	ld	(gameMem+$D3A8), a
+	ld	($D3A8), a
 	ret	
 
 LABEL_B30_9038:
@@ -308,22 +308,22 @@ LABEL_B30_9038:
 	ret	
 
 DATA_B30_903D:
-.dl DATA_B30_905D
-.dl DATA_B30_9069
-.dl DATA_B30_906F
-.dl DATA_B30_9075
-.dl DATA_B30_907F
-.dl DATA_B30_90A4
-.dl DATA_B30_90E5
-.dl DATA_B30_914D
-.dl DATA_B30_9157
-.dl DATA_B30_91FD
-.dl DATA_B30_920B
-.dl DATA_B30_9215
-.dl DATA_B30_921F
-.dl DATA_B30_9229
-.dl DATA_B30_9266
-.dl DATA_B30_9270
+.dw DATA_B30_905D
+.dw DATA_B30_9069
+.dw DATA_B30_906F
+.dw DATA_B30_9075
+.dw DATA_B30_907F
+.dw DATA_B30_90A4
+.dw DATA_B30_90E5
+.dw DATA_B30_914D
+.dw DATA_B30_9157
+.dw DATA_B30_91FD
+.dw DATA_B30_920B
+.dw DATA_B30_9215
+.dw DATA_B30_921F
+.dw DATA_B30_9229
+.dw DATA_B30_9266
+.dw DATA_B30_9270
 
 DATA_B30_905D:
 .db $FF, $08
@@ -331,220 +331,220 @@ DATA_B30_905D:
 .db $FF, $09
 	.db $09
 .db $E0, $01
-	.dl LABEL_B30_9285
+	.dw LABEL_B30_9285
 .db $FF, $03
 DATA_B30_9069:
 .db $E0, $01
-	.dl LABEL_B30_929B
+	.dw LABEL_B30_929B
 .db $FF, $00
 
 DATA_B30_906F:
 .db $E0, $01
-	.dl LABEL_B30_92B3
+	.dw LABEL_B30_92B3
 .db $FF, $00
 
 DATA_B30_9075:
 .db $80, $01
-	.dl LABEL_B30_934A
+	.dw LABEL_B30_934A
 .db $20, $01
-	.dl LABEL_B30_92D7
+	.dw LABEL_B30_92D7
 .db $FF, $00
 
 DATA_B30_907F:
 .db $10, $01
-	.dl LABEL_B30_934A
+	.dw LABEL_B30_934A
 .db $FF, $06
 	.db $53
 	.dw $FFF0
 	.dw $FFEA
 	.db $00
 .db $40, $02
-	.dl LABEL_B30_934A
+	.dw LABEL_B30_934A
 .db $FF, $06
 	.db $53
 	.dw $FFF0
 	.dw $FFDA
 	.db $04
 .db $C0, $01
-	.dl LABEL_B30_934A
+	.dw LABEL_B30_934A
 .db $FF, $05
 	.db $03
 .db $80, $02
-	.dl LABEL_B30_934A
+	.dw LABEL_B30_934A
 .db $FF, $00
 
 DATA_B30_90A4:
 .db $10, $01
-	.dl LABEL_B30_934A
+	.dw LABEL_B30_934A
 .db $FF, $06
 	.db $54
 	.dw $0000
 	.dw $FFFC
 	.db $00
 .db $18, $02
-	.dl LABEL_B30_934A
+	.dw LABEL_B30_934A
 .db $FF, $06
 	.db $54
 	.dw $0000
 	.dw $FFFC
 	.db $04
 .db $18, $02
-	.dl LABEL_B30_934A
+	.dw LABEL_B30_934A
 .db $FF, $06
 	.db $54
 	.dw $0000
 	.dw $FFFC
 	.db $00
 .db $18, $02
-	.dl LABEL_B30_934A
+	.dw LABEL_B30_934A
 .db $FF, $06
 	.db $54
 	.dw $0000
 	.dw $FFFC
 	.db $04
 .db $18, $02
-	.dl LABEL_B30_934A
+	.dw LABEL_B30_934A
 .db $60, $01
-	.dl LABEL_B30_934A
+	.dw LABEL_B30_934A
 .db $FF, $05
 	.db $03
 .db $80, $02
-	.dl LABEL_B30_934A
+	.dw LABEL_B30_934A
 .db $FF, $00
 
 DATA_B30_90E5:
 .db $FF, $02
-	.dl LABEL_B30_9136
+	.dw LABEL_B30_9136
 .db $04, $01
-	.dl LABEL_B30_9326
+	.dw LABEL_B30_9326
 .db $FF, $02
-	.dl LABEL_B30_913C
+	.dw LABEL_B30_913C
 .db $04, $02
-	.dl LABEL_B30_9326
+	.dw LABEL_B30_9326
 .db $FF, $02
-	.dl LABEL_B30_9136
+	.dw LABEL_B30_9136
 .db $06, $01
-	.dl LABEL_B30_9326
+	.dw LABEL_B30_9326
 .db $FF, $02
-	.dl LABEL_B30_913C
+	.dw LABEL_B30_913C
 .db $28, $02
-	.dl LABEL_B30_9326
+	.dw LABEL_B30_9326
 .db $FF, $02
-	.dl LABEL_B30_9136
+	.dw LABEL_B30_9136
 .db $FF, $02
-	.dl LABEL_B30_9142
+	.dw LABEL_B30_9142
 .db $10, $01
-	.dl LABEL_B30_9326
+	.dw LABEL_B30_9326
 .db $10, $02
-	.dl LABEL_B30_9326
+	.dw LABEL_B30_9326
 .db $10, $01
-	.dl LABEL_B30_9326
+	.dw LABEL_B30_9326
 .db $10, $02
-	.dl LABEL_B30_9326
+	.dw LABEL_B30_9326
 .db $10, $01
-	.dl LABEL_B30_9326
+	.dw LABEL_B30_9326
 .db $10, $02
-	.dl LABEL_B30_9326
+	.dw LABEL_B30_9326
 .db $FF, $05
 	.db $03
 .db $FF, $02
-	.dl LABEL_B30_9148
+	.dw LABEL_B30_9148
 .db $FF, $02
-	.dl LABEL_B30_913C
+	.dw LABEL_B30_913C
 .db $80, $02
-	.dl LABEL_B30_934A
+	.dw LABEL_B30_934A
 .db $FF, $00
 
 LABEL_B30_9136:
 	ld	a, $09
-	ld	(gameMem+$D4A6), a
+	ld	($D4A6), a
 	ret	
 
 LABEL_B30_913C:
 	ld	a, $0A
-	ld	(gameMem+$D4A6), a
+	ld	($D4A6), a
 	ret	
 
 LABEL_B30_9142:
 	ld	a, $ff
-	ld	(gameMem+$D46C), a
+	ld	($D46C), a
 	ret	
 
 LABEL_B30_9148:
 	xor	a
-	ld	(gameMem+$D46C), a
+	ld	($D46C), a
 	ret	
 
 DATA_B30_914D:
 .db $08, $03
-	.dl LABEL_B30_933A
+	.dw LABEL_B30_933A
 .db $08, $04
-	.dl LABEL_B30_933A
+	.dw LABEL_B30_933A
 .db $FF, $00
 
 DATA_B30_9157:
 .db $FF, $02
-	.dl LABEL_B30_913C
+	.dw LABEL_B30_913C
 .db $FF, $02
-	.dl LABEL_1CCA
+	.dw LABEL_1CCA
 .db $08, $03
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $08, $04
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $08, $03
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $08, $04
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $08, $03
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $08, $04
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $06
 	.db $0F
 	.dw $0008
 	.dw $FFC0
 	.db $03
 .db $08, $03
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $06
 	.db $0F
 	.dw $FFF8
 	.dw $FFC2
 	.db $03
 .db $08, $04
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $06
 	.db $0F
 	.dw $0004
 	.dw $FFE8
 	.db $07
 .db $08, $03
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $06
 	.db $0F
 	.dw $FFFC
 	.dw $FFE8
 	.db $07
 .db $FF, $02
-	.dl LABEL_B30_91E9
+	.dw LABEL_B30_91E9
 .db $08, $0A
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $06
 	.db $0F
 	.dw $0000
 	.dw $FFF4
 	.db $05
 .db $FF, $02
-	.dl LABEL_B30_91F3
+	.dw LABEL_B30_91F3
 .db $FF, $04
 	.dw $05A0
 	.dw $FC00
 .db $FF, $02
-	.dl LABEL_B30_91CA
+	.dw LABEL_B30_91CA
 .db $FF, $05
 	.db $09
 .db $08, $0A
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $00
 
 LABEL_B30_91CA:
@@ -578,62 +578,62 @@ LABEL_B30_91F3:
 
 DATA_B30_91FD:
 .db $FF, $02
-	.dl LABEL_B30_91CF
+	.dw LABEL_B30_91CF
 .db $08, $06
-	.dl LABEL_B30_9370
+	.dw LABEL_B30_9370
 .db $08, $07
-	.dl LABEL_B30_9370
+	.dw LABEL_B30_9370
 .db $FF, $00
 
 DATA_B30_920B:
 .db $08, $06
-	.dl LABEL_B30_93C2
+	.dw LABEL_B30_93C2
 .db $08, $07
-	.dl LABEL_B30_93C2
+	.dw LABEL_B30_93C2
 .db $FF, $00
 
 DATA_B30_9215:
 .db $08, $06
-	.dl LABEL_B30_9370
+	.dw LABEL_B30_9370
 .db $08, $07
-	.dl LABEL_B30_9370
+	.dw LABEL_B30_9370
 .db $FF, $00
 
 DATA_B30_921F:
 .db $08, $08
-	.dl LABEL_B30_9401
+	.dw LABEL_B30_9401
 .db $08, $09
-	.dl LABEL_B30_9401
+	.dw LABEL_B30_9401
 .db $FF, $00
 
 DATA_B30_9229:
 .db $40, $09
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $40, $09
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $04
 	.dw $0000
 	.dw $FFC0
 .db $88, $08
-	.dl VF_Engine_UpdateObjectPosition
+	.dw VF_Engine_UpdateObjectPosition
 .db $FF, $04
 	.dw $0000
 	.dw $0040
 .db $08, $08
-	.dl VF_Engine_UpdateObjectPosition
+	.dw VF_Engine_UpdateObjectPosition
 .db $FF, $04
 	.dw $0000
 	.dw $0000
 .db $08, $09
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $02
-	.dl LABEL_B30_9136
+	.dw LABEL_B30_9136
 .db $FF, $02
-	.dl LABEL_B30_9260
+	.dw LABEL_B30_9260
 .db $FF, $05
 	.db $0E
 .db $08, $09
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $00
 
 
@@ -644,28 +644,28 @@ LABEL_B30_9260:
 
 DATA_B30_9266:
 .db $02, $08
-	.dl LABEL_B30_942E
+	.dw LABEL_B30_942E
 .db $03, $00
-	.dl LABEL_B30_942E
+	.dw LABEL_B30_942E
 .db $FF, $00
 
 DATA_B30_9270:
 .db $08, $00
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $08
 	.db $1A
 .db $FF, $02
-	.dl LABEL_B30_913C
+	.dw LABEL_B30_913C
 .db $C0, $00
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $E0, $00
-	.dl LABEL_B30_943A
+	.dw LABEL_B30_943A
 .db $FF, $00
 
 
 LABEL_B30_9285:
 	ld	a, $ff
-	ld	(gameMem+$d4a2), a
+	ld	($d4a2), a
 	ld	(ix+$02), $01
 	set	1, (ix+$04)
 	res	6, (ix+$04)
@@ -673,7 +673,7 @@ LABEL_B30_9285:
 	ret	
 
 LABEL_B30_929B:
-	ld	hl, (gameMem+$d174)
+	ld	hl, ($d174)
 	ld	de, $0180
 	xor	a
 	sbc	hl, de
@@ -687,7 +687,7 @@ LABEL_B30_929B:
 LABEL_B30_92B3:
 	call	LABEL_6355
 	ld	(ix+$21), $00
-	ld	hl, (gameMem+$d174)
+	ld	hl, ($d174)
 	ld	de, $0200
 	xor	a
 	sbc	hl, de
@@ -696,8 +696,8 @@ LABEL_B30_92B3:
 	ret	nz
 	call	LABEL_49CF
 	ld	hl, $0200
-	ld	(gameMem+$d282), hl		;set max camera x position
-	ld	(gameMem+$d280), hl		;set min camera x position
+	ld	($d282), hl		;set max camera x position
+	ld	($d280), hl		;set min camera x position
 	ld	(ix+$02), $03
 	ret	
 
@@ -723,17 +723,17 @@ LABEL_B30_92D7:
 	ret	
 
 DATA_B30_92F8:
-.dl DATA_B30_930E
-.dl DATA_B30_930E
-.dl DATA_B30_930E
-.dl DATA_B30_9316
-.dl DATA_B30_9316
-.dl DATA_B30_9316
-.dl DATA_B30_931E
-.dl DATA_B30_931E
-.dl DATA_B30_931E
-.dl DATA_B30_931E
-.dl DATA_B30_931E
+.dw DATA_B30_930E
+.dw DATA_B30_930E
+.dw DATA_B30_930E
+.dw DATA_B30_9316
+.dw DATA_B30_9316
+.dw DATA_B30_9316
+.dw DATA_B30_931E
+.dw DATA_B30_931E
+.dw DATA_B30_931E
+.dw DATA_B30_931E
+.dw DATA_B30_931E
 
 DATA_B30_930E:
 .db $04, $05, $06, $04, $05, $06, $04, $05
@@ -745,14 +745,14 @@ DATA_B30_931E:
 
 LABEL_B30_9326:
 	call	LABEL_B30_934A
-	ld	a, (gameMem+$d46c)
+	ld	a, ($d46c)
 	or	a
 	ret	z
-	ld	a, (gameMem+$d501)
+	ld	a, ($d501)
 	cp	$21
 	ret	z
 	ld	a, $ff
-	ld	(gameMem+$d3a8), a
+	ld	($d3a8), a
 	ret	
 
 LABEL_B30_933A:
@@ -779,7 +779,7 @@ LABEL_B30_934A:
 LABEL_B30_9365:
 	ld	(ix+$02), $08
 	ld	hl, $0400
-	ld	(gameMem+$D282), hl
+	ld	($D282), hl
 	ret	
 
 LABEL_B30_9370:
@@ -808,7 +808,7 @@ LABEL_B30_9386:
 	ld	a, (ix+$01)
 	cp	$09
 	jr	nz, +_
-	ld	a, (gameMem+$d501)
+	ld	a, ($d501)
 	cp	$31
 	ret	nz
 _:  	ld	a, (ix+$01)
@@ -889,81 +889,81 @@ LABEL_B30_943A:
 	ret	
 
 DATA_B30_9456:
-.dl DATA_B30_946C
-.dl DATA_B30_9472
-.dl DATA_B30_949E
-.dl DATA_B30_94C4
-.dl DATA_B30_94FF
-.dl DATA_B30_9505
-.dl DATA_B30_9516
-.dl DATA_B30_9602
-.dl DATA_B30_960C
-.dl DATA_B30_9637
-.dl DATA_B30_9484
+.dw DATA_B30_946C
+.dw DATA_B30_9472
+.dw DATA_B30_949E
+.dw DATA_B30_94C4
+.dw DATA_B30_94FF
+.dw DATA_B30_9505
+.dw DATA_B30_9516
+.dw DATA_B30_9602
+.dw DATA_B30_960C
+.dw DATA_B30_9637
+.dw DATA_B30_9484
 
 DATA_B30_946C:
 .db $E0, $00
-	.dl LABEL_B30_9556
+	.dw LABEL_B30_9556
 .db $FF, $00
 
 DATA_B30_9472:
 .db $04, $0E
-	.dl LABEL_B30_95B0
+	.dw LABEL_B30_95B0
 .db $04, $0F
-	.dl LABEL_B30_95B0
+	.dw LABEL_B30_95B0
 .db $04, $10
-	.dl LABEL_B30_95B0
+	.dw LABEL_B30_95B0
 .db $04, $11
-	.dl LABEL_B30_95B0
+	.dw LABEL_B30_95B0
 .db $FF, $00
 
 DATA_B30_9484:
 .db $08, $0C
-	.dl LABEL_B30_95A0
+	.dw LABEL_B30_95A0
 .db $08, $0D
-	.dl LABEL_B30_95A0
+	.dw LABEL_B30_95A0
 .db $08, $0A
-	.dl LABEL_B30_95A0
+	.dw LABEL_B30_95A0
 .db $08, $0B
-	.dl LABEL_B30_95A0
+	.dw LABEL_B30_95A0
 .db $08, $0C
-	.dl LABEL_B30_95A0
+	.dw LABEL_B30_95A0
 .db $08, $0D
-	.dl LABEL_B30_95A0
+	.dw LABEL_B30_95A0
 .db $FF, $00
 
 DATA_B30_949E:
 .db $08, $14
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $08, $14
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $08, $14
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $08, $14
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $20, $15
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $E0, $15
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $E0, $15
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $E0, $15
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $E0, $15
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $00
 
 DATA_B30_94C4:
 .db $C0, $15
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $02
-	.dl LABEL_B30_94DA
+	.dw LABEL_B30_94DA
 .db $20, $15
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $E0, $15
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $E0, $15
-	.dl LABEL_B30_94E0
+	.dw LABEL_B30_94E0
 .db $FF, $00
 
 
@@ -986,23 +986,23 @@ LABEL_B30_94E0:
 
 DATA_B30_94FF:
 .db $06, $12
-	.dl LABEL_B30_951C
+	.dw LABEL_B30_951C
 .db $FF, $00
 
 DATA_B30_9505
 .db $E0, $13
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $E0, $13
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $E0, $13
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $05
 	.db $06
 .db $FF, $00
 
 DATA_B30_9516:
 .db $E0, $13
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $00
 
 
@@ -1046,7 +1046,7 @@ LABEL_B30_9556:
 	ret	
 
 LABEL_B30_9568:
-	ld	a, (gameMem+$D2C5)
+	ld	a, ($D2C5)
 	and	$3F
 	cp	$3F
 	jr	z, +_
@@ -1059,7 +1059,7 @@ LABEL_B30_9568:
 	ld	(ix+$15), h
 	ld	(ix+$09), $1C
 	ld	(ix+$08), $4A
-	ld	hl, (gameMem+$D511)
+	ld	hl, ($D511)
 	ld	de, $FFE0
 	add	hl, de
 	ld	(ix+$11), l
@@ -1067,7 +1067,7 @@ LABEL_B30_9568:
 	ret	
 
 LABEL_B30_95A0:
-	ld	hl, (gameMem+$d511)
+	ld	hl, ($d511)
 	ld	de, $Ffe0
 	add	hl, de
 	ld	(ix+$11), l
@@ -1099,7 +1099,7 @@ LABEL_B30_95D1:
 LABEL_B30_95E0:
 	ld	(ix+$0a), d
 	ld	(ix+$0b), e
-	ld	hl, (gameMem+$d511)
+	ld	hl, ($d511)
 	ld	de, $ffe0
 	add	hl, de
 	ld	e, (ix+$0a)
@@ -1116,76 +1116,76 @@ LABEL_B30_95FE:
 
 DATA_B30_9602:
 .db $02, $01
-	.dl LABEL_B30_942E
+	.dw LABEL_B30_942E
 .db $03, $00
-	.dl LABEL_B30_942E
+	.dw LABEL_B30_942E
 .db $FF, $00
 
 DATA_B30_960C:
 .db $FF, $02
-	.dl LABEL_B30_913C
+	.dw LABEL_B30_913C
 .db $FF, $04
 	.dw $0000
 	.dw $FFC0
 .db $08, $01
-	.dl VF_Engine_UpdateObjectPosition
+	.dw VF_Engine_UpdateObjectPosition
 .db $FF, $04
 	.dw $0000
 	.dw $0040
 .db $88, $01
-	.dl VF_Engine_UpdateObjectPosition
+	.dw VF_Engine_UpdateObjectPosition
 .db $FF, $04
 	.dw $0000
 	.dw $0000
 .db $08, $01
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $05
 	.db $09
 .db $03, $01
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $00
 
 DATA_B30_9637:
 .db $08, $01
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $08, $02
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $08, $01
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $08, $02
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $40, $03
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $08, $08
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $08, $03
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $08, $08
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $08, $03
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $10, $08
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $08, $03
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $10, $08
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $E0, $08
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $E0, $08
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $00
 
 DATA_B30_9671:
-.dl DATA_B30_9677
-.dl DATA_B30_96A6
-.dl DATA_B30_96E8
+.dw DATA_B30_9677
+.dw DATA_B30_96A6
+.dw DATA_B30_96E8
 
 DATA_B30_9677:
 .db $FF, $05
 	.db $01
 .db $E0, $00
-	.dl LABEL_B30_9680
+	.dw LABEL_B30_9680
 .db $FF, $00
 
 LABEL_B30_9680:
@@ -1206,21 +1206,21 @@ LABEL_B30_9680:
 
 DATA_B30_96A6:
 .db $06, $01
-	.dl LABEL_B30_96C0
+	.dw LABEL_B30_96C0
 .db $06, $02
-	.dl LABEL_B30_96C0
+	.dw LABEL_B30_96C0
 .db $06, $03
-	.dl LABEL_B30_96C0
+	.dw LABEL_B30_96C0
 .db $06, $04
-	.dl LABEL_B30_96C0
+	.dw LABEL_B30_96C0
 .db $06, $05
-	.dl LABEL_B30_96C0
+	.dw LABEL_B30_96C0
 .db $06, $06
-	.dl LABEL_B30_96C0
+	.dw LABEL_B30_96C0
 .db $FF, $00
 
 LABEL_B30_96C0:
-	ld	hl, (gameMem+$d511)
+	ld	hl, ($d511)
 	ld	de, $0020
 	add	hl, de
 	ld	(ix+$11), l
@@ -1244,9 +1244,9 @@ DATA_B30_96E8:
 	.dw $FE00
 	.dw $0180
 .db $06, $01
-	.dl LABEL_B30_96F8
+	.dw LABEL_B30_96F8
 .db $06, $02
-	.dl LABEL_B30_96F8
+	.dw LABEL_B30_96F8
 .db $FF, $00
 
 
@@ -1255,17 +1255,17 @@ LABEL_B30_96F8:
 	ret	
 
 DATA_B30_96FC:
-.dl DATA_B30_9706
-.dl DATA_B30_9735
-.dl DATA_B30_976F
-.dl DATA_B30_9808
-.dl DATA_B30_981C
+.dw DATA_B30_9706
+.dw DATA_B30_9735
+.dw DATA_B30_976F
+.dw DATA_B30_9808
+.dw DATA_B30_981C
 
 DATA_B30_9706:
 .db $FF, $05
 	.db $01
 .db $E0, $00
-	.dl LABEL_B30_970F
+	.dw LABEL_B30_970F
 .db $FF, $00
 
 
@@ -1274,7 +1274,7 @@ LABEL_B30_970F:
 	ld	hl, $007e
 	ld	(ix+$14), l
 	ld	(ix+$15), h
-	ld	hl, (gameMem+$d511)
+	ld	hl, ($d511)
 	ld	de, $0020
 	add	hl, de
 	ld	(ix+$11), l
@@ -1287,13 +1287,13 @@ LABEL_B30_970F:
 
 DATA_B30_9735:
 .db $06, $01
-	.dl LABEL_B30_973F
+	.dw LABEL_B30_973F
 .db $06, $02
-	.dl LABEL_B30_973F
+	.dw LABEL_B30_973F
 .db $FF, $00
 
 LABEL_B30_973F:
-	ld	hl, (gameMem+$d511)
+	ld	hl, ($d511)
 	ld	de, $0020
 	add	hl, de
 	ld	(ix+$11), l
@@ -1319,78 +1319,78 @@ DATA_B30_976F:
 	.dw $0000
 	.dw $0000
 .db $08, $01
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $08, $02
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $08, $01
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $08, $02
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $08, $01
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $08, $02
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $08, $01
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $08, $02
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $FF, $04
 	.dw $0040
 	.dw $0000
 .db $06, $01
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $06, $02
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $FF, $04
 	.dw $0000
 	.dw $0000
 .db $06, $01
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $06, $02
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $06, $01
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $06, $02
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $06, $01
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $06, $02
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $FF, $04
 	.dw $FFE0
 	.dw $0000
 .db $06, $01
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $FF, $04
 	.dw $0000
 	.dw $0000
 .db $06, $02
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $06, $01
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $06, $02
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $06, $01
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $06, $02
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $06, $01
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $06, $02
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $06, $01
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $06, $02
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $FF, $04
 	.dw $0000
 	.dw $0000
 .db $06, $01
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $FF, $05
 	.db $03
 .db $06, $02
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $FF, $00
 
 DATA_B30_9808:
@@ -1398,9 +1398,9 @@ DATA_B30_9808:
 	.dw $0040
 	.dw $FFC0
 .db $06, $01
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $06, $02
-	.dl LABEL_B30_9818
+	.dw LABEL_B30_9818
 .db $FF, $00
 
 
@@ -1410,9 +1410,9 @@ LABEL_B30_9818:
 
 DATA_B30_981C:
 .db $06, $01
-	.dl LABEL_B30_9826
+	.dw LABEL_B30_9826
 .db $06, $02
-	.dl LABEL_B30_9826
+	.dw LABEL_B30_9826
 .db $FF, $00
 
 LABEL_B30_9826:

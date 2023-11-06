@@ -1,5 +1,8 @@
+.assume ADL=0
 #define	VDP_ScreenMap			SegaVRAM+$3800
 #define	VDP_SATAddress			SegaVRAM+$3F00
+#define DrawTilemapTrig			$D4C0
+#define DrawSATTrig			$D4C1
 
 ; =============================================================================
 ;	VDP_InitRegisters()
@@ -141,7 +144,7 @@ VDP_WriteByte:		; Ported
 	push	de
 	call	VDP_SetAddress
 	; write the data
-	ld	de, SegaVRAM
+	ld.lil	de, SegaVRAM
 	add	hl, de
 	ld	(hl), a
 	pop	de
@@ -165,7 +168,7 @@ VDP_ReadByte:		; Ported
 	ld	a, h
 	and	$3F
 	ld	h, a
-	ld	de, SegaVRAM
+	ld.lil	de, SegaVRAM
 	add	hl, de
 	ld	a, (hl)
 	pop	de
@@ -191,7 +194,7 @@ VDP_ReadByte:		; Ported
 VDP_WriteAndSkip:		; Ported
 	call	VDP_SetAddress
 	push	de
-	ld	de, SegaVRAM
+	ld.lil	de, SegaVRAM
 	add	hl, de	
 	pop	de
 
@@ -225,7 +228,7 @@ _:	; write the data to VRAM
 VDP_Write:	; Ported
 	call	VDP_SetAddress
 	push	de
-	ld	de, SegaVRAM
+	ld.lil	de, SegaVRAM
 	add	hl, de
 	pop	de	
 
@@ -243,6 +246,8 @@ _:	; write the low-order byte
 	ld	a, b
 	or	c
 	jr	nz, -_
+	cpl
+	ld.s	(DrawTilemapTrig), a
 	ret
 
 
@@ -262,7 +267,7 @@ _:	; write the low-order byte
 ; -----------------------------------------------------------------------------
 VDP_Copy:	 ; Ported and optimized
 	push	de
-	ld	de, SegaVRAM
+	ld.lil	de, SegaVRAM
 	add	hl, de
 	pop	de
 	;copy the source to VDP RAM
@@ -366,7 +371,7 @@ VDP_DisableFrameInterrupt:		; $13AA
 VDP_DrawText:		; Ported and optimized
 	di
 	push	de
-	ld	de, SegaVRAM
+	ld.lil	de, SegaVRAM
 	add	hl, de
 	pop	de
 
@@ -375,7 +380,7 @@ _:	ldi	;write a char to the VDP memory
 	inc	de
 	
 	; copy the tile attribute byte to the VDP
-	ld	a, (VDP_DefaultTileAttribs)
+	ld.s	a, (VDP_DefaultTileAttribs)
 	ld	(de), a
 	
 	; increment the source pointer
@@ -406,7 +411,7 @@ LABEL_13D2:
 	push	de
 	push	bc
 	
-_:	ld	a, (gameMem+$D292)
+_:	ld	a, ($D292)
 	bit	7, a
 	jr	nz, +++_
 
@@ -416,7 +421,7 @@ _:	ld	a, (gameMem+$D292)
  
 	; copy a byte from RAM to VRAM
 	push	de
-	ld	de, SegaVRAM
+	ld.lil	de, SegaVRAM
 	add	hl, de
 	ld	(hl), a
 	inc	hl
@@ -439,8 +444,8 @@ _:	ld	a, (gameMem+$D292)
 	ld	b, $06
 _:	ei
 	halt
-	ld	a, (kbdG1 | kbdG2)
-	and	kbit2nd | kbitAlpha
+	ld.lil	a, (kbdG1)
+	and	kbit2nd
 	jr	nz, +_
 
 	djnz	-_
@@ -477,78 +482,69 @@ _:	pop	bc
 VDP_UpdateSAT:		; Ported
 	; check the SAT update trigger. don't bother updating
 	; if it is 0
-	ld	hl, VDP_SATUpdateTrig
+	ld	hl, DrawSATTrig
 	xor	a
-	or	(hl)
+	or.s	(hl)
 	ret	z
 	
 	; reset the trigger
-	ld	(hl), $00
+	ld.s	(hl), $00
 	
 	; check the frame counter. if it's odd do a descending update
-	ld	a, (FrameCounter)
+	ld.s	a, (FrameCounter)
 	rrca
 	jp	c, VDP_UpdateSAT_Descending
 	
-	; set the address pointer to the SAT
-	ld	a, VDP_SATAddress & $FF
-	ld	(VDP_SATAddress), a
-	
 	; copy 64 v-pos attributes to the VDP
-	ld	hl, VDP_WorkingSAT_VPOS		;copy 64 VPOS bytes.
-	ld	de, SegaVRAM+$3F00
+	ld.lil	hl, VDP_WorkingSAT_VPOS + ramStart	;copy 64 VPOS bytes.
+	ld.lil	de, SegaVRAM+$3F00
 	ld	bc, $40
 	ldir
-
-	;set VRAM pointer to SAT + $80
-	ld	a, $80
-	ld	(VDP_WorkingSAT + $80), a
 	
 	; copy 64 h-pos and char code attributes to the VDP
-	ld	hl, VDP_WorkingSAT_HPOS
-	ld	de, SegaVRAM+$3F80
+	ld.lil	hl, VDP_WorkingSAT_HPOS + ramStart
+	ld.lil	de, SegaVRAM+$3F80
 	ld	bc, $40
 	ldir
+	ld.s	(DrawSATTrig), a
 	ret
 
 
 VDP_UpdateSAT_Descending:	; Ported
-	ld	(SaveSP), sp
-	; set the address pointer to the SAT
-	ld	a, VDP_SATAddress & $FF
-	ld	(VDP_SATAddress), a
-	
+	ld	(SaveSP), sp	
 	; copy the 8 player sprites first (so that they always
 	; appear on top).
-	ld	hl, VDP_WorkingSAT_VPOS
-	ld	de, VDP_SATAddress
+	ld.lil	hl, VDP_WorkingSAT_VPOS + ramStart
+	ld.lil	de, VDP_SATAddress
 	ld	bc, $08
-	ldir
+	ldir.l
 
 	; copy the remaining 56 sprites in descending order
-	ld	hl, VDP_WorkingSAT_VPOS + $3F
-	ld	de, VDP_SATAddress + $3F		; FIXME - opcode not required
+	ld.lil	hl, VDP_WorkingSAT_VPOS + $3F + ramStart
+	ld.lil	de, VDP_SATAddress + $3F
 	ld	bc, $38
-	lddr
+	lddr.l
 
 	; copy hpos and char codes for the 8 player sprites
-	ld	hl, VDP_WorkingSAT_HPOS
-	ld	de, VDP_SATAddress + $80
+	ld.lil	hl, VDP_WorkingSAT_HPOS + ramStart
+	ld.lil	de, VDP_SATAddress + $80
 	ld	bc, $10
-	ldir
+	ldir.l
 
 	; copy the remaining 56 hpos and char codes in descending order
-	ld	hl, VDP_WorkingSAT_HPOS + $7E
-	ld	de, VDP_SATAddress + $87
+	ld.lil	hl, VDP_WorkingSAT_HPOS + $7E + ramStart
+	ld.lil	de, VDP_SATAddress + $87
 	ld	b, 56
 	ld	sp, -4
 
-_:	ldi
-	ldi
+_:	ldi.l
+	ldi.l
 	add	hl, sp
-	djnz -_
+	djnz	-_
 
 	ld	sp, (SaveSP)
+	ld	a, b
+	ld.s	(DrawSATTrig), a
 	ret
 
 
@@ -569,7 +565,7 @@ VDP_ClearScreenMap:	 ; $179B
 	di
 
 	; clear the VDP's screen map memory
-	ld	hl, VDP_ScreenMap	;address
+	ld.lil	hl, VDP_ScreenMap	;address
 	ld	bc, $0380		;count
 	ld	de, $0000		;value
 	call	VDP_Write
@@ -579,7 +575,7 @@ VDP_ClearScreenMap:	 ; $179B
 ; =============================================================================
 ;	VDP_ClearScreen
 ; -----------------------------------------------------------------------------
-;	Clears the screen by resetting the first level tile (gameMem+$2000) and setting the
+;	Clears the screen by resetting the first level tile ($2000) and setting the
 ;	screen map to the tile index.
 ; -----------------------------------------------------------------------------
 ;	In:
@@ -590,14 +586,16 @@ VDP_ClearScreenMap:	 ; $179B
 ;	A, BC, DE, HL
 ; -----------------------------------------------------------------------------
 VDP_ClearScreen:	 ;$17AC
-	ld	hl, SegaVRAM+$2000		;clear the first level tile from VRAM (32-bytes starting at $2000)
+	ld.lil	hl, SegaVRAM+$2000		;clear the first level tile from VRAM (32-bytes starting at $2000)
 	ld	bc, $0020
 	ld	de, $0000
 	call	VDP_Write
-	ld	hl, VDP_ScreenMap		;set up all background tiles to point to the first "level tile"
+	ld.lil	hl, VDP_ScreenMap		;set up all background tiles to point to the first "level tile"
 	ld	bc, $0380
 	ld	de, $0100
 	call	VDP_Write
+	neg
+	ld	(DrawTilemapTrig), a
 	;FALL THROUGH
 
 ; =============================================================================
@@ -633,5 +631,6 @@ _:	; set the vpos and clear the hpos and char code
 	
 	; flag the SAT update trigger
 	ld	a, $FF
-	ld	(VDP_SATUpdateTrig), a
+	ld	(DrawSATTrig), a
+	
 	ret

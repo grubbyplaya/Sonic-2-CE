@@ -1,6 +1,5 @@
-.ORG $D09466
-
-#define gameMem 	cmdPixelShadow-$C000
+.ASSUME ADL=0
+.ORG $8000
 
 ;2 extra bytes from the ghz control sequence (unused).
 .db $08, $00
@@ -38,24 +37,24 @@ Art_Rings_CEZ:
 LABEL_B29_B400:				;push the last 16 sprites off of the screen
 	ld      b, $10			;by setting the VPOS attribute
 	ld      a, $E0
-	ld      hl, gameMem+$DB30
+	ld      hl, $DB30
 _:	ld      (hl), a
 	inc     hl
 	djnz    -_
 	ret     
 LABEL_B29_B40C:
-	ld      a, (gameMem+$D46D)
+	ld      a, ($D46D)
 	or      a
 	jr      nz, LABEL_B29_B422
-	ld      hl, (gameMem+$D46F)
+	ld      hl, ($D46F)
 	dec     hl
-	ld      (gameMem+$D46F), hl
+	ld      ($D46F), hl
 	ld      a, h
 	or      l
 	ret     nz
 
 	ld      a, $01
-	ld      (gameMem+$D46D), a
+	ld      ($D46D), a
 	ret     
 
 LABEL_B29_B422:
@@ -71,7 +70,7 @@ LABEL_B29_B422:
 
 LABEL_B29_B433:
 	ld      b, $08
-	ld      hl, gameMem+$DB30
+	ld      hl, $DB30
 	ld      a, $9A
 _:	ld      (hl), a
 	inc     hl
@@ -81,7 +80,7 @@ _:	ld      (hl), a
 _:	ld      (hl), a
 	inc     hl
 	djnz    -_
-	ld      a, (gameMem+$D46E)
+	ld      a, ($D46E)
 	ld      l, a
 	ld      h, $00
 	add     hl, hl
@@ -90,7 +89,7 @@ _:	ld      (hl), a
 	add     hl, hl
 	ld      de, EndSequence_Data_CreditsText
 	add     hl, de
-	ld      de, gameMem+$DBA0		;copy the 16-byte line of text to $DBA0
+	ld      de, $DBA0		;copy the 16-byte line of text to $DBA0
 	ld      b, $10
 _:	xor     a
 	ld      (de), a
@@ -119,7 +118,7 @@ _:	ld      (de), a			;copy char to work RAM
 
 	ld      hl, DATA_B29_B522
 	ld      ix, DATA_B29_B542
-	ld      de, gameMem+$D46F
+	ld      de, $D46F
 	ld      b, $10
 _:	ld      a, (hl)
 	ld      (de), a
@@ -134,23 +133,23 @@ _:	ld      a, (hl)
 	inc     ix
 	inc     de
 	djnz    -_
-	ld      a, (gameMem+$D46E)
+	ld      a, ($D46E)
 	inc     a
-	ld      (gameMem+$D46E), a
+	ld      ($D46E), a
 	ld      a, $02
-	ld      (gameMem+$D46D), a
+	ld      ($D46D), a
 	ret     
 
 LABEL_B29_B4A9:
 	ld      a, $04			;reset the counter
-	ld      (gameMem+$D46D), a
+	ld      ($D46D), a
 	ret     
 
 LABEL_B29_B4AF:
 	ld      b, $10
 	ld      c, $00
-	ld      ix, gameMem+$D46F
-	ld      iy, gameMem+$DBA0
+	ld      ix, $D46F
+	ld      iy, $DBA0
 _:	bit     7, (ix+$01)
 	jr      z, +_
 	ld      a, (ix+$02)
@@ -177,9 +176,9 @@ _:	or      c
 	ret     nz
 
 	ld      a, $03
-	ld      (gameMem+$D46D), a
+	ld      ($D46D), a
 	ld      hl, $00B4
-	ld      (gameMem+$D46F), hl
+	ld      ($D46F), hl
 	ret     
 
 LABEL_B29_B4F5:
@@ -196,17 +195,17 @@ LABEL_B29_B4F5:
 	ret     
 
 LABEL_B29_B510:
-	ld      hl, (gameMem+$D46F)
+	ld      hl, ($D46F)
 	dec     hl
 	ld      a, h
 	or      l
 	jr	  z, LABEL_B29_B51C
-	ld      (gameMem+$D46F), hl
+	ld      ($D46F), hl
 	ret     
 
 LABEL_B29_B51C:
 	ld      a, $01
-	ld      (gameMem+$D46D), a
+	ld      ($D46D), a
 	ret     
 
 
@@ -219,5 +218,3 @@ DATA_B29_B542:
 
 EndSequence_Data_CreditsText:
 #include "end_credits.asm"
-
-#include	"includes/ti84pce.inc"

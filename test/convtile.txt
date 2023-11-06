@@ -1,0 +1,114 @@
+
+ #define userMem $D1A881
+.assume ADL = 1
+.org userMem - 2
+.db $EF, $7B
+	di
+	ld	hl, $D40000
+	ld	de, $D40001
+	ld	bc, $025000
+	ld	(hl), $00
+	ldir
+	ld	a, $27
+	ld	($E30018), a
+	ld	a, %00011001
+	ld	($E30019), a
+	ld	bc, $1020
+	ld	de, Sonic_Palette
+	exx
+	ld	de, $E30200
+	exx
+_:	push	bc
+	push	de
+	ld	a, (de)
+	ld	l, a
+	ld	h, $02
+	mlt	hl
+	ld	bc, SMS_Palette
+	add	hl, bc
+	push	hl
+	exx
+	pop	hl
+	ldi
+	ldi
+	exx
+	pop	de
+	inc	de
+	pop	bc
+	djnz	-_
+	ld	hl, Sonic_Tile
+	ld	de, $D40A07
+	call	DrawTile
+_:	ld	hl, $F50012
+	bit	5, (hl)
+	jr	z, -_
+	ei
+	ld	a, $2D
+	ld	($E30018), a
+	ld	a, $01
+	ld	($E30019), a
+	ret
+
+DrawTile:
+	ld	c, $08
+	ld	iy, 0
+_:	call	ConvertPixels
+	inc	hl
+	inc	hl
+	push	hl
+	ex	de, hl
+	ld	de, 312
+	or	a
+	sbc	hl, de
+	ex	de, hl
+	pop	hl
+	dec	c
+	jr	nz, -_
+	ret
+	
+
+ConvertPixels:		;converts pixels from Sega's stupid format to a nybble
+	push	hl
+	exx
+	pop	hl
+	ld	d, $00
+	ld	e, $08
+	ld	b, (hl)
+	inc	hl
+	ld	c, (hl)
+	inc	hl
+	push	hl
+	ld	hl, (hl)
+_:	xor	a
+	rl	h
+	rla
+	rl	l
+	rla
+	rl	c
+	rla
+	rl	b
+	rla
+	or	d
+	exx
+	cp	$00
+	jr	z, DrawPixel
+	ld	(de), a
+DrawPixel:
+	dec	de
+	exx
+	dec	e
+	jr	nz, -_
+	exx
+	pop	hl
+	ret
+
+Sonic_Tile:
+	#import	"test.bin"
+
+
+Sonic_Palette:
+	#import "palettes/palette_alz2_sonic_gg.bin"
+
+
+SMS_Palette:
+	#include "sms_palette.asm"

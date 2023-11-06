@@ -1,4 +1,4 @@
-.ORG $D09466
+.ORG $8000
 
 Mappings32_CEZ1_2:
 ;#import "mappings\cez\mappings32_cez1_2.bin"

@@ -1,31 +1,32 @@
+.assume ADL=0
 Logic_RingSparkle:		;$ABE1
-.dl RingSparkle_State_00
-.dl RingSparkle_State_01
+.dw RingSparkle_State_00
+.dw RingSparkle_State_01
 
 RingSparkle_State_00:	;$ABE5
 .db $01, $00
-	.dl LABEL_B31_ABFD
+	.dw LABEL_B31_ABFD
 .db $FF, $00
 
 RingSparkle_State_01:	;$ABEB:
 .db $04, $01
-	.dl LABEL_B31_AC20
+	.dw LABEL_B31_AC20
 .db $04, $02
-	.dl LABEL_B31_AC20
+	.dw LABEL_B31_AC20
 .db $04, $01
-	.dl LABEL_B31_AC20
+	.dw LABEL_B31_AC20
 .db $04, $02
-	.dl LABEL_B31_AC20
+	.dw LABEL_B31_AC20
 .db $FF, $01
 
 LABEL_B31_ABFD:
-	ld	hl, (gameMem+$D35A)
+	ld	hl, ($D35A)
 	ld	a, l
 	and     $F0
 	add     a, $06
 	ld      (ix+$11), a
 	ld      (ix+$12), h
-	ld      hl, (gameMem+$D35C)
+	ld      hl, ($D35C)
 	ld      a, l
 	and     $F0
 	ld      (ix+$14), a

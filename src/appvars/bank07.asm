@@ -1,3 +1,5 @@
+.ORG $8000
+
 Art_Icons_Numbers:
 #import "art\level\icons_numbers.bin" ;
 

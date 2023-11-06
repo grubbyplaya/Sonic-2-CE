@@ -1,4 +1,4 @@
-.ORG $D09466
+.ORG $8000
 
 Mappings32_SEZ2:
 ;#import "mappings\sez\mappings32_sez2.bin"

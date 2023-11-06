@@ -1,5 +1,3 @@
-.ORG $93B0
-
 .dw mappings32_intro_bin_0
 .dw mappings32_intro_bin_1
 .dw mappings32_intro_bin_2

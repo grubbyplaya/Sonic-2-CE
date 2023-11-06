@@ -1,27 +1,28 @@
+.assume ADL=0
 Logic_PrisonAnimals:		;$936A
-.dl PrisonAnimals_State_00
-.dl PrisonAnimals_State_01
-.dl PrisonAnimals_State_02
+.dw PrisonAnimals_State_00
+.dw PrisonAnimals_State_01
+.dw PrisonAnimals_State_02
 
 ;initialiser - sets state to 01
 PrisonAnimals_State_00:		;$9370
 .db $01, $00
-	.dl PrisonAnimals_SetState01
+	.dw PrisonAnimals_SetState01
 .db $FF, $00
 
 PrisonAnimals_State_01:		;$9376
 .db $FF, $07
-	.dl PrisonAnimals_SetFrame1
-	.dl PrisonAnimals_SetFalling
+	.dw PrisonAnimals_SetFrame1
+	.dw PrisonAnimals_SetFalling
 .db $FF, $00
 
 PrisonAnimals_State_02:		;937E
 .db $FF, $07
-	.dl PrisonAnimals_SetFrame1
-	.dl PrisonAnimals_UpdateSpeed
+	.dw PrisonAnimals_SetFrame1
+	.dw PrisonAnimals_UpdateSpeed
 .db $FF, $07
-	.dl PrisonAnimals_SetFrame2
-	.dl PrisonAnimals_UpdateSpeed
+	.dw PrisonAnimals_SetFrame2
+	.dw PrisonAnimals_UpdateSpeed
 .db $FF, $00
 
 

@@ -1,15 +1,16 @@
+.assume ADL=0
 Logic_Minecart:			;$88CF
-.dl Minecart_State_00
-.dl Minecart_State_01
-.dl Minecart_State_02
-.dl Minecart_State_03
-.dl Minecart_State_04
-.dl Minecart_State_05
-.dl Minecart_State_06
+.dw Minecart_State_00
+.dw Minecart_State_01
+.dw Minecart_State_02
+.dw Minecart_State_03
+.dw Minecart_State_04
+.dw Minecart_State_05
+.dw Minecart_State_06
 
 Minecart_State_00:			;$88DD
 .db $01, $00
-	.dl Minecart_State_00_Logic_01
+	.dw Minecart_State_00_Logic_01
 .db $FF, $00
 
 Minecart_State_01:			;$88E3
@@ -17,64 +18,64 @@ Minecart_State_01:			;$88E3
 	.dw $0000
 	.dw $0100
 .db $80, $01
-	.dl Minecart_State_01_Logic_01
+	.dw Minecart_State_01_Logic_01
 .db $FF, $00
 
 Minecart_State_02:			;$88EF
 .db $03, $01
-	.dl Minecart_State_02_Logic_01
+	.dw Minecart_State_02_Logic_01
 .db $03, $02
-	.dl Minecart_State_02_Logic_01
+	.dw Minecart_State_02_Logic_01
 .db $03, $03
-	.dl Minecart_State_02_Logic_01
+	.dw Minecart_State_02_Logic_01
 .db $03, $04
-	.dl Minecart_State_02_Logic_01
+	.dw Minecart_State_02_Logic_01
 .db $FF, $00
 
 Minecart_State_03:			;$8901
 .db $03, $04
-	.dl Minecart_State_03_Logic_01
+	.dw Minecart_State_03_Logic_01
 .db $03, $03
-	.dl Minecart_State_03_Logic_01
+	.dw Minecart_State_03_Logic_01
 .db $03, $02
-	.dl Minecart_State_03_Logic_01
+	.dw Minecart_State_03_Logic_01
 .db $03, $01
-	.dl Minecart_State_03_Logic_01
+	.dw Minecart_State_03_Logic_01
 .db $FF, $00
 
 Minecart_State_04:			;$8913
 .db $03, $01
-	.dl Minecart_State_04_Logic_01
+	.dw Minecart_State_04_Logic_01
 .db $03, $02
-	.dl Minecart_State_04_Logic_01
+	.dw Minecart_State_04_Logic_01
 .db $03, $03
-	.dl Minecart_State_04_Logic_01
+	.dw Minecart_State_04_Logic_01
 .db $03, $04
-	.dl Minecart_State_04_Logic_01
+	.dw Minecart_State_04_Logic_01
 .db $FF, $00
 
 Minecart_State_05:			;$8925
 .db $06, $01
-	.dl Minecart_State_05_Logic_01
+	.dw Minecart_State_05_Logic_01
 .db $06, $02
-	.dl Minecart_State_05_Logic_01
+	.dw Minecart_State_05_Logic_01
 .db $06, $03
-	.dl Minecart_State_05_Logic_01
+	.dw Minecart_State_05_Logic_01
 .db $06, $04
-	.dl Minecart_State_05_Logic_01
+	.dw Minecart_State_05_Logic_01
 .db $FF, $00
 
 Minecart_State_06:			;$8937
 .db $10, $05
-	.dl Minecart_State_06_Logic_01
+	.dw Minecart_State_06_Logic_01
 .db $03, $00
-	.dl Minecart_State_06_Logic_01
+	.dw Minecart_State_06_Logic_01
 .db $03, $05
-	.dl Minecart_State_06_Logic_01
+	.dw Minecart_State_06_Logic_01
 .db $03, $00
-	.dl Minecart_State_06_Logic_01
+	.dw Minecart_State_06_Logic_01
 .db $03, $05
-	.dl Minecart_State_06_Logic_01
+	.dw Minecart_State_06_Logic_01
 .db $FF, $01
 
 
@@ -110,7 +111,7 @@ Minecart_State_02_Logic_01:		;$8971
 _:	ld      bc, $0010
 	ld      de, $FFF0
 	call    VF_Engine_GetCollisionValueForBlock
-	ld      a, (gameMem+$D353)
+	ld      a, ($D353)
 	ld      hl, DATA_B28_8B0C
 	ld      bc, $001B
 	cpir    
@@ -151,7 +152,7 @@ Minecart_State_03_Logic_01:		;$89B4
 _:	ld      bc, $FFF0
 	ld      de, $FFF0
 	call    VF_Engine_GetCollisionValueForBlock
-	ld      a, (gameMem+$D353)
+	ld      a, ($D353)
 	ld      hl, DATA_B28_8B0C
 	ld      bc, $001B
 	cpir    
@@ -175,7 +176,7 @@ Minecart_State_04_Logic_01:		;$8A0B
 	ld      bc, $FFF0
 _:	ld      de, $FFF0
 	call    VF_Engine_GetCollisionValueForBlock
-	ld      a, (gameMem+$D353)
+	ld      a, ($D353)
 	ld      hl, DATA_B28_8B0C
 	ld      bc, $001B
 	cpir    
@@ -188,7 +189,7 @@ _:	ld      bc, $0600
 	call    VF_Engine_SetObjectVerticalSpeed
 	bit     1, (ix+$22)
 	jp      z, LABEL_B28_8AAE
-	ld      a, (gameMem+$D368)
+	ld      a, ($D368)
 	ld      hl, DATA_B28_8AF2
 	ld      bc, $001A
 	cpir    
@@ -204,12 +205,12 @@ LABEL_B28_8A51:
 	ld      (ix+$02), $05		;set the state to $05
 	push    ix
 	pop     hl
-	ld      de, (gameMem+$D39E)
+	ld      de, ($D39E)
 	xor     a					;clear carry flag
 	sbc     hl, de
 	ret     nz					;check to see if player is riding
 	ld      hl, $0000			;the minecart.
-	ld      (gameMem+$D39E), hl
+	ld      ($D39E), hl
 	push    ix
 	ld      ix, $D500	;get a pointer to the player object structure...
 	call    VF_Player_PlayHurtAnimation	;... and play the "hurt" anim
@@ -233,8 +234,8 @@ Minecart_State_06_Logic_01:		;$8AA5
 LABEL_B28_8AAE:
 	call    VF_Engine_UpdateObjectPosition
 	call    LABEL_75C5
-	ld      a, (gameMem+$D353)
-	ld      (gameMem+$D368), a
+	ld      a, ($D353)
+	ld      ($D368), a
 	jp      VF_Logic_CheckDestroyObject
 
 LABEL_B28_8ABD:
@@ -248,12 +249,12 @@ _:	call    VF_Engine_CheckCollision
 	and     $0D
 	ld      (ix+$21), a
 	ret     z
-	ld      (gameMem+$D39E), ix		;store pointer to minecart object descriptor
+	ld      ($D39E), ix		;store pointer to minecart object descriptor
 	ld      iy, $D500		;get a pointer to the player object structure
 	res     0, (iy+$03)
 	res     1, (iy+$03)
 	ld      (iy+$02), PlayerState_EnterMineCart	;set player state to $16
-	ld      (gameMem+$DD04), a
+	ld      ($DD04), a
 	ret     
 
 DATA_B28_8AF2:

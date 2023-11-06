@@ -1,3 +1,4 @@
+.assume ADL=0
 #include "object_logic/logic_sonic.asm"
 
 #include "object_logic/logic_ring_sparkle.asm"
@@ -5,18 +6,18 @@
 #include "object_logic/logic_block_fragment.asm"
 
 DATA_B31_ACEB:
-.dl DATA_B31_ACEF
-.dl DATA_B31_ACF8
+.dw DATA_B31_ACEF
+.dw DATA_B31_ACF8
 
 DATA_B31_ACEF:
 .db $01, $00
-	.dl BlockFragment_State_00_Logic_01
+	.dw BlockFragment_State_00_Logic_01
 .db $FF, $00
 
 DATA_B31_ACF8:
 .db $FF, $07
-	.dl LABEL_B31_AD00
-	.dl BlockFragment_State_01_Logic_01
+	.dw LABEL_B31_AD00
+	.dw BlockFragment_State_01_Logic_01
 .db $FF, $00
 
 
@@ -70,17 +71,17 @@ _:	ld	(ix+$00), $ff			;$AD33
 
 
 DATA_B31_B513:
-.dl DATA_B31_B517
-.dl DATA_B31_B51D
+.dw DATA_B31_B517
+.dw DATA_B31_B51D
 
 DATA_B31_B517:
 .db $01, $00
-	.dl LABEL_B31_B523
+	.dw LABEL_B31_B523
 .db $FF, $00
 
 DATA_B31_B51D:
 .db $80, $01
-	.dl LABEL_B31_B53E
+	.dw LABEL_B31_B53E
 .db $FF, $00
 
 
@@ -118,12 +119,12 @@ LABEL_B31_B53E:
 
 	ld	l, (ix+$14)			;copy object's vpos...
 	ld	h, (ix+$15)
-	ld	(gameMem+$D4A4), hl		;to the act's water level
+	ld	($D4A4), hl		;to the act's water level
 
 	ld	hl, (Camera_Y)			;get camera vpos
 	ld	de, $0040			;add 64
 	add	hl, de
-	ld	de, (gameMem+$D4A4)		;compare with act's water level
+	ld	de, ($D4A4)		;compare with act's water level
 	xor	a
 	sbc	hl, de
 	jp	nc, LABEL_B31_B584		;jump if camera below water level
@@ -140,12 +141,12 @@ LABEL_B31_B53E:
 	or	a
 	jp	nz, LABEL_B31_B584		
 	ld	a, l
-	ld	(gameMem+$D132), a
+	ld	($D132), a
 	ret	
 
 LABEL_B31_B584:
 	ld	b, $FF
-	ld	(gameMem+$D132), a
+	ld	($D132), a
 	ret	
 
 
@@ -178,25 +179,25 @@ DATA_B31_B590:
 
 Logic_FallingSpike:		;$BA7A
 DATA_B31_BA7A:
-.dl FallingSpike_State_00
-.dl FallingSpike_State_01
-.dl FallingSpike_State_02
-.dl FallingSpike_State_03
-.dl FallingSpike_State_04
-.dl FallingSpike_State_05
+.dw FallingSpike_State_00
+.dw FallingSpike_State_01
+.dw FallingSpike_State_02
+.dw FallingSpike_State_03
+.dw FallingSpike_State_04
+.dw FallingSpike_State_05
 
 DATA_B31_BA86:
-.dl DATA_B31_BA8A
-.dl DATA_B31_BA90
+.dw DATA_B31_BA8A
+.dw DATA_B31_BA90
 
 DATA_B31_BA8A:
 .db $01, $00
-	.dl LABEL_B31_BA96
+	.dw LABEL_B31_BA96
 .db $FF, $00
 
 DATA_B31_BA90:
 .db $E0, $02
-	.dl LABEL_B31_BB40
+	.dw LABEL_B31_BB40
 .db $FF, $00
 
 
@@ -213,43 +214,43 @@ LABEL_B31_BA96:
 
 FallingSpike_State_00:		;$BAAD
 .db $01, $00
-	.dl FallingSpike_Init
+	.dw FallingSpike_Init
 .db $FF, $00
 
 FallingSpike_State_01:		;$BAB3
 .db $E0, $01
-	.dl LABEL_B31_BB61
+	.dw LABEL_B31_BB61
 .db $FF, $00
 
 FallingSpike_State_02:		;$BAB9
 .db $02, $01
-	.dl FallingSpike_CheckCollision
+	.dw FallingSpike_CheckCollision
 .db $02, $04
-	.dl FallingSpike_CheckCollision
+	.dw FallingSpike_CheckCollision
 .db $02, $01
-	.dl FallingSpike_CheckCollision
+	.dw FallingSpike_CheckCollision
 .db $02, $04
-	.dl FallingSpike_CheckCollision
+	.dw FallingSpike_CheckCollision
 .db $02, $01
-	.dl FallingSpike_CheckCollision
+	.dw FallingSpike_CheckCollision
 .db $02, $04
-	.dl FallingSpike_CheckCollision
+	.dw FallingSpike_CheckCollision
 .db $02, $01
-	.dl FallingSpike_CheckCollision
+	.dw FallingSpike_CheckCollision
 .db $02, $04
-	.dl FallingSpike_CheckCollision
+	.dw FallingSpike_CheckCollision
 .db $FF, $05
 	.db $03
 .db $FF, $00
 
 FallingSpike_State_03:		;$BADE
 .db $04, $01
-	.dl LABEL_B31_BB0B
+	.dw LABEL_B31_BB0B
 .db $FF, $00
 
 FallingSpike_State_04:		;$BAE4
 .db $04, $03
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $06
 	.db $1A
 	.dw $0000
@@ -261,7 +262,7 @@ FallingSpike_State_04:		;$BAE4
 
 FallingSpike_State_05:		;$BAF5
 .db $E0, $03
-	.dl LABEL_B31_BB40
+	.dw LABEL_B31_BB40
 .db $FF, $00
 
 
@@ -326,7 +327,7 @@ LABEL_B31_BB61:
 	bit	6, (ix+$04)
 	ret	nz			;return if object is not visible
 
-	ld	hl, (gameMem+$D514)	;get player's vpos
+	ld	hl, ($D514)	;get player's vpos
 	ld	e, (ix+$14)		;get spikes' vpos
 	ld	d, (ix+$15)
 	xor	a
@@ -340,7 +341,7 @@ LABEL_B31_BB61:
 	ld	b, l
 	srl	b
 
-	ld	de, (gameMem+$D516)	;get player's horizontal speed
+	ld	de, ($D516)	;get player's horizontal speed
 
 	bit	7, d
 	jr	z, +_
@@ -367,7 +368,7 @@ _:  	ld	hl, $0180
 	ld	b, a
 	jr	nc, +_
 	ld	b, $ff
-  	ld	hl, (gameMem+$D511)
+  	ld	hl, ($D511)
 	ld	e, (ix+$11)
 	ld	d, (ix+$12)
 	xor	a
@@ -388,17 +389,17 @@ _:  	ld	a, h
 	ret	
 
 DATA_B31_BBC6:
-.dl DATA_B31_BBCA
-.dl DATA_B31_BBD0
+.dw DATA_B31_BBCA
+.dw DATA_B31_BBD0
 
 DATA_B31_BBCA:
 .db $01, $00
-	.dl LABEL_B31_BBD6
+	.dw LABEL_B31_BBD6
 .db $FF, $00
 
 DATA_B31_BBD0:
 .db $10, $01
-	.dl LABEL_B31_BBF9
+	.dw LABEL_B31_BBF9
 .db $FF, $00
 
 LABEL_B31_BBD6:
@@ -426,7 +427,7 @@ LABEL_B31_BBF9:
 	
 	dec	hl
 	
-	ld	a, (gameMem+$D12F)		;get frame counter value
+	ld	a, ($D12F)		;get frame counter value
 	and	$01
 	jr	nz, +_	;jump if frame counter % 2 != 0
 	
@@ -438,17 +439,17 @@ _:  	ld	(ix+$11), l		;set hpos
 
 
 Logic_IntroCloudsAndPalette:		;$BC12
-.dl IntroCloudsAndPalette_State_00
-.dl IntroCloudsAndPalette_State_01
+.dw IntroCloudsAndPalette_State_00
+.dw IntroCloudsAndPalette_State_01
 
 IntroCloudsAndPalette_State_00:		;$BC16
 .db $01, $00
-	.dl IntroCloudsAndPalette_Init
+	.dw IntroCloudsAndPalette_Init
 .db $FF, $00
 
 IntroCloudsAndPalette_State_01:		;$BC1C
 .db $10, $01
-	.dl LABEL_B31_BC45
+	.dw LABEL_B31_BC45
 .db $FF, $00
 
 
@@ -483,7 +484,7 @@ LABEL_B31_BC45:
 	ld	l, (ix+$11)		;get hpos
 	ld	h, (ix+$12)
 	dec	hl
-	ld	a, (gameMem+$D12F)
+	ld	a, ($D12F)
 	and	$07
 	jr	nz, +_
 	dec	hl
@@ -494,17 +495,17 @@ _:  	ld	(ix+$11), l
 
 ;logic for the intro screen tree
 Logic_IntroTree:		;$BC61
-.dl IntroTree_State_00
-.dl IntroTree_State_01
+.dw IntroTree_State_00
+.dw IntroTree_State_01
 
 IntroTree_State_00:		;$BC65
 .db $01, $00
-	.dl IntroTree_Init
+	.dw IntroTree_Init
 .db $FF, $00
 
 IntroTree_State_01:		;$BC6B
 .db $10, $01
-	.dl IntroTree_AdjustHpos
+	.dw IntroTree_AdjustHpos
 .db $FF, $00
 
 

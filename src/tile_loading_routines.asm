@@ -1,10 +1,11 @@
+.ASSUME ADL=0
 ;**************************************************
 ;*			Variables
 ;**************************************************
-#define	BitFieldCount	gameMem+$D340
-#define	TileCount	gameMem+$D342
-#define	FlagPointer	gameMem+$D345
-#define	SourcePointer	gameMem+$D348
+#define	BitFieldCount	$D340
+#define	TileCount	$D342
+#define	FlagPointer	$D345
+#define	SourcePointer	$D348
 
 ;**************************************************
 ;* LoadTiles - 
@@ -19,7 +20,7 @@ _LABEL_1AA6_22:
 	;if $D34C is set, each byte of decompressed data 
 	;at $D300 is treated as an index into the mirroring
 	;table stored at $0100.
-	ld	(gameMem+$D34C), a
+	ld	($D34C), a
 	push	hl				;push the base address onto the stack
 	inc	hl				;read the tile data header
 	inc	hl
@@ -29,7 +30,6 @@ _LABEL_1AA6_22:
 	ld	a, (hl)
 	ld	(TileCount+1), a		;tilecount hi-byte 
 	inc	hl
-	mlt	de
 	ld	e, (hl)
 	inc	hl
 	ld	d, (hl)				;compression definition pointer (http://forums.sonicretro.org/index.php?showtopic=11509)
@@ -38,8 +38,8 @@ _LABEL_1AA6_22:
 	pop	hl
 	add	hl, de				;add the relative compression definition pointer to the base address
 	ld	(FlagPointer), hl		;store the compression definition pointer
-	ld	hl, gameMem+$D320		;clear RAM $D320->$D340
-	ld	de, gameMem+$D321
+	ld	hl, $D320		;clear RAM $D320->$D340
+	ld	de, $D321
 	ld	bc, $001F
 	ld	(hl), $00
 	ldir
@@ -82,7 +82,7 @@ _: 	ld	hl, (TileCount)			;decrement tile count
 ;*************************************************************
 LoadUncompressedTile:
 	ld	hl, (SourcePointer)	;copy 32 bytes from source to $D300	
-	ld	de, gameMem+$D300
+	ld	de, $D300
 	ld	bc, $0020
 	ldir
 	ld	(SourcePointer), hl	;store new source pointer
@@ -92,7 +92,7 @@ LoadUncompressedTile:
 ;*	Load compressed tile data and store decompressed at $D300.
 ;*************************************************************
 LoadCompressedTile:		;$1B1E
-	ld	ix, gameMem+$D300				;destination address for decompressed tile data
+	ld	ix, $D300				;destination address for decompressed tile data
 	ld	hl, (SourcePointer)	;read the bitmask
 
 	ld	e, (hl)
@@ -126,7 +126,7 @@ _: 	inc	ix				;increment destination pointer
 ;*	Decode XOR'ed tile data.
 ;*************************************************************
 XORDecode:
-	ld	ix, gameMem+$D300	;decode data at $D300
+	ld	ix, $D300	;decode data at $D300
 	ld	b, $07
 _:	ld	a, (ix+0)		;xor byte at (ix+0) with byte at (ix+2)...
 	xor	(ix+2)
@@ -190,8 +190,8 @@ _:	and	$03
 ;*	data is copied from $D320 to VRAM.
 ;*************************************************************
 WriteBlankTile:
-	ld	hl, gameMem+$D320		;copy 32 bytes from $D320 to $D300
-	ld	de, gameMem+$D300
+	ld	hl, $D320		;copy 32 bytes from $D320 to $D300
+	ld	de, $D300
 	ld	bc, $0020
 	ldir
 	
@@ -199,54 +199,46 @@ WriteBlankTile:
 ;*	Write the decompressed tile data (at $D300) to VRAM
 ;*************************************************************
 WriteTileToVRAM:
-	ld	hl, gameMem+$D300		;copy 32 bytes from $D300 to VRAM
-	ld	a, (gameMem+$D34C)
+	ld.lil	hl, $D2D300		;copy 32 bytes from $D300 to VRAM
+	ld	ix, (VRAMPointer)
+	ld	a, ($D34C)
 	or	a
 	jr	nz, WriteMirroredTileToVRAM
 
 	ld	bc, $0020
-	ld	ix, (VRAMPointer)
 	push	ix
-	ld	de, SegaVRAM
-	add	ix, de
-
-	push	ix
-	pop	de
+	ld.lil	de, SegaVRAM
+	add.lil	ix, de
+	push.lil ix
+	pop.lil	de
 	pop	ix
 	add	ix, bc
-	ldir
+	ldir.lil
 
 	ld	(VRAMPointer), ix
 	ret
 
-VRAMPointer:	;self modifying code that stores the VDP address pointer
-	.dl $00BEEF
+VRAMPointer:	;self modifying data that stores the VDP address pointer
+	.dw $BEEF
 
 ;************************************************************
 ;*	Write tile data to VRAM. Data at $D300 is treated as an	*
 ;*	index into the mirroring data at $0100.					*
 ;************************************************************
 WriteMirroredTileToVRAM:
-	push	iy
 	ld	b, $20
-	ld	ix, Engine_Data_ByteFlipLUT
-	ld	iy, (VRAMPointer)
-
-_:	mlt	de
-	ld	e, (hl)		;read a byte of tile data from RAM
-	ld	d, $00
-	add	ix, de
-
-	push	iy
-	ld	de, SegaVRAM
-	add	iy, de	
-	ld	a, (ix)		;"flip" the byte by using it as an		
-	ld	(iy), a		;index into the array at $100 and
-	inc	ix		;retrieving the value
+_:	ld	e, (hl)		;read a byte of tile data from RAM
+	ld	d, $01
+	push	ix
+	exx
+	ld.lil	de, SegaVRAM
+	add.lil	ix, de
+	exx
+	ld	a, (de)		;"flip" the byte by using it as an		
+	ld.lil	(ix), a		;index into the array at $100 and
+	pop	ix		;retrieving the value
+	inc	ix
 	inc	hl
-	pop	iy
-	inc	iy
-	ld	(VRAMPointer), iy
+	ld	(VRAMPointer), ix
 	djnz	-_
-	pop	iy
 	ret

@@ -1,31 +1,30 @@
+.ASSUME ADL=1
 CheckForBank: 			;it's bankin' time
- 	call	StoreRegisters
-	sub	$03
+ 	call.sis StoreRegisters
+	sub	$04
 	ld	l, a
 	ld	h, $08
 	mlt	hl
-	ld	de, SaveFile
+	ld	de, Bank04+romStart
 	add	hl, de
 
-	call	_Mov9toOP1
- 	call	_ChkFindSym
+	call	Mov9ToOP1
+ 	call	ChkFindSym
 	jp	c, ExitGame
-	call	PutBankinSlot2
+	call	PutBankinSlot2+romStart
 	ex	af, af'
-_:	call	RestoreRegisters
+	call.lis RestoreRegisters
 	ret
 
 SegaSP:	;used to exit the game
-	.dl	$062391
+	.dw	$0623
 
 SaveSP:
-	.dl	$102292
+	.dw	$1022
 
 StoreRegisters:		;stores registers in RAM
-	di
 	ld	(SaveSP), sp
-	ld	sp, pixelShadow
-	ex	af, af'
+	ld	sp, $E012
 	push	af
 	push	bc
 	push	de
@@ -37,12 +36,11 @@ StoreRegisters:		;stores registers in RAM
 	push	ix
 	push	iy
 	ld	sp, (SaveSP)
-	ex	af, af'
-	ret
+	ret.lil
 
 RestoreRegisters:
 	ld	(SaveSP), sp
-	ld	sp, pixelShadow-$1B
+	ld	sp, $E000
 	pop	iy
 	pop	ix
 	pop	hl
@@ -58,42 +56,30 @@ RestoreRegisters:
 	ld	sp, (SaveSP)
 	ret
 
-PutBankinSlot1:	;unused, since ROM bank 1 is always alloted to SMPS.
-	ex	de, hl		;point hl to appvar
-	ld	de, BankSlot1	;point de to bank slot	
-	ld	bc, 16
-	add	hl, bc		;offset hl to actual data
-	ld	c, (hl)
-	inc	hl
-	ld	b, (hl)
-	inc	hl
-	ldir			;copy appvar to bank slot
-	ret
-
 PutBankinSlot2:
-	ex	de, hl		;point hl to appvar
-	ld	de, BankSlot2	;point de to bank slot	
+	ex	de, hl			;point HL to appvar
+	ld	de, BankSlot2+romStart	;point DE to bank slot	
 	ld	bc, 16
-	add	hl, bc		;offset hl to actual data
+	add	hl, bc			;offset HL to actual data
 	ld	c, (hl)
 	inc	hl
 	ld	b, (hl)
 	inc	hl
-	ldir			;copy appvar to bank slot
+	ldir				;copy appvar to bank slot
 	ret
 
 ExitGame:
-	call	SaveGame
+	call.s	SaveGame
 	;exit 8bpp mode
-	ld	a, (lcdNormalMode)
-	ld	(mpLcdCtrl), a
+	ld	hl, lcdNormalMode
+	ld	(mpLcdCtrl), hl
 	ld	sp, (SegaSP)
 	ret
 
 LoadSave:
 	ld	hl, SaveFile
-	call	_Mov9toOP1	;check for a save file
-	call	_Arc_Unarc
+	call	Mov9ToOP1	;check for a save file
+	call	Arc_Unarc
 	
 	ex	de, hl
 	ld	de, Score
@@ -112,15 +98,15 @@ LoadSave:
 	ld	de, EmeraldFlags
 	ldi
 	ld	a, (de)
-	ld	(gameMem+$D292), a
+	ld	($D292), a
 	ld	hl, SaveFile
-	call	_Mov9toOP1
-	jp	_Arc_Unarc
+	call	Mov9ToOP1
+	jp	Arc_Unarc
 
 SaveGame:
 	ld	hl, SaveFile
-	call	_Mov9toOP1
-	jp	_Arc_Unarc
+	call	Mov9ToOP1
+	jp	Arc_Unarc
 	ld	hl, Score
 	ldi
 	ldi
@@ -137,12 +123,10 @@ SaveGame:
 	ldi
 	ld	a, $01
 	ld	(de), a
-	jp	_Arc_Unarc
+	jp	Arc_Unarc
 
 ;Appvar Headers
 
-SaveFile:
-	.db	AppvarObj, "S2Save", 0
 
 Bank04:
 	.db	AppvarObj, "Bank04", 0
@@ -227,3 +211,7 @@ Bank30:
 
 Bank31:
 	.db	AppVarObj, "Bank31", 0
+
+SaveFile:
+	.db	AppvarObj, "S2Save", 0
+.ASSUME ADL=0

@@ -1,3 +1,5 @@
+.ORG $8000
+
 Art_Sonic_Mirrored:		;$8000
 #import "art\sonic\art_ucmp_sonic_mirrored.bin"
 

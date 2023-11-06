@@ -1,3 +1,5 @@
+.ORG $8000
+
 Art_Sonic_Gliding:
 #import "art\sonic\art_ucmp_sonic_gliding.bin"
 

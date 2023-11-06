@@ -1,3 +1,5 @@
+.ORG $8000
+
 Layout_GMZ1:
 #if Version=2
 #import "layout\gmz\layout_gmz1_2.2.bin"

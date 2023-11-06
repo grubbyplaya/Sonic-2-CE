@@ -1,3 +1,5 @@
+.ORG $8000
+
 Layout_GHZ1:
 #import "layout\ghz\layout_ghz1.bin"
 

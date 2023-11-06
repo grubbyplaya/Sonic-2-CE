@@ -1,3 +1,5 @@
+.ORG $8000
+
 Art_SHZ_Level_Tiles:		;$8000
 #import "art\level\shz\art_shz_level_tiles.bin"
 

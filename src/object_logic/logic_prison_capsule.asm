@@ -1,17 +1,18 @@
+.assume ADL=0
 Logic_PrisonCapsule:		;$9020
-.dl PrisonCapsule_State_00
-.dl PrisonCapsule_State_01
-.dl PrisonCapsule_State_02
-.dl PrisonCapsule_State_03
-.dl PrisonCapsule_State_04
-.dl PrisonCapsule_State_05
+.dw PrisonCapsule_State_00
+.dw PrisonCapsule_State_01
+.dw PrisonCapsule_State_02
+.dw PrisonCapsule_State_03
+.dw PrisonCapsule_State_04
+.dw PrisonCapsule_State_05
 
 ;initialiser
 PrisonCapsule_State_00:		;$902C
 .db $FF, $08			;set PLC value to $10 (prison capsule art)
 	.db $10
 .db $18, $00
-	.dl VF_DoNothing
+	.dw VF_DoNothing
 .db $FF, $06			;spawn special object $06
 	.db SpecObj_HideTimerRings
 	.dw $0000
@@ -29,53 +30,53 @@ PrisonCapsule_State_00:		;$902C
 ;subtracting 64 from vertical velocity
 PrisonCapsule_State_01:		;$9043
 .db $04, $01
-	.dl PrisonCapsule_AdjustVelocities_a96_a64
+	.dw PrisonCapsule_AdjustVelocities_a96_a64
 .db $04, $01
-	.dl PrisonCapsule_AdjustVelocities_s96_a64
+	.dw PrisonCapsule_AdjustVelocities_s96_a64
 .db $04, $01
-	.dl PrisonCapsule_AdjustVelocities_s96_s64
+	.dw PrisonCapsule_AdjustVelocities_s96_s64
 .db $04, $01
-	.dl PrisonCapsule_AdjustVelocities_a96_s64
+	.dw PrisonCapsule_AdjustVelocities_a96_s64
 .db $04, $01
-	.dl PrisonCapsule_AdjustVelocities_s96_s64
+	.dw PrisonCapsule_AdjustVelocities_s96_s64
 .db $04, $01
-	.dl PrisonCapsule_AdjustVelocities_a96_s64
+	.dw PrisonCapsule_AdjustVelocities_a96_s64
 .db $04, $01
-	.dl PrisonCapsule_AdjustVelocities_a96_a64
+	.dw PrisonCapsule_AdjustVelocities_a96_a64
 .db $04, $01
-	.dl PrisonCapsule_AdjustVelocities_s96_a64
+	.dw PrisonCapsule_AdjustVelocities_s96_a64
 .db $02, $01
-	.dl PrisonCapsule_AdjustVelocities_s96_a64
+	.dw PrisonCapsule_AdjustVelocities_s96_a64
 .db $02, $01
-	.dl PrisonCapsule_AdjustVelocities_a96_a64
+	.dw PrisonCapsule_AdjustVelocities_a96_a64
 .db $02, $01
-	.dl PrisonCapsule_AdjustVelocities_a96_s64
+	.dw PrisonCapsule_AdjustVelocities_a96_s64
 .db $02, $01
-	.dl PrisonCapsule_AdjustVelocities_s96_s64
+	.dw PrisonCapsule_AdjustVelocities_s96_s64
 .db $04, $01
-	.dl PrisonCapsule_AdjustVelocities_s96_s64
+	.dw PrisonCapsule_AdjustVelocities_s96_s64
 .db $04, $01
-	.dl PrisonCapsule_AdjustVelocities_a96_s64
+	.dw PrisonCapsule_AdjustVelocities_a96_s64
 .db $04, $01
-	.dl PrisonCapsule_AdjustVelocities_a96_a64
+	.dw PrisonCapsule_AdjustVelocities_a96_a64
 .db $04, $01
-	.dl PrisonCapsule_AdjustVelocities_s96_a64
+	.dw PrisonCapsule_AdjustVelocities_s96_a64
 .db $04, $01
-	.dl PrisonCapsule_AdjustVelocities_a96_a64
+	.dw PrisonCapsule_AdjustVelocities_a96_a64
 .db $04, $01
-	.dl PrisonCapsule_AdjustVelocities_s96_a64
+	.dw PrisonCapsule_AdjustVelocities_s96_a64
 .db $04, $01
-	.dl PrisonCapsule_AdjustVelocities_s96_s64
+	.dw PrisonCapsule_AdjustVelocities_s96_s64
 .db $04, $01
-	.dl PrisonCapsule_AdjustVelocities_a96_s64
+	.dw PrisonCapsule_AdjustVelocities_a96_s64
 .db $02, $01
-	.dl PrisonCapsule_AdjustVelocities_a96_s64
+	.dw PrisonCapsule_AdjustVelocities_a96_s64
 .db $02, $01
-	.dl PrisonCapsule_AdjustVelocities_s96_s64
+	.dw PrisonCapsule_AdjustVelocities_s96_s64
 .db $02, $01
-	.dl PrisonCapsule_AdjustVelocities_s96_a64
+	.dw PrisonCapsule_AdjustVelocities_s96_a64
 .db $02, $01
-	.dl PrisonCapsule_AdjustVelocities_a96_a64
+	.dw PrisonCapsule_AdjustVelocities_a96_a64
 .db $FF, $00
 
 
@@ -85,85 +86,85 @@ PrisonCapsule_State_02:		;$90A5
 	.dw $0000
 	.dw $0000
 .db $40, $01
-	.dl PrisonCapsule_SetEndOfLevel
+	.dw PrisonCapsule_SetEndOfLevel
 .db $10, $02
-	.dl PrisonCapsule_SetEndOfLevel
+	.dw PrisonCapsule_SetEndOfLevel
 .db $10, $03
-	.dl PrisonCapsule_SetEndOfLevel
+	.dw PrisonCapsule_SetEndOfLevel
 .db $FF, $02
-	.dl LABEL_64B1		;TODO: resets ix+$1F. what's 1f used for?
+	.dw LABEL_64B1		;TODO: resets ix+$1F. what's 1f used for?
 .db $FF, $05
 	.db $03
 .db $0C, $03
-	.dl PrisonCapsule_SetEndOfLevel
+	.dw PrisonCapsule_SetEndOfLevel
 .db $FF, $00
 
 
 ;second part of end-of-level sequence
 PrisonCapsule_State_03:		;$90C4
 .db $0C, $03
-	.dl PrisonCapsule_SetEndOfLevel
+	.dw PrisonCapsule_SetEndOfLevel
 .db $FF, $06
 	.db Object_Explosion
 	.dw $0000
 	.dw $FFFF
 	.db $00
 .db $0C, $03
-	.dl PrisonCapsule_SetEndOfLevel
+	.dw PrisonCapsule_SetEndOfLevel
 .db $FF, $06
 	.db Object_Explosion
 	.dw $FFE8
 	.dw $FFDC
 	.db $00
 .db $FF, $02
-	.dl PrisonCapsule_CreateAnimal
+	.dw PrisonCapsule_CreateAnimal
 .db $0C, $03
-	.dl PrisonCapsule_SetEndOfLevel
+	.dw PrisonCapsule_SetEndOfLevel
 .db $FF, $06
 	.db Object_Explosion
 	.dw $0008
 	.dw $0004
 	.db $00
 .db $0C, $03
-	.dl PrisonCapsule_SetEndOfLevel
+	.dw PrisonCapsule_SetEndOfLevel
 .db $FF, $02
-	.dl PrisonCapsule_CreateAnimal
+	.dw PrisonCapsule_CreateAnimal
 .db $FF, $06
 	.db Object_Explosion
 	.dw $FFF8
 	.dw $0000
 	.db $00
 .db $0C, $03
-	.dl PrisonCapsule_SetEndOfLevel
+	.dw PrisonCapsule_SetEndOfLevel
 .db $FF, $06
 	.db Object_Explosion
 	.dw $0018
 	.dw $FFDC
 	.db $00
 .db $0C, $03
-	.dl PrisonCapsule_SetEndOfLevel
+	.dw PrisonCapsule_SetEndOfLevel
 .db $FF, $06
 	.db Object_Explosion
 	.dw $FFFA
 	.dw $0000
 	.db $00
 .db $0C, $03
-	.dl PrisonCapsule_SetEndOfLevel
+	.dw PrisonCapsule_SetEndOfLevel
 .db $FF, $02
-	.dl PrisonCapsule_CreateAnimal
+	.dw PrisonCapsule_CreateAnimal
 .db $0C, $03
-	.dl PrisonCapsule_SetEndOfLevel
+	.dw PrisonCapsule_SetEndOfLevel
 .db $FF, $00
 
 ;sets camera position
 PrisonCapsule_State_04:		;$9122
 .db $E0, $01
-	.dl PrisonCapsule_LockCamera
+	.dw PrisonCapsule_LockCamera
 .db $FF, $00
 
 PrisonCapsule_State_05:		;$9128
 .db $70, $01
-	.dl PrisonCapsule_MoveDown
+	.dw PrisonCapsule_MoveDown
 .db $FF, $00
 
 
@@ -215,7 +216,7 @@ PrisonCapsule_LockCamera:		;$916E
 	set     7, (ix+$03)
 	res     6, (ix+$04)			;clear the "hide object" flag
 	
-	ld      hl, (gameMem+$D176)		;get vertical cam position
+	ld      hl, ($D176)		;get vertical cam position
 	ld      de, -40				;subtract 40 from cam pos
 	add     hl, de
 
@@ -274,16 +275,16 @@ Data_PrisonCapsule_CameraPositions:		;$91BB
 PrisonCapsule_SetEndOfLevel:	;$91D7
 	call    VF_Engine_CheckCollisionAndAdjustPlayer
 	
-	ld      a, (gameMem+$D501)			;check player state
+	ld      a, ($D501)			;check player state
 	cp      PlayerState_EndOfLevel
 	jr      z, +_
 
-	ld      a, (gameMem+$D503)			;check to see if player is jumping
+	ld      a, ($D503)			;check to see if player is jumping
 	bit     0, a
 	jr      nz, +_
 
 	ld      a, PlayerState_EndOfLevel
-	ld      (gameMem+$D502), a			;set player state
+	ld      ($D502), a			;set player state
 
 _:	ld      a, (ix+$1E)			;make the capsule vibrate
 	inc     (ix+$1E)
@@ -301,10 +302,10 @@ _:	ld      a, (ix+$1E)			;make the capsule vibrate
 
 
 DATA_B28_9207:
-.dl LABEL_B28_9215
-.dl LABEL_B28_9225
-.dl LABEL_B28_9225
-.dl LABEL_B28_9215
+.dw LABEL_B28_9215
+.dw LABEL_B28_9225
+.dw LABEL_B28_9225
+.dw LABEL_B28_9215
 
 
 ;Checks for collisions and adds 96 to horizontal velocity

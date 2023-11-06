@@ -1,3 +1,4 @@
+.ASSUME ADL=0
 ;/****************************************************************
 ; *	Starting positions for screen & Sonic for each zone/act.	*
 ; ****************************************************************/
@@ -6,70 +7,70 @@
 ;    pointers for each zone
 ;-------------------------------
 LevelLayout_Data_InitPos:		;$5401
-.dl LevelLayout_Data_InitPos_UGZ
-.dl LevelLayout_Data_InitPos_SHZ
-.dl LevelLayout_Data_InitPos_ALZ
-.dl LevelLayout_Data_InitPos_GHZ
-.dl LevelLayout_Data_InitPos_GMZ
-.dl LevelLayout_Data_InitPos_SEZ
-.dl LevelLayout_Data_InitPos_CEZ
-.dl DATA_543F 
-.dl DATA_5445 
-.dl DATA_544B
+.dw LevelLayout_Data_InitPos_UGZ
+.dw LevelLayout_Data_InitPos_SHZ
+.dw LevelLayout_Data_InitPos_ALZ
+.dw LevelLayout_Data_InitPos_GHZ
+.dw LevelLayout_Data_InitPos_GMZ
+.dw LevelLayout_Data_InitPos_SEZ
+.dw LevelLayout_Data_InitPos_CEZ
+.dw DATA_543F 
+.dw DATA_5445 
+.dw DATA_544B
 
 
 ;-------------------------------
 ;    pointers for each act
 ;-------------------------------
 LevelLayout_Data_InitPos_UGZ:	;$5415
-.dl LevelLayout_Data_InitPos_UGZ1
-.dl LevelLayout_Data_InitPos_UGZ2
-.dl LevelLayout_Data_InitPos_UGZ3
+.dw LevelLayout_Data_InitPos_UGZ1
+.dw LevelLayout_Data_InitPos_UGZ2
+.dw LevelLayout_Data_InitPos_UGZ3
 
 LevelLayout_Data_InitPos_SHZ:	;$541B
-.dl LevelLayout_Data_InitPos_SHZ1
-.dl LevelLayout_Data_InitPos_SHZ2
-.dl LevelLayout_Data_InitPos_SHZ3
+.dw LevelLayout_Data_InitPos_SHZ1
+.dw LevelLayout_Data_InitPos_SHZ2
+.dw LevelLayout_Data_InitPos_SHZ3
 
 LevelLayout_Data_InitPos_ALZ:	;$5421
-.dl LevelLayout_Data_InitPos_ALZ1
-.dl LevelLayout_Data_InitPos_ALZ2
-.dl LevelLayout_Data_InitPos_ALZ3
+.dw LevelLayout_Data_InitPos_ALZ1
+.dw LevelLayout_Data_InitPos_ALZ2
+.dw LevelLayout_Data_InitPos_ALZ3
 
 LevelLayout_Data_InitPos_GHZ:	;$5427
-.dl LevelLayout_Data_InitPos_GHZ1
-.dl LevelLayout_Data_InitPos_GHZ2
-.dl LevelLayout_Data_InitPos_GHZ3
+.dw LevelLayout_Data_InitPos_GHZ1
+.dw LevelLayout_Data_InitPos_GHZ2
+.dw LevelLayout_Data_InitPos_GHZ3
 
 LevelLayout_Data_InitPos_GMZ:	;$542D
-.dl LevelLayout_Data_InitPos_GMZ1
-.dl LevelLayout_Data_InitPos_GMZ2
-.dl LevelLayout_Data_InitPos_GMZ3
+.dw LevelLayout_Data_InitPos_GMZ1
+.dw LevelLayout_Data_InitPos_GMZ2
+.dw LevelLayout_Data_InitPos_GMZ3
 
 LevelLayout_Data_InitPos_SEZ:	;$5433
-.dl LevelLayout_Data_InitPos_SEZ1
-.dl LevelLayout_Data_InitPos_SEZ2
-.dl LevelLayout_Data_InitPos_SEZ3
+.dw LevelLayout_Data_InitPos_SEZ1
+.dw LevelLayout_Data_InitPos_SEZ2
+.dw LevelLayout_Data_InitPos_SEZ3
 
 LevelLayout_Data_InitPos_CEZ:	;$5439
-.dl LevelLayout_Data_InitPos_CEZ1
-.dl LevelLayout_Data_InitPos_CEZ2
-.dl LevelLayout_Data_InitPos_CEZ3
+.dw LevelLayout_Data_InitPos_CEZ1
+.dw LevelLayout_Data_InitPos_CEZ2
+.dw LevelLayout_Data_InitPos_CEZ3
 
 DATA_543F:
-.dl DATA_54F9
-.dl DATA_54F9
-.dl DATA_54F9
+.dw DATA_54F9
+.dw DATA_54F9
+.dw DATA_54F9
 
 DATA_5445:
-.dl DATA_5501
-.dl DATA_5509
-.dl DATA_5511
+.dw DATA_5501
+.dw DATA_5509
+.dw DATA_5511
 
 DATA_544B:
-.dl DATA_5519
-.dl DATA_5521
-.dl DATA_5529
+.dw DATA_5519
+.dw DATA_5521
+.dw DATA_5529
 
 
 

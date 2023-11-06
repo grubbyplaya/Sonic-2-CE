@@ -1,4 +1,4 @@
-.ORG $D09466
+.ORG $8000
 
 Art_Intro_Sequence:		;$8000
 #import "art\intro_title\art_intro_sequence.bin"
