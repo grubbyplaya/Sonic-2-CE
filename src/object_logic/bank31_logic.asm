@@ -103,9 +103,9 @@ LABEL_B31_B53E:
 	inc	(ix+$1F)
 	ld	a, (ix+$1F)
 	and	$0F
+	add	a, a
 	ld	l, a
-	ld	h, $02
-	mlt	hl
+	ld	h, $00
 	ld	bc, DATA_B31_B590
 	add	hl, bc
 	ld	c, (hl)
@@ -127,8 +127,8 @@ LABEL_B31_B53E:
 	ld	de, ($D4A4)		;compare with act's water level
 	xor	a
 	sbc	hl, de
-	jp	nc, LABEL_B31_B584		;jump if camera below water level
-	
+	jr	nc, LABEL_B31_B584		;jump if camera below water level
+
 	dec	hl
 	ld	a, h
 	cpl	
@@ -139,7 +139,7 @@ LABEL_B31_B53E:
 	
 	ld	a, h
 	or	a
-	jp	nz, LABEL_B31_B584		
+	jr	nz, LABEL_B31_B584		
 	ld	a, l
 	ld	($D132), a
 	ret	

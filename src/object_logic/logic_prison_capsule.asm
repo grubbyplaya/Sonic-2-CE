@@ -92,7 +92,7 @@ PrisonCapsule_State_02:		;$90A5
 .db $10, $03
 	.dw PrisonCapsule_SetEndOfLevel
 .db $FF, $02
-	.dw LABEL_64B1		;TODO: resets ix+$1F. what's 1f used for?
+	.dw LABEL_200 + $2D		;TODO: resets ix+$1F. what's 1f used for?
 .db $FF, $05
 	.db $03
 .db $0C, $03

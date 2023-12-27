@@ -3,7 +3,7 @@
 #define	VDP_SATAddress			SegaVRAM+$3F00
 #define DrawTilemapTrig			$D4C0
 #define DrawSATTrig			$D4C1
-
+#define ScrollingTrig			$D4C2
 ; =============================================================================
 ;	VDP_InitRegisters()
 ; -----------------------------------------------------------------------------
@@ -247,7 +247,7 @@ _:	; write the low-order byte
 	or	c
 	jr	nz, -_
 	cpl
-	ld.s	(DrawTilemapTrig), a
+	ld	(DrawTilemapTrig), a
 	ret
 
 
@@ -380,7 +380,7 @@ _:	ldi	;write a char to the VDP memory
 	inc	de
 	
 	; copy the tile attribute byte to the VDP
-	ld.s	a, (VDP_DefaultTileAttribs)
+	ld	a, (VDP_DefaultTileAttribs)
 	ld	(de), a
 	
 	; increment the source pointer
@@ -482,71 +482,79 @@ _:	pop	bc
 VDP_UpdateSAT:		; Ported
 	; check the SAT update trigger. don't bother updating
 	; if it is 0
-	ld	hl, DrawSATTrig
+	ld	hl, VDP_SATUpdateTrig
 	xor	a
-	or.s	(hl)
+	or	(hl)
 	ret	z
 	
 	; reset the trigger
-	ld.s	(hl), $00
+	ld	(hl), a
 	
 	; check the frame counter. if it's odd do a descending update
-	ld.s	a, (FrameCounter)
+	ld	a, (FrameCounter)
 	rrca
-	jp	c, VDP_UpdateSAT_Descending
-	
+.ASSUME ADL=1
+	jp.il	c, VDP_UpdateSAT_Descending + romStart
+	call.il	VDP_UpdateSAT_Attributes + romStart
+	ret
+
+VDP_UpdateSAT_Attributes:
 	; copy 64 v-pos attributes to the VDP
-	ld.lil	hl, VDP_WorkingSAT_VPOS + ramStart	;copy 64 VPOS bytes.
-	ld.lil	de, SegaVRAM+$3F00
+	ld	hl, VDP_WorkingSAT_VPOS + romStart	;copy 64 VPOS bytes.
+	ld	de, SegaVRAM+$3F00
 	ld	bc, $40
 	ldir
 	
 	; copy 64 h-pos and char code attributes to the VDP
-	ld.lil	hl, VDP_WorkingSAT_HPOS + ramStart
-	ld.lil	de, SegaVRAM+$3F80
-	ld	bc, $40
+	ld	hl, VDP_WorkingSAT_HPOS + romStart
+	ld	de, SegaVRAM+$3F80
+	ld	bc, $80
 	ldir
-	ld.s	(DrawSATTrig), a
-	ret
+	ld.sis	(DrawSATTrig), a
+	ret.sis
 
 
 VDP_UpdateSAT_Descending:	; Ported
-	ld	(SaveSP), sp	
+	ld	(tempSP), sp	
 	; copy the 8 player sprites first (so that they always
 	; appear on top).
-	ld.lil	hl, VDP_WorkingSAT_VPOS + ramStart
-	ld.lil	de, VDP_SATAddress
-	ld	bc, $08
-	ldir.l
+	ld	hl, VDP_WorkingSAT_VPOS + romStart
+	ld	de, VDP_SATAddress
+	ld	bc, 8
+	ldir
 
 	; copy the remaining 56 sprites in descending order
-	ld.lil	hl, VDP_WorkingSAT_VPOS + $3F + ramStart
-	ld.lil	de, VDP_SATAddress + $3F
-	ld	bc, $38
-	lddr.l
-
-	; copy hpos and char codes for the 8 player sprites
-	ld.lil	hl, VDP_WorkingSAT_HPOS + ramStart
-	ld.lil	de, VDP_SATAddress + $80
-	ld	bc, $10
-	ldir.l
-
-	; copy the remaining 56 hpos and char codes in descending order
-	ld.lil	hl, VDP_WorkingSAT_HPOS + $7E + ramStart
-	ld.lil	de, VDP_SATAddress + $87
+	ld	hl, VDP_WorkingSAT_VPOS + $3F + romStart
 	ld	b, 56
-	ld	sp, -4
-
-_:	ldi.l
-	ldi.l
-	add	hl, sp
+_:	ld	a, (hl)
+	ld	(de), a
+	dec	hl
+	inc	de
 	djnz	-_
 
-	ld	sp, (SaveSP)
-	ld	a, b
-	ld.s	(DrawSATTrig), a
-	ret
+	; copy hpos and char codes for the 8 player sprites
+	ld	hl, VDP_WorkingSAT_HPOS + romStart
+	ld	de, VDP_SATAddress + $80
+	ld	bc, $10
+	ldir
 
+	; copy the remaining 56 hpos and char codes in descending order
+	ld	hl, VDP_WorkingSAT_HPOS + $80 + romStart
+	ld	a, $37
+	ld	sp, -4
+
+_:	ldi
+	ldi
+	add	hl, sp
+	dec	a
+	jr	nz, -_
+
+	ld	sp, (tempSP)
+.ASSUME ADL=0
+	inc	a
+	ld.s	(DrawSATTrig), a
+	call.is	+_
+_:	ret
 
 ; =============================================================================
 ;	VDP_ClearScreenMap()							UNUSED
@@ -594,8 +602,6 @@ VDP_ClearScreen:	 ;$17AC
 	ld	bc, $0380
 	ld	de, $0100
 	call	VDP_Write
-	neg
-	ld	(DrawTilemapTrig), a
 	;FALL THROUGH
 
 ; =============================================================================
@@ -628,9 +634,6 @@ _:	; set the vpos and clear the hpos and char code
 	inc	de
 	
 	djnz	-_
-	
-	; flag the SAT update trigger
-	ld	a, $FF
+	xor	a
 	ld	(DrawSATTrig), a
-	
 	ret

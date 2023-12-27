@@ -52,7 +52,6 @@ LABEL_B30_8E69:
 	add	a, a
 	add	a, a
 	add	a, (ix+$3F)
-	mlt	de
 	ld	e, a
 	ld	d, $00
 	ld	hl, DATA_B30_8E9B
@@ -143,10 +142,10 @@ _: 	ld	l, (ix+$18)
 	cpl	
 	ld	l, a
 	xor	a
-	sbc.s	hl, de
-	jp	c, LABEL_B30_8F4B
+	sbc	hl, de
+	jr	c, LABEL_B30_8F4B
 	res	1, (ix+$1f)
-	jp	LABEL_B30_8F4B
+	jr	LABEL_B30_8F4B
 
 LABEL_B30_8F42:
 	xor	a
@@ -328,8 +327,6 @@ DATA_B30_903D:
 DATA_B30_905D:
 .db $FF, $08
 	.db $19
-.db $FF, $09
-	.db $09
 .db $E0, $01
 	.dw LABEL_B30_9285
 .db $FF, $03
@@ -486,7 +483,7 @@ DATA_B30_9157:
 .db $FF, $02
 	.dw LABEL_B30_913C
 .db $FF, $02
-	.dw LABEL_1CCA
+	.dw LABEL_200 + $120
 .db $08, $03
 	.dw VF_DoNothing
 .db $08, $04
@@ -685,7 +682,7 @@ LABEL_B30_929B:
 	ret	
 
 LABEL_B30_92B3:
-	call	LABEL_6355
+	call	LABEL_200 + $1B
 	ld	(ix+$21), $00
 	ld	hl, ($d174)
 	ld	de, $0200
@@ -694,7 +691,7 @@ LABEL_B30_92B3:
 	ld	a, h
 	or	l
 	ret	nz
-	call	LABEL_49CF
+	call	LABEL_200 + $F3
 	ld	hl, $0200
 	ld	($d282), hl		;set max camera x position
 	ld	($d280), hl		;set min camera x position
@@ -705,9 +702,9 @@ LABEL_B30_92D7:
 	call	LABEL_B30_934A
 	inc	(ix+$1e)
 	ld	a, (ix+$24)
+	add	a, a
 	ld	e, a
-	ld	d, $03
-	mlt	de
+	ld	d, $00
 	ld	hl, DATA_B30_92F8
 	add	hl, de
 	ld	a, (hl)
@@ -756,7 +753,7 @@ LABEL_B30_9326:
 	ret	
 
 LABEL_B30_933A:
-	call	LABEL_6355
+	call	LABEL_200 + $1B
 	ld	(ix+$21), $00
 	dec	(ix+$1f)
 	ret	nz
@@ -764,7 +761,7 @@ LABEL_B30_933A:
 	ret	
 
 LABEL_B30_934A:
-	call	LABEL_6355
+	call	LABEL_200 + $1B
 	ld	a, (ix+$21)
 	and	$0f
 	ret	z
@@ -799,7 +796,7 @@ LABEL_B30_9386:
 	ld	hl, $0180
 	ld	(ix+$16), l
 	ld	(ix+$17), h
-	call	LABEL_75C5
+	call	LABEL_200 + $60
 	bit	1, (ix+$22)
 	ret	z
 	ld	hl, $0000
@@ -825,7 +822,7 @@ LABEL_B30_93C2:
 	ld	hl, $0300
 	ld	(ix+$18), l
 	ld	(ix+$19), h
-	call	LABEL_75C5
+	call	LABEL_200 + $60
 	call	VF_Engine_UpdateObjectPosition
 	ld	l, (ix+$11)
 	ld	h, (ix+$12)

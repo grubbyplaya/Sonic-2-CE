@@ -1,7 +1,22 @@
 .ASSUME ADL=1
 CheckForBank: 			;it's bankin' time
- 	call.sis StoreRegisters
-	sub	$04
+	di
+ 	call.is	StoreRegisters
+	ld	hl, Engine_ResetInterruptFlag
+	push.sis hl		;Copy the return address to the 16-bit stack
+
+	;check for object logic banks
+	ld	hl, $D30000
+	cp	28
+	jp	z, LoadBankFromRAM + romStart
+	ld	h, $40
+	cp	30
+	jp	z, LoadBankFromRAM + romStart
+	ld	h, $80
+	cp	31
+	jp	z, LoadBankFromRAM + romStart
+
+	sub	$04		;banks 0-3 are the actual engine/SMPS
 	ld	l, a
 	ld	h, $08
 	mlt	hl
@@ -13,14 +28,13 @@ CheckForBank: 			;it's bankin' time
 	jp	c, ExitGame
 	call	PutBankinSlot2+romStart
 	ex	af, af'
-	call.lis RestoreRegisters
+CheckForBank_ToggleInterrupt:
+	call.is RestoreRegisters
+	ld	a, ($E020)
+	or	a
+	ret	nz
+	ei
 	ret
-
-SegaSP:	;used to exit the game
-	.dw	$0623
-
-SaveSP:
-	.dw	$1022
 
 StoreRegisters:		;stores registers in RAM
 	ld	(SaveSP), sp
@@ -60,7 +74,7 @@ PutBankinSlot2:
 	ex	de, hl			;point HL to appvar
 	ld	de, BankSlot2+romStart	;point DE to bank slot	
 	ld	bc, 16
-	add	hl, bc			;offset HL to actual data
+	add	hl, bc			;offset HL into actual data
 	ld	c, (hl)
 	inc	hl
 	ld	b, (hl)
@@ -68,8 +82,14 @@ PutBankinSlot2:
 	ldir				;copy appvar to bank slot
 	ret
 
+LoadBankFromRAM:
+	ld	de, $D28000
+	ld	bc, $4000
+	ldir
+	jp	CheckForBank_ToggleInterrupt + romStart
+
 ExitGame:
-	call.s	SaveGame
+	;call.sis SaveGame
 	;exit 8bpp mode
 	ld	hl, lcdNormalMode
 	ld	(mpLcdCtrl), hl
@@ -106,7 +126,7 @@ LoadSave:
 SaveGame:
 	ld	hl, SaveFile
 	call	Mov9ToOP1
-	jp	Arc_Unarc
+	call	Arc_Unarc
 	ld	hl, Score
 	ldi
 	ldi
@@ -200,17 +220,8 @@ Bank26:
 Bank27:
 	.db	AppVarObj, "Bank27", 0
 
-Bank28:
-	.db	AppVarObj, "Bank28", 0
-
 Bank29:
 	.db	AppvarObj, "Bank29", 0
-
-Bank30:
-	.db	AppVarObj, "Bank30", 0
-
-Bank31:
-	.db	AppVarObj, "Bank31", 0
 
 SaveFile:
 	.db	AppvarObj, "S2Save", 0

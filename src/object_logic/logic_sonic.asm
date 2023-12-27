@@ -55,7 +55,7 @@ Logic_Sonic:	;$A6A6
 
 DATA_B31_A70E:
 .db $FF, $02
-	.dw LABEL_2FCB
+	.dw LABEL_200 + $66
 .db $FF, $03
 
 Sonic_State_01:	;$A714
@@ -129,7 +129,7 @@ Sonic_State_09:	;$A76A
 DATA_B31_A772:
 .db $FF, $07
 	.dw VF_Player_Anim_CalcBalanceFrame
-	.dw LABEL_33B7
+	.dw LABEL_200 + $E1
 .db $FF, $00
 
 Sonic_State_0A:	;$A77A
@@ -151,7 +151,7 @@ DATA_B31_A788:
 DATA_B31_A78E:	;loop state
 .db $FF, $07
 	.dw VF_Player_CalculateLoopFrame
-	.dw LABEL_359B
+	.dw LABEL_200 + $B4
 .db $FF, $00
 
 
@@ -189,13 +189,13 @@ Sonic_State_0E:	;$A79C
 	.dw VF_Player_HandleFalling
 .db $08, $01
 	.dw VF_Player_HandleFalling
-.db	$08, $02
+.db $08, $02
 	.dw VF_Player_HandleFalling
 .db $08, $03
 	.dw VF_Player_HandleFalling
 .db $08, $04
 	.dw VF_Player_HandleFalling
-.db	$08, $05
+.db $08, $05
 	.dw VF_Player_HandleFalling
 .db $08, $06
 	.dw VF_Player_HandleFalling
@@ -213,7 +213,7 @@ Sonic_State_0E:	;$A79C
 	.dw VF_Player_HandleFalling
 .db $08, $01
 	.dw VF_Player_HandleFalling
-.db	$08, $02
+.db $08, $02
 	.dw VF_Player_HandleFalling
 .db $08, $03
 	.dw VF_Player_HandleFalling
@@ -266,55 +266,55 @@ DATA_B31_A819:
 
 DATA_B31_A863:
 .db $04, $54
-	.dw LABEL_375F
+	.dw LABEL_200 + $C9
 .db $04, $55
-	.dw LABEL_375F
+	.dw LABEL_200 + $C9
 .db $04, $56
-	.dw LABEL_375F
+	.dw LABEL_200 + $C9
 .db $04, $57
-	.dw LABEL_375F
+	.dw LABEL_200 + $C9
 .db $FF, $00
 
 DATA_B31_A875:
 .db $06, $44
-	.dw LABEL_408E
+	.dw LABEL_200 + $96
 .db $FF, $00
 
 DATA_B31_A87B:
 .db $06, $42
-	.dw LABEL_40B2
+	.dw LABEL_200 + $9C
 .db $06, $43
-	.dw LABEL_40B2
+	.dw LABEL_200 + $9C
 .db $06, $44
-	.dw LABEL_40B2
+	.dw LABEL_200 + $9C
 .db $06, $45
-	.dw LABEL_40B2
+	.dw LABEL_200 + $9C
 .db $06, $46
-	.dw LABEL_40B2
+	.dw LABEL_200 + $9C
 .db $06, $47
-	.dw LABEL_40B2
+	.dw LABEL_200 + $9C
 .db $FF, $00
 
 DATA_B31_A895:
 .db $06, $3F
-	.dw LABEL_40D6
+	.dw LABEL_200 + $93
 .db $06, $40
-	.dw LABEL_40D6
+	.dw LABEL_200 + $93
 .db $06, $3F
-	.dw LABEL_40D6
+	.dw LABEL_200 + $93
 .db $06, $41
-	.dw LABEL_40D6
+	.dw LABEL_200 + $93
 .db $FF, $00
 
 DATA_B31_A8A7:
 .db $06, $3C
-	.dw LABEL_4199
+	.dw LABEL_200 + $99
 .db $06, $3D
-	.dw LABEL_4199
+	.dw LABEL_200 + $99
 .db $06, $3C
-	.dw LABEL_4199
+	.dw LABEL_200 + $99
 .db $06, $3E
-	.dw LABEL_4199
+	.dw LABEL_200 + $99
 .db $FF, $00
 
 DATA_B31_A8B9:
@@ -376,28 +376,28 @@ DATA_B31_A903:
 
 DATA_B31_A90B:
 .db $03, $11
-	.dw LABEL_438A
+	.dw LABEL_200 + $AE
 .db $03, $12
-	.dw LABEL_438A
+	.dw LABEL_200 + $AE
 .db $03, $13
-	.dw LABEL_438A
+	.dw LABEL_200 + $AE
 .db $03, $14
-	.dw LABEL_438A
+	.dw LABEL_200 + $AE
 .db $03, $15
-	.dw LABEL_438A
+	.dw LABEL_200 + $AE
 .db $FF, $00
 
 DATA_B31_A921:
 .db $03, $11
-	.dw LABEL_424A
+	.dw LABEL_200 + $A2
 .db $03, $12
-	.dw LABEL_424A
+	.dw LABEL_200 + $A2
 .db $03, $13
-	.dw LABEL_424A
+	.dw LABEL_200 + $A2
 .db $03, $14
-	.dw LABEL_424A
+	.dw LABEL_200 + $A2
 .db $03, $15
-	.dw LABEL_424A
+	.dw LABEL_200 + $A2
 .db $FF, $00
 
 DATA_B31_A937:
@@ -439,10 +439,10 @@ LABEL_B31_A972:
 	ld	b, $0C
 	ld	a, (Engine_InputFlags)
 	and	$03
-	jp	z, LABEL_B31_A972
+	jr	z, LABEL_B31_A972
 	ld	b, $10
 	and	$01
-	jp	z, LABEL_B31_A972
+	jr	z, LABEL_B31_A972
 	ld	b, $08
 	ld	(ix + Object.FrameCounter), b
 	ret
@@ -450,7 +450,7 @@ LABEL_B31_A972:
 
 DATA_B31_A987:
 .db $0C, $1A
-	.dw LABEL_34A4
+	.dw LABEL_200 + $EA
 .db $FF, $05 
 	.db $0E
 .db $FF, $00

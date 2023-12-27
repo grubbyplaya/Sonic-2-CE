@@ -9,10 +9,12 @@
 #define ChkFindSym		$02050C
 #define Arc_Unarc		$021448
 #define ramStart		$D00000
+#define tempSP			$D0053F
 #define cmdPixelShadow		$D07396
 #define plotSScreen		$D09466
 #define saveSScreen		$D0EA1F
 #define pixelShadow		$D031F6
+#define SegaTileCache		pixelShadow
 #define VRAM 			$D40000
 #define VRAMEnd			VRAM+((320*240)*2)
 #define mpLcdCtrl		$E30018

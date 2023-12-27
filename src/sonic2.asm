@@ -36,6 +36,13 @@ _START:
 	inc	hl
 	ld	(hl), $08
 
+	;clear some space for the tile cache
+	ld	hl, SegaTileCache
+	ld	de, SegaTileCache+1
+	ld	bc, $7E00
+	ld	(hl), $00
+	ldir
+
 	;load palettes into RAM
 	ld	hl, Palettes
 	ld	de, $D2E100
@@ -54,16 +61,54 @@ _START:
 	inc	hl
 	ld	de, romStart
 	ldir
+
+	;load ROM banks 28, 30, and 31
+	ld	hl, Bank28
+	ld	de, $D30000
+	call	LoadBank
+
+	ld	hl, Bank30
+	ld	de, $D34000
+	call	LoadBank
+
+	ld	hl, Bank31
+	ld	de, $D38000
+	call	LoadBank
+
 	ld	a, $D2
 	ld	mb, a
-	;set the SMS stack
+	ld	($D2DE02), sp
 	ld.s	sp, $DFF0
 	jp.s	romStart	;start of program
 
+LoadBank:
+	push	de
+	call	Mov9ToOP1
+ 	call	ChkFindSym
+	ex	de, hl			;point HL to appvar
+	pop	de
+	ld	bc, 16
+	add	hl, bc			;offset HL into actual data
+	ld	c, (hl)
+	inc	hl
+	ld	b, (hl)
+	inc	hl
+	ldir				;copy appvar to bank slot
+	ret
+
 #include "includes/ti_equates.asm"
+
+Palettes:
+#include "includes\palettes.asm"
 
 Sonic2_Engine:
 	.db AppVarObj, "Sonic2", 0
 
-Palettes:
-#include "includes\palettes.asm"
+Bank28:
+	.db	AppVarObj, "Bank28", 0
+
+Bank30:
+	.db	AppVarObj, "Bank30", 0
+
+Bank31:
+	.db	AppVarObj, "Bank31", 0

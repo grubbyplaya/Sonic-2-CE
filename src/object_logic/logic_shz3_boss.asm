@@ -101,7 +101,7 @@ SHZ3_BirdRobot2_MainLogic:	;$9B79
 	call    VF_Engine_SetObjectVerticalSpeed
 	
 	ld      hl, $0200		;bounce speed threshold
-	call    LABEL_631A		;make the bird bounce
+	call    LABEL_200 + $12		;make the bird bounce
 	
 	jr      nz, ++_
 	
@@ -236,8 +236,6 @@ Logic_SHZ3_Boss:		;$9C44
 
 ;state 0 - initialiser
 SHZ3_Boss_State_00:		;$9C5E
-.db $FF, $09
-	.db $09
 .db $FF, $02
 	.dw SHZ3_Boss_Init
 .db $FF, $03
@@ -666,7 +664,7 @@ _:	ld      a, (de)				;or the value at (DE) with C
 
 ;Moves the camera down & makes player fall through to the lower area
 SHZ3_Boss_MoveCameraDown:		;$9EC8
-	call    LABEL_49CF
+	call    LABEL_200 + $F3
 	
 	ld      hl, ($D280)		;set max camera Y pos to min cam y pos
 	ld      ($D282), hl
@@ -692,7 +690,7 @@ SHZ3_Boss_SetInitialPosision:	;$9EDB
 SHZ3_Boss_MainLogic:			;$9EEE
 	call    VF_Engine_UpdateObjectPosition
 	call    SHZ3_Boss_SetVelocities
-	call    LABEL_6355		;check collisions
+	call    LABEL_200 + $1B		;check collisions
 	ld      a, (ix+$21)
 	and     $0F
 	ret     z			;return if there were no collisions
@@ -727,7 +725,7 @@ _:	ld      (ix+$18), c			;set vertical speed
 SHZ3_Boss_CollisionWithPlayer:	;$9F31
 	call    VF_Engine_UpdateObjectPosition
 	call    SHZ3_Boss_SetVelocities
-	call    LABEL_6355		;check collisions
+	call    LABEL_200 + $1B		;check collisions
 	xor     a
 	ld      (ix+$21), a			;reset the collision flags
 	dec     (ix+$1f)			;flash counter?

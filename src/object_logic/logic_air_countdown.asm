@@ -1,6 +1,7 @@
 .assume ADL=0
 Logic_AirCountdown:		;$B07A
 .dw DATA_B31_B07E
+.dw DATA_B31_B084
 
 DATA_B31_B07E:
 .db $01, $00
@@ -85,8 +86,6 @@ AirCountdown_TimerExpired:		;$B109
 	ld	($D36F), hl
 
 	res	1, (iy+$22)			;clear "collision at bottom" flag
-
-	ld	($DD04), a
 
 	pop	iy
 

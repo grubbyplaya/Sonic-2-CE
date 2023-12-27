@@ -17,11 +17,10 @@ Clear - Quit Game
 Delete - Reset Game
 
 # To Do
- - [x] Get the code to assemble using SPASM
- - [x] Reimplement SMS mappers with TI-OS routines
- - [x] Move all SMS RAM pointers to CE RAM
+ - [x] Get the codebase to assemble using SPASM
+ - [x] Reimplement SMS mappers using TI-OS romcalls
  - [x] Replace original 6bpp palettes with 16bpp approximations
- - [x] Add an equate file for the ROM banks
- - [ ] Add emulated VDP routines (90% done)
- - [ ] Fix remaining pointer issues and runtime errors (~70% done)
+ - [x] Emulate the SMS VDP, rendering and all (90% done)
+ - [ ] Fix remaining pointer issues and runtime errors (~75% done)
+ - [ ] (LOW PRIORITY) Get the game running at full speed
  - [ ] (LOW PRIORITY) expand the rendering area to fill the 84+ CE's screen

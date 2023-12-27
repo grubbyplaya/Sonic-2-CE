@@ -850,7 +850,6 @@ LABEL_B28_881E:
 	jr      z, +++_
 	ld      a, $22
 	ld      ($D502), a
-	ld      ($Dd04), a
 	ld      hl, $0300
 	ld      ($D3C7), hl
 	ld      l, (ix+$14)
@@ -882,8 +881,7 @@ _:	ld      a, l
 _:  	and     $f8
 	rrca    
 	rrca    
-	rrca    
-	mlt	de
+	rrca   
 	ld      e, a
 	ld      d, $00
 	ld      hl, DATA_B28_88BB
@@ -912,8 +910,7 @@ _: 	ld      a, l
 _: 	and     $f8
 	rrca    
 	rrca    
-	rrca    
-	mlt	de
+	rrca 
 	ld      e, a
 	ld      d, $00
 	ld      hl, DATA_B28_88C5
@@ -1058,8 +1055,7 @@ _:   	ld      a, l
 _:   	and     $f8
 	rrca    
 	rrca    
-	rrca    
-	mlt	de
+	rrca
 	ld      e, a
 	ld      d, $00
 	ld      hl, DATA_B28_8CA1
@@ -1089,8 +1085,7 @@ _:  	ld      a, l
 _:  	and     $f8
 	rrca    
 	rrca    
-	rrca    
-	mlt	de
+	rrca
 	ld      e, a
 	ld      d, $00
 	ld      hl, DATA_B28_8CAB
@@ -1124,7 +1119,7 @@ LABEL_B28_8CBF:
 
 LABEL_B28_8CC9:
 	ld      (ix+$02), $01
-	ld      hl, BankSlot2
+	ld	hl, $8000
 	ld      (ix+$0A), h
 	ld      (ix+$3F), l
 	ld      (ix+$1F), $00
@@ -1584,8 +1579,6 @@ DATA_B28_9419:
 .dw DATA_B28_95E8
 
 DATA_B28_9431:
-.db $FF, $09
-	.db $09
 .db $FF, $08
 	.db $16
 .db $FF, $02
@@ -1602,14 +1595,10 @@ DATA_B28_9440:
 DATA_B28_9446:
 .db $08, $05
 	.dw LABEL_B28_9798
-.db $FF, $09
-	.db $A9
 .db $08, $01
 	.dw LABEL_B28_9798
 .db $08, $07
 	.dw LABEL_B28_9798
-.db $FF, $09
-	.db $A9
 .db $08, $01
 	.dw LABEL_B28_9798
 .db $06, $08
@@ -1662,14 +1651,10 @@ DATA_B28_94A7:
 	.dw LABEL_B28_9798
 .db $08, $05
 	.dw LABEL_B28_9798
-.db $FF, $09
-	.db $A9
 .db $08, $01
 	.dw LABEL_B28_9798
 .db $08, $07
 	.dw LABEL_B28_9798
-.db $FF, $09
-	.db $A9
 .db $08, $01
 	.dw LABEL_B28_9798
 .db $06, $08
@@ -1733,14 +1718,10 @@ DATA_B28_951D:
 	.dw LABEL_B28_9798
 .db $08, $05
 	.dw LABEL_B28_9798
-.db $FF, $09
-	.db $A9
 .db $08, $01
 	.dw LABEL_B28_9798
 .db $08, $07
 	.dw LABEL_B28_9798
-.db $FF, $09
-	.db $A9
 .db $08, $01
 	.dw LABEL_B28_9798
 .db $06, $08
@@ -1811,8 +1792,6 @@ DATA_B28_95B4:
 DATA_B28_95BE:
 .db $FF, $02
 	.dw LABEL_B28_9842
-.db $FF, $09
-	.db $AB
 .db $04, $0D
 	.dw LABEL_B28_9732
 .db $04, $0E
@@ -1914,7 +1893,6 @@ LABEL_B28_9663:
 	ld      a, ($D511)
 	and     $03
 	add     a, b
-	mlt	de
 	ld      e, a
 	ld      d, $00
 	ld      hl, DATA_B28_967D
@@ -2256,8 +2234,6 @@ DATA_B28_98CA:
 DATA_B28_98D0:
 .db $FF, $08
 	.db $13
-.db $FF, $09
-	.db $09
 .db $FF, $05
 	.db $01
 .db $20, $01
@@ -2706,8 +2682,6 @@ LABEL_B28_A0BA:
 	ret     
 
 DATA_B28_A0D8:
-.db $FF, $09
-	.db $09
 .db $FF, $08
 	.db $15
 .db $FF, $02
@@ -3118,8 +3092,6 @@ DATA_B28_A813:
 .dw DATA_B28_A973
 
 DATA_B28_A837:
-.db $FF, $09
-	.db $09
 .db $FF, $08
 	.db $18
 .db $FF, $02
@@ -3435,9 +3407,9 @@ LABEL_B28_AA21:
 	add     a, b
 	add     a, c
 	and     $03
+	add	a, a
 	ld      e, a
-	ld      d, $03
-	mlt	de
+	ld      d, $00
 	ld      hl, DATA_B28_AA4B
 	add     hl, de
 	ld      a, (hl)

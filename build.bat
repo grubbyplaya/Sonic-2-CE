@@ -4,7 +4,7 @@ set /P VersionType=What version are you building? (1 = Normal, 2 = Easy):
 cd src
 
 echo Assembling game...
-spasm64 -E sonic2.asm bin/sonic2.8xp
+spasm64 -E -D Version=%VersionType% sonic2.asm bin/sonic2.8xp
 spasm64 -E -L -O -D Version=%VersionType% -D Listing=1 s2_engine.asm s2.8xv
 spasm64 -E appvars/s2save.asm bin/S2Save.8xv
 

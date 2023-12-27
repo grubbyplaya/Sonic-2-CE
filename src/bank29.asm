@@ -82,11 +82,8 @@ _:	ld      (hl), a
 	djnz    -_
 	ld      a, ($D46E)
 	ld      l, a
-	ld      h, $00
-	add     hl, hl
-	add     hl, hl
-	add     hl, hl
-	add     hl, hl
+	ld      h, $10
+	mlt	hl
 	ld      de, EndSequence_Data_CreditsText
 	add     hl, de
 	ld      de, $DBA0		;copy the 16-byte line of text to $DBA0
@@ -199,7 +196,7 @@ LABEL_B29_B510:
 	dec     hl
 	ld      a, h
 	or      l
-	jr	  z, LABEL_B29_B51C
+	jr	z, LABEL_B29_B51C
 	ld      ($D46F), hl
 	ret     
 

@@ -233,7 +233,7 @@ Minecart_State_06_Logic_01:		;$8AA5
 
 LABEL_B28_8AAE:
 	call    VF_Engine_UpdateObjectPosition
-	call    LABEL_75C5
+	call    LABEL_200 + $60
 	ld      a, ($D353)
 	ld      ($D368), a
 	jp      VF_Logic_CheckDestroyObject
@@ -254,7 +254,6 @@ _:	call    VF_Engine_CheckCollision
 	res     0, (iy+$03)
 	res     1, (iy+$03)
 	ld      (iy+$02), PlayerState_EnterMineCart	;set player state to $16
-	ld      ($DD04), a
 	ret     
 
 DATA_B28_8AF2:

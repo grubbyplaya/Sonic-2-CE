@@ -201,6 +201,7 @@ WriteBlankTile:
 WriteTileToVRAM:
 	ld.lil	hl, $D2D300		;copy 32 bytes from $D300 to VRAM
 	ld	ix, (VRAMPointer)
+	call	SetTileCacheFlags
 	ld	a, ($D34C)
 	or	a
 	jr	nz, WriteMirroredTileToVRAM
@@ -217,9 +218,6 @@ WriteTileToVRAM:
 
 	ld	(VRAMPointer), ix
 	ret
-
-VRAMPointer:	;self modifying data that stores the VDP address pointer
-	.dw $BEEF
 
 ;************************************************************
 ;*	Write tile data to VRAM. Data at $D300 is treated as an	*
@@ -241,4 +239,29 @@ _:	ld	e, (hl)		;read a byte of tile data from RAM
 	inc	hl
 	ld	(VRAMPointer), ix
 	djnz	-_
+	ret
+
+SetTileCacheFlags:
+	exx
+	push	ix
+	pop	hl
+
+	;divide the address pointer by the tile size
+	srl	h
+	rr	l		;hl /= 2
+	srl	h
+	rr	l		;hl /= 2
+	srl	h
+	rr	l		;hl /= 2
+	srl	h
+	rr	l		;hl /= 2
+	srl	h
+	rr	l		;hl /= 2
+
+	ld	bc, $E0			;amount of tiles not used in the tilemap
+	sbc	hl, bc			;save some space by excluding them
+	ld.lil	bc, SegaTileFlags
+	add.lil	hl, bc
+	res.lil	0, (hl)			;flag this tile for redrawing
+	exx
 	ret

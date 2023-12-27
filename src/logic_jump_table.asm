@@ -2,6 +2,7 @@
 ;************************************************************
 ;*   Main logic vtable - used extensively by object logic   *
 ;************************************************************
+.org $0200
 LABEL_200:
 VF_Engine_AllocateObjectHighPriority:           ;$200 - find an available object slot from $D540 onwards
     jp  Engine_AllocateObjectHighPriority                           
@@ -152,6 +153,8 @@ VF_Engine_UpdateRingCounterSprites:             ;$30E
     jp  Engine_UpdateRingCounterSprites         ;$30E
 VF_Engine_RemoveBreakableBlock:                 ;$311
     jp  Engine_RemoveBreakableBlock
+VF_Engine_ChangeLevelMusic:
+    .dl 0			                 ;$314 - null pointer in port
 VF_Score_AddBadnikValue:
     jp  Score_AddBadnikValue                    ;$317
 VF_Score_AddBossValue:

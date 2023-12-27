@@ -1,1 +1,0 @@
-spasm64 -E -L -O -D Version=2 s2.asm s2.8xp

@@ -14,7 +14,7 @@
 	#define unk_03					$D130
 	#define PaletteResetTrg				$D131
 	#define unk_04					$D132
-	#define LevelAttributes				$D15D
+	#define LevelAttributes				$D15E
 	#define LevelAttributes.ViewportFlags		LevelAttributes
 	#define LevelAttributes.ix01			LevelAttributes+LevelDescriptor.ix01
 	#define LevelAttributes.MetaTileX		LevelAttributes+LevelDescriptor.MetaTileX ; x-index of metatile (see: Engine_Mappings_GetBlockXY)
@@ -32,8 +32,8 @@
 ; =========================================================
 ;  VDP Variables
 ;----------------------------------------------------------
-	#define VDP_VScroll		$D177
-	#define VDP_HScroll 		$D178
+	#define VDP_VScroll		$D877
+	#define VDP_HScroll 		$D878
 	#define VDP_ViewportX		$D179
 	#define VDP_ViewportY		$D17C
 	#define VDP_TileColBuffer 	$D17F    ; holds a column of tile indices before copying to the VDP
@@ -48,8 +48,8 @@
 #define  Engine_InputFlags		$D137	; byte - current controller input flags
 #define  Engine_InputFlagsLast		$D147	; byte - input flags from the previous frame
 #define  Camera_X			$D174	; word
-#define  Camera_Y			$D177	; word
-#define  Camera_MetatileColBuffer	$D17A	; 64 b - a buffer to hold tile data from a column of metatiles.
+#define  Camera_Y			$D176	; word
+#define  Camera_MetatileColBuffer	$D178	; 64 b - a buffer to hold tile data from a column of metatiles.
 
 #define  Camera_MetatilePtr		$D278	; word - points to a metatile in the layout data (see: Engine_Mappings_GetBlockXY)
 
@@ -73,25 +73,25 @@
 #define  Cllsn_RingBlock		$D352	; byte - used by ring<>player collision routines to store ring metatile number.
 #define  Cllsn_MetatileIndex		$D353	; byte - the metatile number stored at (Cllsn_LevelMapBlockPtr)
 #define  Cllsn_LevelMapBlockPtr		$D354	; word - pointer to the current metatile block in the level data
-#define  Cllsn_AdjustedX		$D357	; word - object's x-coordinate + an adjustment value
-#define  Cllsn_AdjustedY		$D35A	; word - object's y-coordinate + an adjustment value
-#define  Cllsn_MetaTileX		$D35D	; word - metatile's x coordinate
-#define  Cllsn_MetaTileY		$D360	; word - metatile's y coordinate
-#define  Cllsn_MetaTileSurfaceType	$D363	; byte - surface type value for the colliding metatile.
-#define  Cllsn_HeaderPtr3		$D364	; word - 3rd pointer in the metatile's collision header
-#define  Cllsn_CollisionValueY		$D367	; byte - vertical collision value for the current position within the metatile.
-#define  Cllsn_CollisionValueX		$D368	; byte - horizontal collision value for the current position within the metatile.
+#define  Cllsn_AdjustedX		$D356	; word - object's x-coordinate + an adjustment value
+#define  Cllsn_AdjustedY		$D358	; word - object's y-coordinate + an adjustment value
+#define  Cllsn_MetaTileX		$D35A	; word - metatile's x coordinate
+#define  Cllsn_MetaTileY		$D35C	; word - metatile's y coordinate
+#define  Cllsn_MetaTileSurfaceType	$D35F	; byte - surface type value for the colliding metatile.
+#define  Cllsn_HeaderPtr3		$D360	; word - 3rd pointer in the metatile's collision header
+#define  Cllsn_CollisionValueY		$D362	; byte - vertical collision value for the current position within the metatile.
+#define  Cllsn_CollisionValueX		$D363	; byte - horizontal collision value for the current position within the metatile.
 
 
 #define  Engine_UpdateSpriteAttribs_vpos_ptr   	$D369	; word
-#define  Engine_UpdateSpriteAttribs_hpos_ptr   	$D36C	; word
-#define  Player_MaxVelX			     	$D36F	; word
-#define  Player_DeltaVX				$D372	; word - player object x delta-v?
-#define  Player_MetaTileDeltaVX			$D375	; word - delta-v for platform (gradient/slope)
+#define  Engine_UpdateSpriteAttribs_hpos_ptr   	$D36B	; word
+#define  Player_MaxVelX			     	$D36D	; word
+#define  Player_DeltaVX				$D36F	; word - player object x delta-v?
+#define  Player_MetaTileDeltaVX			$D371	; word - delta-v for platform (gradient/slope)
 
 #define  Engine_UpdateSpriteAttribs_adj_pos  	$D393	; word
-#define  Engine_RingArt_Src			$D396	; word - pointer to uncompressed ring art data.
-#define  Engine_RingArt_Dest			$D399	; word - vram destination pointer for ring art tiles.
+#define  Engine_RingArt_Src			$D395	; word - pointer to uncompressed ring art data.
+#define  Engine_RingArt_Dest			$D397	; word - vram destination pointer for ring art tiles.
 
 #define  Player_HurtTrigger			$D3A8	; byte - trigger causes player to lose rings or die
 #define  Player_FlashCounter			$D3A9	; byte

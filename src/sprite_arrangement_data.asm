@@ -35,7 +35,7 @@ SprArrange_1x1_BC:		;$9D2E
 ;
 SprArrange_2x1_BC:		;$9D32
 DATA_B31_9D32:
-.dw	-16, -8
+.dw -16, -8
 .dw -16, 0
 
 

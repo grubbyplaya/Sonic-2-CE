@@ -49,7 +49,7 @@ LABEL_B28_8793:
     
 	ld      a, $11
 	ld      (Player.StateNext), a
-	call    LABEL_4037
+	call    LABEL_200 + $7E
 	ld      (ix + Object.StateNext), $02
 	set     7, (ix+$04)
 	ret     

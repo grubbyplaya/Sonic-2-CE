@@ -118,8 +118,6 @@ Signpost_State_02_Logic_01:		;$B937
 	ld      (ix+$14), l
 	ld      (ix+$15), h
 	ld      (ix+$02), $03		;set state to $03
-	ld      a, $A9
-	ld      ($DD04), a
 	call    LABEL_B31_B981		;Should we show the Tails signpost?
 	jr      c, +_
 	call    LABEL_B31_B9A0		;Should we show the Sonic signpost?
@@ -195,7 +193,6 @@ LABEL_B31_B9C2:
 	ld      a, (LifeCounter)
 	inc     a
 	ld      (LifeCounter), a
-	ld      ($DD04), a
 	call    LABEL_200 + $010B
 _:	ld      b, $08			;which signpost art?
 	scf     
