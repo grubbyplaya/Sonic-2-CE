@@ -18,12 +18,12 @@
 	ld	de, $E30200
 	ld	bc, $80
 	ldir
-	ld	b, $80
+	ld	b, $40
 	ld	a, $00
 	ld	hl, $D40000
 	ld	de, $D40001
 _:	push	bc
-	ld	bc, 640
+	ld	bc, 960
 	ld	(hl), a
 	ldir
 	inc	a

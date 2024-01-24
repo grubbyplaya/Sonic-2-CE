@@ -112,7 +112,7 @@ _:	rlca
 Palette_FadeToBlack:	;80B8
 	call	Palette_CalculateOffset	;get a pointer to the palette into HL
 	ld	b, $10		;loop over all 16 colours
-	ld	a, (iy)	
+_:	ld	a, (iy)	
 	and	$3C		;keep hold of R and G components
 	ld	c, a
 	ld	a, (iy)

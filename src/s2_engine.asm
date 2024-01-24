@@ -227,10 +227,6 @@ Engine_Reset:		; $0431
 	Engine_FillMemory $00
 
 	call	Engine_ClearVRAM
-	ld.lil	hl, VRAM
-	ld.lil	de, VRAM+1
-	ld.lil	bc, VRAMEnd-VRAM
-	ldir.lil
 	
 	; reset the paging registers
 	xor	a
@@ -253,7 +249,7 @@ Engine_Initialise:
 	;clear screen?
 	call	Engine_ClearPaletteRAM
 	;call	LoadSave
-	call	Engine_LoadLevelTiles
+	call	Engine_LoadLevelTiles  
 	call	LevelSelectCheck
 	call	VDP_SetMode2Reg_DisplayOn
 
@@ -310,8 +306,8 @@ Engine_HandleVBlank:		; $04A5
 	push	iy
 ; -------------------------------------
 	call	DrawScreen		;draw the last interrupt's frame
-	xor	a
-	ld	(ScrollingTrig), a	;clear scroll adjustment flag
+	ld	a, (Frame2Page)
+	ld	($FFFF), a
 	; if this trigger is set we should update VDP colour RAM
 	; and nothing else
 	ld	a, (UpdatePalettesOnly)
@@ -339,18 +335,24 @@ Engine_HandleVBlank:		; $04A5
 	ld	c, (hl)
 	inc	hl
 	ld	b, (hl)
-	ld	a, $01
-	ld	(ScrollingTrig), a
 
 	; Set the background X-scroll value (write to register VDP(8))
-_:	ld	a, (BackgroundXScroll)
+_:	ld	hl, (VDP_HScroll)
+	ld	ix, DrawTilemapTrig
+	ld	a, (BackgroundXScroll)
 	add	a, b			;apply adjustment value
-	ld	(VDP_HScroll), a
+	cp	l
+	jr	z, +_
+	set	1, (ix)
+_:	ld	(VDP_HScroll), a
 	
 	; Set the background Y-scroll value (write to register VDP(9))
 	ld	a, (BackgroundYScroll)
 	add	a, c			;apply adjustment value
-	ld	(VDP_VScroll), a
+	cp	h
+	jr	z, +_
+	set	1, (ix)
+_:	ld	(VDP_VScroll), a
 
 	; fetch the level viewport flags
 	ld	a, (LevelAttributes.ViewportFlags)
@@ -419,7 +421,13 @@ Engine_HandleVBlank_Epilogue:
 	ld	hl, Engine_InterruptServiced
 	inc	(hl)
 
-	ld.lil	hl, $E30028
+	ld	a, (CurrentLevel)
+	cp	Level_Intro
+	jr	z, +_
+	ld	a, ($FFFF)
+	call	Engine_SwapFrame2
+
+_:	ld.lil	hl, $E30028
 	ld.lil	(hl), $08
 	ld.lil	sp, $D1A845		;reset SPL
 
@@ -637,9 +645,9 @@ GameState_Gameover:	; $072F
 	xor	a
 	ei
 	halt
+	call	Engine_ClearVRAM
 	call	Engine_ClearWorkingVRAM
 	call	Engine_ClearLevelAttributes
-	call	VDP_ClearScreen
 	call	GameState_CheckContinue		;load the continue screen if required
 	ld	a, ($D2BD)		;load the "Game Over" screen if bit 7 of $D2BD is reset.
 	bit	7, a
@@ -723,13 +731,13 @@ ContinueScreen_MainLoop:		;7DB
 	; check to see if button 1/2 is pressed
 	ld	a, (Engine_InputFlagsLast)
 	and	BTN_1 | BTN_2
-	jr	nz, ContinueScreen_MainLoop
+	jr	nz, +_
 
 	ld	hl, ContinueScreen_Timer	;increase the timer
 	inc	(hl)
 	ld	a, (hl)
 	cp	$5A			;if the timer = $5A, decrement the countdown
-	jr	c, +_
+	jr	c, ContinueScreen_MainLoop
 
 	ld	(hl), $00
 	inc	hl
@@ -748,7 +756,7 @@ _:	ld	hl, ContinueCounter
 
 	; execute for 3 seconds
 	ld	b, Time_3Seconds
-	push	bc
+_:	push	bc
 	call	Engine_WaitForInterrupt
 	call	Engine_UpdatePlayerObjectState
 	pop	bc
@@ -961,7 +969,7 @@ _:	ei
 	
 	ld	a, (LifeCounter)
 	or	a
-	jr	z, GameState_KillPlayer
+	jr	z, +_
 
 	ld	hl, GlobalTriggers
 	res	GT_KILL_PLAYER_BIT, (hl)
@@ -976,7 +984,8 @@ _:	ld	hl, GlobalTriggers
 
 
 GameState_Titlecard:		; $097F
-	call	VDP_ClearScreen
+	call	PaletteFadeOut
+	call	Engine_ClearVRAM
 	call	TitleCard_LoadAndDraw
 	call	ScrollingText_UpdateSprites
 	
@@ -1210,7 +1219,6 @@ LABEL_FB9:
 	call	VDP_ClearScreen
 	ld	a, 24
 	call	Engine_SwapFrame2	;page in bank 24
-
 	ld	hl, $2000
 	call	VDP_SetAddress
 	ld	hl, Art_Title_Screen	;title screen compressed art
@@ -1239,6 +1247,9 @@ LABEL_FB9:
 	; clear the first object
 	xor	a
 	ld	(Player.ObjID), a
+
+	ld	a, $08
+	call	Engine_SwapFrame2		;page in bank 08.
 
 	ld	hl, $0200
 	call	VDP_SetAddress
@@ -1288,7 +1299,6 @@ _:	call	LABEL_107C
 	ld	a, b
 	or	c
 	jr	nz, -_
-
 	ret	
 
 
@@ -1366,7 +1376,7 @@ Engine_ClearPlayerTiles:
 	ld.lil	hl, SegaVRAM
 	ld.lil	de, SegaVRAM+1
 	ld	bc, $01FF
-	ld	(hl), $00
+	ld.lil	(hl), $00
 	ldir.lil
 	ret
 
@@ -1398,6 +1408,9 @@ _:	ld	a, ($D34F)
 
 Engine_SwapFrame2:
 LABEL_129C:
+	cp	4		;return if bank <= 4
+	ret	c
+
 	push	bc
 	ld	b, a		;store bank page
 	ld	a, r		;are interrupts enabled?
@@ -1928,6 +1941,8 @@ _:	; move to the next object
 Engine_LoadCardMappings:				;$197F
 	;calculate vram address
 	call	LABEL_19D7
+	ld	a, 3
+	ld	(DrawTilemapTrig), a
 	; FALL THROUGH
 
 Engine_LoadMappings:		;$1982
@@ -1941,36 +1956,39 @@ Engine_LoadMappings:		;$1982
 	pop	de
 	
 .ASSUME ADL=1
-	push.il	de
 	ex.il	de, hl
+	push.il	de
 	ld.il	de, romStart
 	add.il	hl, de
 	pop.il	de
 .ASSUME ADL=0
 
+
 _:	; write tile index
-	ldi
+	ldi.lil
 	; write attribute byte
-	ldi
+	ldi.lil
 	inc	bc
 	inc	bc
 	; if we've reached the last column in the row
 	; loop back to the first
-	ld	a, l
+	ld	a, e
 	and	$3F
 	jr	nz, +_
 	
-	pop	hl
-	push	de
-	ld	de, $0040
+.ASSUME ADL=1
+	push.il	de
+	ex.il	de, hl
+	ld.il	de, $0040
 	or	a
-	sbc	hl, de
-	pop	de
-	push	hl
+	sbc.il	hl, de
+	ex.il	de, hl
+	pop.il	de
+.ASSUME ADL=0
 	
 _:	djnz	--_
-
 	; move to the next row
+	ex	de, hl
 	pop	hl
 	ld	bc, $0040
 	add	hl, bc
@@ -2095,7 +2113,7 @@ _:	pop	bc
 Engine_UpdateMappingBlock:
 	di
 	call	LABEL_1A13	;calculate VRAM address
-	ld	c, $04		;load a mapping block
+	ld	bc, $0404		;load a mapping block
 	jp	Engine_LoadMappings
 
 LABEL_1A13:
@@ -2124,18 +2142,10 @@ LABEL_1A13:
 
 
 ReadInput:	;$1A35
-	ld	hl, $D145
-	ld	de, $D146
-	ld	bc, $000F
-	lddr
-	ld	hl, $D155
-	ld	de, $D156
-	ld	bc, $000F
-	lddr
-
 	ld	hl, Engine_InputFlags
 	ld	a, (hl)
 	ld	(Engine_InputFlagsLast), a	;load the previous frame's flags
+
 	call	_Port1_Input
 	ld	(hl), a				;store joypad bitfield
 	ld	($D157), a
@@ -2156,6 +2166,7 @@ ReadInput:	;$1A35
 	jp	Engine_Reset		;reset the game if it is
 
 _Port1_Input:	;$1A7A
+	ld	de, 0
 	ld.lil	a, (kbdG7)		;check arrow keys
 	rla				;adjust bitmask
 	bit	4, a			;is the up key pressed?
@@ -2163,15 +2174,16 @@ _Port1_Input:	;$1A7A
 	xor	$11			;move the flag to bit 0			
 _:	ld	d, a
 
+	ld	e, $80
 	ld.lil	a, (kbdG1)
 	and	kbd2nd		;check button 1
 	jr	z, +_		;jump if button not pressed
+	ld	e, $00
 	rra
 	or	d
 	ld	d, a
 
 _:	ld.lil	a, (kbdG2)
-	ld	e, $80
 	and	kbdAlpha	;check button 2
 	jr	z, +_		;jump if button not pressed
 	ld	e, $00
@@ -2510,7 +2522,7 @@ _:	ld	de, $D2AF
 	;FALL THROUGH
 
 LABEL_1DAF:
-	ld	($D11E), hl
+	ld	($D11C), hl
 _:	ld	a, c
 	or	a
 	jr	z, +_
@@ -2528,10 +2540,10 @@ _:	push	bc
 	add	a, a
 	push	de
 	di
-	ld	hl, ($D11E)
+	ld	hl, ($D11C)
 	call	VDP_SetAddress
 	ld.lil	de, SegaVRAM
-	add.l	hl, de
+	add.lil	hl, de
 	push	hl
 	ld	hl, ScoreCard_Mappings_Numbers
 	ld	e, a
@@ -2541,15 +2553,15 @@ _:	push	bc
 	ldi.lil
 	ldi.lil
 	push	hl
-	ld	hl, ($D11E)
+	ld	hl, ($D11C)
 	inc	hl
 	inc	hl
-	ld	($D11E), hl
+	ld	($D11C), hl
 	ld	de, $3E
 	add	hl, de
 	call	VDP_SetAddress
 	ld.lil	de, SegaVRAM
-	add.l	hl, de
+	add.lil	hl, de
 	push	hl
 	pop	de
 	pop	hl
@@ -3145,7 +3157,7 @@ Engine_InitStatusIcons:	;$21EE
 	; then push 2 sprites offscreen (vpos = 224).
 	ld	a, (CurrentLevel)
 	cp	Level_CEZ
-	jr	nz, Engine_InitStatusIcons
+	jr	nz, +_
 	
 	ld	a, (CurrentAct)
 	cp	Act3
@@ -3358,7 +3370,6 @@ LABEL_242F_49:
 LABEL_2439_50:
 	call	_Load_Intro_Level
 
-
 LABEL_243C:
 	xor	a
 	ld	($D700), a
@@ -3450,8 +3461,9 @@ DemoSequence_ChangeLevel:
 	and	$07
 	ld	(DemoNumber), a
 	ld	l, a
-	ld	h, $04
-	mlt	hl
+	ld	h, $00
+	add	hl, hl
+	add	hl, hl
 	ld	de, LevelDemoHeaders
 	add	hl, de
 	ld	a, (hl)
@@ -3468,9 +3480,8 @@ DemoSequence_ChangeLevel:
 	ld	(CurrentAct), a		;default to the first act...
 	ld	a, (CurrentLevel)
 	cp	$01
-	ret	nz
-	ld	a, $01			;...except for SHZ when we should use act 2
-	ld	(CurrentAct), a
+	ret	nz	
+	ld	(CurrentAct), a		;...except for SHZ when we should use act 2
 	ret
 
 LevelDemoHeaders:
@@ -3669,7 +3680,7 @@ TitleCard_LoadAndDraw:
 LABEL_2606:
 	di
 	call	Engine_ClearLevelAttributes	
-	ld.lil	hl, ScreenMap
+	ld	hl, $3800
 	ld	de, $1170		;copy $1170 to the name table
 	ld	bc, $0380
 	call	VDP_Write
@@ -3720,9 +3731,9 @@ LABEL_264E:
 	bit	2, a
 	jr	nz, +_
 	ld	de, DATA_2D0C
-_:	ld	($D11B), de
+_:	ld	($D11A), de
 	ld	hl, $3900
-	ld	($D11E), hl
+	ld	($D11C), hl
 	ld	b, $1C
 	jp	TitleCard_ScrollTextFromLeft
 
@@ -3744,9 +3755,9 @@ TitleCard_LoadActLogoMappings:	;$2688
 	ld	e, (hl)
 	inc	hl
 	ld	d, (hl)
-	ld	($D11B), de		;source address
-	ld.lil	hl, SegaVRAM+$39FE	;VRAM destination
-	ld.l	($D11E), hl
+	ld	($D11A), de		;source address
+	ld	hl, $39FE	;VRAM destination
+	ld	($D11C), hl
 	ld	b, $0E			;count
 	jp	TitleCard_ScrollActLogo
 
@@ -3768,10 +3779,10 @@ TitleCard_LoadZoneText:		;$26B3
 
 _:	ld	de, DATA_2D6C
 
-_:	ld.lil	hl, SegaVRAM+$39C0
+_:	ld	hl, $39C0
 	ld	($D118), bc	;rows/cols
-	ld	($D11B), de	;pointer to mappings
-	ld.l	($D11E), hl	;VRAM address
+	ld	($D11A), de	;pointer to mappings
+	ld	($D11C), hl	;VRAM address
 	ld	b, $14
 	jp	TitleCard_ScrollTextFromLeft
 
@@ -3780,27 +3791,27 @@ TitleCard_ScrollTextFromLeft:		;$26E1
 	ei
 	halt
 	ld	bc, ($D118)	;rows/cols
-	ld	de, ($D11B)	;pointer to mappigns
-	ld.l	hl, ($D11E)	;VRAM address
+	ld	de, ($D11A)	;pointer to mappings
+	ld	hl, ($D11C)	;VRAM address
 	call	Engine_LoadCardMappings
 	ld	bc, ($D118)
-	ld	de, ($D11B)
+	ld	de, ($D11A)
 	ld	hl, (Engine_ObjCharCodePtr)
 	add	hl, de
 	ex	de, hl
 	push	de
-	ld.l	hl, ($D11E)
+	ld	hl, ($D11C)
 	ld	de, $0040
-	add.l	hl, de
+	add	hl, de
 	pop	de
 	call	Engine_LoadCardMappings
 	ld	bc, ($D118)
 	inc	c
 	ld	($D118), bc
-	ld	de, ($D11B)
+	ld	de, ($D11A)
 	dec	de
 	dec	de
-	ld	($D11B), de
+	ld	($D11A), de
 	pop	bc
 	djnz	TitleCard_ScrollTextFromLeft
 	ret
@@ -3809,47 +3820,47 @@ TitleCard_ScrollActLogo:		;$2722
 	push	bc
 	ei
 	ld	bc, ($D118)
-	ld	de, ($D11B)
-	ld.l	hl, ($D11E)
+	ld	de, ($D11A)
+	ld	hl, ($D11C)
 	call	Engine_LoadCardMappings
 	ld	bc, ($D118)
-	ld	hl, ($D11B)
+	ld	hl, ($D11A)
 	ld	de, (Engine_ObjCharCodePtr)
 	add	hl, de
 	ex	de, hl
 	push	de
-	ld.l	hl, ($D11E)
+	ld	hl, ($D11C)
 	ld	de, $0040
 	add	hl, de
 	pop	de
 	call	Engine_LoadCardMappings
 	ld	bc, ($D118)
-	ld	hl, ($D11B)
+	ld	hl, ($D11A)
 	ld	de, (Engine_ObjCharCodePtr)
 	add	hl, de
 	add	hl, de
 	ex	de, hl
 	push	de
-	ld.l	hl, ($D11E)
+	ld	hl, ($D11C)
 	ld	de, $0080
 	add	hl, de
 	pop	de
 	call	Engine_LoadCardMappings
 	ld	bc, ($D118)
-	ld	hl, ($D11B)
+	ld	hl, ($D11A)
 	ld	de, (Engine_ObjCharCodePtr)
 	add	hl, de
 	add	hl, de
 	add	hl, de
 	ex	de, hl
 	push	de
-	ld.l	hl, ($D11E)
+	ld	hl, ($D11C)
 	ld	de, $00C0
 	add	hl, de
 	pop	de 
 	call	Engine_LoadCardMappings
 	ld	bc, ($D118)
-	ld	hl, ($D11B)
+	ld	hl, ($D11A)
 	ld	de, (Engine_ObjCharCodePtr)
 	add	hl, de
 	add	hl, de
@@ -3857,7 +3868,7 @@ TitleCard_ScrollActLogo:		;$2722
 	add	hl, de
 	ex	de, hl
 	push	de
-	ld.l	hl, ($D11E)
+	ld	hl, ($D11C)
 	ld	de, $0100
 	add	hl, de
 	pop	de
@@ -3865,10 +3876,10 @@ TitleCard_ScrollActLogo:		;$2722
 	ld	bc, ($D118)
 	inc	c
 	ld	($D118), bc
-	ld.l	hl, ($D11E)
+	ld	hl, ($D11C)
 	dec	hl
 	dec	hl
-	ld.l	($D11E), hl
+	ld	($D11C), hl
 	pop	bc
 	dec	b
 	jp	nz, TitleCard_ScrollActLogo
@@ -3877,7 +3888,7 @@ TitleCard_ScrollActLogo:		;$2722
 GameOverScreen_DrawScreen:		;27B4
 	di
 	call	Engine_ClearLevelAttributes			;clear data from $D15E->$D290 (level header?)
-	ld.lil	hl, ScreenMap
+	ld	hl, $3800
 	ld	de, $1107			;clear the screen
 	ld	bc, $0380
 	call	VDP_Write
@@ -3904,7 +3915,7 @@ ContinueScreen_DrawScreen:		;27EE
 	di
 	call	Engine_ClearLevelAttributes			;clear data from $D15E->$D290 (level header?)
 	ld	de, $010A			;clear the screen to blank tile $0A (offset from $2000 in VRAM)
-	ld.lil	hl, ScreenMap
+	ld	hl, $3800
 	ld	bc, $0380
 	call	VDP_Write
 	call	ContinueScreen_LoadTiles
@@ -3972,7 +3983,7 @@ _:	ld	a, $FF				;flag for a SAT update
 	call	UpdateCyclingPalette_ScrollingText
 	ei
 	halt
-_:	ld	a, (Engine_InputFlagsLast)	;check for button press
+	ld	a, (Engine_InputFlagsLast)	;check for button press
 	and	BTN_1 | BTN_2
 	ret	nz
 	ld	hl, ($D3BA)		;timer?
@@ -4000,7 +4011,7 @@ _:	ld	(hl), a
 	ld	hl, $DB40		;working copy of SAT Hpos/char codes
 	ld	de, ScrollingText_Data_CharCodes
 	ld	b, $10			;update 16 sprites
-_:	ld	a, (de)			;copy char code to wokring copy of SAT
+_:	ld	a, (de)			;copy char code to working copy of SAT
 	ld	(hl), a
 	inc	hl
 	ld	a, $82			;set HPOS = $82
@@ -4743,8 +4754,7 @@ _:	inc	(hl)
 	or	a
 	jr	z, +_
 	ld	hl, $FCC0
-_:	ld	(ix+$19), l
-	ld	(ix+$1A), h
+_:	ld	(Player.VelY), hl
 _:	call	LABEL_3A62
 	ld	a, (Player.StateNext)
 	cp	PlayerState_Jumping
@@ -5021,7 +5031,7 @@ _:	ld	($D399), hl
 	ld	(ix+$15), h
 	ld	hl, ($D39A)
 	add	hl, hl
-	ld	de, $887D
+	ld	de, LoopMotionData+$046E
 	add	hl, de
 	ld	e, (hl)
 	inc	hl
@@ -5032,8 +5042,8 @@ _:	ld	($D399), hl
 	ld	(ix+$11), l	 ;set horizontal pos
 	ld	(ix+$12), h
 	ld	hl, ($D39A)
-	xor	a
 	ld	de, $00B0
+	xor	a
 	sbc	hl, de
 	jr	nc, $+$16
 	ld	l, (ix+$16)	 ;get horizontal speed
@@ -5072,7 +5082,7 @@ LABEL_3638:
 	ld	d, (ix+$12)
 	xor	a
 	sbc	hl, de
-	jr	c, LABEL_3638
+	jr	c, $+$13
 	ld	l, (ix+$11)
 	ld	h, (ix+$12)
 	ld	de, $0008
@@ -5167,18 +5177,18 @@ LABEL_36E1:
 	ld	de, $0F3E
 	xor	a
 	sbc	hl, de
-	jr	c, LABEL_36E1
+	jr	c, LABEL_3702
 	ld	a, h
 	or	a
-	jr	nz, LABEL_36E1
+	jr	nz, LABEL_3702
 	ld	a, l
 	and	$F8
-	jr	nz, LABEL_36E1
+	jr	nz, LABEL_3702
 	ld	hl, ($D514)	;vertical pos in level
 	ld	de, $0160
 	xor	a
 	sbc	hl, de
-	jr	c, LABEL_36E1
+	jr	c, LABEL_3702
 	jr	LABEL_3725
 	
 LABEL_3702:
@@ -5894,7 +5904,7 @@ Player_UpdatePositionX:		;$3AE1
 	; check the sign bit of the calculated value
 	; if it's negative the player is moving left
 	bit	7, h
-	jp	nz, +_
+	jr	nz, +_
 	
 	; player moving right - check speed against maximum
 	; test for collision at right edge & stop if required
@@ -5908,10 +5918,10 @@ Player_UpdatePositionX:		;$3AE1
 	ld	b, a
 	ld	a, h
 	cp	b
-	jp	c, ++_
+	jr	c, ++_
 	
 	ld	hl, (Player_MaxVelX)
-	jp	++_
+	jr	++_
 
 
 _:	; test for collision at left edge & stop if required
@@ -5953,12 +5963,10 @@ _: 	; set the player's horizontal velocity
 	dec	c
 	
 _:	xor	a
-
 	; adjust the 3-byte x-coordinate
 	ld	de, (Player.SubPixelX)
 	add	hl, de
 	ld	(Player.SubPixelX), hl
-	xor	a
 	adc	a, c			;add carry to 3rd byte
 	add	a, (ix + Object.X + 1)
 	ld	(Player.X + 1), a
@@ -6079,7 +6087,6 @@ _:	xor	a
 	ld	de, ($D513)		;get player vpos
 	add	hl, de			;add velocity to vpos
 	ld	($D513), hl
-	xor	a
 	adc	a, c
 	add	a, (ix+$15)
 	ld	($D515), a
@@ -6104,6 +6111,7 @@ Player_CalcAccel:		; $3BDD
 	; the limits accordingly
 	ld	hl, (Player.X)
 	ld	de, (Camera_X)
+	xor	a
 	sbc	hl, de
 	ld	a, l
 	; check to see if the player is at the far-left of the level
@@ -6148,7 +6156,9 @@ Player_CalcAccel:		; $3BDD
 	; use this array if the player is moving right
 	ld	de, Data_AccelerationValues_Right
 	
-_:	; check the input flags to see if the left button is pressed.
+_:	ld	bc, $0000
+
+	; check the input flags to see if the left button is pressed.
 	bit	BTN_LEFT_BIT, a
 	jp	nz, Player_CalcAccel_GetValue
 	
@@ -6157,6 +6167,7 @@ _:	; check the input flags to see if the left button is pressed.
 
 Player_CalcAccel_GetValue:		; $3C2B
 	; adjust the index to point to either the left or right value
+	add	hl, bc
 	add	hl, de
 	
 	; fetch the acceleration value from the array
@@ -8338,8 +8349,8 @@ _:	rrca
 	add.lil	hl, de	
 
 	call.il	Engine_CopyMappingsColumnToVRAM+romStart
-	ld	a, $01
-	ld	(DrawTilemapTrig), a
+	ld	hl, DrawTilemapTrig
+	set	0, (hl)
 	ret
 
 Engine_CopyMappingsColumnToVRAM:
@@ -8473,8 +8484,8 @@ _:	rrca
 	dec	b			;scrolling left - decrement tile count
 
 _:	call.il	Engine_CopyMappingsRowToVRAM+romStart
-	ld	a, $01
-	ld	(DrawTilemapTrig), a
+	ld	hl, DrawTilemapTrig
+	set	0, (hl)
 	ret	
 
 Engine_CopyMappingsRowToVRAM:
@@ -10572,6 +10583,10 @@ LABEL_6956:
 	add	hl, hl
 	ld	de, DATA_6975
 	add	hl, de
+	ld	a, (hl)
+	inc	hl
+	ld	h, (hl)
+	ld	l, a
 	jp	(hl)
 
 DATA_6975:
@@ -10961,6 +10976,10 @@ LABEL_6C3C:
 	add	hl, hl
 	ld	de, Cllsn_MetaTileTriggerFuncPtrs
 	add	hl, de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ex	de, hl
 	jp	(hl)
 
 Cllsn_MetaTileTriggerFuncPtrs:		; $6C70
@@ -11077,7 +11096,6 @@ _:	; clear the carry flag
 	ld	de, (Player.SubPixelX)
 	add	hl, de
 	ld	(Player.SubPixelX), hl
-	xor	a
 	adc	a, c
 	add	a, (ix + Object.X + 1)
 	ld	(ix + Object.X + 1), a
@@ -12979,9 +12997,17 @@ Engine_ClearVRAM:		; $77F3
 	call	VDP_SetMode2Reg_DisplayOff
 	
 	; prep the counter
-	ld.lil	hl, SegaVRAM
-	ld.lil	de, SegaVRAM+1
-	ld	bc, $4000
+	ld.lil	hl, VRAM
+	ld.lil	de, VRAM+1
+	ld.lil	bc, VRAMEnd-VRAM
+	ld.lil	(hl), $00
+	ldir.lil
+	
+	;clear the tile cache
+	ld.lil	hl, SegaTileCache
+	ld.lil	de, SegaTileCache+1
+	ld	bc, $7000
+	ld.lil	(hl), $00
 	ldir.lil
 
 	; turn the display on
@@ -13111,9 +13137,9 @@ _:	ld	c, $20			;loop 32 times (copy one tile)
 _:
 	ld	e, (hl)			;get the index stored at HL
 	ld	a, (de)			;index into data at $100
-	ld.l	(ix), a			;copy value to VRAM
+	ld.lil	(ix), a			;copy value to VRAM
 	inc	hl			;move to next index address
-	inc	ix
+	inc.lil	ix
 	dec	c
 	jr	nz, -_			;copy next byte
 
@@ -13838,19 +13864,27 @@ _:	ld	(Engine_RingAnimFrame), a
 	ret	z
 
 	di
-	push	hl
-	ld.lil	hl, SegaVRAM
-	add.lil	hl, de
-	ex	de, hl
-	pop	hl
 
 	; swap in the bank with the ring art
 	ld	a, 29
 	call	Engine_SwapFrame2
+
+	push	hl
+	ld.lil	hl, SegaVRAM
+	add.lil	hl, de
+	ex.lil	de, hl
+	pop	hl
+
+	push.lil de
+	ld.lil	de, romStart
+	add.lil	hl, de
+	pop.lil	de
 	
 	; copy 128 bytes to VRAM
 	ld	bc, 128
-	ldir
+	ldir.lil
+	ld	hl, DrawTilemapTrig
+	set	0, (hl)
 	ret
 
 ROM_HEADER:				;$7FF0

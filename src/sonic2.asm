@@ -64,22 +64,22 @@ _START:
 
 	;load ROM banks 28, 30, and 31
 	ld	hl, Bank28
-	ld	de, $D30000
+	ld	de, pixelShadow+$4000
 	call	LoadBank
 
 	ld	hl, Bank30
-	ld	de, $D34000
+	ld	de, pixelShadow+$8000
 	call	LoadBank
 
 	ld	hl, Bank31
-	ld	de, $D38000
+	ld	de, pixelShadow+$C000
 	call	LoadBank
 
 	ld	a, $D2
 	ld	mb, a
 	ld	($D2DE02), sp
-	ld.s	sp, $DFF0
-	jp.s	romStart	;start of program
+	ld.sis	sp, $DFF0
+	jp.sis	$0000	;start of program
 
 LoadBank:
 	push	de

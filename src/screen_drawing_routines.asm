@@ -5,7 +5,12 @@
 DrawScreen:
 .ORG	DrawScreen+romStart
 
-	;call.lil RenderScreenMap
+	ld	a, (DrawTilemapTrig)
+	bit	0, a
+	call.lil nz, DrawScreenMap
+	ld	a, (DrawTilemapTrig)
+	bit	1, a
+	call.lil nz, RenderScreenMap
 	;start drawing the SAT
 	ld	a, (DrawSATTrig)
 	or	a
@@ -19,23 +24,60 @@ DrawScreen:
 .ASSUME ADL=1
 
 RenderScreenMap:
-	ld.sis	a, (DrawTilemapTrig)
-	push	af
-	or	a
-	call	nz, DrawScreenMap	;set up double buffering
-	pop	af
-	ld	hl, ScrollingTrig
-	or.sis	(hl)			;should anything be drawn at all?
-	ret.sis	z
-	;TODO: Write working routine
+	ld	hl, RenderedScreenMap
+	ld	de, VRAM+$1E20		;first letter in letterbox
+	ld	bc, 0
+	ld	iyl, 192		;length of SMS screen
+	ld.sis	a, (VDP_VScroll)
+	add	a, h			;should HLU increment?
+	jr	nc, +_			;jump if not
+	ld	hl, SegaVRAM
+_:	ld	h, a
 
-ClearScreen:
-	ld	hl, VRAM
-	ld	de, VRAM+1
-	ld	bc, 320*240
-	ld	(hl), $00
+	;draw scanline
+	ld.sis	a, (VDP_HScroll)
+	or	a
+	jp	z, RenderScreenMap_NullScroll
+	sub	8
+
+_:	ld	c, a
+	neg
+	ld	l, a
 	ldir
-	ret
+	dec	h
+	ld	l, 0
+	ld	c, a
+	ldir
+	neg
+
+	;go to next scanline
+	ex	de, hl
+	ld	c, $40
+	add	hl, bc
+	ex	de, hl
+	inc	h
+	ld	l, b
+
+	push	de
+	ld	de, SegaVRAM
+	call	CpHLDE
+	pop	de
+	jr	c, +_
+	ld	hl, RenderedScreenMap
+_:	dec	iyl
+	jr	nz, --_
+	ret.sis
+	
+RenderScreenMap_NullScroll:
+	ld	bc, $0100
+	ldir
+	ex	de, hl
+	ld	c, $40
+	add	hl, bc
+	ex	de, hl
+	dec	iyl
+	jr	nz, RenderScreenMap_NullScroll
+	ret.sis
 
 DrawScreenMap:
 	xor	a
@@ -49,11 +91,11 @@ _:	push	bc
 	or	(hl)
 	jr	z, +_				;jump if null indice
 	ld	a, (hl)
-	and	%10010000			;should we draw the tile right now?
+	and	%10000000			;should we draw the tile right now?
 	call	z, DrawScreenMap_Tiles
 
 _:	inc	ixh				;update counters
-	ld	a, 31
+	ld	a, 32
 	cp	ixh
 	jr	nz, +_
 	ld	ixh, $00
@@ -65,7 +107,7 @@ _:	inc	hl
 	ld	a, b
 	or	c
 	jr	nz, ---_
-	ret
+	ret.sis
 
 DrawScreenMap_Tiles:
 	set	7, (hl)				;set that flag for future interrupts
@@ -93,18 +135,6 @@ DrawScreenMap_Tiles:
 	ld	hl, ($D2DD00)
 	ret
 
-DrawScreenMap_PriorityTiles:
-	ld	ix, $0000
-	ld	hl, ScreenMap
-	inc	hl
-_:	bit	4, (hl)
-	call	nz, DrawScreenMap_Tiles
-	dec	bc
-	ld	a, b
-	or	c
-	jr	nz, -_
-	ret
-
 DrawCachedTile:
 	push	hl
 	call	GetTileCoordinates
@@ -119,18 +149,8 @@ DrawCachedTile:
 	add	hl, de			;HL = cached tile ptr
 	pop	de
 
-	bit	1, a			;do we flip the tile horizontally?
-	jr	z, +_			;jump if we shouldn't
-	;shift HL and DE to the right side of the tile
-	ld	bc, $0007
-	add	hl, bc
-	ex	de, hl
-	add	hl, bc
-	ex	de, hl
-	ld	bc, $B8ED		;LD BC', LDDR
-	ld	(SetCachedTile_DrawingX), bc
-	ld	bc, 264
-	ld	(SetCachedTile_DrawingGap+1), bc
+	bit	1, a				;do we flip the tile horizontally?
+	jp	nz, DrawCachedTile_FlippedX	;jump if we shouldn't
 
 _:	bit	2, a			;do we flip the tile vertically?
 	jr	z, +_			;jump if we shouldn't
@@ -143,19 +163,15 @@ _:	bit	2, a			;do we flip the tile vertically?
 	ex	de, hl
 	ld	bc, $42ED
 	ld	(SetCachedTile_DrawingY), bc
+	ld	bc, 264
+	ld	(SetCachedTile_DrawingGapY+1), bc
 
-_:	and	$06			;do we flip the tile both ways?
-	cp	$06
-	ld	a, $08
-	jr	z, +_
-	ld	bc, 248
-	ld	(SetCachedTile_DrawingGap+1), bc
+_:	ld	a, $08
 _:	ld	bc, $0008		;BC = tile width
-SetCachedTile_DrawingX:
 	ldir
 	nop
 	ex	de, hl
-SetCachedTile_DrawingGap:
+SetCachedTile_DrawingGapY:
 	ld	bc, 248
 SetCachedTile_DrawingY:
 	add	hl, bc
@@ -167,18 +183,79 @@ SetCachedTile_DrawingY:
 	pop	hl
 	inc	hl
 	set	7, (hl)
+	;reset self-modifying code
+	ld	bc, $09		;ADD HL, BC
+	ld	(SetCachedTile_DrawingY), bc
+	ld	bc, 248
+	ld	(SetCachedTile_DrawingGapY+1), bc
+	ret
+
+DrawCachedTile_FlippedX:
+	;shift DE to the right side of the tile
+	ld	bc, $0007
+	ex	de, hl
+	add	hl, bc
+	ex	de, hl
+
+	bit	2, a	;is the tile flipped in both directions?
+	ld	a, 8
+	jr	z, +_	;skip this if it isn't
+
+	ld	bc, $0700
+	ex	de, hl
+	add	hl, bc
+	ex	de, hl
+
+	ld	bc, 248
+	ld	(SetCachedTile_DrawingGap+1), bc
+	ld	bc, $42ED
+	ld	(SetCachedTile_DrawingX), bc
+
+_:	ld	c, 8
+	ex	af, af'
+_:	ld	a, (hl)
+	ld	(de), a
+	inc	hl
+	dec	de
+	dec	c
+	jr	nz, -_
+SetCachedTile_DrawingGap:
+	ld	bc, 264
+	ex	de, hl
+SetCachedTile_DrawingX:
+	add	hl, bc
+	nop
+	nop
+	ex	de, hl
+	ex	af, af'
+	dec	a
+	jr	nz, --_
+
+	pop	hl
+	inc	hl
+	set	7, (hl)
+	;reset self-modifying code
+	ld	bc, 264
+	ld	(SetCachedTile_DrawingGap+1), bc
+	ld	bc, $09		;ADD HL, BC
+	ld	(SetCachedTile_DrawingX), bc
 	ret
 	
 
 GetTilePointer:		;makes HL a pointer to the selected tile
 	ld	a, (hl)
 	inc	hl
+	ld	b, (hl)
 	push	hl
 	ld	h, $20
 	ld	l, a
 	mlt	hl
 	ld	de, SegaVRAM+$2000
-	ex	de, hl
+	ld	a, b
+	bit	0, a	;which half of VRAM are the tiles on?
+	jr	nz, +_
+	ld	de, SegaVRAM
+_:	ex	de, hl
 	add	hl, de
 	ex	de, hl
 	add	hl, hl
@@ -248,7 +325,7 @@ _:	bit	2, e		;do we flip the tile vertically?
 	ld	a, e
 	and	$06
 	cp	$06		;do we flip the tile both ways?
-	jr	z, +_
+	jr	nz, +_
 	ld	a, $11
 	ld	(SetScanlineSkip), a
 	ld	bc, 248
@@ -258,11 +335,11 @@ _:	push	hl
 	pop	de
 	ret
 
-DrawSAT:
+DrawSAT:	;draws all the sprites, from least to most significant
 	ld	hl, SegaTileFlags+$E0	;cached tile index
 	ld	($D2DE06), hl
-	ld	iy, SAT		;y position
-	ld	ix, SAT+$80	;x position/tile index
+	ld	iy, SAT+$3F	;y position
+	ld	ix, SAT+$FE	;x position/tile index
 	ld	b, $40		;number of SAT entries
 	exx
 	ld	d, $10
@@ -275,19 +352,21 @@ _:	ld	h, (iy)
 	ld	a, 192
 	cp	h		;is the sprite off-screen?
 	jr	c, +_		;skip this sprite
-	ld	a, h
-	cp	(ix)		;is the indice a null ptr?
+	ld	a, (ix)
+	cp	h		;is the indice a null ptr?
 	jr	z, +_
+	or	a
+	jr	z, +_
+
 	ld	($D2DE06), a	;set SAT drawing flag
 
 	call	SetSpriteCoords	;set sprite coordinates
 	ex	de, hl		;HL now points to the tile's top-left corner
 	ld	l, (ix+1)
-	call	SetCachedSpritePtr
+	call	SetSpritePTR
 
 	ld	hl, ($D2DE06)	;set cached tile flag
 	set	0, (hl)
-	inc	hl
 	ld	($D2DE06), hl
 
 	ld	l, (iy)
@@ -298,11 +377,11 @@ _:	ld	h, (iy)
 	ex	de, hl
 	ld	l, (ix+1)	;calc bottom half of 8x16 sprite
 	inc	l
-	call	SetCachedSpritePtr
+	call	SetSpritePTR
 
-_:	inc	ix		;point IX and IY to the next entry
-	inc	ix
-	inc	iy
+_:	dec	ix		;point IX and IY to the next entry
+	dec	ix
+	dec	iy
 	djnz	--_
 	ret.sis
 
@@ -310,15 +389,15 @@ SetSpriteCoords:
 	ld	l, 160
 	mlt	hl
 	add	hl, hl		;HL now has the scanline to start on
-	ld	de, $0020
+	ld	de, $0018
 	add	hl, de		;move into the letterbox
 	ld	e, (ix)
 	add	hl, de		;DE has the tile's coordinates
-	ld	de, VRAM+$1E00	;first scanline to be updated
+	ld	de, VRAM+$1F40	;first scanline to be updated
 	add	hl, de
 	ret
 
-SetCachedSpritePtr:
+SetSpritePTR:
 	ld	h, $20		;size of tile
 	mlt	hl
 	push	de
@@ -326,19 +405,8 @@ SetCachedSpritePtr:
 	add	hl, de		;HL now points to the specified tile
 	pop	de		;DE has the tile's coordinates
 	push	iy
-	ld	iy, SegaTileCache+$4000	;point IY to tile cache
-	exx
-	ld	b, $40
-	ld	c, (ix)
-	mlt	bc
-	add	iy, bc
-	exx
+	ld	iy, SegaTileCache+$10000	;point IY to tile cache
 	call	ConvertTileTo8bpp
-	ld	iy, SegaTileFlags
-	ld	a, (ix+1)	;set cached tile flag
-	ld	iyl, a
-	ld	a, $01
-	ld	(iy), a
 	pop	iy
 	ret
 
@@ -400,9 +468,9 @@ _:	xor	a
 	cp	$10
 	jr	z, DrawPixel
 	ld	(de), a
-	ld	(iy), a
 DrawPixel:
 	inc	de
+	ld	(iy), a
 	inc	iy
 	exx
 	dec	e

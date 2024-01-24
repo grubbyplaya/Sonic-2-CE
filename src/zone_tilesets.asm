@@ -436,11 +436,11 @@ Tileset_Intro:
 	.dw $0200
 	.dw Art_Icons_Numbers
 .db 07
-	.dw $09C0
-	.dw Art_Monitors_Generic
-.db 07
 	.dw $07C0
 	.dw Art_Rings
+.db 07
+	.dw $09C0
+	.dw Art_Monitors_Generic
 .db 26
 	.dw $0C00
 	.dw Art_Block_Fragment

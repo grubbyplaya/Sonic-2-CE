@@ -32,8 +32,8 @@
 ; =========================================================
 ;  VDP Variables
 ;----------------------------------------------------------
-	#define VDP_VScroll		$D877
-	#define VDP_HScroll 		$D878
+	#define VDP_HScroll 		$D877
+	#define VDP_VScroll		$D878
 	#define VDP_ViewportX		$D179
 	#define VDP_ViewportY		$D17C
 	#define VDP_TileColBuffer 	$D17F    ; holds a column of tile indices before copying to the VDP
@@ -77,10 +77,10 @@
 #define  Cllsn_AdjustedY		$D358	; word - object's y-coordinate + an adjustment value
 #define  Cllsn_MetaTileX		$D35A	; word - metatile's x coordinate
 #define  Cllsn_MetaTileY		$D35C	; word - metatile's y coordinate
-#define  Cllsn_MetaTileSurfaceType	$D35F	; byte - surface type value for the colliding metatile.
-#define  Cllsn_HeaderPtr3		$D360	; word - 3rd pointer in the metatile's collision header
-#define  Cllsn_CollisionValueY		$D362	; byte - vertical collision value for the current position within the metatile.
-#define  Cllsn_CollisionValueX		$D363	; byte - horizontal collision value for the current position within the metatile.
+#define  Cllsn_MetaTileSurfaceType	$D35E	; byte - surface type value for the colliding metatile.
+#define  Cllsn_HeaderPtr3		$D36F	; word - 3rd pointer in the metatile's collision header
+#define  Cllsn_CollisionValueY		$D361	; byte - vertical collision value for the current position within the metatile.
+#define  Cllsn_CollisionValueX		$D362	; byte - horizontal collision value for the current position within the metatile.
 
 
 #define  Engine_UpdateSpriteAttribs_vpos_ptr   	$D369	; word

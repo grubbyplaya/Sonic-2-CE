@@ -229,25 +229,23 @@ VDP_Write:	; Ported
 	call	VDP_SetAddress
 	push	de
 	ld.lil	de, SegaVRAM
-	add	hl, de
+	add.lil	hl, de
 	pop	de	
 
 _:	; write the low-order byte
-	ld	(hl), e
-	push	af 
-	pop	af
-	inc	hl
-	
+	ld.lil	(hl), e
+	inc.lil	hl
 	; write the hi-order byte
-	ld	(hl), d
+	ld.lil	(hl), d
+	inc.lil	hl
 	
 	; decrement BC and loop back if != 0
 	dec	bc
 	ld	a, b
 	or	c
 	jr	nz, -_
-	cpl
-	ld	(DrawTilemapTrig), a
+	ld	hl, DrawTilemapTrig
+	set	0, (hl)
 	ret
 
 
@@ -268,10 +266,10 @@ _:	; write the low-order byte
 VDP_Copy:	 ; Ported and optimized
 	push	de
 	ld.lil	de, SegaVRAM
-	add	hl, de
+	add.lil	hl, de
 	pop	de
 	;copy the source to VDP RAM
-	ldir
+	ldir.lil
 	ret
 
 ; =============================================================================
@@ -370,26 +368,26 @@ VDP_DisableFrameInterrupt:		; $13AA
 ; -----------------------------------------------------------------------------
 VDP_DrawText:		; Ported and optimized
 	di
-	push	de
-	ld.lil	de, SegaVRAM
-	add	hl, de
-	pop	de
+	push.lil hl
+	ld.lil	hl, romStart
+	add.lil	hl, de
+	pop.lil	de
 
-	ex	de, hl
-_:	ldi	;write a char to the VDP memory
-	inc	de
+_:	ldi.lil	;write a char to the VDP memory
 	
 	; copy the tile attribute byte to the VDP
 	ld	a, (VDP_DefaultTileAttribs)
-	ld	(de), a
+	ld.lil	(de), a
 	
 	; increment the source pointer
-	inc	hl
+	inc.lil	de
 	
 	;loop back if BC != 0
 	ld	a, c
 	or	b
 	jr	nz, -_
+	ld	a, $03
+	ld	(DrawTilemapTrig), a
 	ret
 
 ; =============================================================================
@@ -594,14 +592,25 @@ VDP_ClearScreenMap:	 ; $179B
 ;	A, BC, DE, HL
 ; -----------------------------------------------------------------------------
 VDP_ClearScreen:	 ;$17AC
-	ld.lil	hl, SegaVRAM+$2000		;clear the first level tile from VRAM (32-bytes starting at $2000)
+	ld	hl, $2000		;clear the first level tile from VRAM (32-bytes starting at $2000)
 	ld	bc, $0020
 	ld	de, $0000
 	call	VDP_Write
-	ld.lil	hl, VDP_ScreenMap		;set up all background tiles to point to the first "level tile"
+
+	ld	hl, $3800		;set up all background tiles to point to the first "level tile"
 	ld	bc, $0380
 	ld	de, $0100
 	call	VDP_Write
+
+	ld.lil	hl, SegaTileCache	;clear tile cache
+	ld.lil	de, SegaTileCache+1
+	ld	bc, $4000
+	ldir.lil
+
+	ld.lil	hl, SegaTileFlags	;clear cache flags
+	ld.lil	de, SegaTileFlags+1
+	ld	c, $F0
+	ldir.lil
 	;FALL THROUGH
 
 ; =============================================================================

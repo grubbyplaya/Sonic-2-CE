@@ -5,7 +5,7 @@
 ;****************************************************
 Engine_UpdateObjectLayout:			;$8000
 	ld	a, (CurrentLevel)
-	cp	LastLevel			 ;return if level >= 7
+	cp	LastLevel				;return if level >= 7
 	ret	nc
 
 	add	a, a					;get a pointer to the level's
@@ -19,7 +19,7 @@ Engine_UpdateObjectLayout:			;$8000
 	ld	l, a					;HL = pointer for current level
 
 	
-	ld	a, (CurrentAct)		;get a pointer to the current
+	ld	a, (CurrentAct)				;get a pointer to the current
 	add	a, a					;act's placement data
 	ld	e, a
 	add	hl, de
@@ -28,23 +28,23 @@ Engine_UpdateObjectLayout:			;$8000
 	ld	h, (hl)
 	ld	l, a					;HL = pointer for current act
 
-	ld	bc, $D400			 ;store a pointer to the active objects 
-								;array
+	ld	bc, $D400				;store a pointer to the active objects 
+							;array
 	exx
 
-	ld	hl, (Camera_X)		;get camera hpos
+	ld	hl, (Camera_X)				;get camera hpos
 	ld	de, $FF80
 	add	hl, de
-	jp	c, +_				 ;jump if hpos was >= 128
+	jr	c, +_					;jump if hpos was >= 128
 	
 	ld	hl, $0000
 	
 _:	ex	de, hl
 
-	ld	hl, (Camera_Y)		;get camera vpos
+	ld	hl, (Camera_Y)				;get camera vpos
 	ld	bc, $FF80
 	add	hl, bc
-	jp	c, +_				 ;jump if camera vpos >= 128
+	jr	c, +_					;jump if camera vpos >= 128
 	
 	ld	hl, $0000
 
@@ -52,7 +52,7 @@ _:	exx
 
 _:	ld	a, (hl)				;read the object number
 	inc	a
-	jr	z, ++_				 ;check for $FF terminator byte
+	jr	z, +_				 ;check for $FF terminator byte
 
 	ld	a, (bc)				;check the active objects array to see
 	or	a					 ;if the slot is available
@@ -67,7 +67,7 @@ _:	ld	a, (hl)				;read the object number
 	add	hl, de
 	jr	-_
 
-	ret
+_:	ret
 
 
 ;read an object placement descriptor
@@ -86,7 +86,7 @@ ObjectLayout_CheckLoadObject:		;$804D
 	jp	c, ObjectLayout_Return	;jump if cam pos > object pos
 
 	or	a
-	jp	nz, +_				;jump if hi-byte of obj hpos != 0
+	jr	nz, +_				;jump if hi-byte of obj hpos != 0
 
 	ld	a, e					;compare with lo-byte of current screen pos
 	exx
@@ -126,7 +126,7 @@ _:	inc	hl					;test vertical proximity
 	jp	c, ObjectLayout_Return
 
 	or	a
-	jp	nz, +_
+	jr	nz, +_
 
 	ld	a, e
 	exx
@@ -143,7 +143,7 @@ _:	inc	hl					;test vertical proximity
 	jp	c, ObjectLayout_Return
 
 	or	a
-	jp	nz, +_
+	jr	nz, +_
 
 	ld	a, e
 	exx

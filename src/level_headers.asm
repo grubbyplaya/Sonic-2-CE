@@ -240,7 +240,7 @@ LevelHeader_UGZ2:
 LevelHeader_UGZ3:
 .db 15
 .dw Mappings32_UGZ
-.db 24
+.db 27
 .dw Layout_UGZ3
 .dw $0080
 .dw $FF80
@@ -339,7 +339,7 @@ LevelHeader_SEZ3:
 LevelHeader_CEZ1:
 .db 24
 .dw Mappings32_CEZ1_2
-.db 21
+.db 11
 .dw Layout_CEZ1
 .dw $00A8
 .dw $FF58
@@ -353,7 +353,7 @@ LevelHeader_CEZ1:
 LevelHeader_CEZ2:
 .db 24
 .dw Mappings32_CEZ1_2
-.db 21
+.db 27
 .dw Layout_CEZ2
 .dw $0038
 .dw $FFC8
@@ -367,7 +367,7 @@ LevelHeader_CEZ2:
 LevelHeader_CEZ3:
 .db 23
 .dw Mappings32_CEZ3
-.db 21
+.db 27
 .dw Layout_CEZ3
 .dw $0028
 .dw $FFD8

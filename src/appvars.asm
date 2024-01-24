@@ -1,18 +1,21 @@
+#define Bank28	pixelShadow+$4000
+#define Bank30	pixelShadow+$8000
+#define Bank31	pixelShadow+$C000
+
 .ASSUME ADL=1
 CheckForBank: 			;it's bankin' time
 	di
  	call.is	StoreRegisters
 	ld	hl, Engine_ResetInterruptFlag
 	push.sis hl		;Copy the return address to the 16-bit stack
-
 	;check for object logic banks
-	ld	hl, $D30000
+	ld	hl, Bank28
 	cp	28
 	jp	z, LoadBankFromRAM + romStart
-	ld	h, $40
+	ld	hl, Bank30
 	cp	30
 	jp	z, LoadBankFromRAM + romStart
-	ld	h, $80
+	ld	hl, Bank31
 	cp	31
 	jp	z, LoadBankFromRAM + romStart
 
@@ -89,12 +92,10 @@ LoadBankFromRAM:
 	jp	CheckForBank_ToggleInterrupt + romStart
 
 ExitGame:
-	;call.sis SaveGame
-	;exit 8bpp mode
-	ld	hl, lcdNormalMode
-	ld	(mpLcdCtrl), hl
-	ld	sp, (SegaSP)
-	ret
+	ld.lil	sp, $D1A845
+	ld.lil	hl, lcdNormalMode
+	ld.lil	(mpLcdCtrl), hl
+	jp.lil	ClrLCDFull
 
 LoadSave:
 	ld	hl, SaveFile

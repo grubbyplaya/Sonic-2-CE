@@ -7,6 +7,7 @@
 #define	CpHLDE			$02013C
 #define Mov9ToOP1		$020320
 #define ChkFindSym		$02050C
+#define ClrLCDFull		$020808
 #define Arc_Unarc		$021448
 #define ramStart		$D00000
 #define tempSP			$D0053F

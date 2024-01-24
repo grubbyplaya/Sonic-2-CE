@@ -8,13 +8,13 @@
 LevelSelectMenu:
 LABEL_A2C:
 	di
+	call	Engine_ClearVRAM
 	call	LevelSelect_LoadFont
 	call	Engine_ClearLevelAttributes
 	call	Engine_ClearWorkingVRAM
-	call	VDP_ClearScreen
 	ld	a, $01					;tile attributes
 	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3808				;VRAM destination
+	ld.lil	hl, SegaVRAM+$3808	;VRAM destination
 	ld	de, LevelSelect_Title	;source data
 	ld	bc, LevelSelect_DrawEntry1 - LevelSelect_Title	;char count
 	call	VDP_DrawText
@@ -33,31 +33,31 @@ LevelSelect_DrawEntry1:
 	jr	LevelSelect_DrawEntry2
 
 LevelSelect_Entry1:
-.db "UNDER GROUND ZONE	ACT-1"
+.db "UNDER GROUND ZONE  ACT-1"
 
 LevelSelect_DrawEntry2:
 	ld	a, $01
 	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$38C8
+	ld.lil	hl, SegaVRAM+$38EE
 	ld	de, LevelSelect_Entry2
 	ld	bc, LevelSelect_DrawEntry3 - LevelSelect_Entry2
 	call	VDP_DrawText
 	jr	LevelSelect_DrawEntry3
 	
 LevelSelect_Entry2:
-.db "					ACT-2"
+.db "ACT-2"
 
 LevelSelect_DrawEntry3:
 	ld	a, $01
 	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3908
+	ld.lil	hl, SegaVRAM+$392E
 	ld	de, LevelSelect_Entry3
 	ld	bc, LevelSelect_DrawEntry4 - LevelSelect_Entry3
 	call	VDP_DrawText
 	jr	LevelSelect_DrawEntry4
 	
 LevelSelect_Entry3:
-.db	"					ACT-3"
+.db	"ACT-3"
 
 LevelSelect_DrawEntry4:
 	ld	a, $01
@@ -69,31 +69,31 @@ LevelSelect_DrawEntry4:
 	jr	LevelSelect_DrawEntry5
 	
 LevelSelect_Entry4:
-.db "SKY HIGH ZONE		ACT-1"
+.db "SKY HIGH ZONE      ACT-1"
 
 LevelSelect_DrawEntry5:
 	ld	a, $01
 	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3988
+	ld.lil	hl, SegaVRAM+$39AE
 	ld	de, LevelSelect_Entry5
 	ld	bc, LevelSelect_DrawEntry6 - LevelSelect_Entry5
 	call	VDP_DrawText
 	jr	LevelSelect_DrawEntry6
 	
 LevelSelect_Entry5:
-.db "					ACT-2"
+.db "ACT-2"
 
 LevelSelect_DrawEntry6:
 	ld	a, $01
 	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$39C8
+	ld.lil	hl, SegaVRAM+$39EE
 	ld	de, LevelSelect_Entry6
 	ld	bc, LevelSelect_DrawEntry7 - LevelSelect_Entry6
 	call	VDP_DrawText
 	jr	LevelSelect_DrawEntry7
 
 LevelSelect_Entry6:
-.db "					ACT-3"
+.db "ACT-3"
 
 LevelSelect_DrawEntry7
 	ld	a, $01
@@ -105,31 +105,31 @@ LevelSelect_DrawEntry7
 	jr	LevelSelect_DrawEntry8
 
 LevelSelect_Entry7:
-.db "AQUA LAKE ZONE	 ACT-1"
+.db "AQUA LAKE ZONE     ACT-1"
 
 LevelSelect_DrawEntry8:
 	ld	a, $01
 	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3A48
+	ld.lil	hl, SegaVRAM+$3A6E
 	ld	de, LevelSelect_Entry8
 	ld	bc, LevelSelect_DrawEntry9 - LevelSelect_Entry8
 	call	VDP_DrawText
 	jr	LevelSelect_DrawEntry9
 
 LevelSelect_Entry8:
-.db "					ACT-2"
+.db "ACT-2"
 
 LevelSelect_DrawEntry9:
 	ld	a, $01
 	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3A88
+	ld.lil	hl, SegaVRAM+$3AAE
 	ld	de, LevelSelect_Entry9
 	ld	bc, LevelSelect_DrawEntry10 - LevelSelect_Entry9
 	call	VDP_DrawText
 	jr	LevelSelect_DrawEntry10
 
 LevelSelect_Entry9:
-.db "					ACT-3"
+.db "ACT-3"
 
 LevelSelect_DrawEntry10:
 	ld	a, $01
@@ -141,31 +141,31 @@ LevelSelect_DrawEntry10:
 	jr	LevelSelect_DrawEntry11
 	
 LevelSelect_Entry10:
-.db "GREEN HILLS ZONE	ACT-1"
+.db "GREEN HILLS ZONE   ACT-1"
 
 LevelSelect_DrawEntry11:
 	ld	a, $01
 	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3B08
+	ld.lil	hl, SegaVRAM+$3B2E
 	ld	de, LevelSelect_Entry11
 	ld	bc, LevelSelect_DrawEntry12 - LevelSelect_Entry11
 	call	VDP_DrawText
 	jr	LevelSelect_DrawEntry12
 	
 LevelSelect_Entry11:
-.db "					ACT-2"
+.db "ACT-2"
 
 LevelSelect_DrawEntry12:
 	ld	a, $01
 	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3B48
+	ld.lil	hl, SegaVRAM+$3B6E
 	ld	de, LevelSelect_Entry12
 	ld	bc, LevelSelect_DrawEntry13 - LevelSelect_Entry12
 	call	VDP_DrawText
 	jr	LevelSelect_DrawEntry13
 
 LevelSelect_Entry12:
-.db "					ACT-3"
+.db "ACT-3"
 
 LevelSelect_DrawEntry13:
 	ld	a, $01
@@ -177,31 +177,31 @@ LevelSelect_DrawEntry13:
 	jr	LevelSelect_DrawEntry14
 	
 LevelSelect_Entry13;
-.db "GIMMICK MT. ZONE	ACT-1"
+.db "GIMMICK MT. ZONE   ACT-1"
 
 LevelSelect_DrawEntry14:
 	ld	a, $01
 	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3BC8
+	ld.lil	hl, SegaVRAM+$3BEE
 	ld	de, LevelSelect_Entry14
 	ld	bc, LevelSelect_DrawEntry15 - LevelSelect_Entry14
 	call	VDP_DrawText
 	jr	LevelSelect_DrawEntry15
 	
 LevelSelect_Entry14:
-.db "					ACT-2"
+.db "ACT-2"
 
 LevelSelect_DrawEntry15:
 	ld	a, $01
 	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3C08
+	ld.lil	hl, SegaVRAM+$3C2E
 	ld	de, LevelSelect_Entry15
 	ld	bc, LevelSelect_DrawEntry16 - LevelSelect_Entry15
 	call	VDP_DrawText
 	jr	LevelSelect_DrawEntry16
 	
 LevelSelect_Entry15:
-.db "					ACT-3"
+.db "ACT-3"
 
 LevelSelect_DrawEntry16:
 	ld	a, $01
@@ -218,26 +218,26 @@ LevelSelect_Entry16:
 LevelSelect_DrawEntry17:
 	ld	a, $01
 	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3C88
+	ld.lil	hl, SegaVRAM+$3CAE
 	ld	de, LevelSelect_Entry17
 	ld	bc, LevelSelect_DrawEntry18 - LevelSelect_Entry17
 	call	VDP_DrawText
 	jr	LevelSelect_DrawEntry18
 	
 LevelSelect_Entry17:
-.db "					ACT-2"
+.db "ACT-2"
 
 LevelSelect_DrawEntry18:
 	ld	a, $01
 	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3CC8
+	ld.lil	hl, SegaVRAM+$3CEE
 	ld	de, LevelSelect_Entry18
 	ld	bc, LevelSelect_DrawEntry19 - LevelSelect_Entry18
 	call	VDP_DrawText
 	jr	LevelSelect_DrawEntry19
 	
 LevelSelect_Entry18:
-.db "					ACT-3"
+.db "ACT-3"
 
 LevelSelect_DrawEntry19:
 	ld	a, $01
@@ -249,31 +249,31 @@ LevelSelect_DrawEntry19:
 	jr	LevelSelect_DrawEntry20
 
 LevelSelect_Entry19:
-.db "CRYSTAL EGG ZONE	ACT-1"
+.db "CRYSTAL EGG ZONE	  ACT-1"
 
 LevelSelect_DrawEntry20:
 	ld	a, $01
 	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3D48
+	ld.lil	hl, SegaVRAM+$3D6E
 	ld	de, LevelSelect_Entry20
 	ld	bc, LevelSelect_DrawEntry21 - LevelSelect_Entry20
 	call	VDP_DrawText
 	jr	LevelSelect_DrawEntry21
 
 LevelSelect_Entry20:
-.db "					ACT-2"
+.db "ACT-2"
 
 LevelSelect_DrawEntry21:
 	ld	a, $01
 	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3D88
+	ld.lil	hl, SegaVRAM+$3DAE
 	ld	de, LevelSelect_Entry21
 	ld	bc, LevelSelect_DrawEntry22 - LevelSelect_Entry21
 	call	VDP_DrawText
 	jr	LevelSelect_DrawEntry22
 	
 LevelSelect_Entry21:
-.db "					ACT-3"
+.db "ACT-3"
 
 LevelSelect_DrawEntry22:
 	ld	hl, $D4E6
@@ -330,37 +330,28 @@ LevelSelect_MainLoop:	;0E46
 	call	Engine_WaitForInterrupt
 	call	_CheckInput
 	call	_DrawCursor
-	ld.lil	a, (kbdG1)
-	and	kbit2nd		;PATCH: enable both button 1 and 2 on the menu
-	ld.lil	a, (kbdG2)
-	and	kbitAlpha
-	;bit	5, a		;defaults to only allow button 2 on the menu
+	ld	a, (Engine_InputFlags)
+	bit	BTN_1_BIT, a
 	jr	z, LevelSelect_MainLoop
 	ld	a, $FF
 	ld	($D294), a
 	ret
 
 _CheckInput:	;$0E5C
-	ld.lil	a, (kbdG7)
-	bit	kbitUp, a
+	ld	a, (Engine_InputFlags)
+	bit	BTN_UP_BIT, a
 	jr	nz, _MoveCursorUp
-	bit	kbitDown, a
+	bit	BTN_DOWN_BIT, a
 	jr	nz, _MoveCursorDown
-	ld.lil	a, (kbdG7)
-	and	kbitUp | kbitDown			;check to see if up/down buttons are held
+	and	BTN_UP | BTN_DOWN	;check to see if up/down buttons are held
 	jr	z, _ResetCursorVelocity	;nothing held - reset cursor velocity
 	ld	a, (HoldTime)
 	inc 	a
 	ld	(HoldTime), a
 	cp	$28
 	ret 	c							;cap cursor velocity at $27
-	ld	a, $26
+	ld	a, $27
 	ld	(HoldTime), a
-	ld.lil	a, (kbdG7)
-	bit	kbitUp, a
-	jr	nz, _MoveCursorUp
-	bit	kbitDown, a
-	jr	nz, _MoveCursorDown
 	ret
 
 _ResetCursorVelocity:	;$0E89
@@ -374,6 +365,8 @@ _MoveCursorUp:
 	ret	z
 	dec	a
 	ld	(CursorPos), a
+	ld	a, $03
+	ld	(DrawTilemapTrig), a
 	ret
 
 _MoveCursorDown:
@@ -382,18 +375,15 @@ _MoveCursorDown:
 	ret	nc
 	inc	a
 	ld	(CursorPos), a
+	ld	a, $03
+	ld	(DrawTilemapTrig), a
 	ret
 
 _DrawCursor:
 	ld	a, (CursorPos)
 	ld	l, a				;calculate VRAM address
-	ld	h, $00
-	add	hl, hl
-	add	hl, hl
-	add	hl, hl
-	add	hl, hl
-	add	hl, hl
-	add	hl, hl
+	ld	h, $40
+	mlt	hl
 	ld	de, $3878
 	add	hl, de
 	ld	de, _TileMappings	;source
@@ -401,7 +391,6 @@ _DrawCursor:
 	jp	Engine_LoadCardMappings	;copy to VRAM
 
 _TileMappings:
-;.db $00, $01, SegaVRAM+$3C, $01, $00, $01
 .dw $0100	;tile used above the cursor
 .dw $013C	;tile used for the cursor
 .dw $0100	;tile used below the cursor

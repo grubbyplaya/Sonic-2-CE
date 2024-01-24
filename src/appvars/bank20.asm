@@ -11,7 +11,7 @@ Art_SEZ2_Level_Tiles:		;$902A
 Art_Boss_UGZ:				;$A102
 #import "art\boss\art_ucmp_ugz_boss.bin"
 
-Art_End:					;$AE42
+Art_End:				;$AE42
 #import "art\ending\art_end.bin"
 
 Art_Tails_Running:			;$B002
