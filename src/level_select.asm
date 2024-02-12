@@ -338,11 +338,12 @@ LevelSelect_MainLoop:	;0E46
 	ret
 
 _CheckInput:	;$0E5C
-	ld	a, (Engine_InputFlags)
+	ld	a, (Engine_InputFlagsLast)
 	bit	BTN_UP_BIT, a
 	jr	nz, _MoveCursorUp
 	bit	BTN_DOWN_BIT, a
 	jr	nz, _MoveCursorDown
+	ld	a, (Engine_InputFlags)
 	and	BTN_UP | BTN_DOWN	;check to see if up/down buttons are held
 	jr	z, _ResetCursorVelocity	;nothing held - reset cursor velocity
 	ld	a, (HoldTime)
@@ -350,8 +351,13 @@ _CheckInput:	;$0E5C
 	ld	(HoldTime), a
 	cp	$28
 	ret 	c							;cap cursor velocity at $27
-	ld	a, $27
+	ld	a, $26
 	ld	(HoldTime), a
+	ld	a, (Engine_InputFlags)
+	bit	BTN_UP_BIT, a
+	jr	nz, _MoveCursorUp
+	bit	BTN_DOWN_BIT, a
+	jr	nz, _MoveCursorDown
 	ret
 
 _ResetCursorVelocity:	;$0E89

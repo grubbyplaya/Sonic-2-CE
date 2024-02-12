@@ -264,10 +264,17 @@ _:	; write the low-order byte
 ;	A, BC, DE
 ; -----------------------------------------------------------------------------
 VDP_Copy:	 ; Ported and optimized
-	push	de
-	ld.lil	de, SegaVRAM
+	push	hl
+	ld.lil	hl, SegaVRAM
 	add.lil	hl, de
-	pop	de
+	ex.lil	de, hl
+	pop	hl
+
+	push	bc
+	ld.lil	bc, romStart
+	add.lil	hl, bc
+	pop	bc
+
 	;copy the source to VDP RAM
 	ldir.lil
 	ret
@@ -604,7 +611,7 @@ VDP_ClearScreen:	 ;$17AC
 
 	ld.lil	hl, SegaTileCache	;clear tile cache
 	ld.lil	de, SegaTileCache+1
-	ld	bc, $4000
+	ld	bc, $3FFF
 	ldir.lil
 
 	ld.lil	hl, SegaTileFlags	;clear cache flags

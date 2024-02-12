@@ -28,8 +28,8 @@ CheckForBank: 			;it's bankin' time
 
 	call	Mov9ToOP1
  	call	ChkFindSym
-	jp	c, ExitGame
-	call	PutBankinSlot2+romStart
+	jp.lil	c, ExitGame + romStart
+	call	PutBankinSlot2 + romStart
 	ex	af, af'
 CheckForBank_ToggleInterrupt:
 	call.is RestoreRegisters
@@ -92,10 +92,21 @@ LoadBankFromRAM:
 	jp	CheckForBank_ToggleInterrupt + romStart
 
 ExitGame:
-	ld.lil	sp, $D1A845
-	ld.lil	hl, lcdNormalMode
-	ld.lil	(mpLcdCtrl), hl
-	jp.lil	ClrLCDFull
+.ORG ExitGame+romStart
+	ld	a, $D0
+	ld	mb, a
+	ld	sp, $D1A845
+	ld	hl, $F00004
+	ld	(hl), $11
+	inc	hl
+	ld	(hl), $30
+	ld	hl, lcdNormalMode
+	ld	(mpLcdCtrl), hl
+	call	ClrLCDFull
+	ei
+	ret
+ExitGameEnd:
+.ORG ExitGameEnd-romStart
 
 LoadSave:
 	ld	hl, SaveFile
@@ -220,6 +231,9 @@ Bank26:
 
 Bank27:
 	.db	AppVarObj, "Bank27", 0
+
+NullBank:
+	.db	AppVarObj, "Bank29", 0
 
 Bank29:
 	.db	AppvarObj, "Bank29", 0

@@ -14,6 +14,9 @@ _START:
 	ld	(hl), $00
 	ldir
 
+	ld	hl, $F50000
+	ld	(hl), 3
+
 	;clear emulated memory map location
 	ld	hl, romStart
 	ld	de, romStart+1

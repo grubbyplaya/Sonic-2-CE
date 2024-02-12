@@ -38,7 +38,6 @@ _:	ld	h, a
 	ld.sis	a, (VDP_HScroll)
 	or	a
 	jp	z, RenderScreenMap_NullScroll
-	sub	8
 
 _:	ld	c, a
 	neg
@@ -75,7 +74,15 @@ RenderScreenMap_NullScroll:
 	ld	c, $40
 	add	hl, bc
 	ex	de, hl
-	dec	iyl
+
+	push	de
+	ld	de, SegaVRAM
+	call	CpHLDE
+	pop	de
+	jr	c, +_
+	ld	hl, RenderedScreenMap
+_:	dec	iyl
+
 	jr	nz, RenderScreenMap_NullScroll
 	ret.sis
 
@@ -111,9 +118,12 @@ _:	inc	hl
 
 DrawScreenMap_Tiles:
 	set	7, (hl)				;set that flag for future interrupts
-	dec	hl
 	xor	a
 	ld	($D2DE06), a			;reset the SAT drawing flag
+	bit	0, (hl)				;which half of VRAM is the tile on?
+	dec	hl
+	jr	z, +_				;don't use cached tiles if said tile is on the first half
+
 	ld	a, (hl)
 	ld	de, SegaTileFlags
 	ld	e, a				;use tile index as an offset into flags
@@ -122,7 +132,7 @@ DrawScreenMap_Tiles:
 	jr	nz, DrawCachedTile		;do alternate routine if so
 	inc	a
 	ld	(de), a
-	call	GetTilePointer
+_:	call	GetTilePointer
 	call	GetTileFlags
 	call	ConvertTileTo8bpp
 	;reset self-modifying code
@@ -155,8 +165,6 @@ DrawCachedTile:
 _:	bit	2, a			;do we flip the tile vertically?
 	jr	z, +_			;jump if we shouldn't
 	;shift HL and DE to the bottom side of the tile
-	ld	bc, $0018
-	add	hl, bc
 	ld	bc, $0700
 	ex	de, hl
 	add	hl, bc
@@ -336,10 +344,10 @@ _:	push	hl
 	ret
 
 DrawSAT:	;draws all the sprites, from least to most significant
-	ld	hl, SegaTileFlags+$E0	;cached tile index
-	ld	($D2DE06), hl
-	ld	iy, SAT+$3F	;y position
-	ld	ix, SAT+$FE	;x position/tile index
+	ld	a, 1
+	ld	($D2DE06), a
+	ld	iy, SAT		;y position
+	ld	ix, SAT+$80	;x position/tile index
 	ld	b, $40		;number of SAT entries
 	exx
 	ld	d, $10
@@ -348,7 +356,7 @@ DrawSAT:	;draws all the sprites, from least to most significant
 _:	ld	h, (iy)
 	ld	a, 208
 	cp	h		;is the sprite's Y position 208?
-	ret	z		;stop rendering SAT if so
+	ret.sis	z		;stop rendering SAT if so
 	ld	a, 192
 	cp	h		;is the sprite off-screen?
 	jr	c, +_		;skip this sprite
@@ -357,17 +365,10 @@ _:	ld	h, (iy)
 	jr	z, +_
 	or	a
 	jr	z, +_
-
-	ld	($D2DE06), a	;set SAT drawing flag
-
 	call	SetSpriteCoords	;set sprite coordinates
 	ex	de, hl		;HL now points to the tile's top-left corner
 	ld	l, (ix+1)
 	call	SetSpritePTR
-
-	ld	hl, ($D2DE06)	;set cached tile flag
-	set	0, (hl)
-	ld	($D2DE06), hl
 
 	ld	l, (iy)
 	ld	e, 8
@@ -379,9 +380,9 @@ _:	ld	h, (iy)
 	inc	l
 	call	SetSpritePTR
 
-_:	dec	ix		;point IX and IY to the next entry
-	dec	ix
-	dec	iy
+_:	inc	ix		;point IX and IY to the next entry
+	inc	ix
+	inc	iy
 	djnz	--_
 	ret.sis
 
@@ -389,7 +390,7 @@ SetSpriteCoords:
 	ld	l, 160
 	mlt	hl
 	add	hl, hl		;HL now has the scanline to start on
-	ld	de, $0018
+	ld	de, $0020
 	add	hl, de		;move into the letterbox
 	ld	e, (ix)
 	add	hl, de		;DE has the tile's coordinates

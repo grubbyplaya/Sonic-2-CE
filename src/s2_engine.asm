@@ -273,8 +273,8 @@ LABEL_472:
 	jp	Engine_CheckGlobalTriggers
 
 LevelSelectCheck:
-	ld.lil	a, (kbdG1)
-	and	kbdGraph
+	ld.lil	a, (kbdG7)
+	and	kbdLeft
 	ret	z
 	ld	(LevelSelectTrg), a
 	ret
@@ -421,8 +421,10 @@ Engine_HandleVBlank_Epilogue:
 	ld	hl, Engine_InterruptServiced
 	inc	(hl)
 
-	ld	a, (CurrentLevel)
-	cp	Level_Intro
+	ld	hl, (CurrentLevel)
+	ld	de, $0109
+	or	a
+	sbc	hl, de
 	jr	z, +_
 	ld	a, ($FFFF)
 	call	Engine_SwapFrame2
@@ -533,7 +535,7 @@ Engine_PauseHandler:
 	jr	nz, +_
 	
 	ld	a, (GlobalTriggers)
-	and	%11111101
+	and	$FD
 	cp	GT_GAMEOVER
 	jr	nz, +_
 	
@@ -1216,7 +1218,7 @@ _Load_Title_Level:
 	
 LABEL_FB9:
 	di
-	call	VDP_ClearScreen
+	call	Engine_ClearVRAM
 	ld	a, 24
 	call	Engine_SwapFrame2	;page in bank 24
 	ld	hl, $2000
@@ -2155,10 +2157,10 @@ ReadInput:	;$1A35
 
 	ld.lil	a, (kbdG6)
 	bit	kbitClear, a		;is the clear key pressed?
-	jp	nz, ExitGame		;exit the program if it is
+	jp.lil	nz, ExitGame + romStart	;exit the program if it is
 
 	ld.lil	a, (kbdG1)
-	bit	kbitMode, a		;is the mode key pressed?
+	bit	kbitMode, a		;is the X key pressed?
 	jp	nz, Engine_PauseHandler	;emulate SMS start button if it is
 
 	bit	kbitDel, a		;is the delete key pressed?
@@ -2539,48 +2541,56 @@ _:	push	bc
 	add	a, a
 	add	a, a
 	push	de
+
 	di
 	ld	hl, ($D11C)
-	call	VDP_SetAddress
 	ld.lil	de, SegaVRAM
 	add.lil	hl, de
-	push	hl
+	ex.lil	de, hl
 	ld	hl, ScoreCard_Mappings_Numbers
-	ld	e, a
-	ld	d, $00
-	add	hl, de
-	pop	de
+	ld	c, a
+	ld	b, $00
+	add	hl, bc
+	ld.lil	bc, romStart
+	add.lil	hl, bc
 	ldi.lil
 	ldi.lil
-	push	hl
+
+	push.lil hl
 	ld	hl, ($D11C)
 	inc	hl
 	inc	hl
 	ld	($D11C), hl
 	ld	de, $3E
 	add	hl, de
-	call	VDP_SetAddress
 	ld.lil	de, SegaVRAM
 	add.lil	hl, de
-	push	hl
-	pop	de
-	pop	hl
+	ex.lil	de, hl
+	pop.lil	hl
 	ldi.lil
 	ldi.lil
+
 	ei
 	pop	de
 	dec	de
 	pop	bc
 	djnz	---_
+	ld	hl, DrawTilemapTrig
+	ld	(hl), $11
 	ret
 
 ;mappings for scorecard digits 0-9
 ScoreCard_Mappings_Numbers:	;$1E07
-.dw $114E, $1158, $114F, $1169
-.dw $1150, $115A, $1151, $115B
-.dw $1152, $115C, $1153, $115B
-.dw $1154, $1148, $1155, $115D
-.dw $1156, $1148, $1157, $115B
+.dw $114E, $1158
+.dw $114F, $1159
+.dw $1150, $115A
+.dw $1151, $115B
+.dw $1152, $115C
+.dw $1153, $115B
+.dw $1154, $1148
+.dw $1155, $115D
+.dw $1156, $1148
+.dw $1157, $115B
 
 ;mappings for blank character
 ScoreCard_Mappings_Blank:		;$1E2F
@@ -2755,11 +2765,7 @@ _:	sub	$20					;subtract 20 seconds and use as
 	ld	e, (hl)					;add the value to the score
 	inc	hl
 	ld	d, (hl)
-	push	hl
-	pop	de
-	inc	hl
-	inc	hl
-
+	ex	de, hl
 	jp	Score_AddValue
 
 
@@ -2769,7 +2775,7 @@ _:	sub	$20					;subtract 20 seconds and use as
 ;*	player's score.										*
 ;********************************************************
 Score_CalculateActTimeScore_Sec:		;$1F0E
-_:	xor	a
+	xor	a
 	ld	($D2A5), a			;clear the memory that will be used
 	ld	($D2A6), a			;to hold the score value
 	ld	($D2A7), a
@@ -2778,7 +2784,7 @@ _:	xor	a
 	ld	de, $0959			;subtract 9mins 59sec
 	xor	a
 	sbc	hl, de
-	jr	z, -_		;jump if timer == 09'59"
+	jr	z, +++_		;jump if timer == 09'59"
 
 	ld	hl, (LevelTimer)
 	srl	h		;hl /= 2
@@ -3439,7 +3445,7 @@ _:	ld	hl, $D292
 LABEL_24BE_48:
 	;check for level select trigger
 	ld	a, (LevelSelectTrg)
-	cp	kbdGraph
+	cp	kbdLeft
 	jr	nz, ++_
 	xor	a
 	ld	($D294), a
@@ -3887,6 +3893,7 @@ TitleCard_ScrollActLogo:		;$2722
 	
 GameOverScreen_DrawScreen:		;27B4
 	di
+	call	VDP_ClearScreen
 	call	Engine_ClearLevelAttributes			;clear data from $D15E->$D290 (level header?)
 	ld	hl, $3800
 	ld	de, $1107			;clear the screen
@@ -4508,7 +4515,7 @@ Player_RollingCheckSkid:		; $32E4
 	
 	; jump if the player is moving left (MSB set
 	bit	7, a
-	jp	nz, +_
+	jr	nz, +_
 	
 	; player moving right. check the left button in the input flags
 	bit	BTN_LEFT_BIT, (hl)
@@ -5016,6 +5023,7 @@ LABEL_359B:
 	inc	a
 _:	ld	($D399), hl
 	ld	($D39B), a
+
 	ld	hl, ($D39A)
 	add	hl, hl
 	ld	de, LoopMotionData	;loop motion data?
@@ -5029,6 +5037,7 @@ _:	ld	($D399), hl
 	add	hl, de
 	ld	(ix+$14), l	 ;set vertical pos
 	ld	(ix+$15), h
+
 	ld	hl, ($D39A)
 	add	hl, hl
 	ld	de, LoopMotionData+$046E
@@ -5041,31 +5050,35 @@ _:	ld	($D399), hl
 	add	hl, de
 	ld	(ix+$11), l	 ;set horizontal pos
 	ld	(ix+$12), h
+
 	ld	hl, ($D39A)
 	ld	de, $00B0
 	xor	a
 	sbc	hl, de
-	jr	nc, $+$16
+	jr	nc, +_
 	ld	l, (ix+$16)	 ;get horizontal speed
 	ld	h, (ix+$17)
 	ld	de, $0007
 	xor	a
 	sbc	hl, de
-	jr	c, $+$38
+	jr	c, LABEL_3638
 	ld	(ix+$16), l	 ;set horizontal speed
 	ld	(ix+$17), h
-	jr	$+$10
+	jr	++_
+
 	ld	l, (ix+$16)
 	ld	h, (ix+$17)
-	ld	de, $000C
+_:	ld	de, $000C
 	add	hl, de
 	ld	(ix+$16), l
 	ld	(ix+$17), h
-	ld	hl, ($D39A)
+
+_:	ld	hl, ($D39A)
 	ld	de, $0230
 	xor	a
 	sbc	hl, de
 	ret	c
+
 	ld	(ix+$02), $06
 	ld	hl, (Player_MaxVelX)
 	ld	(ix+$16), l
@@ -5829,7 +5842,7 @@ _:	call	Player_UpdatePositionX
 	call	LABEL_6BF2		;check collisions
 	call	LABEL_376E
 
-	ld	a, (Engine_InputFlags)
+	ld	a, (Engine_InputFlagsLast)
 	and	BTN_1 | BTN_2		;check for either button 1 or button 2
 	ret	z
 
@@ -6253,7 +6266,7 @@ Player_CalcAccel_NoBtnPress:		; $3CB8
 	ld	de, $0000
 	ld	(Player_DeltaVX), de
 
-	; return if the player is not movin
+	; return if the player is not moving
 	ld	hl, (Player.VelX)
 	ld	a, l
 	or	h
@@ -10512,14 +10525,14 @@ _:	bit	OBJ_F3_BIT7, (ix + Object.Flags03)
 
 _:	; get the object's collision axis flags
 	ld	a, (ix + Object.SprColFlags)
-	and	$0F
+	and	%00001111
 	ld	b, a
 	
 	; invert the collision flags
-	and	$03
-	ld	c, $0C
+	and	%00000011
+	ld	c, %00001100	
 	jr	z, +_
-	ld	c, $03
+	ld	c, %00000011
 _:	ld	a, b
 	xor	c
 	
@@ -10531,7 +10544,7 @@ _:	ld	a, b
 	rlca	
 	ld	b, a
 	ld	a, (Player.SprColFlags)
-	and	$0F
+	and	%00001111
 	or	b
 	ld	(Player.SprColFlags), a
 	ret	
@@ -10539,7 +10552,7 @@ _:	ld	a, b
 
 Engine_CheckCollision_Return:		;$692F
 	ld	a, (ix + Object.SprColFlags)
-	and	$F0
+	and	%11110000
 	ld	(ix + Object.SprColFlags), a
 	ret	
 
@@ -10602,9 +10615,9 @@ LABEL_697D:
 	ld	a, $E0
 	ld	hl, $DB2C
 	ld	b, $08
-	ld	(hl), a
+_:	ld	(hl), a
 	inc	hl
-	djnz	LABEL_697D
+	djnz	-_
 	ret	
 
 LABEL_698F:
@@ -10871,6 +10884,10 @@ LABEL_6B61:
 	add	hl, hl
 	ld	de, LABEL_6B85
 	add	hl, de
+	ld	a, (hl)
+	inc	hl
+	ld	h, (hl)
+	ld	l, a
 	jp	(hl)
 
 LABEL_6B85:
@@ -11083,9 +11100,9 @@ LABEL_6D0D:	; GMZ rotating discs
 	jr	++_
 _:	ld	hl, -256
 
-_:	; FIXME: do this after the CPIR so that we dont have
+	; FIXME: do this after the CPIR so that we dont have
 	;to compare again here
-	ld	c, $00
+_:	ld	c, $00
 	bit	7, h
 	jr	z, +_
 	dec	c
@@ -11410,16 +11427,16 @@ Player_EnterPipe_Return:	;$6F81
 ;A == mapping number
 LABEL_6F82:
 	cp	$F2
-	jr	nc, ++_		;jump if mapping >= $F2 (ugz lava block)
+	jr	nc, ++_				;jump if mapping >= $F2 (ugz lava block)
 	
 	cp	$DF				;jump if mapping >= $DF & < $F2
-	jr	nc, LABEL_6FCE	;i.e. the GMZ conveyor belts
+	jr	nc, LABEL_6FCE			;i.e. the GMZ conveyor belts
 	
 	cp	$88				;return if mapping >= $88 & < $DF
 	ret	nc
 
 	cp	$78				;jump if mapping >= $78 & < $88
-	jr	nc, +_			;e.g. springs & spikes
+	jr	nc, +_				;e.g. springs & spikes
 
 	cp	$70				;return if mapping >= $70 & < $78
 	ret	nc				;i.e. ring blocks
@@ -11427,17 +11444,17 @@ LABEL_6F82:
 _:	cp	$40				;jump if mapping >= $40 & < $70
 	jr	nc, LABEL_6FCE
 
-_:	ld	a, (Cllsn_CollisionValueX)		;get the block's collision value
+_:	ld	a, (Cllsn_CollisionValueX)	;get the block's collision value
 	and	$3F
 	cp	$20
 	call	z, Cllsn_ProjectVertical
 	
 	ld	a, (Cllsn_AdjustedY)		;get the lo-byte of the vertical position
 	and	$1F
-	ld	c, a			;c = position on the block
-	ld	a, (Cllsn_CollisionValueX)		;a = collision value
+	ld	c, a				;c = position on the block
+	ld	a, (Cllsn_CollisionValueX)	;a = collision value
 	and	$3F
-	add	a, c			;a += c
+	add	a, c				;a += c
 	cp	$20
 	ret	c				;return if a < $20
 	sub	$20				;calculate a projection value 
@@ -11447,9 +11464,9 @@ _:	ld	a, (Cllsn_CollisionValueX)		;get the block's collision value
 	ld	hl, (Player.Y)
 	xor	a
 	sbc	hl, bc
-	ld	(Player.Y), hl		;adjust the vertical position
+	ld	(Player.Y), hl			;adjust the vertical position
 
-	set	1, (ix + $22)		;flag the collision
+	set	1, (ix + $22)			;flag the collision
 	
 	call	LABEL_6938
 	ld	a, ($D100)
@@ -11459,17 +11476,17 @@ _:	ld	a, (Cllsn_CollisionValueX)		;get the block's collision value
 LABEL_6FCE:
 	bit	7, (ix+$19)
 	ret	nz					;return if the player is moving up
-	ld	a, (Cllsn_CollisionValueX)			;get vert collision value
+	ld	a, (Cllsn_CollisionValueX)		;get vert collision value
 	and	$3F
 	call	z, Cllsn_ProjectVertical
 	res	1, (ix+$22)
-	ld	a, (ix+$19)		;hi-byte of vertical velocity
+	ld	a, (ix+$19)				;hi-byte of vertical velocity
 	add	a, $09
 	ld	b, a
 	ld	a, (Cllsn_AdjustedY)			;lo-byte of adjusted vert. pos
-	and	$1F				;calculate current position in block
+	and	$1F					;calculate current position in block
 	ld	c, a
-	ld	a, (Cllsn_CollisionValueX)			;get vert projection value
+	ld	a, (Cllsn_CollisionValueX)		;get vert projection value
 	add	a, c
 	cp	$20
 	ret	c
@@ -11478,7 +11495,7 @@ LABEL_6FCE:
 	ret	nc
 	ld	c, a
 	ld	b, $00
-	ld	hl, ($D514)		;adjust vertical pos in level
+	ld	hl, ($D514)				;adjust vertical pos in level
 	xor	a
 	sbc	hl, bc
 	ld	($D514), hl
@@ -12489,7 +12506,7 @@ Engine_GetCollisionDataForBlock:		;$7481
 Engine_GetCollisionValueForBlock:		;$752E
 	; save the current page
 	ld	a, (Frame2Page)
-	push	af
+	ld	($FFFF), a
 	
 	; swap in the bank with the collision data
 	ld	a, 30
@@ -12585,7 +12602,7 @@ Engine_GetCollisionValueForBlock:		;$752E
 	; FALL THROUGH
 
 Engine_GetCollisionData_CleanUp:			;$759F
-	pop	af				;restore the previous frame
+	ld	a, ($FFFF)	;restore the previous frame
 	call	Engine_SwapFrame2
 	ld	a, (Cllsn_MetaTileSurfaceType)		;restore block type to A
 	ret	
@@ -13006,7 +13023,7 @@ Engine_ClearVRAM:		; $77F3
 	;clear the tile cache
 	ld.lil	hl, SegaTileCache
 	ld.lil	de, SegaTileCache+1
-	ld	bc, $7000
+	ld	bc, $3FFF
 	ld.lil	(hl), $00
 	ldir.lil
 
@@ -13052,42 +13069,45 @@ Engine_HandlePLC:		;$783B
 	or	a
 	ret	z						;return if the PLC is zero
 
-	ld	a, (PLC_BankNumber)		;jump if the bank is zero (load boss,
+	ld	a, (PLC_BankNumber)				;jump if the bank is zero (load boss,
 	or	a						;chaos emeralds or monitors).
 	call	z, Engine_HandlePLC_NoBank
 
-	ld	a, (PatternLoadCue)		;the PLC NoBank handler may have changed
+	ld	a, (PatternLoadCue)				;the PLC NoBank handler may have changed
 	or	a						;the PatternLoadCue variable so we need to
 	ret	z						;check it again.
 
-	ld	a, (PLC_ByteCount)		;if byte count is zero load from a PLC
+	ld	a, (PLC_ByteCount)				;if byte count is zero load from a PLC
 	or	a						;descriptor (address of which stored at $D3B2)
-	ld	hl, (PLC_Descriptor)
 	call	z, Engine_HandlePLC_ParseDescriptor
 
-	di	;no interrupts - we're accessing VRAM here
-
-	ld	a, (PLC_BankNumber)		;if the msb of the bank number is set we 
+	di						;no interrupts - we're accessing VRAM here
+	ld	a, (PLC_BankNumber)			;if the msb of the bank number is set we 
 	bit	7, a					;need to mirror the tile horizontally
 	jr	nz, Engine_HandlePLC_CopyMirrored
 
 
 	call	Engine_SwapFrame2		;swap the correct bank into page 2
+	ld	de, (PLC_VRAMAddr)
+	ld.lil	hl, SegaVRAM
+	add.lil	hl, de
+	ex.lil	de, hl
+
 	ld	hl, (PLC_SourceAddr)
+	ld.lil	bc, romStart
+	add.lil	hl, bc
+
 	ld	a, (PLC_ByteCount)		;check for >0 bytes
 	or	a
 	jp	z, Engine_HandlePLC_CleanUp ;bail out if nothing to do
+
 	cp	$04
 	jr	c, +_
 	ld	a, $04					;copy 4 bitplanes
 _:	ld	b, a
-_:	ld	c, $20					;do this 32 times
-_:	ld	a, (hl)					;get a byte from the source...
-	ld	(PLC_VRAMAddr), a				;...and copy to VRAM.
-	inc	hl
-	dec	c
-	jr	nz, -_
-	djnz	--_
+	ld	c, $20					;do this 32 times
+	mlt	bc
+	ldir.lil
 	;FALL THROUGH
 
 LABEL_7881:
@@ -13142,7 +13162,6 @@ _:
 	inc.lil	ix
 	dec	c
 	jr	nz, -_			;copy next byte
-
 	djnz	--_			;copy next tile
 	pop	ix
 	ei
@@ -13167,11 +13186,12 @@ Engine_HandlePLC_NoBank:	;$78CA
 	ld	e, (hl)			;get a pointer to the pattern descriptor
 	inc	hl
 	ld	d, (hl)
-	ex	de, hl
+	ld	(PLC_Descriptor), de
 	;FALL THROUGH
 
 ;parse a PLC descriptor and set the variables in RAM
 Engine_HandlePLC_ParseDescriptor:	;$78EB
+	ld	hl, (PLC_Descriptor)
 	ld	a, (hl)				;check for the $FF terminator byte
 	cp	$FF
 	jr	z, Engine_HandlePLC_CleanUp
@@ -13196,12 +13216,12 @@ Engine_HandlePLC_ParseDescriptor:	;$78EB
 
 Engine_HandlePLC_CleanUp:		;$7910
 	xor	a
-	ld	(PatternLoadCue),a
-	ld	($D3AC),a
-	ld	(PLC_ByteCount),a
+	ld	(PatternLoadCue), a
+	ld	($D3AC), a
+	ld	(PLC_ByteCount), a
 	ld	hl, $0000
-	ld	(PLC_VRAMAddr),hl
-	ld	(PLC_SourceAddr),hl
+	ld	(PLC_VRAMAddr), hl
+	ld	(PLC_SourceAddr), hl
 	ret	
 
 ;PLC descriptor chains for end-of-level events
@@ -13461,7 +13481,7 @@ UpdateCyclingPalette_JumpVectors:
 .dw UpdateCyclingPalette_DoNothing
 .dw UpdateCyclingPalette_DoNothing2
 .dw UpdateCyclingPalette_Rain			;SHZ2 rain palette
-.dw UpdateCyclingPalette_SHZ_Lightning	;SHZ2 lightning
+.dw UpdateCyclingPalette_SHZ_Lightning		;SHZ2 lightning
 .dw UpdateCyclingPalette_Lava			;UGZ lava palette
 .dw UpdateCyclingPalette_Water			;ALZ water palette
 .dw UpdateCyclingPalette_Unknown2
@@ -13469,9 +13489,9 @@ UpdateCyclingPalette_JumpVectors:
 .dw UpdateCyclingPalette_Orb			;CEZ1 orb palette
 .dw UpdateCyclingPalette_Lightning		;CEZ3 boss lightening palette
 .dw UpdateCyclingPalette_Lightning2		;CEZ3 boss lightening palette
-.dw UpdateCyclingPalette_WallLighting	;CEZ3 wall lighting
+.dw UpdateCyclingPalette_WallLighting		;CEZ3 wall lighting
 .dw UpdateCyclingPalette_Orb			;CEZ1 orb palette
-.dw LABEL_7F46							;ending sequence
+.dw LABEL_7F46					;ending sequence
 .dw LABEL_7F7E
 .dw UpdateCyclingPalette_DoNothing
 

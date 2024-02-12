@@ -50,12 +50,12 @@ _:	ex	de, hl
 
 _:	exx
 
-_:	ld	a, (hl)				;read the object number
+_:	ld	a, (hl)					;read the object number
 	inc	a
-	jr	z, +_				 ;check for $FF terminator byte
+	jr	z, +_					;check for $FF terminator byte
 
-	ld	a, (bc)				;check the active objects array to see
-	or	a					 ;if the slot is available
+	ld	a, (bc)					;check the active objects array to see
+	or	a					;if the slot is available
 	
 	push	hl					;preserve pointer
 	call	z, ObjectLayout_CheckLoadObject		;jump if the slot is available
@@ -63,7 +63,7 @@ _:	ld	a, (hl)				;read the object number
 	
 	inc	bc					;move to next element in active objects array
 	
-	ld	de, $0009			 ;move to the next sprite header
+	ld	de, $0009				;move to the next sprite header
 	add	hl, de
 	jr	-_
 
@@ -75,24 +75,20 @@ ObjectLayout_CheckLoadObject:		;$804D
 	inc	hl
 	ld	e, (hl)
 	inc	hl
-	ld	d, (hl)				;DE = object hpos
+	ld	d, (hl)	;DE = object hpos
 
-	ld	a, d
-								;test horizontal proximity
+	ld	a, d	;test horizontal proximity
 	exx
-	cp	d					 ;compare with hi-byte of current screen pos
+	cp	d	;compare with hi-byte of current screen pos
 	exx
-
 	jp	c, ObjectLayout_Return	;jump if cam pos > object pos
 
 	or	a
-	jr	nz, +_				;jump if hi-byte of obj hpos != 0
-
-	ld	a, e					;compare with lo-byte of current screen pos
+	jr	nz, +_	;jump if hi-byte of obj hpos != 0
+	ld	a, e	;compare with lo-byte of current screen pos
 	exx
 	cp	e
 	exx
-
 	jp	c, ObjectLayout_Return	;jump if cam pos > object pos
 
 _:	exx
@@ -134,7 +130,7 @@ _:	inc	hl					;test vertical proximity
 	exx
 	jp	c, ObjectLayout_Return
 
-	exx	 
+_:	exx	 
 	ld	a, h
 	exx
 	inc	a

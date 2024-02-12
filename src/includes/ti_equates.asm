@@ -73,7 +73,7 @@ kbd7		= 00001000b
 kbdComma	= 00010000b
 kbdSin		= 00100000b
 kbdApps		= 01000000b
-kbdGrapVar	= 10000000b
+kbdGraphVar	= 10000000b
 
 kbit0		= 00
 kbit1		= 01

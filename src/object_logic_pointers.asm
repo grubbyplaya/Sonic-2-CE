@@ -7,7 +7,7 @@
 .dw Logic_InvincibilityStars		;05 - invincibility stars
 .dw Logic_HideTimerRings		;06 - Special object - hide rings & timer
 .dw DATA_B31_ACEB			;07 - Fragment of broken block (different logic to $04).
-.dw Logic_DroppedRing			;08	- Dropped ring
+.dw Logic_DroppedRing			;08 - Dropped ring
 .dw Logic_AirCountdown			;09 - Air timer countdown
 .dw Logic_ALZ_Bubble			;0A
 .dw Logic_WaterSplash			;0B
