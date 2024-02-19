@@ -77,6 +77,8 @@
 #define SegaTileFlags		SegaVRAM + $4000		;flags for drawing tilemap
 #define CRAM			mpLcdPalette
 #define WorkingCRAM		$D4C6				;copy of Colour RAM maintained in work RAM.
+#define DATA_B30_9841		$E2F0
+#define DATA_B30_9A41		$E4F0
 
 #define BankSlot2		$8000				;ROM bank slot 2.
 #define LastLevel		$07
@@ -581,7 +583,6 @@ Engine_CheckGlobalTriggers:	; $0690
 	call	LABEL_A13
 	jp	Engine_CheckGlobalTriggers
 
-
 ;run the ending sequence
 GameState_EndSequence:
 	call	Engine_LoadLevel		;load the level
@@ -608,7 +609,6 @@ GameState_EndSequence:
 	ld	(hl), a
 	jp	Engine_CheckGlobalTriggers
 
-
 LABEL_6F3:						;ending credits sequence
 	ld	a, $5D
 	ld	($D700), a
@@ -619,29 +619,24 @@ LABEL_6F3:						;ending credits sequence
 
 	xor	a			;reset the level timer update trigger
 	ld	(LevelTimerTrigger), a
-
 	ld	a, $0D	;set up the cycling palette
 	ld	(Engine_DynPalette_0), a
 
 	ld	a, 29
 	call	Engine_SwapFrame2
-
 	call	LABEL_B29_B400			; move the last 16 sprites in the SAT off of the screen.
 	ld	hl, $012C
 	ld	($D46F), hl
-	call	Engine_WaitForInterrupt
-	call	Engine_UpdateLevelState
 
+_:	call	Engine_WaitForInterrupt
+	call	Engine_UpdateLevelState
 	ld	a, 29
 	call	Engine_SwapFrame2
-
 	call	LABEL_B29_B40C
 	ld	a, ($D701)
 	cp	$06
-	jr	nz, LABEL_6F3
+	jr	nz, -_
 	ret
-
-
 
 GameState_Gameover:	; $072F
 	xor	a
@@ -1418,7 +1413,7 @@ LABEL_129C:
 	ld	a, r		;are interrupts enabled?
 	jp	pe, +_	
 	ld	a, $FF
-	ld	($E020), a
+	ld	($DF20), a
 _:	ld	a, (Frame2Page)
 	cp	b		;are we changing the ROM bank?
 	ld	a, b
@@ -1428,7 +1423,7 @@ _:	ld	a, (Frame2Page)
 	jp.lil	CheckForBank+romStart
 Engine_ResetInterruptFlag:
 	xor	a
-	ld	($E020), a
+	ld	($DF20), a
 	ret
 
 PaletteFadeOut:
@@ -5066,9 +5061,9 @@ _:	ld	($D399), hl
 	ld	(ix+$17), h
 	jr	++_
 
-	ld	l, (ix+$16)
+_:	ld	l, (ix+$16)
 	ld	h, (ix+$17)
-_:	ld	de, $000C
+	ld	de, $000C
 	add	hl, de
 	ld	(ix+$16), l
 	ld	(ix+$17), h
@@ -5095,7 +5090,7 @@ LABEL_3638:
 	ld	d, (ix+$12)
 	xor	a
 	sbc	hl, de
-	jr	c, $+$13
+	jr	c, LABEL_365C
 	ld	l, (ix+$11)
 	ld	h, (ix+$12)
 	ld	de, $0008
@@ -11518,15 +11513,6 @@ LABEL_6FCE:
 ; -----------------------------------------------------------------------------
 Cllsn_ProjectVertical:		; $7010
 	push	bc
-	
-	; store current bank for later
-	ld	a, (Frame2Page)
-	push	af
-	
-	; swap in the bank with the collision data
-	ld	a, 30
-	call	Engine_SwapFrame2
-	
 	; calculate the address of the metatile that the object
 	; is currently overlapping
 	ld	hl, (Cllsn_LevelMapBlockPtr)
@@ -11595,8 +11581,6 @@ Cllsn_ProjectVertical:		; $7010
 	ld	(ix + Object.Y), l
 
 Cllsn_ProjectVertical_Epilogue:	; $7066
-	pop	af
-	call	Engine_SwapFrame2
 	pop	bc
 	ret	
 
@@ -12323,15 +12307,7 @@ _:	; return if the player is not moving fast enough
 ;	($D361) - Vertical collision value.
 ;	(Cllsn_CollisionValueX) - Horizontal collision value.
 ; -----------------------------------------------------------------------------
-Engine_GetCollisionDataForBlock:		;$7481
-	; save the current page
-	ld	a, (Frame2Page)
-	push	af
-	
-	; swap in the bank with the collision data
-	ld	a, 30
-	call	Engine_SwapFrame2
-	
+Engine_GetCollisionDataForBlock:		;$7481	
 	; get object's x coordinate
 	ld	h, (ix + Object.X + 1)
 	ld	l, (ix + Object.X)
@@ -12473,7 +12449,7 @@ Engine_GetCollisionDataForBlock:		;$7481
 	
 	; restore the collision header pointer into HL
 	ex	de, hl
-	
+
 	
 	; fetch and store the 3rd pointer. unused?
 	inc	hl
@@ -12481,10 +12457,7 @@ Engine_GetCollisionDataForBlock:		;$7481
 	inc	hl
 	ld	b, (hl)
 	ld	(Cllsn_HeaderPtr3), bc
-	
-	; restore the saved page
-	pop	af
-	jp	Engine_SwapFrame2	
+	ret
 
 ; =============================================================================
 ; Engine_GetCollisionValueForBlock(uint16 object_ptr, int16 x_adj, int16 y_adj)
@@ -12503,15 +12476,7 @@ Engine_GetCollisionDataForBlock:		;$7481
 ;	($D358) - Adjusted y coordinate.
 ;	($D35E) - Metatile surface type.
 ; -----------------------------------------------------------------------------
-Engine_GetCollisionValueForBlock:		;$752E
-	; save the current page
-	ld	a, (Frame2Page)
-	ld	($FFFF), a
-	
-	; swap in the bank with the collision data
-	ld	a, 30
-	call	Engine_SwapFrame2
-	
+Engine_GetCollisionValueForBlock:		;$752E	
 	; get object's x coordinate
 	ld	h, (ix + Object.X + 1)
 	ld	l, (ix + Object.X)
@@ -12602,8 +12567,6 @@ Engine_GetCollisionValueForBlock:		;$752E
 	; FALL THROUGH
 
 Engine_GetCollisionData_CleanUp:			;$759F
-	ld	a, ($FFFF)	;restore the previous frame
-	call	Engine_SwapFrame2
 	ld	a, (Cllsn_MetaTileSurfaceType)		;restore block type to A
 	ret	
 

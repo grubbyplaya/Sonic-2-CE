@@ -1,6 +1,6 @@
 .ASSUME ADL=0
 ;Variables used by palette control/update routines
-#define Palettes	$E100
+#define Palettes	$E000
 Palette_Update:
 	ld	hl, $D2C9	;counter for smooth fade
 	inc	(hl)

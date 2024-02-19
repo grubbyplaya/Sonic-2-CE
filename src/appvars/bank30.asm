@@ -5,9 +5,6 @@
 
 #include "object_logic\bank30_logic.asm"
 
-DATA_B30_9841:
-#include "collision_data.asm"
-
 DemoControlSequence_SEZ:
 #import "demo\demo_control_sequence_sez.bin"
 

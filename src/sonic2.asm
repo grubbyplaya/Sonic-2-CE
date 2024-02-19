@@ -48,9 +48,16 @@ _START:
 
 	;load palettes into RAM
 	ld	hl, Palettes
-	ld	de, $D2E100
+	ld	de, $D2E000
 	ld	bc, Palette_End-Palettes
 	ldir
+
+	;load collision into RAM
+	ld	hl, Coliision
+	ld	de, $D2E2F0
+	ld	bc, Collision_End-Cllsn_Data_CollisionHeaders
+	ldir
+
 	;load engine into RAM
 	ld	hl, Sonic2_Engine
 	call	Mov9ToOP1
@@ -115,3 +122,8 @@ Bank30:
 
 Bank31:
 	.db	AppVarObj, "Bank31", 0
+
+Coliision:
+.ORG $E2F0
+#include "collision_data.asm"
+Collision_End:

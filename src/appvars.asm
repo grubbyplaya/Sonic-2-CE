@@ -33,7 +33,7 @@ CheckForBank: 			;it's bankin' time
 	ex	af, af'
 CheckForBank_ToggleInterrupt:
 	call.is RestoreRegisters
-	ld	a, ($E020)
+	ld	a, ($DF20)
 	or	a
 	ret	nz
 	ei
@@ -41,7 +41,7 @@ CheckForBank_ToggleInterrupt:
 
 StoreRegisters:		;stores registers in RAM
 	ld	(SaveSP), sp
-	ld	sp, $E012
+	ld	sp, $DF12
 	push	af
 	push	bc
 	push	de
@@ -57,7 +57,7 @@ StoreRegisters:		;stores registers in RAM
 
 RestoreRegisters:
 	ld	(SaveSP), sp
-	ld	sp, $E000
+	ld	sp, $DF00
 	pop	iy
 	pop	ix
 	pop	hl

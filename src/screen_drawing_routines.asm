@@ -361,8 +361,6 @@ _:	ld	h, (iy)
 	cp	h		;is the sprite off-screen?
 	jr	c, +_		;skip this sprite
 	ld	a, (ix)
-	cp	h		;is the indice a null ptr?
-	jr	z, +_
 	or	a
 	jr	z, +_
 	call	SetSpriteCoords	;set sprite coordinates
@@ -370,13 +368,13 @@ _:	ld	h, (iy)
 	ld	l, (ix+1)
 	call	SetSpritePTR
 
-	ld	l, (iy)
-	ld	e, 8
-	add	hl, de
-	ld	h, l
+	;calc bottom half of 8x16 sprite
+	ld	a, (iy)
+	add	a, 8
+	ld	h, a
 	call	SetSpriteCoords
 	ex	de, hl
-	ld	l, (ix+1)	;calc bottom half of 8x16 sprite
+	ld	l, (ix+1)
 	inc	l
 	call	SetSpritePTR
 

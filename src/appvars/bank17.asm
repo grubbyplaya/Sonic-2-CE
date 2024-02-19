@@ -5,8 +5,3 @@ Art_Sonic_Gliding_Mirrored:
 
 Art_Sonic_Minecart_Mirrored:
 #import "art\sonic\art_ucmp_sonic_minecart_mirrored.bin"
-
-
-;just padding?
-#import "misc\b17_padding.bin"
-

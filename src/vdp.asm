@@ -499,7 +499,6 @@ VDP_UpdateSAT:		; Ported
 	ld	a, (FrameCounter)
 	rrca
 .ASSUME ADL=1
-	jp.il	c, VDP_UpdateSAT_Descending + romStart
 	call.il	VDP_UpdateSAT_Attributes + romStart
 	ret
 
@@ -517,49 +516,6 @@ VDP_UpdateSAT_Attributes:
 	ldir
 	ld.sis	(DrawSATTrig), a
 	ret.sis
-
-
-VDP_UpdateSAT_Descending:	; Ported
-	ld	(tempSP), sp	
-	; copy the 8 player sprites first (so that they always
-	; appear on top).
-	ld	hl, VDP_WorkingSAT_VPOS + romStart
-	ld	de, VDP_SATAddress
-	ld	bc, 8
-	ldir
-
-	; copy the remaining 56 sprites in descending order
-	ld	hl, VDP_WorkingSAT_VPOS + $3F + romStart
-	ld	b, 56
-_:	ld	a, (hl)
-	ld	(de), a
-	dec	hl
-	inc	de
-	djnz	-_
-
-	; copy hpos and char codes for the 8 player sprites
-	ld	hl, VDP_WorkingSAT_HPOS + romStart
-	ld	de, VDP_SATAddress + $80
-	ld	bc, $10
-	ldir
-
-	; copy the remaining 56 hpos and char codes in descending order
-	ld	hl, VDP_WorkingSAT_HPOS + $80 + romStart
-	ld	a, $37
-	ld	sp, -4
-
-_:	ldi
-	ldi
-	add	hl, sp
-	dec	a
-	jr	nz, -_
-
-	ld	sp, (tempSP)
-.ASSUME ADL=0
-	inc	a
-	ld.s	(DrawSATTrig), a
-	call.is	+_
-_:	ret
 
 ; =============================================================================
 ;	VDP_ClearScreenMap()							UNUSED
