@@ -565,11 +565,6 @@ VDP_ClearScreen:	 ;$17AC
 	ld	de, $0100
 	call	VDP_Write
 
-	ld.lil	hl, SegaTileCache	;clear tile cache
-	ld.lil	de, SegaTileCache+1
-	ld	bc, $3FFF
-	ldir.lil
-
 	ld.lil	hl, SegaTileFlags	;clear cache flags
 	ld.lil	de, SegaTileFlags+1
 	ld	c, $F0
@@ -609,3 +604,4 @@ _:	; set the vpos and clear the hpos and char code
 	xor	a
 	ld	(DrawSATTrig), a
 	ret
+.ASSUME ADL=0

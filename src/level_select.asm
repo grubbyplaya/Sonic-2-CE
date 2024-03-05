@@ -331,7 +331,11 @@ LevelSelect_MainLoop:	;0E46
 	call	_CheckInput
 	call	_DrawCursor
 	ld	a, (Engine_InputFlags)
-	bit	BTN_1_BIT, a
+	bit	BTN_2_BIT, a
+	jr	z, +_
+	ld	a, $3F
+	ld	(EmeraldFlags), a
+_:	bit	BTN_1_BIT, a
 	jr	z, LevelSelect_MainLoop
 	ld	a, $FF
 	ld	($D294), a

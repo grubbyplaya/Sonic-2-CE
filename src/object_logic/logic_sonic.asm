@@ -439,12 +439,12 @@ LABEL_B31_A972:
 	ld	b, $0C
 	ld	a, (Engine_InputFlags)
 	and	$03
-	jr	z, LABEL_B31_A972
+	jr	z, +_
 	ld	b, $10
 	and	$01
-	jr	z, LABEL_B31_A972
+	jr	z, +_
 	ld	b, $08
-	ld	(ix + Object.FrameCounter), b
+_:	ld	(ix + Object.FrameCounter), b
 	ret
 
 

@@ -151,7 +151,7 @@ _:	ld	de, $FFFC			 ;move the pointer back 4 bytes
 	add	hl, de
 	ld	a, (hl)				;read the object number
 	
-	inc	a					 ;jump if object != FE
+	inc	a				 ;jump if object != FE
 	inc	a
 	jp	nz, ObjectLayout_LoadObject
 
@@ -164,7 +164,7 @@ _:	ld	de, $FFFC			 ;move the pointer back 4 bytes
 	
 	ld	a, (de)				;read flags
 
-	add	a, a					;use flags to calculate a jump
+	add	a, a				;use flags to calculate a jump
 	ld	hl, DATA_80BE
 	add	a, l
 	ld	l, a

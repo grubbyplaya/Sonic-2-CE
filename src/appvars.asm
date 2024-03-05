@@ -4,7 +4,6 @@
 
 .ASSUME ADL=1
 CheckForBank: 			;it's bankin' time
-	di
  	call.is	StoreRegisters
 	ld	hl, Engine_ResetInterruptFlag
 	push.sis hl		;Copy the return address to the 16-bit stack
@@ -40,7 +39,7 @@ CheckForBank_ToggleInterrupt:
 	ret
 
 StoreRegisters:		;stores registers in RAM
-	ld	(SaveSP), sp
+	ld	(SegaSP), sp
 	ld	sp, $DF12
 	push	af
 	push	bc
@@ -52,11 +51,11 @@ StoreRegisters:		;stores registers in RAM
 	push	hl
 	push	ix
 	push	iy
-	ld	sp, (SaveSP)
+	ld	sp, (SegaSP)
 	ret.lil
 
 RestoreRegisters:
-	ld	(SaveSP), sp
+	ld	(SegaSP), sp
 	ld	sp, $DF00
 	pop	iy
 	pop	ix
@@ -70,7 +69,7 @@ RestoreRegisters:
 	pop	af
 	ex	af, af'
 	pop	af
-	ld	sp, (SaveSP)
+	ld	sp, (SegaSP)
 	ret
 
 PutBankinSlot2:
@@ -95,7 +94,7 @@ ExitGame:
 .ORG ExitGame+romStart
 	ld	a, $D0
 	ld	mb, a
-	ld	sp, $D1A845
+	ld	sp, ($D2DE02)
 	ld	hl, $F00004
 	ld	(hl), $11
 	inc	hl

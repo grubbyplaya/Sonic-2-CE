@@ -41,7 +41,8 @@ LABEL_B29_B400:				;push the last 16 sprites off of the screen
 _:	ld      (hl), a
 	inc     hl
 	djnz    -_
-	ret     
+	ret  
+   
 LABEL_B29_B40C:
 	ld      a, ($D46D)
 	or      a

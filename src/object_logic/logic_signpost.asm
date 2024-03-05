@@ -134,7 +134,7 @@ _:	ld      (ix+$1E), b
 ;*	and has 77 rings, show Tails signpost & add 1 continue.	*
 ;************************************************************
 LABEL_B31_B981:
-	ld      hl, ($D297)		;number of lives when starting act
+	ld      hl, $D297		;number of lives when starting act
 	ld      a, (hl)			;is the player's life count the same as at the start of the act?
 	inc     hl
 	cp      (hl)
@@ -157,7 +157,7 @@ LABEL_B31_B981:
 ;*	counter.										*
 ;****************************************************
 LABEL_B31_B9A0:
-	ld      hl, ($D297)		;number of lives when starting act
+	ld      hl, $D297		;number of lives when starting act
 	ld      a, (hl)			;check to see if the player lost 2 lives
 	inc     hl				;on this act
 	ld      c, (hl)

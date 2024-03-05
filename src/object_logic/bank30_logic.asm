@@ -169,12 +169,12 @@ LABEL_B30_8F5E:
 	ld	(hl), a
 	inc	hl
 	ld	b, $04
-  	call	LABEL_B30_8F7D
+_:	call	LABEL_B30_8F7D
 	inc	hl
 	inc	hl
 	inc	hl
 	inc	hl
-	djnz	LABEL_B30_8F5E
+	djnz	-_
 	bit	6, (ix+$04)
 	ret	z
 	ld	a, (ix+$0b)
@@ -198,12 +198,12 @@ LABEL_B30_8F7D:
 	ld	e, a
 	add	a, $c0
 	ld	d, $00
-	ld	hl, $0330
+	ld	hl, DATA_330
 	add	hl, de
 	ld	c, (hl)
 	ld	e, a
 	ld	d, $00
-	ld	hl, $0330
+	ld	hl, DATA_330
 	add	hl, de
 	ld	a, (hl)
 	sra	a
@@ -1036,7 +1036,7 @@ LABEL_B30_954E:
 LABEL_B30_9556:
 	ld	a, (ix+$3f)
 	or	a
-	jp	z, LABEL_B30_9568
+	jr	z, LABEL_B30_9568
 	ld	(ix+$02), $07
 	ld	(ix+$1f), $e0
 	call	LABEL_B30_9136
@@ -1048,7 +1048,7 @@ LABEL_B30_9568:
 	cp	$3F
 	jr	z, +_
 	set	7, (ix+$04)
-  	set	4, (ix+$04)
+_:	set	4, (ix+$04)
 	set	1, (ix+$04)
 	ld	(ix+$02), $01
 	ld	hl, ($D514)
@@ -1105,7 +1105,6 @@ LABEL_B30_95E0:
 	sbc	hl, de
 	ld	(ix+$11), l
 	ld	(ix+$12), h
-	jp	LABEL_B30_95FE
 
 LABEL_B30_95FE:
 	call	VF_Engine_UpdateObjectPosition

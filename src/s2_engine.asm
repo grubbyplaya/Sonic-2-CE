@@ -77,8 +77,8 @@
 #define SegaTileFlags		SegaVRAM + $4000		;flags for drawing tilemap
 #define CRAM			mpLcdPalette
 #define WorkingCRAM		$D4C6				;copy of Colour RAM maintained in work RAM.
-#define DATA_B30_9841		$E2F0
-#define DATA_B30_9A41		$E4F0
+#define DATA_B30_9841		$E000
+#define DATA_B30_9A41		$E200
 
 #define BankSlot2		$8000				;ROM bank slot 2.
 #define LastLevel		$07
@@ -262,7 +262,7 @@ LABEL_472:
 	ld	($D2C8), a
 	call	ChangeGameMode
 	di
-	call	VDP_ClearScreen
+	call	Engine_ClearVRAM
 	call	Engine_ClearWorkingVRAM
 	xor	a
 	ld	($D292), a
@@ -433,7 +433,7 @@ Engine_HandleVBlank_Epilogue:
 
 _:	ld.lil	hl, $E30028
 	ld.lil	(hl), $08
-	ld.lil	sp, $D1A845		;reset SPL
+	ld.lil	sp, $D1A745		;reset SPL
 
 	; -------------------------------------
 	; VBlank Epilogue
@@ -595,6 +595,7 @@ GameState_EndSequence:
 	ld	(Engine_DynPalette_1), a
 	
 	; fade out over 1 second
+	call	PaletteFadeOut
 	wait_1s
 	
 	; clear continues & emerald count
@@ -791,7 +792,7 @@ _:	ei
 	
 	call	Engine_ClearWorkingVRAM		;clear various blocks of RAM & prepare the SAT
 	call	Engine_ClearLevelAttributes
-	call	VDP_ClearScreen
+	call	Engine_ClearVRAM
 	call	Score_CalculateActTimeScore
 	call	TitleCard_LoadAndDraw	;also deals with loading score card tiles
 	call	ScoreCard_UpdateScore
@@ -883,7 +884,7 @@ _:	ei
 	djnz	-_
 	call	Engine_ClearWorkingVRAM
 	call	Engine_ClearLevelAttributes
-	call	VDP_ClearScreen
+	call	Engine_ClearVRAM
 	call	Score_CalculateActTimeScore
 	call	TitleCard_LoadAndDraw
 	call	ScoreCard_UpdateScore
@@ -892,6 +893,7 @@ _:	ei
  	wait_1s
 	
 	; fade out for 1 second
+	call	PaletteFadeOut
 	wait_1s
 	
 	;reset the act counter & increment level counter
@@ -962,6 +964,7 @@ _:	ei
 	call	Engine_ClearAuxLevelHeader
 	
 	; fade out for 1 second
+	call	PaletteFadeOut
 	wait_1s
 	
 	ld	a, (LifeCounter)
@@ -971,6 +974,7 @@ _:	ei
 	ld	hl, GlobalTriggers
 	res	GT_KILL_PLAYER_BIT, (hl)
 	set	GT_TITLECARD_BIT, (hl)
+	call	Engine_ClearVRAM
 	jp	Engine_CheckGlobalTriggers
 
 
@@ -981,7 +985,6 @@ _:	ld	hl, GlobalTriggers
 
 
 GameState_Titlecard:		; $097F
-	call	PaletteFadeOut
 	call	Engine_ClearVRAM
 	call	TitleCard_LoadAndDraw
 	call	ScrollingText_UpdateSprites
@@ -1420,6 +1423,7 @@ _:	ld	a, (Frame2Page)
 	pop	bc
 	ret	z		;return if we aren't
 	ld	(Frame2Page), a
+	di
 	jp.lil	CheckForBank+romStart
 Engine_ResetInterruptFlag:
 	xor	a
@@ -1911,7 +1915,7 @@ _:	; check the object's state.
 _:	pop	bc
 
 _:	; move to the next object
-	ld	de, $3F
+	ld	de, $0040
 	add	ix, de
 	djnz	---_
 
@@ -3239,7 +3243,6 @@ Engine_InitCounters:		;$225B
 	ld	($D2A5), a			; |
 	ld	($D2A6), a			; |
 	ld	($D2A7), a			;/
-	ld	($D2C5), a
 
 	ld	a, ($D294)
 	or	a
@@ -4365,11 +4368,12 @@ LABEL_3222:
 	ld	a, (hl)
 	and	BTN_1 | BTN_2			;check for button 1/2
 	jp	nz, Player_SetState_Jumping
+	ld	a, (hl)
 	and	BTN_LEFT | BTN_RIGHT		;check for left/right
 	jp	nz, Player_SetState_Walking
 	bit	BTN_UP_BIT, (hl)		;check for up
 	jp	nz, Player_SetState_LookUp
-	bit	BTN_DOWN_BIT, (hl)		;check for down
+	bit	BTN_DOWN_BIT, (hl)		;check for down button
 	jp	nz, Player_SetState_Crouch
 	ret
 
@@ -4726,7 +4730,7 @@ LABEL_33B7:
 	jp	nz, Player_SetState_Jumping
 	ld	hl, ($D516)
 	bit	7, h
-	jr	z, LABEL_33B7
+	jr	z, +_
 	dec	hl
 	ld	a, h
 	cpl	
@@ -4734,7 +4738,7 @@ LABEL_33B7:
 	ld	a, l
 	cpl	
 	ld	l, a
-	and	$C0
+_:	and	$C0
 	or	h
 	jp	z, Player_SetState_Standing
 	ret	
@@ -4885,8 +4889,7 @@ LABEL_34E1:
 	ld	hl, GlobalTriggers
 	set	3, (hl)
 	ld	hl, $1000
-	ld	(ix+$18), l
-	ld	(ix+$19), h
+	ld	(Player.VelY), hl
 	jp	Player_UpdatePlayer.VelY
 
 
@@ -5246,7 +5249,7 @@ LABEL_3725:
 	xor	a				;clear all loop variables
 	ld	($D399), a
 	ld	($D39A), a
-	ld	($D39C), a
+	ld	($D39B), a
 	pop	af
 	ret	
 
@@ -5355,14 +5358,12 @@ Player_PlayHurtAnimation:		;$37EA
 	bit	0, (ix+$22)
 	jr	z, +_
 	ld	hl, $0000
-_:	ld	(ix+$19), l		;move sprite up
-	ld	(ix+$1A), h
+_:	ld	($D518), hl		;move sprite up
 	ld	hl, $0100
 	bit	3, (ix+$23)
 	jp	nz, +_
 	ld	hl, -256
-	ld	(ix + Object.VelX), l	;move sprite back
-	ld	(ix + Object.VelX+1), h
+	ld	($D516), hl		;move sprite back
 _:	ld	hl, $0000
 	ld	(Player_DeltaVX), hl
 	ret	
@@ -6223,7 +6224,6 @@ _:	; set the acceleration value
 	inc	hl
 	ld	d, (hl)
 	ld	(Player_MetaTileDeltaVX), de
-
 	ret	
 
 Player_CalcAccel_UnderWater:		; $3C5F
@@ -6253,7 +6253,7 @@ _:	; check the input flags to see if the left button is pressed.
 	jp	nz, Player_CalcAccel_GetValue
 	; right button pressed
 	ld	bc, $0002
-_:	jp	Player_CalcAccel_GetValue
+	jp	Player_CalcAccel_GetValue
 
 
 Player_CalcAccel_NoBtnPress:		; $3CB8
@@ -6262,9 +6262,9 @@ Player_CalcAccel_NoBtnPress:		; $3CB8
 	ld	(Player_DeltaVX), de
 
 	; return if the player is not moving
-	ld	hl, (Player.VelX)
-	ld	a, l
-	or	h
+	ld	bc, (Player.VelX)
+	ld	a, b
+	or	c
 	ret	z
 
 	; index into the deceleration values
@@ -6344,7 +6344,7 @@ LABEL_4024:
 	set	2, (ix+$03)
 	ld	(ix+$02), $11
 	ld	hl, $0000
-	ld	($d516), hl
+	ld	($D516), hl
 	ret
 
 LABEL_4037:
@@ -6627,17 +6627,17 @@ _:	ld	(ix+$16), e
 	ld	(ix+$17), d
 	ret
 
-LABEL_424A:
+LABEL_424A:	;handle GMZ wheel
 	call	LABEL_376E
 	res	7, (ix + Object.Flags04)
 	ld	a, (Engine_InputFlags)
 	and	BTN_LEFT | BTN_RIGHT
-	jp	z, ++++_
+	jr	z, ++++_
 	ld	de, $0010
 	and	$08
 	jr	nz, +_
 	ld	de, -16
-	ld	hl, ($D3C7)
+_:	ld	hl, ($D3C7)
 	add	hl, de
 	ld	e, l
 	ld	d, h
@@ -6827,6 +6827,7 @@ LABEL_43BF:
 	or	a
 	jr	nz, LABEL_43F3
 LABEL_43C5:
+	ld	a, b
 	add	a, a
 	ld	e, a
 	ld	d, $00
@@ -6866,20 +6867,14 @@ LABEL_43F9:
 	ld	(ix+$21), a
 	jp	Player_SetState_JumpFromRamp
 
-LABEL_4408
-	call	LABEL_468D
-	jp	LABEL_43F3
-
+LABEL_4408:
 LABEL_440E:
+LABEL_441A:
 	call	LABEL_468D
 	jp	LABEL_43F3
 
 LABEL_4414:
 	call	LABEL_469D
-	jp	LABEL_43F3
-
-LABEL_441A:
-	call	LABEL_468D
 	jp	LABEL_43F3
 
 LABEL_4420:
@@ -6897,6 +6892,7 @@ LABEL_4420:
 	jp	LABEL_43F3
 
 LABEL_4440:
+LABEL_4459:
 	call	LABEL_467D
 	jp	LABEL_43F3
 
@@ -6907,10 +6903,6 @@ LABEL_4446:
 	bit	BTN_UP_BIT, a
 	jr	nz, LABEL_4459
 	call	LABEL_464D
-	jp	LABEL_43F3
-
-LABEL_4459:
-	call	LABEL_467D
 	jp	LABEL_43F3
 	
 LABEL_445F:
@@ -6957,12 +6949,10 @@ LABEL_44A8:
 	ld	a, (Engine_InputFlags)
 	bit	BTN_DOWN_BIT, a
 	jr	nz, LABEL_44BB
+LABEL_44D8:
 	call	LABEL_464D
 	jp	LABEL_43F3
 
-LABEL_44BB:
-	call	LABEL_466D
-	jp	LABEL_43F3
 LABEL_44C1:
 	call	LABEL_464B
 	jp	nc, LABEL_43F3
@@ -6971,14 +6961,13 @@ LABEL_44C1:
 	jr	nz, LABEL_44D8
 	bit	BTN_LEFT_BIT, a
 	jr	nz, LABEL_44DE
+LABEL_44BB:
 	call	LABEL_466D
 	jp	LABEL_43F3
 
-LABEL_44D8:
-	call	LABEL_464D
-	jp	LABEL_43F3
-
 LABEL_44DE:
+LABEL_4504:
+LABEL_451D:
 	call	LABEL_465D
 	jp	LABEL_43F3
 	
@@ -6993,11 +6982,8 @@ LABEL_44E4:
 	ld	a, (Engine_InputFlags)
 	bit	BTN_LEFT_BIT, a
 	jr	nz, LABEL_4504
+LABEL_453A:
 	call	LABEL_467D
-	jp	LABEL_43F3
-	
-LABEL_4504:
-	call	LABEL_465D
 	jp	LABEL_43F3
 
 LABEL_450A:
@@ -7009,10 +6995,6 @@ LABEL_450A:
 	call	LABEL_466D
 	jp	LABEL_43F3
 
-LABEL_451D:
-	call	LABEL_465D
-	jp	LABEL_43F3
-
 LABEL_4523:
 	call	LABEL_4637
 	jp	nc, LABEL_43F3
@@ -7022,10 +7004,6 @@ LABEL_4523:
 	bit	BTN_DOWN_BIT, a
 	jr	nz, LABEL_4540
 	call	LABEL_465D
-	jp	LABEL_43F3
-
-LABEL_453A:
-	call	LABEL_467D
 	jp	LABEL_43F3
 	
 LABEL_4540:
@@ -7045,11 +7023,6 @@ LABEL_4546:
 	jr	nz, LABEL_4566
 	call	LABEL_467D
 	jp	LABEL_43F3
-
-LABEL_4566:
-	call	LABEL_464D
-	jp	LABEL_43F3
-
 LABEL_456C:
 	call	LABEL_4640
 	jp	nc, LABEL_43F3
@@ -7057,10 +7030,6 @@ LABEL_456C:
 	bit	BTN_RIGHT_BIT, a
 	jr	nz, LABEL_457F
 	call	LABEL_466D
-	jp	LABEL_43F3
-
-LABEL_457F:
-	call	LABEL_464D
 	jp	LABEL_43F3
 
 LABEL_4585:
@@ -7071,6 +7040,8 @@ LABEL_4585:
 	jr	nz, LABEL_459C
 	bit	BTN_DOWN_BIT, a
 	jr	nz, LABEL_45A2
+LABEL_4566:
+LABEL_457F:
 	call	LABEL_464D
 	jp	LABEL_43F3
 
@@ -7145,7 +7116,7 @@ LABEL_4614:
 
 LABEL_4620:
 	jp	LABEL_43F3
-		
+			
 LABEL_4623:
 	call	LABEL_469D
 	jp	LABEL_43F3
@@ -7182,7 +7153,7 @@ LABEL_464B:
 LABEL_464D:
 	call	LABEL_469D
 	ld	hl, $0000
-	ld	($D519), hl
+	ld	($D518), hl
 	ld	hl, $0600
 	ld	($D516), hl
 	ret
@@ -7190,7 +7161,7 @@ LABEL_464D:
 LABEL_465D:
 	call	LABEL_469D
 	ld	hl, $0000
-	ld	($D519), hl
+	ld	($D518), hl
 	ld	hl, $FA00
 	ld	($D516), hl
 	ret
@@ -7198,15 +7169,15 @@ LABEL_465D:
 LABEL_466D:
 	call	LABEL_468D
 	ld	hl, $0600
-	ld	($D519), hl
+	ld	($D518), hl
 	ld	hl, $0000
-	ld	($d516), hl
+	ld	($D516), hl
 	ret
 
 LABEL_467D:
 	call	LABEL_468D
 	ld	hl, $FA00
-	ld	($D519), hl
+	ld	($D518), hl
 	ld	hl, $0000
 	ld	($D516), hl
 	ret
@@ -7299,7 +7270,7 @@ LABEL_4727:
 	ld	($D516), hl
 	ld	l, (iy+$18)
 	ld	h, (iy+$19)
-	ld	($D519), hl
+	ld	($D518), hl
 	ld	hl, $D503
 	set	1, (hl)
 	call	Player_CheckHorizontalLevelCollision
@@ -8312,12 +8283,12 @@ _:	exx
 
 
 Engine_CopyMappingsToVRAM_Column:	;$58BA
-	ld	hl, (Camera_Y)	;HL = camera vpos
+	ld	hl, (Camera_Y)		;HL = camera vpos
 	ld	bc, 8			;adjust vert offset value
 	add	hl, bc			;calculate start address of offscreen tile
-	srl	h				;buffer, relative to the nametable address.
-	rr	l				;E.g. if offset is $100 the offscreen tile
-	srl	h				;buffer starts at $3800 + $100 = $3900.
+	srl	h			;buffer, relative to the nametable address.
+	rr	l			;E.g. if offset is $100 the offscreen tile
+	srl	h			;buffer starts at $3800 + $100 = $3900.
 	rr	l
 	srl	h
 	rr	l
@@ -8371,7 +8342,6 @@ Engine_CopyMappingsColumnToVRAM:
 	pop	de
 
 _:	push	af
-	add	hl, bc			;increment the VRAM address pointer
 	ld	a, h
 	cp	iyh			;check that the VRAM address pointer 
 	jr	c, +_			;is within bounds
@@ -8387,6 +8357,7 @@ _:	ex	de, hl
 	dec	de
 
 	ex	de, hl
+	add	hl, bc			;increment the VRAM address pointer
 	pop	af
 	dec	a
 	jr	nz, --_		  	;move to next tile
@@ -8802,7 +8773,7 @@ LABEL_5F3D:
 #if Version = 2
 LABEL_5F73:
 	cp	$FE
-	jp	z, LABEL_620F
+	jp	z, LABEL_6212
 	cp	$FF
 	jp	z, Engine_DeallocateObject
 	ret
@@ -9216,7 +9187,7 @@ LABEL_623F:
 Engine_DeallocateObject:		;$6248
 	ld	a, (ix+$3E)		;get the index of this object
 	or	a			;in the active objects array
-	jp	z, +_
+	jr	z, +_
 
 	dec	a
 	ld	e, a
@@ -9280,6 +9251,7 @@ LABEL_62A7:
 	ret	c
 	cp	$20			;make sure that object type >= 20 & < 40
 	ret	nc
+	add	a, a
 	ld	l, a			;jump based on object type
 	ld	h, $00
 	ld	de, DATA_62BD
@@ -9428,12 +9400,12 @@ LABEL_636B:
 	jr	nz, +_
 	bit	1, a
 	jr	nz, ++_
-	ld	hl, ($D519)
+	ld	hl, ($D518)
 	ld	a, l
 	or	h
 	jr	z, ++_
 _:	ld	hl, $FC00		;set vertical speed
-	ld	($D519), hl
+	ld	($D518), hl
 _: 	ld	a, PlayerState_JumpFromRamp
 	ld	($D502), a
 	ld	bc, $0400
@@ -11019,14 +10991,8 @@ Cllsn_MetaTileTriggerFuncPtrs:		; $6C70
 .dw LABEL_6C9C
 
 LABEL_6C9C:
-	ret
-
 LABEL_6C9D:
-	ret
-	
 LABEL_6CA0:
-	ret	
-
 LABEL_6CA1:
 	ret	
 
@@ -11073,7 +11039,7 @@ LABEL_6CF7:				;hit breakable block
 	bit	1, (ix+$03)
 	ret	z				;return if player is not rolling
 	ld	hl, -1088
-	ld	($D519), hl	;set vertical speed
+	ld	($D518), hl	;set vertical speed
 	res	1, (ix+$22)
 	set	0, (ix+$03)
 	jp	Player_CollideBreakableBlock_UpdateMappings	;update level layout
@@ -11111,7 +11077,6 @@ _:	; clear the carry flag
 	adc	a, c
 	add	a, (ix + Object.X + 1)
 	ld	(ix + Object.X + 1), a
-	
 	ret	
 
 
@@ -11222,7 +11187,7 @@ LABEL_6DED:
 	ld	a, l
 	cpl	
 	ld	l, a
-	ld	($D519), hl
+	ld	($D518), hl
 	jp	Player_SetState_JumpFromRamp
 
 ;launch from ramp with negative velocity
@@ -11246,7 +11211,7 @@ LABEL_6E10:
 	ld	a, l
 	cpl	
 	ld	l, a
-	ld	($D519), hl
+	ld	($D518), hl
 	jp	Player_SetState_JumpFromRamp
 	
 LABEL_6E30:
@@ -11329,9 +11294,9 @@ LABEL_6EB1:
 Player_EnterPipe:		;$6EB7
 	res	1, (ix+$22)
 	set	0, (ix+$03)
-	ld	a, (Cllsn_MetatileIndex)		;get current mapping index
+	ld	a, (Cllsn_MetatileIndex)	;get current mapping index
 	cp	$3B
-	jr	z, Player_EnterPipe_Top	;vertical entrance - top
+	jr	z, Player_EnterPipe_Top		;vertical entrance - top
 	cp	$3C
 	jr	z, Player_EnterPipe_Bottom	;vertical entrance - bottom
 	cp	$3D
@@ -11984,7 +11949,7 @@ Player_CollideSpikeBlock_PlayerHurt:	;$72AA
 	bit	7, (ix+$03)
 	ret	nz
 	ld	hl, $0100
-	ld	($D519), hl
+	ld	($D518), hl
 	jp	Player_SetState_Hurt
 
 
@@ -12050,7 +12015,7 @@ _:	cp	c
 
 LABEL_7314:
 	ld	hl, $0100
-	ld	($D519), hl
+	ld	($D518), hl
 	ret	
 
 
@@ -12060,7 +12025,7 @@ LABEL_7314:
 ;************************************************************
 Player_CollideTopVerticalSpring:	;$731B
 	ld	hl, $0780
-	ld	($D519), hl	;set player vertical speed
+	ld	($D518), hl	;set player vertical speed
 	jp	Player_SetState_JumpFromRamp
 
 
@@ -12307,7 +12272,7 @@ _:	; return if the player is not moving fast enough
 ;	($D361) - Vertical collision value.
 ;	(Cllsn_CollisionValueX) - Horizontal collision value.
 ; -----------------------------------------------------------------------------
-Engine_GetCollisionDataForBlock:		;$7481	
+Engine_GetCollisionDataForBlock:		;$7481		
 	; get object's x coordinate
 	ld	h, (ix + Object.X + 1)
 	ld	l, (ix + Object.X)
@@ -12387,7 +12352,7 @@ Engine_GetCollisionDataForBlock:		;$7481
 	ld	h, $00
 	add	hl, hl
 	ld	de, (Engine_CollisionDataPtr)
-	add	hl, de		
+	add	hl, de	  
 	ld	e, (hl)
 	inc	hl
 	ld	d, (hl)
@@ -12449,7 +12414,7 @@ Engine_GetCollisionDataForBlock:		;$7481
 	
 	; restore the collision header pointer into HL
 	ex	de, hl
-
+	
 	
 	; fetch and store the 3rd pointer. unused?
 	inc	hl
@@ -12476,7 +12441,7 @@ Engine_GetCollisionDataForBlock:		;$7481
 ;	($D358) - Adjusted y coordinate.
 ;	($D35E) - Metatile surface type.
 ; -----------------------------------------------------------------------------
-Engine_GetCollisionValueForBlock:		;$752E	
+Engine_GetCollisionValueForBlock:		;$752E
 	; get object's x coordinate
 	ld	h, (ix + Object.X + 1)
 	ld	l, (ix + Object.X)
@@ -12540,7 +12505,7 @@ Engine_GetCollisionValueForBlock:		;$752E
 	ld	a, h
 	and	$F0
 	cp	$C0
-	jr	nz, Engine_GetCollisionData_HandleOverflow
+	jp	nz, Engine_GetCollisionData_HandleOverflow
 	
 	; HL now contains a pointer to the metatile index within the level data array.
 	; store the pointer
@@ -12602,9 +12567,8 @@ LABEL_75C5:
 	; fetch the metatile surface type
 	ld	a, (Cllsn_MetaTileSurfaceType)
 	and	$7F
-	and	a
+	or	a
 	ret	nz
-	jp	LABEL_7614
 
 LABEL_7614:
 	; dont change anything if the object is floating in the air
@@ -12639,7 +12603,7 @@ _:	; adjust the object's X coordinate
 	add	hl, de
 	ld	(ix + Object.X), l
 	ld	(ix + Object.X + 1), h
-	ret	
+	ret
 
 ; =============================================================================
 ;	Engine_LoadLevelTiles()
@@ -13107,7 +13071,7 @@ Engine_HandlePLC_CopyMirrored:		;$789D
 	ld	a, $04
 
 _:	push	ix
-	ld	ix, (VRAMPointer)	;IX is now the VRAM pointer
+	ld	ix, (PLC_VRAMAddr)	;IX is now the VRAM pointer
 	ld.lil	bc, SegaVRAM
 	add.lil	ix, bc
 	
@@ -13117,8 +13081,7 @@ _:	push	ix
 
 _:	ld	c, $20			;loop 32 times (copy one tile)
 	
-_:
-	ld	e, (hl)			;get the index stored at HL
+_:	ld	e, (hl)			;get the index stored at HL
 	ld	a, (de)			;index into data at $100
 	ld.lil	(ix), a			;copy value to VRAM
 	inc	hl			;move to next index address
@@ -13126,8 +13089,8 @@ _:
 	dec	c
 	jr	nz, -_			;copy next byte
 	djnz	--_			;copy next tile
+
 	pop	ix
-	ei
 	jp	LABEL_7881
 	
 ;load monitor, chaos emerald or boss tiles

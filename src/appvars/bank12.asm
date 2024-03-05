@@ -9,11 +9,7 @@ Mappings32_ALZ:
 #include "mappings\alz\mappings32_alz.asm"
 
 Layout_SHZ3:
-#if Version = 2
 #import "layout\shz\layout_shz3.bin"
-#else
-#import "layout\shz\layout_shz3_og.bin"
-#endif
 
 Layout_GMZ3:
 #if Version = 2

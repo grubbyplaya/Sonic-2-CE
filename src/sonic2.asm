@@ -46,16 +46,16 @@ _START:
 	ld	(hl), $00
 	ldir
 
-	;load palettes into RAM
-	ld	hl, Palettes
-	ld	de, $D2E000
-	ld	bc, Palette_End-Palettes
-	ldir
-
 	;load collision into RAM
 	ld	hl, Coliision
-	ld	de, $D2E2F0
-	ld	bc, Collision_End-Cllsn_Data_CollisionHeaders
+	ld	de, $D2E000
+	ld	bc, CollisionSize
+	ldir
+
+	;load palettes into RAM
+	ld	hl, Palettes
+	ld	de, $D2E000+CollisionSize
+	ld	bc, Palette_End-Palettes
 	ldir
 
 	;load engine into RAM
@@ -88,6 +88,7 @@ _START:
 	ld	a, $D2
 	ld	mb, a
 	ld	($D2DE02), sp
+	ld.lil	sp, $D1A745
 	ld.sis	sp, $DFF0
 	jp.sis	$0000	;start of program
 
@@ -123,7 +124,9 @@ Bank30:
 Bank31:
 	.db	AppVarObj, "Bank31", 0
 
+#define CollisionSize	Collision_End-Cllsn_Data_CollisionHeaders
+
 Coliision:
-.ORG $E2F0
+.ORG $E000
 #include "collision_data.asm"
 Collision_End:

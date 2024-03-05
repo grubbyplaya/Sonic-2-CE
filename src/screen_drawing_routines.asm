@@ -120,9 +120,10 @@ DrawScreenMap_Tiles:
 	set	7, (hl)				;set that flag for future interrupts
 	xor	a
 	ld	($D2DE06), a			;reset the SAT drawing flag
+	ld	c, (hl)
 	bit	0, (hl)				;which half of VRAM is the tile on?
 	dec	hl
-	jr	z, +_				;don't use cached tiles if said tile is on the first half
+	jr	z, ++_				;don't use cached tiles if said tile is on the first half
 
 	ld	a, (hl)
 	ld	de, SegaTileFlags
@@ -130,8 +131,12 @@ DrawScreenMap_Tiles:
 	ld	a, (de)
 	bit	0, a				;is the tile cached?
 	jr	nz, DrawCachedTile		;do alternate routine if so
+
+	bit	3, c
+	jr	nz, +_				;if we're using the FG palette, don't flag the cached tile
 	inc	a
-	ld	(de), a
+_:	ld	(de), a
+
 _:	call	GetTilePointer
 	call	GetTileFlags
 	call	ConvertTileTo8bpp
@@ -318,7 +323,7 @@ _:	bit	1, e		;do we flip the tile horizontally?
 	add	hl, bc
 	ld	a, $1B		;since we're drawing the tile backwards, we
 	ld	(DrawPixel), a	;switch out the INC DE in the tile drawing
-	ld	bc, $080111	;routines for a DEC DE.
+	ld	bc, $010811	;routines for a DEC DE.
 	ld	(SetScanlineSkip), bc
 
 _:	bit	2, e		;do we flip the tile vertically?

@@ -61,7 +61,11 @@ Palette_ALZ1_3:
 #import "palettes\palette_alz1_3.bin"
 
 Palette_ALZ2:
+#if Version=2
+#import "palettes\palette_alz2_gg.bin"
+#else
 #import "palettes\palette_alz2.bin"
+#endif
 
 Palette_GHZ:
 #import "palettes\palette_ghz.bin"
