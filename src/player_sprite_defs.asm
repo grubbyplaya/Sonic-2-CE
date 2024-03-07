@@ -146,6 +146,10 @@ dstruct(SPR86, 04, $B280, $08)		 ;$60
 dstruct(SPR87, 04, $B480, $08)		 ;$61
 dstruct(SPR88, 04, $B680, $06)		 ;$62
 
+dstruct(SpinDash1, $04, $8A80, $06)	 ;$63
+dstruct(SpinDash2, $04, $8C00, $06)	 ;$64
+dstruct(SpinDash3, $04, $A280, $06) 	 ;$65
+
 
 
 Data_PlayerSprites_Mirrored:
@@ -248,3 +252,6 @@ dstruct(SPR185, 16, $AD80, $08)
 dstruct(SPR186, 16, $B280, $08)
 dstruct(SPR187, 16, $B480, $08)
 dstruct(SPR188, 04, $B680, $06)
+dstruct(SpinDash1M, $10, $8A80, $06) 		;$61
+dstruct(SpinDash2M, $10, $8C00, $06)		;$62
+dstruct(SpinDash3M, $10, $A280, $06)		;$62

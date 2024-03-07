@@ -206,6 +206,9 @@ DATA_B31_80C0:
 .dw DATA_B31_85A8
 .dw DATA_B31_85B3
 .dw DATA_B31_85BE
+.dw SpinDashSpr1
+.dw SpinDashSpr2
+.dw SpinDashSpr3
 
 ;	   
 ; 	  ,- Number of sprites
@@ -813,6 +816,24 @@ DATA_B31_85BE:
 	.dw $0000
 	.dw $0000
 	.dw DATA_B31_85C9
+SpinDashSpr1:
+.db $06, $04, $1C
+	.dw SprArrange_3x2_BC	;sprite arrangement
+	.dw $0000				;vertical offset
+	.dw $0000				;horizontal offset
+	.dw DATA_B31_85C9		;pointer to char codes
+SpinDashSpr2:
+.db $06, $04, $1C
+	.dw SprArrange_3x2_BC	;sprite arrangement
+	.dw $0000				;vertical offset
+	.dw $0000				;horizontal offset
+	.dw DATA_B31_85C9		;pointer to char codes
+SpinDashSpr3:
+.db $06, $04, $1C
+	.dw SprArrange_3x2_BC	;sprite arrangement
+	.dw $0000				;vertical offset
+	.dw $0000				;horizontal offset
+	.dw DATA_B31_85C9		;pointer to char codes
 
 DATA_B31_85C9:		;mappings for sonic sprite
 .db $00, $02, $04, $06, $08, $0A, $0C, $0E

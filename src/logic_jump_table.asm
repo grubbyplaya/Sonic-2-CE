@@ -161,3 +161,5 @@ VF_Score_AddBossValue:
     jp  Score_AddBossValue                      ;$31A
     jp  LABEL_1CC4                              ;$31D
     jp  LABEL_1CCA                              ;$320
+VF_Player_HandleSpinDash:
+    jp  Player_HandleSpinDash

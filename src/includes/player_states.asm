@@ -41,3 +41,5 @@
 #define	PlayerState_EndSequence		$2B
 
 #define	PlayerState_ContinueScreen	$2F 
+
+#define PlayerState_SpinDash		$34

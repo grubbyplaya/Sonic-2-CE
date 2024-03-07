@@ -4172,6 +4172,13 @@ LABEL_305F:
 	ld	(ix+$02), PlayerState_Crouch
 	ret	
 
+Player_SetState_SpinDash:
+	ld	hl, $0000
+	ld	($D516), hl
+	ld	(ix+$02), PlayerState_SpinDash
+	set	1, (ix+$03)	;set flag to destroy enemies on collision
+	ret 
+
 Player_SetState_Running:
 LABEL_3072:
 	res	0, (ix+$03)
@@ -4208,7 +4215,16 @@ LABEL_30A5:
 	set	1, (ix+$03)		;set flag to destroy enemies on collision
 	ret	
 
-Player_SetState_JumpFromRamp
+Player_SetState_Roll_SpinDashRelease:
+	ld	(ix+$02), PlayerState_Rolling
+	ld	hl, $0600
+	ld	(Player_MaxVelX), hl
+	call	LABEL_48C4
+	res	0, (ix+$03)
+	set	1, (ix+$03)		 ;set flag to destroy enemies on collision
+	ret
+
+Player_SetState_JumpFromRamp:
 LABEL_30C7:
 	ld	(ix+$02), PlayerState_JumpFromRamp
 	set	0, (ix+$03)
@@ -4414,6 +4430,25 @@ LABEL_3267:
 	jp	nz, Player_SetState_LookUp
 	bit	BTN_DOWN_BIT, (hl)		;check for down button
 	jp	z, Player_SetState_Standing
+	ret	
+
+;***********************************************************
+;* Handle a button press when the player is Spin Dashing.	*
+;***********************************************************
+Player_HandleSpinDash:
+	ld	a, $80					;reset the camera offset 
+	ld	($D289), a
+	call	LABEL_3A62
+	ld	hl, Engine_InputFlags
+	bit	1, (hl)			 ;check for down button
+	ret	nz
+	ld	hl, $0600			 ;facing right
+	bit	OBJ_F4_FACING_LEFT, (ix + Object.Flags04) ; check which way we're facing
+	jr	z, +_
+	ld	hl, $FA00			 ;facing left
+_:	ld	(ix+$16), l
+	ld	(ix+$17), h
+	jp	Player_SetState_Roll_SpinDashRelease
 	ret	
 
 ;******************************************************
@@ -5840,6 +5875,12 @@ _:	call	Player_UpdatePositionX
 
 	ld	a, (Engine_InputFlagsLast)
 	and	BTN_1 | BTN_2		;check for either button 1 or button 2
+	ret	z
+
+	ld	a, ($D501)                
+	cp	PlayerState_Crouch
+	jp	z, Player_SetState_SpinDash
+	cp	PlayerState_SpinDash
 	ret	z
 
 
@@ -12411,17 +12452,6 @@ Engine_GetCollisionDataForBlock:		;$7481
 	; fetch and store the collision value
 	ld	a, (hl)
 	ld	(Cllsn_CollisionValueY), a
-	
-	; restore the collision header pointer into HL
-	ex	de, hl
-	
-	
-	; fetch and store the 3rd pointer. unused?
-	inc	hl
-	ld	c, (hl)
-	inc	hl
-	ld	b, (hl)
-	ld	(Cllsn_HeaderPtr3), bc
 	ret
 
 ; =============================================================================

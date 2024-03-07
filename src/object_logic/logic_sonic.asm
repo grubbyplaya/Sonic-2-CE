@@ -52,6 +52,7 @@ Logic_Sonic:	;$A6A6
 .dw DATA_B31_AA97	;$31
 .dw DATA_B31_AAB1	;$32
 .dw DATA_B31_AAF6	;$33
+.dw Sonic_State_SpinDash    ;$34
 
 DATA_B31_A70E:
 .db $FF, $02
@@ -357,7 +358,7 @@ DATA_B31_A8EB:
 .db $FF, $00
 
 DATA_B31_A8F1:
-.db $08, $18
+.db $08, $19
 	.dw LABEL_34E1
 .db $08, $19
 	.dw LABEL_34E1
@@ -671,6 +672,15 @@ DATA_B31_AAF6:
 	.dw VF_DoNothing
 .db $10, $08
 	.dw VF_DoNothing
+.db $FF, $00
+
+Sonic_State_SpinDash:
+.db $02, $64
+	.dw VF_Player_HandleSpinDash
+.db $02, $65
+	.dw VF_Player_HandleSpinDash
+.db $02, $66
+	.dw VF_Player_HandleSpinDash
 .db $FF, $00
 
 
