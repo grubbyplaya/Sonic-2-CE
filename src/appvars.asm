@@ -101,6 +101,11 @@ ExitGame:
 	ld	(hl), $30
 	ld	hl, lcdNormalMode
 	ld	(mpLcdCtrl), hl
+	ld	hl, mpLcdPalette
+	ld	de, mpLcdPalette+1
+	ld	bc, $0040
+	ld	(hl), $00
+	ldir
 	call	ClrLCDFull
 	ei
 	ret

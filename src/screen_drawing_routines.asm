@@ -136,17 +136,22 @@ DrawScreenMap_Tiles:
 	jr	nz, +_				;if we're using the FG palette, don't flag the cached tile
 	inc	a
 _:	ld	(de), a
+	jr	++_
 
+_:	ld	de, 0
+	ld	(DrawCachedPixel), de
 _:	call	GetTilePointer
 	call	GetTileFlags
 	call	ConvertTileTo8bpp
 	;reset self-modifying code
 	ld	a, $13				;INC DE
 	ld	(DrawPixel), a
-	ld	de, $0019			;ADD HL, DE \ NOP
-	ld	(MoveToNextLine), de
-	ld	de, 248
-	ld	(SetScanlineSkip+1), de
+	ld	hl, $0019			;ADD HL, DE \ NOP
+	ld	(MoveToNextLine), hl
+	ld	hl, 248
+	ld	(SetScanlineSkip+1), hl
+	ld	hl, $0077FD
+	ld	(DrawCachedPixel), hl
 	ld	hl, ($D2DD00)
 	ret
 
@@ -328,12 +333,15 @@ _:	bit	1, e		;do we flip the tile horizontally?
 
 _:	bit	2, e		;do we flip the tile vertically?
 	jr	z, +_		;jump if we shouldn't
+
 	ld	bc, $0700
 	add	hl, bc
 	ld	a, $ED		;switch out ADD HL, DE with SBC HL, DE
 	ld	(MoveToNextLine), a
 	ld	a, $52
 	ld	(MoveToNextLine+1), a
+	ld	bc, $010811
+	ld	(SetScanlineSkip), bc
 
 	ld	a, e
 	and	$06
@@ -474,6 +482,7 @@ _:	xor	a
 	ld	(de), a
 DrawPixel:
 	inc	de
+DrawCachedPixel:
 	ld	(iy), a
 	inc	iy
 	exx

@@ -18,7 +18,7 @@ WaterSplash_State_01:		;$B4DE
 
 WaterSplash_Init:			;$B4EB
 	ld	hl, ($D511)	;copy player's hpos
-	ld	(ix+$11), l		;to this object's hpos
+	ld	(ix+$11), l	;to this object's hpos
 	ld	(ix+$12), h
 
 	ld	hl, ($D514)	;get player's vpos
@@ -29,9 +29,7 @@ WaterSplash_Init:			;$B4EB
 	ld	l, a			;on correct scanline)
 	ld	(ix+$14), l		;set this object's vpos
 	ld	(ix+$15), h
-
 	ld	(ix+$08), $CC		;set the vram tile index
-
 	ld	(ix+$02), $01		;set state 01
 
 	set	0, (ix+$04)

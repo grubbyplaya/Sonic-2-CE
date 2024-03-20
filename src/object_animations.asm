@@ -1324,13 +1324,13 @@ DATA_B31_88DD:
 
 DATA_B31_88E3:
 .db $02, $04, $10
-	.dw $A696
+	.dw DATA_B31_A696
 	.dw $0008
 	.dw $0000
 	.dw DATA_B31_88F9
 DATA_B31_88EE:
 .db $02, $04, $10
-	.dw $A69E
+	.dw DATA_B31_A69E
 	.dw $0008
 	.dw $0000
 	.dw DATA_B31_88F9

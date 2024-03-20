@@ -7,15 +7,37 @@
 _START:
 	di
 	im	1
+
+	;clear palette
+	ld	hl, mpLcdPalette
+	ld	de, mpLcdPalette+1
+	ld	bc, $0100
+	ld	(hl), $00
+	ldir
+
+	;set up 4bpp mode with Vcomp interrupts
+	ld	hl, mpLcdCtrl
+	ld	(hl), $23
+	inc	hl
+	ld	(hl), %00011101
+
+	;set up front porch interrupt
+	ld	hl, mpLcdImsc
+	set	3, (hl)
+	ld	hl, mpLcdIcr
+	set	3, (hl)
+
+	ld	hl, $F50000
+	ld	(hl), 3
+
+	call	SegaLogo
+
 	;clear VRAM
 	ld	hl, VRAM
 	ld	de, VRAM+1
 	ld	bc, VRAMEnd-VRAM
 	ld	(hl), $00
 	ldir
-
-	ld	hl, $F50000
-	ld	(hl), 3
 
 	;clear emulated memory map location
 	ld	hl, romStart
@@ -24,16 +46,7 @@ _START:
 	ld	(hl), $00
 	ldir
 
-	;set up 8bpp mode with Vcomp interrupts
-	ld	hl, mpLcdCtrl
-	ld	(hl), $27
-	inc	hl
-	ld	(hl), %00011001
-	;set up front porch interrupt
-	ld	hl, mpLcdImsc
-	set	3, (hl)
-	ld	hl, mpLcdIcr
-	set	3, (hl)
+	;set up LCD interrupts
 	ld	hl, $F00004
 	ld	(hl), $00
 	inc	hl
@@ -106,6 +119,8 @@ LoadBank:
 	inc	hl
 	ldir				;copy appvar to bank slot
 	ret
+
+#include "sega_logo.asm"
 
 #include "includes/ti_equates.asm"
 

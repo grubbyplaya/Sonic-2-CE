@@ -1038,11 +1038,11 @@ _:	ld	a, ($D12E)
 
 
 
-;****************************************************************
-;*	This subroutine deals with updating the state of the level. *
+;************************************************************************
+;*	This subroutine deals with updating the state of the level.	*
 ;*	This includes camera, objects, any level specific features	*
-;*	(such as the SHZ2 wind) and any PLCs.						*
-;****************************************************************
+;*	(such as the SHZ2 wind) and any PLCs.				*
+;************************************************************************
 Engine_UpdateLevelState:			;$9E4
 	ld	ix, $D15E		;load the pointer to the level descriptor
 	bit	6, (ix+0)
@@ -1369,9 +1369,9 @@ Engine_LoadPlayerTiles_CopyTiles:	;copy 2 tiles (64 bytes) to vram
 	res	7, (hl)
 	ret
 
-;*****************************************
+;************************************************
 ;* Resets the tile patterns in VRAM.		*
-;*****************************************
+;************************************************
 Engine_ClearPlayerTiles:
 	ld.lil	hl, SegaVRAM
 	ld.lil	de, SegaVRAM+1
@@ -1744,8 +1744,8 @@ _:	; get a pointer to the object's char codes...
 	ld	h, (ix + Object.ScreenX + 1)
 	
 	; add the horizontal adjustment value
-	xor	a
-	sbc	hl, de
+	add	hl, de
+
 	; store the adjusted value here
 	ld	(Engine_UpdateSpriteAttribs_adj_pos), hl
 	exx
@@ -1978,13 +1978,13 @@ _:	; write tile index
 	jr	nz, +_
 	
 .ASSUME ADL=1
-	push.il	de
+	push.il	hl
 	ex.il	de, hl
 	ld.il	de, $0040
 	or	a
 	sbc.il	hl, de
 	ex.il	de, hl
-	pop.il	de
+	pop.il	hl
 .ASSUME ADL=0
 	
 _:	djnz	--_
@@ -2105,12 +2105,12 @@ _:	pop	bc
 	ret
 
 
-;********************************************************
+;****************************************************************
 ;*	Updates a single mapping block to the screen after	*
 ;*	a change to the level layout (e.g. player collected	*
 ;*	a ring or destroyed a breakable block.)			*
 ;*	Copies each of the tiles in the block to VRAM.		*
-;********************************************************
+;****************************************************************
 Engine_UpdateMappingBlock:
 	di
 	call	LABEL_1A13	;calculate VRAM address
@@ -2740,10 +2740,10 @@ DATA_1EEB:
 .db $00, $30, $00
 
 
-;********************************************************
+;****************************************************************
 ;*	Calculate a score value based on the time taken to	*
 ;*	complete the act and add it to the player's score.	*
-;********************************************************
+;****************************************************************
 Score_CalculateActTimeScore:		;$1EEE
 	ld	a, (LevelTimer + 1)	;check minutes
 	or	a					;jump if level completed >= 1min
@@ -2768,11 +2768,11 @@ _:	sub	$20					;subtract 20 seconds and use as
 	jp	Score_AddValue
 
 
-;********************************************************
+;****************************************************************
 ;*	Calculate a score value based on the number of		*
 ;*	seconds taken to complete an act and add it to the	*
-;*	player's score.										*
-;********************************************************
+;*	player's score.						*
+;****************************************************************
 Score_CalculateActTimeScore_Sec:		;$1F0E
 	xor	a
 	ld	($D2A5), a			;clear the memory that will be used
@@ -3711,7 +3711,7 @@ _:	ei
 
 ;****************************************
 ;* Loads the mappings for the zone name *
-;* into VRAM							*
+;* into VRAM				*
 ;****************************************
 TitleCard_LoadText:
 LABEL_264E:
@@ -3743,7 +3743,7 @@ _:	ld	($D11A), de
 
 ;****************************************
 ;* Loads the mappings for the act logo	*
-;* into VRAM							*
+;* into VRAM				*
 ;****************************************
 TitleCard_LoadActLogoMappings:	;$2688
 	ld	hl, $001C
@@ -3767,7 +3767,7 @@ TitleCard_LoadActLogoMappings:	;$2688
 
 ;****************************************
 ;* Loads the mappings for the "Zone"	*
-;* text into VRAM						*
+;* text into VRAM			*
 ;****************************************
 TitleCard_LoadZoneText:		;$26B3
 	ld	hl, $0028
@@ -4314,9 +4314,9 @@ CalculatePlayerDirection:		; $31AA
 	ld	(ix+$04), a
 	ret
 
-;******************************************************************
+;************************************************************************
 ;* Handle a button press when the player is standing (not idle).	*
-;******************************************************************
+;************************************************************************
 Player_HandleStanding:		;$31BF
 LABEL_31BF:
 	ld	a, $80
@@ -4346,9 +4346,9 @@ LABEL_31BF:
 	ld	(ix+$02), PlayerState_Idle ;change sprite to the "wait" animation
 	ret
 
-;*******************************************************************
+;************************************************************************
 ;* Handle a button press when the player is balancing on a ledge.	*
-;*******************************************************************
+;************************************************************************
 Player_HandleBalance:
 LABEL_31F8:
 	ld	a, $80				;reset the camera
@@ -4371,9 +4371,9 @@ LABEL_31F8:
 	jp	nz, Player_SetState_Crouch
 	ret
 
-;************************************************************
+;****************************************************************
 ;* Handle a button press when the player is standing idle.	*
-;************************************************************
+;****************************************************************
 Player_HandleIdle:
 LABEL_3222:
 	call	LABEL_3A62
@@ -4394,7 +4394,7 @@ LABEL_3222:
 	ret
 
 ;*********************************************************
-;* Handle a button press when the player is looking up.	*
+;* Handle a button press when the player is looking up.	 *
 ;*********************************************************
 Player_HandleLookUp:		;$3245
 LABEL_3245:
@@ -4414,9 +4414,9 @@ LABEL_3245:
 	jp	z, Player_SetState_Standing
 	ret	
 
-;*******************************************************
+;********************************************************
 ;* Handle a button press when the player is crouched.	*
-;*******************************************************
+;********************************************************
 Player_HandleCrouched:
 LABEL_3267:
 	ld	a, $30
@@ -4432,9 +4432,9 @@ LABEL_3267:
 	jp	z, Player_SetState_Standing
 	ret	
 
-;***********************************************************
+;****************************************************************
 ;* Handle a button press when the player is Spin Dashing.	*
-;***********************************************************
+;****************************************************************
 Player_HandleSpinDash:
 	ld	a, $80					;reset the camera offset 
 	ld	($D289), a
@@ -4451,9 +4451,9 @@ _:	ld	(ix+$16), l
 	jp	Player_SetState_Roll_SpinDashRelease
 	ret	
 
-;******************************************************
+;********************************************************
 ;* Handle a button press when the player is walking.	*
-;******************************************************
+;********************************************************
 Player_HandleWalk:		; $3283
 	ld	a, $80				;reset the camera offset when we start
 	ld	($D289), a		;to move.
@@ -4718,9 +4718,9 @@ Player_HandleSkidRight:	; $3362
 	ret	z
 	jp	Player_SetState_Walking
 
-;********************************************************************
+;************************************************************************
 ;* Handle a button press when the player is skidding to the left.	*
-;********************************************************************
+;************************************************************************
 Player_HandleSkidLeft:
 LABEL_3385:
 	call	LABEL_3A62
@@ -6061,10 +6061,10 @@ Player_UpdatePlayer.VelY:		;$3B4E
 	jp	Player_UpdateVPOS
 
 
-;********************************************************
+;****************************************************************
 ;*	Calculates gravity based on the player's current	*
-;*	state.												*
-;********************************************************
+;*	state.							*
+;****************************************************************
 Player_CalcGravity:		;$3B6A
 	ld	hl, (Player.VelY)
 	ld	a, (Player_UnderwaterFlag)			;check to see if player is underwater
@@ -6093,10 +6093,10 @@ _:	add	hl, de							;adjust the vertical velocity
 _:	jr	Player_UpdateVPOS
 
 
-;********************************************************
-;*	Calculates gravity for underwater sections based on *
-;*	the player's current state.							*
-;********************************************************
+;****************************************************************
+;*	Calculates gravity for underwater sections based on 	*
+;*	the player's current state.				*
+;****************************************************************
 Player_CalcGravity_Underwater:		;$3B96
 	ld	a, (ix + Object.State)
 	
@@ -7325,9 +7325,9 @@ LABEL_475F:
 	res	4, (ix+$04)
 	ret
 
-;********************************************
+;************************************************
 ;*	UGZ Mine Cart input handling routines	*
-;********************************************
+;************************************************
 Player_MineCart_Handle:
 LABEL_4764:
 	ld	a, (Engine_InputFlags)
@@ -7387,9 +7387,9 @@ MineCart_LookingDown:
 .db $5C, $7C, $7E
 
 
-;********************************************
+;************************************************
 ;*	Power-up monitor collision routines.	*
-;********************************************
+;************************************************
 LABEL_47C9:
 	ld	a, (Player.PowerUp)		;check for power-up
 	or	a
@@ -8070,10 +8070,10 @@ _:	xor	a
 	ei	
 	ret
 
-;********************************************
-;*	Loads initial camera X/Y and sprite X/Y *
-;*	for each level/act.					*
-;********************************************
+;************************************************
+;*	Loads initial camera X/Y and sprite X/Y	*
+;*	for each level/act.			*
+;************************************************
 Engine_LoadLevel_SetInitialPositions:		;$53C0
 	ld	a, (CurrentLevel)
 	add	a, a
@@ -8362,7 +8362,7 @@ _:	rrca
 	rrca				;the tile data from.
 	rrca
 	and	$06
-	inc	hl			;clear HLU
+	inc	hl
 	ld	l, a
 	ld	h, $00
 	ld.lil	de, Camera_MetatileColBuffer+romStart	;source of tile data
@@ -8375,7 +8375,7 @@ _:	rrca
 
 Engine_CopyMappingsColumnToVRAM:
 .ASSUME ADL=1
-	ld	a, $1A
+	ld	a, $1B
 	push	hl
 	exx
 	ld	hl, SegaVRAM
@@ -8646,10 +8646,10 @@ _:	ld	hl, -1
 	ret	
 
 
-;************************************************
+;********************************************************
 ;*	Adjust the camera position to look up/down	*
-;*	or left/right.								*
-;************************************************
+;*	or left/right.					*
+;********************************************************
 Engine_CameraAdjust:
 LABEL_5E42:
 	ld	a, ($D28A)
@@ -8753,10 +8753,10 @@ _:	push	bc
 	ret
 
 
-;********************************************
+;************************************************
 ;	Updates the object pointed to by the	*
-;	IX register.							*
-;********************************************
+;	IX register.				*
+;************************************************
 LABEL_5EFD:
 	; fetch the object ID
 	ld	a, (ix + Object.ObjID)
@@ -9257,13 +9257,13 @@ Engine_MoveObjectToPlayer:		;$6267
 	ret	
 
 
-;********************************************************************
-;*	Check to see if an object should be destroyed by a collision	*
+;********************************************************************************
+;*	Check to see if an object should be destroyed by a collision		*
 ;*	with the player object. Destroys object if required.			*
-;*																	*
-;*	ld	IX		Pointer to object's descriptor.					*
-;*	destroys	A & possibly DE, HL, BC if the object is destroyed. *
-;********************************************************************
+;*										*
+;*	ld	IX		Pointer to object's descriptor.			*
+;*	destroys	A & possibly DE, HL, BC if the object is destroyed.	*
+;********************************************************************************
 Logic_CheckDestroyObject:			;$627C
 	ld	a, (ix+$21)	;get the object's object-to-object collision flags
 	and	$0F
@@ -9340,7 +9340,7 @@ DATA_62BD:	;object collision type jump vectors
 LABEL_62FD:
 	ret	
 
-;****************************************************
+;********************************************************
 ;*	Sets a object's vertical velocity but enforces	*
 ;*	a maximum value.				*
 ;*							*
@@ -9348,7 +9348,7 @@ LABEL_62FD:
 ;*	ld	BC	Maximum velocity.		*
 ;*	ld	DE	Vertical velocity		*
 ;*	destroys	HL, DE, A			*
-;****************************************************
+;********************************************************
 Engine_SetObjectVerticalSpeed:		;$62FE
 	ld	l, (ix+$18)	;get vertical velocity
 	ld	h, (ix+$19)
@@ -9370,10 +9370,6 @@ LABEL_6313:
 	ld	(ix+$19), d
 	ret	
 
-
-;******************************************
-;*	
-;******************************************
 LABEL_631A:
 	ld	bc, $0000
 	ld	de, $0000
@@ -9411,10 +9407,10 @@ LABEL_634C:
 	dec	a					;clear Z flag
 	ret	
 
-;****************************************************************
+;************************************************************************
 ;*	Test for collision between an object and the player then	*
-;*	move/update the player object accordingly.					*
-;****************************************************************
+;*	move/update the player object accordingly.			*
+;************************************************************************
 Engine_CheckCollisionAndAdjustPlayer:	;$634F
 	call	Engine_CheckCollision
 	jp	Engine_AdjustPlayerAfterCollision
@@ -9490,11 +9486,11 @@ LABEL_63E5:
 	ld	(ix+$21), $00
 	ret	
 
-;****************************************************
-;*	Checks an object's collision flags (ix+$21) and *
+;****************************************************************
+;*	Checks an object's collision flags (ix+$21) and 	*
 ;*	adjusts the player object accordingly.			*
-;*	Should be called after Engine_CheckCollision.	*
-;****************************************************
+;*	Should be called after Engine_CheckCollision.		*
+;****************************************************************
 Engine_AdjustPlayerAfterCollision:		;$63F1
 	ld	a, (ix+$21)	;check the object for collisions
 	and	$0F
@@ -9775,9 +9771,9 @@ LABEL_6576:
 
 ;********************************************************
 ;*	Change an object's direction flags based on the	*
-;*	current horizontal velocity.					*
-;*										*
-;*	destroys	A, H							*
+;*	current horizontal velocity.			*
+;*							*
+;*	destroys	A, H				*
 ;********************************************************
 Logic_UpdateObjectDirectionFlag:	;$657B
 	ld	h, (ix+$17)	;test object's horizontal velocity
@@ -9795,22 +9791,22 @@ _:	set	4, (ix+$04)	;flag object moving left
 	ret	
 
 
-;********************************************************
-;*	Change an object's direction flags so that the next *
+;****************************************************************
+;*	Change an object's direction flags so that the next	*
 ;*	update will move the object towards the player.		*
-;*														*
-;*	destroys	A, DE, HL								*
-;********************************************************
+;*								*
+;*	destroys	A, DE, HL				*
+;****************************************************************
 Logic_ChangeDirectionTowardsPlayer:	;$6592
 	ld	de, ($D511)	;DE = player hpos
 
-;********************************************************
-;*	Change an object's direction flags so that the next *
-;*	update will move the object towards another object. *
-;*										 *
-;*	ld	DE		The other object's hpos			 *
-;*	destroys	A, HL							 *
-;********************************************************
+;****************************************************************
+;*	Change an object's direction flags so that the next	*
+;*	update will move the object towards another object.	*
+;*								*
+;*	ld	DE		The other object's hpos		*
+;*	destroys	A, HL					*
+;****************************************************************
 Logic_ChangeDirectionTowardsObject:	;$6596
 	ld	l, (ix+$11)	;HL = object's hpos
 	ld	h, (ix+$12)
@@ -11328,10 +11324,10 @@ LABEL_6EB1:
 	ld	($D367), a
 
 
-;************************************************************
-;*	Tests to see if the player is entering or leaving a	*
-;*	pipe.													
-;************************************************************
+;************************************************************************
+;*	Tests to see if the player is entering or leaving a		*
+;*	pipe.								*					
+;************************************************************************
 Player_EnterPipe:		;$6EB7
 	res	1, (ix+$22)
 	set	0, (ix+$03)
@@ -11347,9 +11343,9 @@ Player_EnterPipe:		;$6EB7
 	jp	Player_EnterPipe_Return
 
 
-;****************************************
+;************************************************
 ;*	Player entering pipe from below.	*
-;****************************************
+;************************************************
 Player_EnterPipe_Bottom:		;$6ED6
 	ld	a, (ix+$01)		;check to see if the player
 	cp	PlayerState_InPipe	;is already in the pipe
@@ -11366,9 +11362,9 @@ Player_EnterPipe_Bottom:		;$6ED6
 	jp	Player_EnterPipe_Return
 
 
-;****************************************
+;************************************************
 ;*	Player entering pipe from above.	*
-;****************************************
+;************************************************
 Player_EnterPipe_Top:		;$6F03
 	ld	a, (ix+$01)		;check to see if the player
 	cp	PlayerState_InPipe	;is already in the pipe
@@ -11385,9 +11381,9 @@ Player_EnterPipe_Top:		;$6F03
 	jp	Player_EnterPipe_Return
 
 
-;************************************
+;****************************************
 ;*	Player entering pipe from left. *
-;************************************
+;****************************************
 Player_EnterPipe_Left:		;$6F2E
 	ld	a, (ix+$01)		;check to see if the player
 	cp	PlayerState_InPipe	;is already in the pipe
@@ -11404,9 +11400,9 @@ Player_EnterPipe_Left:		;$6F2E
 	jp	Player_EnterPipe_Return
 
 
-;****************************************
+;************************************************
 ;*	Player entering pipe from right.	*
-;****************************************
+;************************************************
 Player_EnterPipe_Right:	;$6F59
 	ld	a, (ix+$01)		;check to see if the player
 	cp	PlayerState_InPipe	;is already in the pipe
@@ -11694,10 +11690,10 @@ Engine_Collision_AdjustVerticalPos:	;70C7
 	ret	
 
 
-;****************************************************
-;*	Tests for a collision on the X-axis between the *
-;*	player object and a level block.				*
-;****************************************************
+;********************************************************
+;*	Tests for a collision on the X-axis between the	*
+;*	player object and a level block.		*
+;********************************************************
 Player_CheckHorizontalLevelCollision:		;$7102
 	ld	hl, $D522
 	res	2, (hl)		;clear "right-edge collision" flag
@@ -11722,19 +11718,19 @@ Player_CheckHorizontalLevelCollision:		;$7102
 	jr	z, Player_CollideHorizontalWithPipeBlock
 	ret	
 
-;************************************************************
+;****************************************************************
 ;*	Handle a collision with a pipe block (e.g. ALZ2 or SEZ) *
-;************************************************************
+;****************************************************************
 Player_CollideHorizontalWithPipeBlock:		;$7130
 	ld	a, (Cllsn_MetatileIndex)		;copy current block value
 	ld	($D367), a		;here
 	jp	Player_EnterPipe
 
 
-;************************************************************
+;****************************************************************
 ;*	Handle a collision with a solid (or horizontal spring)	*
-;*	block at the right-edge of the player object.			*
-;************************************************************
+;*	block at the right-edge of the player object.		*
+;****************************************************************
 Player_CollideRightWithSolidBlock:	;$7139
 	ld	a, (Cllsn_AdjustedX)		;get adjusted hpos
 	and	$1F
@@ -11767,9 +11763,9 @@ _:	add	a, c			;collision value += position on block
 	jp	Player_SetState_HorizontalSpring
 
 
-;********************************************************
+;****************************************************************
 ;*	Tests for a collision at the player's left edge.	*
-;********************************************************
+;****************************************************************
 Player_CheckHorizontalLevelCollision_Left:
 LABEL_7172:
 	ld	bc, -10			;check for collision at left-hand
@@ -11789,10 +11785,10 @@ LABEL_7172:
 	ret
 
 
-;************************************************************
+;****************************************************************
 ;*	Handle a collision with a solid (or horizontal spring)	*
-;*	block at the left-edge of the player object.			*
-;************************************************************
+;*	block at the left-edge of the player object.		*
+;****************************************************************
 Player_CollideLeftSolidBlock:		;$7195
 	ld	a, (Cllsn_AdjustedX)		;get horizontal position
 	and	$1F			;calculate position on current block
@@ -11821,10 +11817,10 @@ _:	cp	c
 	ld	hl, $0600
 	jp	Player_SetState_HorizontalSpring
 
-;****************************************************
+;********************************************************
 ;*	Handle a collision with a breakable block at	*
-;*	the player's right edge.						*
-;****************************************************
+;*	the player's right edge.			*
+;********************************************************
 Player_CollideRightBreakableBlock:		;$71C9
 	bit	1, (ix+$03)
 	jp	z, Player_CollideRightWithSolidBlock
@@ -11844,10 +11840,10 @@ _:	cp	$03
 _:	jr	Player_CollideBreakableBlock_UpdateMappings
 
 
-;****************************************************
+;********************************************************
 ;*	Handle a collision with a breakable block at	*
-;*	the player's left edge.						*
-;****************************************************
+;*	the player's left edge.				*
+;********************************************************
 Player_CollideLeftBreakableBlock:		;$71EF
 	bit	1, (ix+$03)	;check to see if the player is rolling
 	jr	z, Player_CollideLeftSolidBlock	;not rolling - act as solid block
@@ -11868,10 +11864,10 @@ _:	cp	$03			;check player's speed
 	ld	($D516), hl
 
 
-;****************************************************
-;*	Updates the level layout mappings after a		 *
-;*	collision with a breakable block.			 *
-;****************************************************
+;*********************************************************
+;*	Updates the level layout mappings after a	 *
+;*	collision with a breakable block.		 *
+;*********************************************************
 Player_CollideBreakableBlock_UpdateMappings:	;$7215
 	ld	a, ($D162)		;load bank with 32x32 mappings
 	call	Engine_SwapFrame2
@@ -11908,11 +11904,11 @@ Player_CollideBreakableBlock_UpdateMappings:	;$7215
 	ld	($D35C), hl		;and store here
 
 
-;****************************************************
+;********************************************************
 ;*	Create the block fragment objects that are	*
 ;*	displayed after a collision with a breakable	*
-;*	block.							*
-;****************************************************
+;*	block.						*
+;********************************************************
 Engine_CreateBlockFragmentObjects:		;$7248
 	ld	c, $04
 	ld	a, (Cllsn_MetatileIndex)		;get block type
@@ -11929,10 +11925,10 @@ _:	ld	h, $00
 	jp	Engine_AllocateObjectHighPriority
 
 
-;********************************************************
+;****************************************************************
 ;*	Handle a collision between the player's right edge	*
 ;*	and a spike block that points either up or down.	*
-;********************************************************
+;****************************************************************
 Player_CollideRightWithSpikeBlock		;$7267
 	ld	a, (Cllsn_MetatileIndex)		;get the block type
 	and	$FE
@@ -11957,10 +11953,10 @@ _:	call	Player_CollideRightWithSolidBlock	;spikes act like a solid block
 	jp	Player_CollideSpikeBlock_PlayerHurt
 
 
-;********************************************************
+;****************************************************************
 ;*	Handle a collision between the player's left edge	*
 ;*	and a spike block that points either up or down.	*
-;********************************************************
+;****************************************************************
 Player_CollideLeftWithSpikeBlock:		;$728A
 	ld	a, (Cllsn_MetatileIndex)		;get the block type
 	and	$FE
@@ -11983,9 +11979,9 @@ _:	call	Player_CollideLeftSolidBlock	;spikes act like a solid block
 	cp	$F5			;check for a collision with right-facing spikes
 	ret	nz				;return if not block type $F5
 
-;************************************************
+;****************************************************
 ;*	Player collided with spikes - cause damage. *
-;************************************************
+;****************************************************
 Player_CollideSpikeBlock_PlayerHurt:	;$72AA
 	bit	7, (ix+$03)
 	ret	nz
@@ -11994,10 +11990,10 @@ Player_CollideSpikeBlock_PlayerHurt:	;$72AA
 	jp	Player_SetState_Hurt
 
 
-;****************************************************
+;********************************************************
 ;*	Tests for a collision on between the top of the *
-;*	player object and a level block.				*
-;****************************************************
+;*	player object and a level block.		*
+;********************************************************
 Player_CheckTopLevelCollision:			;$72B8
 	bit	1, (ix+$22)
 	ret	nz
@@ -12021,10 +12017,10 @@ Player_CheckTopLevelCollision:			;$72B8
 	ret	
 
 
-;************************************************************
+;****************************************************************
 ;*	Handle a collision with a solid block at the top-edge	*
-;*	of the player object.									*
-;************************************************************
+;*	of the player object.					*
+;****************************************************************
 Player_CollideTopSolidBlock:	;$72E6
 	ld	a, (Cllsn_AdjustedY)		;adjusted vertical pos
 	and	$1F				;get offset on block
@@ -12060,20 +12056,20 @@ LABEL_7314:
 	ret	
 
 
-;************************************************************
+;****************************************************************
 ;*	Handle a collision with a downward-facing spring at the *
-;*	top edge of the player object.							*
-;************************************************************
+;*	top edge of the player object.				*
+;****************************************************************
 Player_CollideTopVerticalSpring:	;$731B
 	ld	hl, $0780
 	ld	($D518), hl	;set player vertical speed
 	jp	Player_SetState_JumpFromRamp
 
 
-;********************************************************
+;****************************************************************
 ;*	Handle a collision between the top of the player	*
-;*	object and a spike block.							*
-;********************************************************
+;*	object and a spike block.				*
+;****************************************************************
 Player_CollideTopWithSpikeBlock:		;$7329
 	ld	a, (Cllsn_AdjustedY)		;get lo-byte of adjusted vert pos
 	and	$1F
