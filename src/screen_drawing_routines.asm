@@ -4,24 +4,30 @@
 .ASSUME ADL=0
 DrawScreen:
 .ORG	DrawScreen+romStart
-
+	;start drawing the tilemap
 	ld	a, (DrawTilemapTrig)
 	bit	0, a
 	call.lil nz, DrawScreenMap
 	ld	a, (DrawTilemapTrig)
 	bit	1, a
 	call.lil nz, RenderScreenMap
+
 	;start drawing the SAT
 	ld	a, (DrawSATTrig)
 	or	a
 	call.lil nz, DrawSAT
-	;right now, let's only draw the sprites,
-	;since tilemap drawing would take a lot more cycles.
+
+	ld	a, (DrawTilemapTrig)
+	ld	(LastTilemapTrig), a
 	xor	a
 	ld	(DrawSATTrig), a
 	ld	(DrawTilemapTrig), a
 	ret
 .ASSUME ADL=1
+
+RenderScreen:
+	call.lil RenderScreenMap
+	ret
 
 RenderScreenMap:
 	ld	hl, RenderedScreenMap
@@ -357,6 +363,12 @@ _:	push	hl
 	ret
 
 DrawSAT:	;draws all the sprites, from least to most significant
+	ld	hl, DrawTilemapTrig
+	ld.sis	a, (LastTilemapTrig)
+	or.sis	(hl)
+	bit	0, a	
+	call	z, RenderScreen
+
 	ld	a, 1
 	ld	($D2DE06), a
 	ld	iy, SAT		;y position
@@ -370,18 +382,24 @@ _:	ld	h, (iy)
 	ld	a, 208
 	cp	h		;is the sprite's Y position 208?
 	ret.sis	z		;stop rendering SAT if so
-	ld	a, 192
-	cp	h		;is the sprite off-screen?
+
+	;is the sprite off-screen?
+	ld	a, 175
+	cp	h
 	jr	c, +_		;skip this sprite
 	ld	a, (ix)
 	or	a
-	jr	z, +_
+	jr	z, +_		;check if the same applies to Y coords
+	cp	$F8
+	jr	nc, +_
+
+	;draw the top half of the sprite
 	call	SetSpriteCoords	;set sprite coordinates
 	ex	de, hl		;HL now points to the tile's top-left corner
 	ld	l, (ix+1)
 	call	SetSpritePTR
 
-	;calc bottom half of 8x16 sprite
+	;draw the bottom half of the sprite
 	ld	a, (iy)
 	add	a, 8
 	ld	h, a

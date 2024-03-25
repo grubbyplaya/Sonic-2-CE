@@ -18,6 +18,7 @@
 #define SegaTileCache		pixelShadow
 #define VRAM 			$D40000
 #define VRAMEnd			VRAM+((320*240)*2)
+#define mpLcdTiming1		$E30004
 #define mpLcdCtrl		$E30018
 #define mpLcdImsc		$E3001C
 #define mpLcdRis		$E30020

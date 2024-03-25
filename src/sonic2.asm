@@ -32,6 +32,12 @@ _START:
 
 	call	SegaLogo
 
+	;set LCD to 30hz refresh rate
+	ld	hl, mpLcdTiming1
+	ld	(hl), $7E
+	inc	hl
+	inc	(hl)
+
 	;clear VRAM
 	ld	hl, VRAM
 	ld	de, VRAM+1

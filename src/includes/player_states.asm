@@ -1,5 +1,5 @@
 #define	PlayerState_Standing		$01
-#define	PlayerState_Idle			$02	;idle animation
+#define	PlayerState_Idle		$02	;idle animation
 #define	PlayerState_LookUp		$03
 #define	PlayerState_Crouch		$04
 #define	PlayerState_Walking		$05
@@ -25,7 +25,7 @@
 #define	PlayerState_JumpFromRamp	$1B	;e.g. in UGZ-3 before boss & when exiting SEZ/ALZ tube
 #define	PlayerState_DiagonalSpring	$1C	;set after collision with diagonal spring
 #define	PlayerState_FallFromLoop	$1D	;set if a player falls from loop (not moving fast enough).
-#define	PlayerState_Hurt			$1E
+#define	PlayerState_Hurt		$1E
 #define	PlayerState_LostLife		$1F
 #define	PlayerState_EndOfLevel		$20	;Set at end of level. CPU controlled movement off of screen.
 #define	PlayerState_InPipe		$21	;Set in ALZ/SEZ on entering a pipe.

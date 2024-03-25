@@ -146,7 +146,7 @@ Engine_ErrorTrap:		;$0073
 	call	VDP_DrawText
 
 	; hang for 180 frames
-	ld	b, 180
+	ld	b, 90
 _:	ei
 	halt
 	djnz	-_
@@ -307,9 +307,6 @@ Engine_HandleVBlank:		; $04A5
 	push	ix
 	push	iy
 ; -------------------------------------
-	call	DrawScreen		;draw the last interrupt's frame
-	ld	a, (Frame2Page)
-	ld	($FFFF), a
 	; if this trigger is set we should update VDP colour RAM
 	; and nothing else
 	ld	a, (UpdatePalettesOnly)
@@ -319,6 +316,10 @@ Engine_HandleVBlank:		; $04A5
 	ld	a, ($D136)
 	or	a
 	jp	nz, Engine_HandleVBlank_Epilogue
+
+	call	DrawScreen		;draw the last interrupt's frame
+	ld	a, (Frame2Page)
+	ld	($FFFF), a
 	call	VDP_SetMode2Reg_DisplayOff	;update VDP mode control register 2
 	
 	ld	bc, $0000
@@ -453,6 +454,7 @@ _:	ld.lil	hl, $E30028
 	ret
 
 Engine_HandleVBlank_PalettesOnly:		; $058D
+	call	Palette_Update
 	call	Engine_CopyPalettes
 	jp	Engine_HandleVBlank_Epilogue
 
@@ -878,7 +880,7 @@ LABEL_8A4:
 	call	Engine_ClearAuxLevelHeader
 	
 	call	PaletteFadeOut
-	ld	b, $1E
+	ld	b, 15
 _:	ei
 	halt
 	djnz	-_
@@ -986,12 +988,13 @@ _:	ld	hl, GlobalTriggers
 
 GameState_Titlecard:		; $097F
 	call	Engine_ClearVRAM
+	call	Engine_ClearWorkingVRAM
 	call	TitleCard_LoadAndDraw
 	call	ScrollingText_UpdateSprites
 	
 	; fade out over 42 frames
 	call	PaletteFadeOut
-	ld	b, $2A
+	ld	b, 21
 _:	ei
 	halt
 	djnz	-_
@@ -1161,8 +1164,8 @@ LABEL_F41:
 
 	ld	a, $1E
 	ld	($D780), a
-	ld	bc, $030C
 
+	ld	bc, $0186
 _:	call	LABEL_107C
 	push	bc
 	call	Engine_WaitForInterrupt
@@ -1177,7 +1180,7 @@ _:	call	LABEL_107C
 	ld	(Player.StateNext), a
 	call	Engine_LockCamera
 
-	ld	bc, $0078
+	ld	bc, $007E
 _:	call	LABEL_107C
 	push	bc
 	call	Engine_WaitForInterrupt
@@ -1277,7 +1280,7 @@ LABEL_FB9:
 	ld	(FrameCounter), a		;reset the frame counter
 
 	; wait for .5 sec
-	ld	bc, 30
+	ld	bc, 15
 _:	push	bc
 	call	Engine_WaitForInterrupt
 	call	Engine_UpdateLevelState
@@ -1288,7 +1291,7 @@ _:	push	bc
 	or	c
 	jr	nz, -_
 	
-	ld	bc, $04B0
+	ld	bc, $0258
 _:	call	LABEL_107C
 	push	bc
 	call	Engine_WaitForInterrupt
@@ -3378,7 +3381,7 @@ LABEL_243C:
 	xor	a
 	ld	($D700), a
 	call	PaletteFadeOut
-	ld	b, $2A
+	ld	b, 21
 _:	ei
 	halt
 	djnz	-_
@@ -3392,7 +3395,7 @@ _:	ei
 LABEL_2459_51:
 	call	_Load_Title_Level
 	call	PaletteFadeOut	;fade the palette
-	ld	b, $2A
+	ld	b, 21
 _:	ei
 	halt	
 	djnz	-_
@@ -3449,7 +3452,7 @@ LABEL_24BE_48:
 	ld	($D294), a
 	call	LevelSelectMenu		;run the level select
 	call	PaletteFadeOut
-	ld	b, $2A
+	ld	b, 21
 _:	ei
 	halt
 	djnz	-_
@@ -3561,7 +3564,7 @@ DemoSequence_LoadLevel:	;254A
 	call	TitleCard_LoadAndDraw
 	call	ScrollingText_UpdateSprites
 	call	PaletteFadeOut
-	ld	b, $2A		;pause to load the level
+	ld	b, 21		;pause to load the level
 _:	ei
 	halt
 	djnz	-_
@@ -3981,95 +3984,17 @@ LABEL_2849:	;TODO: unused?
 	ret
 
 ScrollingText_UpdateSprites:		;285D
-	call	ScrollingText_LoadSATValues
-_:	ld	a, $FF				;flag for a SAT update
-	ld	(VDP_SATUpdateTrig), a
-	call	ScrollingText_UpdateWorkingSAT
-	call	UpdateCyclingPalette_ScrollingText
+	ld	hl, $003C
+_:	push	hl
+	call	LABEL_107C
 	ei
 	halt
-	ld	a, (Engine_InputFlagsLast)	;check for button press
-	and	BTN_1 | BTN_2
-	ret	nz
-	ld	hl, ($D3BA)		;timer?
+	pop	hl
 	dec	hl
-	ld	($D3BA), hl
 	ld	a, h
-	or	l				;is timer 0?
+	or	l
 	jr	nz, -_
 	ret
-
-ScrollingText_LoadSATValues:		;2880
-	ld	hl, $0078
-	ld	($D3BA), hl
-	ld	hl, $DB00	;working copy of SAT VPos attributes
-	ld	b, $08			;set vpos to $18 for 8 sprites
-	ld	a, $18
-_:	ld	(hl), a
-	inc	hl
-	djnz	-_
-	ld	b, $08			;set vpos to $30 for 8 sprites
-	ld	a, $30
-_:	ld	(hl), a
-	inc	hl
-	djnz	-_
-	ld	hl, $DB40		;working copy of SAT Hpos/char codes
-	ld	de, ScrollingText_Data_CharCodes
-	ld	b, $10			;update 16 sprites
-_:	ld	a, (de)			;copy char code to working copy of SAT
-	ld	(hl), a
-	inc	hl
-	ld	a, $82			;set HPOS = $82
-	dec	b
-	bit	2, b
-	jr	nz, +_
-	ld	a, $80			;set HPOS = $80
-_:	inc	b
-	ld	(hl), a
-	inc	hl				;next sprite
-	inc	de				;next char code
-	djnz	--_
-	ret
-
-ScrollingText_Data_CharCodes:	;$28B4
-.db $D0, $20, $40, $D8, $40, $30, $20, $D8
-.db $A0, $A8, $80, $70, $90, $A0, $60, $70
-
-
-ScrollingText_UpdateWorkingSAT:
-LABEL_28C4:
-	ld	hl, $DB40	;HPOS/char
-	ld	de, $DB00	;VPOS
-	ld	b, $10			;update 16 sprite entries
-_:	ld	a, (hl)		;do we have a sprite here?
-	or	a
-	call	nz, ScrollingText_UpdateSprite
-	inc	hl				;move to next HPOS/char
-	inc	hl
-	inc	de				;move to next VPOS
-	djnz	-_
-	ret
-
-ScrollingText_UpdateSprite: 
-LABEL_28D7:
-	inc	hl				;get the HPOS attribute
-	ld	a, (hl)		
-	dec	hl				
-	dec	(hl)
-	cp	$82			;sprite char $82?
-	jr	nz, +_
-	dec	(hl)			;move the sprite left.
-_:	ld	a, (de)		;get the VPOS
-	ld	c, $10
-	cp	$18			;vpos == $18?
-	jr	z, +_
-	ld	c, $50
-_:	ld	a, (hl)
-	cp	c
-	ret	nc
-	ld	a, $D0			;SAT terminator marker byte
-	ld	(hl), a
-	ret	
 
 TitleCard_Mappings:	;28F0
 #include "titlecard_mappings.asm"

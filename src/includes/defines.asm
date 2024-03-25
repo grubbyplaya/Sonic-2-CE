@@ -6,11 +6,11 @@
 
 
 ; ---------------------------------------------------------
-;  Timing Definitions (based on 60hz display)
+;  Timing Definitions (based on 30hz display)
 ; ---------------------------------------------------------
-#define  Time_1Second              60
-#define  Time_2Seconds             120
-#define  Time_3Seconds             180
+#define  Time_1Second              30
+#define  Time_2Seconds             60
+#define  Time_3Seconds             90
 
 ; ---------------------------------------------------------
 ;  Global Triggers Bitfield

@@ -3,7 +3,7 @@
 #define	VDP_SATAddress			SegaVRAM+$3F00
 #define DrawTilemapTrig			$D4C0
 #define DrawSATTrig			$D4C1
-#define ScrollingTrig			$D4C2
+#define LastTilemapTrig			$D4C2
 ; =============================================================================
 ;	VDP_InitRegisters()
 ; -----------------------------------------------------------------------------
