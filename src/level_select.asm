@@ -12,270 +12,67 @@ LABEL_A2C:
 	call	LevelSelect_LoadFont
 	call	Engine_ClearLevelAttributes
 	call	Engine_ClearWorkingVRAM
-	ld	a, $01					;tile attributes
-	ld	($D2C7), a
+	ld	a, $01			;tile attributes
+	ld	(VDP_DefaultTileAttribs), a
 	ld.lil	hl, SegaVRAM+$3808	;VRAM destination
 	ld	de, LevelSelect_Title	;source data
-	ld	bc, LevelSelect_DrawEntry1 - LevelSelect_Title	;char count
+	ld	bc, 24	;char count
 	call	VDP_DrawText
-	jr	LevelSelect_DrawEntry1
+	jr	LevelSelect_DrawEntries
 
-LevelSelect_Title:
-.db " - SONIC THE HEDGEHOG - "
+LevelSelect_TextEntries:
+.dw LevelSelect_Entry1
+.dw LevelSelect_Entry4
+.dw LevelSelect_Entry7
+.dw LevelSelect_Entry10
+.dw LevelSelect_Entry13
+.dw LevelSelect_Entry16
+.dw LevelSelect_Entry19
 
-LevelSelect_DrawEntry1:
-	ld	a, $01
-	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3888
-	ld	de, LevelSelect_Entry1
-	ld	bc, LevelSelect_DrawEntry2 - LevelSelect_Entry1
+LevelSelect_VRAMEntries:
+ .dw $3888
+ .dw $3948
+ .dw $3A08
+ .dw $3AC8
+ .dw $3B88
+ .dw $3C48
+ .dw $3D08
+
+LevelSelect_DrawEntries:
+	ld	ix, LevelSelect_TextEntries
+	ld	iy, LevelSelect_VRAMEntries
+	ld	b, 7
+	;draw Act 1 text
+_:	push	bc
+	ld	hl, (iy)
+	push	hl
+	ld.lil	de, SegaVRAM
+	add.lil	hl, de
+	ld	de, (ix)
+	ld	bc, 24
 	call	VDP_DrawText
-	jr	LevelSelect_DrawEntry2
 
-LevelSelect_Entry1:
-.db "UNDER GROUND ZONE  ACT-1"
-
-LevelSelect_DrawEntry2:
-	ld	a, $01
-	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$38EE
-	ld	de, LevelSelect_Entry2
-	ld	bc, LevelSelect_DrawEntry3 - LevelSelect_Entry2
+	;draw Act 2 text
+	pop	hl
+	push	hl
+	ld.lil	de, SegaVRAM+$0066
+	add.lil	hl, de
+	ld	de, Act2Text
+	ld	c, 5
 	call	VDP_DrawText
-	jr	LevelSelect_DrawEntry3
-	
-LevelSelect_Entry2:
-.db "ACT-2"
 
-LevelSelect_DrawEntry3:
-	ld	a, $01
-	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$392E
-	ld	de, LevelSelect_Entry3
-	ld	bc, LevelSelect_DrawEntry4 - LevelSelect_Entry3
+	;draw Act 3 text
+	pop	hl
+	ld.lil	de, SegaVRAM+$00A6
+	add.lil	hl, de
+	ld	de, Act3Text
+	ld	c, 5
 	call	VDP_DrawText
-	jr	LevelSelect_DrawEntry4
-	
-LevelSelect_Entry3:
-.db	"ACT-3"
-
-LevelSelect_DrawEntry4:
-	ld	a, $01
-	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3948
-	ld	de, LevelSelect_Entry4
-	ld	bc, LevelSelect_DrawEntry5 - LevelSelect_Entry4
-	call	VDP_DrawText
-	jr	LevelSelect_DrawEntry5
-	
-LevelSelect_Entry4:
-.db "SKY HIGH ZONE      ACT-1"
-
-LevelSelect_DrawEntry5:
-	ld	a, $01
-	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$39AE
-	ld	de, LevelSelect_Entry5
-	ld	bc, LevelSelect_DrawEntry6 - LevelSelect_Entry5
-	call	VDP_DrawText
-	jr	LevelSelect_DrawEntry6
-	
-LevelSelect_Entry5:
-.db "ACT-2"
-
-LevelSelect_DrawEntry6:
-	ld	a, $01
-	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$39EE
-	ld	de, LevelSelect_Entry6
-	ld	bc, LevelSelect_DrawEntry7 - LevelSelect_Entry6
-	call	VDP_DrawText
-	jr	LevelSelect_DrawEntry7
-
-LevelSelect_Entry6:
-.db "ACT-3"
-
-LevelSelect_DrawEntry7
-	ld	a, $01
-	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3A08
-	ld	de, LevelSelect_Entry7
-	ld	bc, LevelSelect_DrawEntry8 - LevelSelect_Entry7
-	call	VDP_DrawText
-	jr	LevelSelect_DrawEntry8
-
-LevelSelect_Entry7:
-.db "AQUA LAKE ZONE     ACT-1"
-
-LevelSelect_DrawEntry8:
-	ld	a, $01
-	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3A6E
-	ld	de, LevelSelect_Entry8
-	ld	bc, LevelSelect_DrawEntry9 - LevelSelect_Entry8
-	call	VDP_DrawText
-	jr	LevelSelect_DrawEntry9
-
-LevelSelect_Entry8:
-.db "ACT-2"
-
-LevelSelect_DrawEntry9:
-	ld	a, $01
-	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3AAE
-	ld	de, LevelSelect_Entry9
-	ld	bc, LevelSelect_DrawEntry10 - LevelSelect_Entry9
-	call	VDP_DrawText
-	jr	LevelSelect_DrawEntry10
-
-LevelSelect_Entry9:
-.db "ACT-3"
-
-LevelSelect_DrawEntry10:
-	ld	a, $01
-	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3AC8
-	ld	de, LevelSelect_Entry10
-	ld	bc, LevelSelect_DrawEntry11 - LevelSelect_Entry10
-	call	VDP_DrawText
-	jr	LevelSelect_DrawEntry11
-	
-LevelSelect_Entry10:
-.db "GREEN HILLS ZONE   ACT-1"
-
-LevelSelect_DrawEntry11:
-	ld	a, $01
-	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3B2E
-	ld	de, LevelSelect_Entry11
-	ld	bc, LevelSelect_DrawEntry12 - LevelSelect_Entry11
-	call	VDP_DrawText
-	jr	LevelSelect_DrawEntry12
-	
-LevelSelect_Entry11:
-.db "ACT-2"
-
-LevelSelect_DrawEntry12:
-	ld	a, $01
-	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3B6E
-	ld	de, LevelSelect_Entry12
-	ld	bc, LevelSelect_DrawEntry13 - LevelSelect_Entry12
-	call	VDP_DrawText
-	jr	LevelSelect_DrawEntry13
-
-LevelSelect_Entry12:
-.db "ACT-3"
-
-LevelSelect_DrawEntry13:
-	ld	a, $01
-	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3B88
-	ld	de, LevelSelect_Entry13
-	ld	bc, LevelSelect_DrawEntry14 - LevelSelect_Entry13
-	call	VDP_DrawText
-	jr	LevelSelect_DrawEntry14
-	
-LevelSelect_Entry13;
-.db "GIMMICK MT. ZONE   ACT-1"
-
-LevelSelect_DrawEntry14:
-	ld	a, $01
-	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3BEE
-	ld	de, LevelSelect_Entry14
-	ld	bc, LevelSelect_DrawEntry15 - LevelSelect_Entry14
-	call	VDP_DrawText
-	jr	LevelSelect_DrawEntry15
-	
-LevelSelect_Entry14:
-.db "ACT-2"
-
-LevelSelect_DrawEntry15:
-	ld	a, $01
-	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3C2E
-	ld	de, LevelSelect_Entry15
-	ld	bc, LevelSelect_DrawEntry16 - LevelSelect_Entry15
-	call	VDP_DrawText
-	jr	LevelSelect_DrawEntry16
-	
-LevelSelect_Entry15:
-.db "ACT-3"
-
-LevelSelect_DrawEntry16:
-	ld	a, $01
-	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3C48
-	ld	de, LevelSelect_Entry16
-	ld	bc, LevelSelect_DrawEntry17 - LevelSelect_Entry16
-	call	VDP_DrawText
-	jr	LevelSelect_DrawEntry17
-	
-LevelSelect_Entry16:
-.db "SCRAMBLED EGG ZONE ACT-1"
-
-LevelSelect_DrawEntry17:
-	ld	a, $01
-	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3CAE
-	ld	de, LevelSelect_Entry17
-	ld	bc, LevelSelect_DrawEntry18 - LevelSelect_Entry17
-	call	VDP_DrawText
-	jr	LevelSelect_DrawEntry18
-	
-LevelSelect_Entry17:
-.db "ACT-2"
-
-LevelSelect_DrawEntry18:
-	ld	a, $01
-	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3CEE
-	ld	de, LevelSelect_Entry18
-	ld	bc, LevelSelect_DrawEntry19 - LevelSelect_Entry18
-	call	VDP_DrawText
-	jr	LevelSelect_DrawEntry19
-	
-LevelSelect_Entry18:
-.db "ACT-3"
-
-LevelSelect_DrawEntry19:
-	ld	a, $01
-	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3D08
-	ld	de, LevelSelect_Entry19
-	ld	bc, LevelSelect_DrawEntry20 - LevelSelect_Entry19
-	call	VDP_DrawText
-	jr	LevelSelect_DrawEntry20
-
-LevelSelect_Entry19:
-.db "CRYSTAL EGG ZONE	  ACT-1"
-
-LevelSelect_DrawEntry20:
-	ld	a, $01
-	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3D6E
-	ld	de, LevelSelect_Entry20
-	ld	bc, LevelSelect_DrawEntry21 - LevelSelect_Entry20
-	call	VDP_DrawText
-	jr	LevelSelect_DrawEntry21
-
-LevelSelect_Entry20:
-.db "ACT-2"
-
-LevelSelect_DrawEntry21:
-	ld	a, $01
-	ld	($D2C7), a
-	ld.lil	hl, SegaVRAM+$3DAE
-	ld	de, LevelSelect_Entry21
-	ld	bc, LevelSelect_DrawEntry22 - LevelSelect_Entry21
-	call	VDP_DrawText
-	jr	LevelSelect_DrawEntry22
-	
-LevelSelect_Entry21:
-.db "ACT-3"
-
-LevelSelect_DrawEntry22:
+	lea	ix, ix+2	;LEA IX, IX+2 is more efficient than INC IX \ INC IX
+	lea	iy, iy+2	;same with IY
+	pop	bc
+	djnz	-_
+LevelSelect_FinishSetup:
 	ld	hl, $D4E6
 	ld	(hl), $00
 	set	7, (hl)
@@ -406,3 +203,60 @@ _TileMappings:
 .dw $0100	;tile used above the cursor
 .dw $013C	;tile used for the cursor
 .dw $0100	;tile used below the cursor
+
+LevelSelect_Title:
+.db " - SONIC THE HEDGEHOG - "
+
+#if Language = 1
+
+LevelSelect_Entry1:
+.db "UNDER GROUND ZONE  ACT-1"
+
+LevelSelect_Entry4:
+.db "SKY HIGH ZONE      ACT-1"
+	
+LevelSelect_Entry7:
+.db "AQUA LAKE ZONE     ACT-1"
+
+LevelSelect_Entry10:
+.db "GREEN HILLS ZONE   ACT-1"
+
+LevelSelect_Entry13;
+.db "GIMMICK MT. ZONE   ACT-1"
+
+LevelSelect_Entry16:
+.db "SCRAMBLED EGG ZONE ACT-1"
+
+LevelSelect_Entry19:
+.db "CRYSTAL EGG ZONE  	ACT-1"
+
+#else Language = 2
+
+LevelSelect_Entry1:
+.db "ZONE SOUTERRAINE   ACT-1"
+
+LevelSelect_Entry4:
+.db "ZONE TRES HAUTE    ACT-1"
+	
+LevelSelect_Entry7:
+.db "ZONE DU LAC AQUA   ACT-1"
+
+LevelSelect_Entry10:
+.db "ZONE COLLINE VERTE ACT-1"
+
+LevelSelect_Entry13;
+.db "ZONE MONT BIDULE   ACT-1"
+
+LevelSelect_Entry16:
+.db "ZONE OUEF BROUILLE ACT-1"
+
+LevelSelect_Entry19:
+.db "ZONE OUEF CRISTAL  ACT-1"
+
+#endif
+
+Act2Text:
+.db "ACT-2"
+
+Act3Text:
+.db "ACT-3"

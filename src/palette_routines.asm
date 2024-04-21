@@ -19,11 +19,9 @@ _:	push	bc
 	call	Palette_UpdateColours
 	ld	a, $FF
 	ld	($D4EA), a
-_:	inc	ix	;check FgPaletteControl
-	inc	ix
+_:	lea	ix, ix+2	;check FgPaletteControl
 	pop	iy
-	ld	de, $0010
-	add	iy, de
+	lea	iy, iy+16
 	pop	bc
 	djnz	--_
 	ret

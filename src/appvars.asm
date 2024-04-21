@@ -109,58 +109,9 @@ ExitGame:
 	call	ClrLCDFull
 	ei
 	ret
+
 ExitGameEnd:
 .ORG ExitGameEnd-romStart
-
-LoadSave:
-	ld	hl, SaveFile
-	call	Mov9ToOP1	;check for a save file
-	call	Arc_Unarc
-	
-	ex	de, hl
-	ld	de, Score
-	ldi
-	ldi
-	ldi
-	ld	de, CurrentLevel
-	ldi
-	ldi
-	ldi
-	dec	hl
-	ldi
-	ldi
-	ld	de, ContinueCounter
-	ldi
-	ld	de, EmeraldFlags
-	ldi
-	ld	a, (de)
-	ld	($D292), a
-	ld	hl, SaveFile
-	call	Mov9ToOP1
-	jp	Arc_Unarc
-
-SaveGame:
-	ld	hl, SaveFile
-	call	Mov9ToOP1
-	call	Arc_Unarc
-	ld	hl, Score
-	ldi
-	ldi
-	ldi
-	ld	hl, CurrentLevel
-	ldi
-	ldi
-	inc	hl
-	ldi
-	ldi
-	ld	hl, ContinueCounter
-	ldi
-	ld	hl, EmeraldFlags
-	ldi
-	ld	a, $01
-	ld	(de), a
-	jp	Arc_Unarc
-
 ;Appvar Headers
 
 
@@ -241,7 +192,4 @@ NullBank:
 
 Bank29:
 	.db	AppvarObj, "Bank29", 0
-
-SaveFile:
-	.db	AppvarObj, "S2Save", 0
 .ASSUME ADL=0

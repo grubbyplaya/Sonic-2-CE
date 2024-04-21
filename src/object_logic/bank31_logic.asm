@@ -290,7 +290,7 @@ LABEL_B31_BB0B:
 	ld	bc, $0600
 	call	VF_Engine_SetObjectVerticalSpeed
 	call	VF_Engine_UpdateObjectPosition
-	call	LABEL_75C5
+	call	LABEL_200 + $60
 	bit	1, (ix+$22)
 	ret	z
 

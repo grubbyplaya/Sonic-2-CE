@@ -79,7 +79,7 @@
 .dw Logic_UGZ3_Robotnik				;4B - UGZ-3 boss - Robotnik
 .dw Logic_UGZ3_CannonBall			;4C - UGZ-3 boss - cannon ball
 .dw Logic_UGZ3_Pincers				;4D - UGZ-3 boss - pincers
-.dw DATA_B28_A813				;4E
+.dw DATA_B28_A813				;4E - Silver Sonic
 .dw DATA_B28_9FCC				;4F
 
 ;Bank 30 objects

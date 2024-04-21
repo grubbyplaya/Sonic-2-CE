@@ -146,7 +146,7 @@ Engine_ErrorTrap:		;$0073
 	call	VDP_DrawText
 
 	; hang for 180 frames
-	ld	b, 90
+	ld	b, Time_3Seconds
 _:	ei
 	halt
 	djnz	-_
@@ -488,45 +488,10 @@ LABEL_59E_218:
 	set	7, (hl)
 	ret
 
-
 ; Data from 5AA to 5B1 (8 bytes)
 ScrollAdjustValues:
 _DATA_05AA:
 .db $FE, $00, $FE, $FE, $02, $02, $00, $02
-
-
-;********************************************************
-;*	Disables VDP line interrupts and initialises	*
-;*	colour RAM with the data at $65A.		*
-;********************************************************
-VDP_ResetPalette_DisableLineInterrupt:	;$5B2
-	ld	a, ($D132)		;is palette reset required?
-	inc	a
-	jr	nz, +_
-	
-	ld	a, (Player_UnderwaterFlag)	;check underwater flag
-	or	a				;jump if player not under water
-	jr	z, ++_	
-	
-_:	push	hl
-	;write the 16 colours to VRAM
-	ld	hl, DATA_65A
-	ld	de, WorkingCRAM
-	ld	bc, 16
-	ldir
-	inc	hl
-	ld	a, (hl)
-	ld	(Palette_UpdateTrig), a
-_:	pop	hl
-	pop	af
-	ei
-	ret
-
-
-DATA_65A:
-; Data from 65A to 671 (24 bytes)
-.db $10, $10, $24, $39, $39, $24, $34, $38, $28, $14, $3D, $3F, $00, $3D, $3E, $3F
-.db $3E, $00, $D3, $BF, $3E, $88, $D3, $BF
 
 Engine_PauseHandler:
 	push	af
@@ -791,12 +756,15 @@ _:	ei
 _:	ei
 	halt
 	djnz	-_
-	
+
 	call	Engine_ClearWorkingVRAM		;clear various blocks of RAM & prepare the SAT
 	call	Engine_ClearLevelAttributes
 	call	Engine_ClearVRAM
 	call	Score_CalculateActTimeScore
 	call	TitleCard_LoadAndDraw	;also deals with loading score card tiles
+
+	ld	hl, GlobalTriggers
+	set	GT_TITLECARD_BIT, (hl)
 	call	ScoreCard_UpdateScore
 	
 	; wait for 1 second
@@ -813,8 +781,6 @@ _:	ei
 	inc	a
 	ld	(CurrentAct), a
 	
-	ld	hl, GlobalTriggers
-	set	GT_TITLECARD_BIT, (hl)
 	jp	Engine_CheckGlobalTriggers
 
 
@@ -880,7 +846,7 @@ LABEL_8A4:
 	call	Engine_ClearAuxLevelHeader
 	
 	call	PaletteFadeOut
-	ld	b, 15
+	ld	b, Time_1Second/2
 _:	ei
 	halt
 	djnz	-_
@@ -889,6 +855,10 @@ _:	ei
 	call	Engine_ClearVRAM
 	call	Score_CalculateActTimeScore
 	call	TitleCard_LoadAndDraw
+
+	ld	hl, GlobalTriggers
+	res	GT_NEXT_LEVEL_BIT, (hl)
+	set	GT_TITLECARD_BIT, (hl)
 	call	ScoreCard_UpdateScore
 	
 	; wait for 1 second
@@ -921,16 +891,14 @@ _:	ld	a, ($D2C5)
 	cp	$1F
 	jr	nz, LABEL_91B
 	
-_:	ld	hl, GlobalTriggers	;play ending sequence
-	res	GT_NEXT_LEVEL_BIT, (hl)
-	set	GT_TITLECARD_BIT, (hl)
-	jp	Engine_CheckGlobalTriggers
+_:	jp	Engine_CheckGlobalTriggers
 	
-LABEL_91B:
+LABEL_91B:	;play ending sequence
 	ld	a, Level_End
 	ld	(CurrentLevel), a
 	ld	hl, GlobalTriggers
 	res	GT_NEXT_LEVEL_BIT, (hl)
+	res	GT_TITLECARD_BIT, (hl)
 	set	GT_END_SEQUENCE_BIT, (hl)
 	jp	Engine_CheckGlobalTriggers
 
@@ -994,7 +962,7 @@ GameState_Titlecard:		; $097F
 	
 	; fade out over 42 frames
 	call	PaletteFadeOut
-	ld	b, 21
+	ld	b, 42
 _:	ei
 	halt
 	djnz	-_
@@ -1165,7 +1133,7 @@ LABEL_F41:
 	ld	a, $1E
 	ld	($D780), a
 
-	ld	bc, $0186
+	ld	bc, $030C
 _:	call	LABEL_107C
 	push	bc
 	call	Engine_WaitForInterrupt
@@ -1180,7 +1148,7 @@ _:	call	LABEL_107C
 	ld	(Player.StateNext), a
 	call	Engine_LockCamera
 
-	ld	bc, $007E
+	ld	bc, $0078
 _:	call	LABEL_107C
 	push	bc
 	call	Engine_WaitForInterrupt
@@ -1280,7 +1248,7 @@ LABEL_FB9:
 	ld	(FrameCounter), a		;reset the frame counter
 
 	; wait for .5 sec
-	ld	bc, 15
+	ld	bc, Time_1Second/2
 _:	push	bc
 	call	Engine_WaitForInterrupt
 	call	Engine_UpdateLevelState
@@ -1291,7 +1259,7 @@ _:	push	bc
 	or	c
 	jr	nz, -_
 	
-	ld	bc, $0258
+	ld	bc, $04B0
 _:	call	LABEL_107C
 	push	bc
 	call	Engine_WaitForInterrupt
@@ -1561,8 +1529,7 @@ _:	; check that the object is active (i.e. state != 0)
 _:	pop	bc
 
 _:	;move to next object
-	ld	de, $0040		
-	add	ix, de
+	lea	ix, ix+$40
 	djnz	---_
 	
 	
@@ -1918,8 +1885,7 @@ _:	; check the object's state.
 _:	pop	bc
 
 _:	; move to the next object
-	ld	de, $0040
-	add	ix, de
+	lea	ix, ix+$40
 	djnz	---_
 
 	ld	a, $FF
@@ -2578,7 +2544,7 @@ _:	push	bc
 	pop	bc
 	djnz	---_
 	ld	hl, DrawTilemapTrig
-	ld	(hl), $11
+	ld	(hl), $03
 	ret
 
 ;mappings for scorecard digits 0-9
@@ -2967,8 +2933,8 @@ Engine_Timer_Increment:		;$20A1
 	sub	$10
 	jr	nz, Engine_Timer_SetSprites
 
-	ld	a, $FF	;timer at 10 minutes. set the 
-	ld	($D49F), a			;"Kill player" flag
+	ld	a, $FF		;timer at 10 minutes. set the 
+	ld	($D49F), a	;"Kill player" flag
 
 	xor	a
 	ld	(LevelTimerTrigger), a	;reset "timer update required" flag.
@@ -3031,8 +2997,7 @@ _:	ld	hl, ($D104)
 	add	hl, de
 	ld	($D104), hl
 	djnz	-_
-	push	ix
-	pop	hl
+	lea	hl, ix
 	ld	de, $0010
 	add	hl, de
 	ld	de, $D104
@@ -3081,8 +3046,7 @@ _:	ld	hl, ($D104)
 	ld	($D104), hl
 	djnz	-_
 
-	push	ix
-	pop	hl
+	lea	hl, ix
 	ld	de, $0013
 	add	hl, de
 	ld	de, $D104
@@ -3208,8 +3172,7 @@ Engine_SetStatusIconPositions:		;$2243
 	ld	(iy + $01), a
 	inc	hl
 	inc	ix
-	inc	iy
-	inc	iy
+	lea	iy, iy+2
 	djnz	Engine_SetStatusIconPositions
 	ret	
 
@@ -3381,7 +3344,7 @@ LABEL_243C:
 	xor	a
 	ld	($D700), a
 	call	PaletteFadeOut
-	ld	b, 21
+	ld	b, 42
 _:	ei
 	halt
 	djnz	-_
@@ -3395,7 +3358,7 @@ _:	ei
 LABEL_2459_51:
 	call	_Load_Title_Level
 	call	PaletteFadeOut	;fade the palette
-	ld	b, 21
+	ld	b, 42
 _:	ei
 	halt	
 	djnz	-_
@@ -3452,7 +3415,7 @@ LABEL_24BE_48:
 	ld	($D294), a
 	call	LevelSelectMenu		;run the level select
 	call	PaletteFadeOut
-	ld	b, 21
+	ld	b, 42
 _:	ei
 	halt
 	djnz	-_
@@ -3564,7 +3527,7 @@ DemoSequence_LoadLevel:	;254A
 	call	TitleCard_LoadAndDraw
 	call	ScrollingText_UpdateSprites
 	call	PaletteFadeOut
-	ld	b, 21		;pause to load the level
+	ld	b, 42		;pause to load the level
 _:	ei
 	halt
 	djnz	-_
@@ -3708,9 +3671,15 @@ LABEL_2606:
 _:	ei
 	halt
 	djnz	-_
+#if Language = 1
 	call	TitleCard_LoadText
 	call	TitleCard_LoadActLogoMappings
 	jp	TitleCard_LoadZoneText
+#else Language = 2
+	call	TitleCard_LoadActLogoMappings
+	call	TitleCard_LoadZoneText
+	jp	TitleCard_LoadText
+#endif
 
 ;****************************************
 ;* Loads the mappings for the zone name *
@@ -3737,7 +3706,7 @@ LABEL_264E:
 	ld	a, (GlobalTriggers)
 	bit	2, a
 	jr	nz, +_
-	ld	de, DATA_2D0C
+	ld	de, DATA_2D0C+$0038
 _:	ld	($D11A), de
 	ld	hl, $3900
 	ld	($D11C), hl
@@ -3775,8 +3744,14 @@ TitleCard_LoadActLogoMappings:	;$2688
 TitleCard_LoadZoneText:		;$26B3
 	ld	hl, $0028
 	ld	(Engine_ObjCharCodePtr), hl
-	ld	bc, $0101
+#if Language = 1
+	ld	hl, $39C0
+#else Language = 2
+	ld	hl, $3840
+#endif
+
 	ld	de, DATA_299C		;"Zone" text mappings
+	ld	bc, $0101
 	ld	a, (GlobalTriggers)
 	bit	GT_NEXT_ACT_BIT, a
 	jr	nz, +_
@@ -3784,10 +3759,11 @@ TitleCard_LoadZoneText:		;$26B3
 	bit	GT_NEXT_LEVEL_BIT, a
 	jr	z, ++_
 
-_:	ld	de, DATA_2D6C
-
 _:	ld	hl, $39C0
-	ld	($D118), bc	;rows/cols
+	ld	de, DATA_2D6C
+	jr	+_
+
+_:	ld	($D118), bc	;rows/cols
 	ld	($D11A), de	;pointer to mappings
 	ld	($D11C), hl	;VRAM address
 	ld	b, $14
@@ -4845,11 +4821,11 @@ LABEL_34E1:
 	ld	hl, $0080
 	ld	a, ($D51C)
 	cp	$D8
-	jr	c, LABEL_34E1
+	jr	c, +_
 	ld	hl, GlobalTriggers
 	set	3, (hl)
 	ld	hl, $1000
-	ld	(Player.VelY), hl
+_:	ld	(Player.VelY), hl
 	jp	Player_UpdatePlayer.VelY
 
 
@@ -7922,8 +7898,7 @@ _:	; check array bounds again
 	djnz	-_
 
 	; move the compressed data pointer pointer
-	ld	bc, $0003
-	add	iy, bc
+	lea	iy, iy+3
 	jr	--_
 
 
@@ -8671,8 +8646,7 @@ _:	push	bc
 	di	
 	call	LABEL_5EFD
 	ei	
-	ld	de, $0040		;move to next object descriptor structure
-	add	ix, de
+	lea	ix, ix+$40		;move to next object descriptor structure
 	pop	bc
 	djnz	-_
 	ret
@@ -9007,11 +8981,10 @@ Engine_AllocateObjectHighPriority:		;$6144
 	push	ix
 	ld	ix, $D540
 	ld	b, $10
-	ld	de, $0040
 _:	ld	a, (ix+$00)
 	or	a
 	jr	z, LABEL_615C
-	add	ix, de
+	lea	ix, ix+$40
 	djnz	-_
 	pop	ix
 	ret	
@@ -9162,8 +9135,7 @@ Engine_DeallocateObject:		;$6248
 	add	hl, de
 	ld	(hl), $00		;remove the object from the array
 
-_:	push	ix
-	pop	hl
+_:	lea	hl, ix
 	ld	(hl), $00		;clear this object's descriptor slot
 	ld	e, l
 	ld	d, h
@@ -10446,8 +10418,7 @@ _:	bit	OBJ_F3_BIT7, (ix + Object.Flags03)
 
 	; calculate the object's index and store in the player object
 	; structure as the colliding object
-	push	ix				
-	pop	hl
+	lea	hl, ix
 	call	Engine_GetObjectIndexFromPointer
 	ld	(Player.CollidingObj), a
 
@@ -10564,8 +10535,7 @@ _:	ld	a, (de)
 	ld	(ix+$00), l
 	ld	(ix+$01), h
 	exx	
-	inc	ix
-	inc	ix
+	lea	ix, ix+2
 	inc	de
 	inc	de
 	djnz	-_
@@ -10583,8 +10553,7 @@ _:	ld	a, (de)
 	ld	(ix+$00), l
 	ld	(ix+$01), h
 	exx	
-	inc	ix
-	inc	ix
+	lea	ix, ix+2
 	inc	de
 	inc	de
 	djnz	-_
@@ -10620,10 +10589,8 @@ _:	push	hl
 	call	z, LABEL_6B17
 	inc	hl
 	inc	hl
-	inc	ix
-	inc	ix
-	inc	iy
-	inc	iy
+	lea	ix, ix+2
+	lea	iy, iy+2
 	djnz	-_
 	;FALL THROUGH
 	
@@ -10643,8 +10610,7 @@ _:	ld	l, (ix+$00)
 	ld	(de), a
 	inc	de
 	exx	
-	inc	ix
-	inc	ix
+	lea	ix, ix+2
 	djnz	-_
 	ld	b, $08
 	ld	ix, $D455
@@ -10673,8 +10639,7 @@ _:	ld	l, (ix+$00)
 	ld	(de), a
 	inc	de
 	exx	
-_:	inc	ix
-	inc	ix
+_:	lea	ix, ix+2
 	djnz	--_
 	ret	
 
@@ -10714,8 +10679,7 @@ LABEL_6A7E:
 	ret	
 
 LABEL_6ACD:
-	push	ix
-	pop	hl
+	lea	hl, ix
 	ld	de, $D445
 	xor	a
 	sbc	hl, de
@@ -12647,8 +12611,7 @@ _:	; check for the end-of-chain marker
 	call	LoadTiles
 	
 	; move to the next tileset header entry
-	ld	bc, $0005
-	add	iy, bc
+	lea	iy, iy+5
 	jr	-_
 
 
@@ -13333,8 +13296,7 @@ Engine_UpdateCyclingPalettes:		;$7CE9
 	ld	b, $02	;update 2 cycling palettes
 _:	push	bc
 	call	UpdateCyclingPaletteBank
-	ld	bc, $0008
-	add	iy, bc
+	lea	iy, iy+8
 	pop	bc
 	djnz	-_
 	ret

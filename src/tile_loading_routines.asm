@@ -144,8 +144,7 @@ _:	ld	a, (ix+0)		;xor byte at (ix+0) with byte at (ix+2)...
 	xor	(ix+19)
 	ld	(ix+19), a		;...and store result at (ix+19)
 	
-	inc	ix
-	inc	ix				;ix += 2
+	lea	ix, ix+2		;ix += 2
 	djnz	-_
 	ret
 
@@ -243,8 +242,7 @@ _:	ld	e, (hl)		;read a byte of tile data from RAM
 
 SetTileCacheFlags:
 	exx
-	push	ix
-	pop	hl
+	lea	hl, ix
 
 	;divide the address pointer by the tile size
 	srl	h

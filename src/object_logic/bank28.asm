@@ -67,224 +67,224 @@ DATA_B28_805F:
 .db $FF, $00
 
 LABEL_B28_8067:
-	bit     6, (ix+$04)
-	ret     nz
-	set     7, (ix+$03)
-	ld      a, (ix+$3F)
-	and     $0F
-	rlca    
-	rlca    
-	rlca    
-	or      a
-	jr      nz, +_
-	inc     a
-_:  	ld      (ix+$02), a
-	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	set	7, (ix+$03)
+	ld	a, (ix+$3F)
+	and	$0F
+	rlca	
+	rlca	
+	rlca	
+	or	a
+	jr	nz, +_
+	inc	a
+_:  	ld	(ix+$02), a
+	ret	
 
 LABEL_B28_8080:
-	call    LABEL_200 + $39
-	ld      a, (ix+$22)
-	and     $0C
-	jr      z, LABEL_B28_809B
-	and     $04
-	rlca    
-	rlca    
-	ld      b, a
-	ld      a, (ix+$0A)
-	and     $EF
-	or      b
-	ld      (ix+$0A), a
-	jr      LABEL_B28_80D6
+	call	LABEL_200 + $39
+	ld	a, (ix+$22)
+	and	$0C
+	jr	z, LABEL_B28_809B
+	and	$04
+	rlca	
+	rlca	
+	ld	b, a
+	ld	a, (ix+$0A)
+	and	$EF
+	or	b
+	ld	(ix+$0A), a
+	jr	LABEL_B28_80D6
 
 LABEL_B28_809B:
-	ld      a, (ix+$1b)
-	or      a
-	jr      z, LABEL_B28_80D6
-	ld      hl, ($D174)	;add 128 to the horizontal position
-	ld      de, $0080
-	add     hl, de
-	ld      e, (ix+$11)
-	ld      d, (ix+$12)
-	xor     a
-	sbc     hl, de
-	jr      c, LABEL_B28_80C3
-	ld      de, $00C0
-	xor     a
-	sbc     hl, de
-	jr      c, LABEL_B28_80D6
-	res     4, (ix+$0A)
-	jr      LABEL_B28_80D6
+	ld	a, (ix+$1b)
+	or	a
+	jr	z, LABEL_B28_80D6
+	ld	hl, ($D174)	;add 128 to the horizontal position
+	ld	de, $0080
+	add	hl, de
+	ld	e, (ix+$11)
+	ld	d, (ix+$12)
+	xor	a
+	sbc	hl, de
+	jr	c, LABEL_B28_80C3
+	ld	de, $00C0
+	xor	a
+	sbc	hl, de
+	jr	c, LABEL_B28_80D6
+	res	4, (ix+$0A)
+	jr	LABEL_B28_80D6
 
 LABEL_B28_80C3:
-	dec     hl
-	ld      a, h
-	cpl     
-	ld      h, a
-	ld      a, l
-	cpl     
-	ld      l, a
-	ld      de, $00C0
-	xor     a
-	sbc     hl, de
-	jr      c, LABEL_B28_80D6
-	set     4, (ix+$0A)
+	dec	hl
+	ld	a, h
+	cpl	
+	ld	h, a
+	ld	a, l
+	cpl	
+	ld	l, a
+	ld	de, $00C0
+	xor	a
+	sbc	hl, de
+	jr	c, LABEL_B28_80D6
+	set	4, (ix+$0A)
 LABEL_B28_80D6:
-	ld      a, $01
-	bit     4, (ix+$0A)
-	jr      z, +_
-	neg     
-_:	ld      (ix+$17), a
-	call    LABEL_B28_814F
-	ld      a, (CurrentLevel)
-	cp      $04
-	ret     nz
-	bit     6, (ix+$04)
-	ret     z
-	ld      (ix+$00), $FF
-	ret     
+	ld	a, $01
+	bit	4, (ix+$0A)
+	jr	z, +_
+	neg	
+_:	ld	(ix+$17), a
+	call	LABEL_B28_814F
+	ld	a, (CurrentLevel)
+	cp	$04
+	ret	nz
+	bit	6, (ix+$04)
+	ret	z
+	ld	(ix+$00), $FF
+	ret	
 
 LABEL_B28_80F6:
-	call    LABEL_B28_814F
-	ld      a, (ix+$21)
-	and     $0F
-	ret     z
-	ld      (ix+$02), $09
-	ret     
+	call	LABEL_B28_814F
+	ld	a, (ix+$21)
+	and	$0F
+	ret	z
+	ld	(ix+$02), $09
+	ret	
 
 LABEL_B28_8104:
-	call    LABEL_B28_814F
-	ret     
+	call	LABEL_B28_814F
+	ret	
 
 LABEL_B28_8108:
-	set     0, (ix+$04)
-	ld      de, $0020
-	ld      bc, $0600
-	call    VF_Engine_SetObjectVerticalSpeed
-	call    LABEL_B28_814F
-	ld      a, (ix+$1C)
-	cp      $C0
-	ret     c
-	ld      (ix+$00), $FE
-	ret     
+	set	0, (ix+$04)
+	ld	de, $0020
+	ld	bc, $0600
+	call	VF_Engine_SetObjectVerticalSpeed
+	call	LABEL_B28_814F
+	ld	a, (ix+$1C)
+	cp	$C0
+	ret	c
+	ld	(ix+$00), $FE
+	ret	
 
 LABEL_B28_8123:
-	ld      (ix+$0b), $30
-	call    LABEL_B28_8131
-	call    LABEL_200 + $36
-	call    LABEL_B28_814F
-	ret     
+	ld	(ix+$0b), $30
+	call	LABEL_B28_8131
+	call	LABEL_200 + $36
+	call	LABEL_B28_814F
+	ret	
 
 LABEL_B28_8131:
-	ld      a, (ix+$0A)
-	or      a
-	jr      z, LABEL_B28_8147
-	ld      a, (ix+$1E)
-	cpl     
-	and     $01
-	add     a, a
-	dec     a
-	add     a, (ix+$0a)
-	ld      (ix+$0a), a
-	ret     
+	ld	a, (ix+$0A)
+	or	a
+	jr	z, LABEL_B28_8147
+	ld	a, (ix+$1E)
+	cpl	
+	and	$01
+	add	a, a
+	dec	a
+	add	a, (ix+$0a)
+	ld	(ix+$0a), a
+	ret	
 
 LABEL_B28_8147:
-	ld      (ix+$0a), $80
-	inc     (ix+$1e)
-	ret     
+	ld	(ix+$0a), $80
+	inc	(ix+$1e)
+	ret	
 
 LABEL_B28_814F:
-	ld      a, ($D521)
-	ld      ($D100), a
-	call    VF_Engine_CheckCollision
-	ld      a, (ix+$21)
-	and     $0f
-	jr      z, LABEL_B28_819B
-	bit     1, a
-	jr      nz, LABEL_B28_819B
-	ld      a, ($D519)
-	rla     
-	jr      c, LABEL_B28_819B
-	ld      a, ($D522)
-	bit     1, a
-	jr      nz, LABEL_B28_819B
-	call    VF_Engine_UpdateObjectPosition
-	ld      (ix+$21), $01
-	ld      a, $20
-	ld      ($D521), a
-	ld      a, ($D523)
-	set     1, a
-	ld      ($D523), a
-	push    ix
-	pop     hl
-	call    VF_Engine_GetObjectIndexFromPointer
-	ld      b, a
-	ld      a, ($D3B9)
-	or      a
-	jr      z, +_
-	cp      b
-	ret     nz
-_: 	ld      a, b
-	ld      ($D3B9), a
-	call    LABEL_B28_81B9
-	ret     
+	ld	a, ($D521)
+	ld	($D100), a
+	call	VF_Engine_CheckCollision
+	ld	a, (ix+$21)
+	and	$0f
+	jr	z, LABEL_B28_819B
+	bit	1, a
+	jr	nz, LABEL_B28_819B
+	ld	a, ($D519)
+	rla	
+	jr	c, LABEL_B28_819B
+	ld	a, ($D522)
+	bit	1, a
+	jr	nz, LABEL_B28_819B
+	call	VF_Engine_UpdateObjectPosition
+	ld	(ix+$21), $01
+	ld	a, $20
+	ld	($D521), a
+	ld	a, ($D523)
+	set	1, a
+	ld	($D523), a
+	push	ix
+	pop	hl
+	call	VF_Engine_GetObjectIndexFromPointer
+	ld	b, a
+	ld	a, ($D3B9)
+	or	a
+	jr	z, +_
+	cp	b
+	ret	nz
+_: 	ld	a, b
+	ld	($D3B9), a
+	call	LABEL_B28_81B9
+	ret	
 
 LABEL_B28_819B:
-	call    VF_Engine_UpdateObjectPosition
-	ld      (ix+$21), $00
-	ld      a, ($D100)
-	ld      ($D521), a
-	ld      a, ($D3b9)
-	ld      b, a
-	push    ix
-	pop     hl
-	call    VF_Engine_GetObjectIndexFromPointer
-	cp      b
-	ret     nz
-	xor     a
-	ld      ($D3b9), a
-	ret     
+	call	VF_Engine_UpdateObjectPosition
+	ld	(ix+$21), $00
+	ld	a, ($D100)
+	ld	($D521), a
+	ld	a, ($D3b9)
+	ld	b, a
+	push	ix
+	pop	hl
+	call	VF_Engine_GetObjectIndexFromPointer
+	cp	b
+	ret	nz
+	xor	a
+	ld	($D3b9), a
+	ret	
 
 LABEL_B28_81B9:
-	ld      e, (ix+$2d)
-	ld      d, $00
-	ld      l, (ix+$14)
-	ld      h, (ix+$15)
-	inc     hl
-	xor     a
-	sbc     hl, de
-	ld      ($D514), hl
-	ld      hl, ($D510)
-	ld      e, (ix+$16)
-	ld      d, (ix+$17)
-	ld      a, ($D512)
-	ld      b, a
-	ld      a, d
-	and     $80
-	rlca    
-	dec     a
-	cpl     
-	add     hl, de
-	adc     a, b
-	ld      ($D512), a
-	ld      ($D510), hl
-	ret     
+	ld	e, (ix+$2d)
+	ld	d, $00
+	ld	l, (ix+$14)
+	ld	h, (ix+$15)
+	inc	hl
+	xor	a
+	sbc	hl, de
+	ld	($D514), hl
+	ld	hl, ($D510)
+	ld	e, (ix+$16)
+	ld	d, (ix+$17)
+	ld	a, ($D512)
+	ld	b, a
+	ld	a, d
+	and	$80
+	rlca	
+	dec	a
+	cpl	
+	add	hl, de
+	adc	a, b
+	ld	($D512), a
+	ld	($D510), hl
+	ret	
 
 LABEL_B28_81E7:
-	ld      (ix+$07), $20
-	jr      LABEL_B28_81F2
+	ld	(ix+$07), $20
+	jr	LABEL_B28_81F2
 
 LABEL_B28_81EE:
-	ld      (ix+$07), $e0
+	ld	(ix+$07), $e0
 LABEL_B28_81F2:
-	ld      a, (ix+$3f)
-	and     $f0
-	rlca    
-	rlca    
-	rlca    
-	rlca    
-	inc     a
-	ld      (ix+$06), a
-	ret     
+	ld	a, (ix+$3f)
+	and	$f0
+	rlca	
+	rlca	
+	rlca	
+	rlca	
+	inc	a
+	ld	(ix+$06), a
+	ret	
 
 DATA_B28_8200:
 .dw DATA_B28_820C
@@ -472,56 +472,56 @@ DATA_B28_834C:
 
 
 LABEL_B28_8352:
-	set     7, (ix+$03)
-	ld      a, (ix+$3f)
-	dec     a
-	jr      z, +_
-	bit     6, (ix+$04)
-	ret     nz
-	set     1, (ix+$04)
-_: 	ld      (ix+$02), $05
+	set	7, (ix+$03)
+	ld	a, (ix+$3f)
+	dec	a
+	jr	z, +_
+	bit	6, (ix+$04)
+	ret	nz
+	set	1, (ix+$04)
+_: 	ld	(ix+$02), $05
 	ret
 
 LABEL_B28_836A:
-	call    LABEL_B28_814F
-	res     1, (ix+$04)
-	res     7, (ix+$04)
-	bit     6, (ix+$04)
-	ret     z
-	ld      (ix+$02), $05
-	ret     
+	call	LABEL_B28_814F
+	res	1, (ix+$04)
+	res	7, (ix+$04)
+	bit	6, (ix+$04)
+	ret	z
+	ld	(ix+$02), $05
+	ret	
 
 LABEL_B28_837F:
-	call    LABEL_B28_814F
-	ret     
+	call	LABEL_B28_814F
+	ret	
 
 LABEL_B28_8383:
-	ld      a, (ix+$3f)
-	dec     a
-	jr      z, +_
-	bit     6, (ix+$04)
-	ret     nz
-_:	ld      a, $00
-	ld      (ix+$16), a
-	ld      (ix+$17), a
-	ld      (ix+$18), a
-	ld      (ix+$19), a
-	ld      a, (ix+$3b)
-	ld      (ix+$12), a
-	ld      a, (ix+$3a)
-	ld      (ix+$11), a
-	ld      a, (ix+$3d)
-	ld      (ix+$15), a
-	ld      a, (ix+$3c)
-	ld      (ix+$14), a
-	call    LABEL_B28_814F
-	ld      a, (ix+$21)
-	and     $0f
-	ret     z
-	ld      a, (ix+$3f)
-	inc     a
-	ld      (ix+$02), a
-	ret     
+	ld	a, (ix+$3f)
+	dec	a
+	jr	z, +_
+	bit	6, (ix+$04)
+	ret	nz
+_:	ld	a, $00
+	ld	(ix+$16), a
+	ld	(ix+$17), a
+	ld	(ix+$18), a
+	ld	(ix+$19), a
+	ld	a, (ix+$3b)
+	ld	(ix+$12), a
+	ld	a, (ix+$3a)
+	ld	(ix+$11), a
+	ld	a, (ix+$3d)
+	ld	(ix+$15), a
+	ld	a, (ix+$3c)
+	ld	(ix+$14), a
+	call	LABEL_B28_814F
+	ld	a, (ix+$21)
+	and	$0f
+	ret	z
+	ld	a, (ix+$3f)
+	inc	a
+	ld	(ix+$02), a
+	ret	
 
 DATA_B28_83C5:
 .dw DATA_B28_83C9
@@ -534,11 +534,11 @@ DATA_B28_83C9:
 
 
 LABEL_B28_83CF:
-	bit     6, (ix+$04)
-	ret     nz
-	ld      (ix+$02), $01
-	set     7, (ix+$03)
-	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	ld	(ix+$02), $01
+	set	7, (ix+$03)
+	ret	
 
 DATA_B28_83DD:
 .db $E0, $01
@@ -546,22 +546,22 @@ DATA_B28_83DD:
 .db $FF, $00
 
 LABEL_B28_83E3:
-	ld      hl, $0100
-	bit     0, (ix+$1e)
-	jr      z, +_
-	ld      hl, -256
-_:	ld      (ix+$16), l
-	ld      (ix+$17), h
-	call    LABEL_B28_814F
-	ld      l, (ix+$11)
-	ld      h, (ix+$12)
-	ld      e, (ix+$3a)
-	ld      d, (ix+$3b)
-	xor     a
-	sbc     hl, de
+	ld	hl, $0100
+	bit	0, (ix+$1e)
+	jr	z, +_
+	ld	hl, -256
+_:	ld	(ix+$16), l
+	ld	(ix+$17), h
+	call	LABEL_B28_814F
+	ld	l, (ix+$11)
+	ld	h, (ix+$12)
+	ld	e, (ix+$3a)
+	ld	d, (ix+$3b)
+	xor	a
+	sbc	hl, de
 	jr	nc, LABEL_B28_840E
-	res     0, (ix+$1e)
-	ret     
+	res	0, (ix+$1e)
+	ret	
 
 LABEL_B28_840E:
 	ld	a, h
@@ -608,25 +608,25 @@ SHZ_YellowBird_State_02:	;$860E
 
 
 SHZ_YellowBird_State_01_Logic:	;$8618
-	ld      a, ($D523)
-	cp      $06
-	ret     nz
-	ld      a, (Engine_InputFlags)	;a = controller flags
-	cp      $08
-	ret     nz
-	ld      (ix+$02), $02	;set state = $02
-	ret     
+	ld	a, ($D523)
+	cp	$06
+	ret	nz
+	ld	a, (Engine_InputFlags)	;a = controller flags
+	cp	$08
+	ret	nz
+	ld	(ix+$02), $02	;set state = $02
+	ret	
 
 SHZ_YellowBird_State_02_Logic:	;$8629
-	call    VF_Engine_UpdateObjectPosition
-	ld      de, $0020
-	ld      bc, $0600
-	call    VF_Engine_SetObjectVerticalSpeed
-	ld      hl, $0200
-	call    LABEL_200 + $12	;make the bird bounce
-	bit     6, (ix+$04)
-	ret     z
-	ld      (ix+$00), $FF	;destroy the object
+	call	VF_Engine_UpdateObjectPosition
+	ld	de, $0020
+	ld	bc, $0600
+	call	VF_Engine_SetObjectVerticalSpeed
+	ld	hl, $0200
+	call	LABEL_200 + $12	;make the bird bounce
+	bit	6, (ix+$04)
+	ret	z
+	ld	(ix+$00), $FF	;destroy the object
 	ret
 
 
@@ -702,114 +702,114 @@ DATA_B28_869D
 .db $FF, $00
 
 LABEL_B28_86A9:
-	ld      a, (ix+$3f)
-	add     a, a
-	inc     a
-	ld      (ix+$02), a
-	ret     
+	ld	a, (ix+$3f)
+	add	a, a
+	inc	a
+	ld	(ix+$02), a
+	ret	
 
 LABEL_B28_86B2:
-	bit     6, (ix+$04)
-	ret     nz
-	ld      hl, ($D514)
-	ld      e, (ix+$14)
-	ld      d, (ix+$15)
-	xor     a
-	sbc     hl, de
-	ret     nc
+	bit	6, (ix+$04)
+	ret	nz
+	ld	hl, ($D514)
+	ld	e, (ix+$14)
+	ld	d, (ix+$15)
+	xor	a
+	sbc	hl, de
+	ret	nc
 LABEL_B28_86C4:
-	ld      hl, ($D511)
-	ld      e, (ix+$11)
-	ld      d, (ix+$12)
-	xor     a
-	sbc     hl, de
-	jr      nc, +_
-	dec     hl
-	ld      a, h
-	cpl     
-	ld      h, a
-	ld      a, l
-	cpl     
-	ld      l, a
-_:	ld      a, h
-	or      a
-	ret     nz
-	ld      a, l
-	cp      $30
-	jr      c, LABEL_B28_873E
-	ret     
+	ld	hl, ($D511)
+	ld	e, (ix+$11)
+	ld	d, (ix+$12)
+	xor	a
+	sbc	hl, de
+	jr	nc, +_
+	dec	hl
+	ld	a, h
+	cpl	
+	ld	h, a
+	ld	a, l
+	cpl	
+	ld	l, a
+_:	ld	a, h
+	or	a
+	ret	nz
+	ld	a, l
+	cp	$30
+	jr	c, LABEL_B28_873E
+	ret	
 
 LABEL_B28_86E3:
-	bit     6, (ix+$04)
-	ret     nz
-	ld      hl, ($D514)
-	ld      e, (ix+$14)
-	ld      d, (ix+$15)
-	xor     a
-	sbc     hl, de
-	ret     c
-	jr      LABEL_B28_86C4
+	bit	6, (ix+$04)
+	ret	nz
+	ld	hl, ($D514)
+	ld	e, (ix+$14)
+	ld	d, (ix+$15)
+	xor	a
+	sbc	hl, de
+	ret	c
+	jr	LABEL_B28_86C4
 
 LABEL_B28_86F8:
-	bit     6, (ix+$04)
-	ret     nz
-	ld      hl, ($D511)
-	ld      e, (ix+$11)
-	ld      d, (ix+$12)
-	xor     a
-	sbc     hl, de
-	ret     nc
+	bit	6, (ix+$04)
+	ret	nz
+	ld	hl, ($D511)
+	ld	e, (ix+$11)
+	ld	d, (ix+$12)
+	xor	a
+	sbc	hl, de
+	ret	nc
 LABEL_B28_870A:
-	ld      hl, ($D514)
-	ld      e, (ix+$14)
-	ld      d, (ix+$15)
-	xor     a
-	sbc     hl, de
-	jr      nc, +_
-	dec     hl
-	ld      a, h
-	cpl     
-	ld      h, a
-	ld      a, l
-	cpl     
-	ld      l, a
-_:	ld      a, h
-	or      a
-	ret     nz
-	ld      a, l
-	cp      $30
-	jr      c, LABEL_B28_873E
+	ld	hl, ($D514)
+	ld	e, (ix+$14)
+	ld	d, (ix+$15)
+	xor	a
+	sbc	hl, de
+	jr	nc, +_
+	dec	hl
+	ld	a, h
+	cpl	
+	ld	h, a
+	ld	a, l
+	cpl	
+	ld	l, a
+_:	ld	a, h
+	or	a
+	ret	nz
+	ld	a, l
+	cp	$30
+	jr	c, LABEL_B28_873E
 	ret
 
 LABEL_B28_8729:
-	bit     6, (ix+$04)
-	ret     nz
-	ld      hl, ($D511)
-	ld      e, (ix+$11)
-	ld      d, (ix+$12)
-	xor     a
-	sbc     hl, de
-	ret     c
-	jr      LABEL_B28_870A
+	bit	6, (ix+$04)
+	ret	nz
+	ld	hl, ($D511)
+	ld	e, (ix+$11)
+	ld	d, (ix+$12)
+	xor	a
+	sbc	hl, de
+	ret	c
+	jr	LABEL_B28_870A
 
 LABEL_B28_873E:
-	ld      a, (ix+$01)
-	inc     a
-	ld      (ix+$02), a
+	ld	a, (ix+$01)
+	inc	a
+	ld	(ix+$02), a
 	ret
 
 LABEL_B28_8746:
-	call    VF_Engine_UpdateObjectPosition
-	call    VF_Engine_CheckCollision
-	ld      a, (ix+$21)
-	and     $0f
-	jr      z, +_
-	ld      a, $ff
-	ld      (Player_HurtTrigger), a
-_:  	bit     6, (ix+$04)
-	ret     z
-	ld      (ix+$00), $fe
-	ret     
+	call	VF_Engine_UpdateObjectPosition
+	call	VF_Engine_CheckCollision
+	ld	a, (ix+$21)
+	and	$0f
+	jr	z, +_
+	ld	a, $ff
+	ld	(Player_HurtTrigger), a
+_:  	bit	6, (ix+$04)
+	ret	z
+	ld	(ix+$00), $fe
+	ret	
 
 
 
@@ -837,86 +837,86 @@ DATA_B28_8813:
 
 
 LABEL_B28_8819:
-	set     7, (ix+$03)
-	ret     
+	set	7, (ix+$03)
+	ret	
 
 LABEL_B28_881E:
-	call    VF_Engine_CheckCollision
-	ld      a, (ix+$21)
-	and     $0f
-	ret     z
-	ld      a, ($D501)
-	cp      $22
-	jr      z, +++_
-	ld      a, $22
-	ld      ($D502), a
-	ld      hl, $0300
-	ld      ($D3C7), hl
-	ld      l, (ix+$14)
-	ld      h, (ix+$15)
-	ld      de, -12
-	add     hl, de
-	ex      de, hl
-	ld      hl, ($D514)
-	xor     a
-	sbc     hl, de
-	ld      ($D3CB), de
-	jr      nc, LABEL_B28_8889
-	ld      l, (ix+$11)
-	ld      h, (ix+$12)
-	ld      ($D3C9), hl
-	ld      de, $0028
-	add     hl, de
-	ld      de, ($D511)
-	xor     a
-	sbc     hl, de
-	ld      a, h
-	or      a
-	jr      z, +_
-	ld      l, $00
-_:	ld      a, l
-	cp      $4F
-	jr      c, +_
-	ld      a, $4f
-_:  	and     $f8
-	rrca    
-	rrca    
+	call	VF_Engine_CheckCollision
+	ld	a, (ix+$21)
+	and	$0f
+	ret	z
+	ld	a, ($D501)
+	cp	$22
+	jr	z, +++_
+	ld	a, $22
+	ld	($D502), a
+	ld	hl, $0300
+	ld	($D3C7), hl
+	ld	l, (ix+$14)
+	ld	h, (ix+$15)
+	ld	de, -12
+	add	hl, de
+	ex	de, hl
+	ld	hl, ($D514)
+	xor	a
+	sbc	hl, de
+	ld	($D3CB), de
+	jr	nc, LABEL_B28_8889
+	ld	l, (ix+$11)
+	ld	h, (ix+$12)
+	ld	($D3C9), hl
+	ld	de, $0028
+	add	hl, de
+	ld	de, ($D511)
+	xor	a
+	sbc	hl, de
+	ld	a, h
+	or	a
+	jr	z, +_
+	ld	l, $00
+_:	ld	a, l
+	cp	$4F
+	jr	c, +_
+	ld	a, $4f
+_:  	and	$f8
+	rrca	
+	rrca	
 	rrca   
-	ld      e, a
-	ld      d, $00
-	ld      hl, DATA_B28_88BB
-	add     hl, de
-	ld      a, (hl)
-	ld      ($D3C6), a
-_:	ret     
+	ld	e, a
+	ld	d, $00
+	ld	hl, DATA_B28_88BB
+	add	hl, de
+	ld	a, (hl)
+	ld	($D3C6), a
+_:	ret	
 
 LABEL_B28_8889:
-	ld      l, (ix+$11)
-	ld      h, (ix+$12)
-	ld      ($D3c9), hl
-	ld      de, $0028
-	add     hl, de
-	ld      de, ($D511)
-	xor     a
-	sbc     hl, de
-	ld      a, h
-	or      a
-	jr      z, +_
-	ld      l, $00
-_: 	ld      a, l
-	cp      $4f
-	jr      c, +_
-	ld      a, $4f
-_: 	and     $f8
-	rrca    
-	rrca    
+	ld	l, (ix+$11)
+	ld	h, (ix+$12)
+	ld	($D3c9), hl
+	ld	de, $0028
+	add	hl, de
+	ld	de, ($D511)
+	xor	a
+	sbc	hl, de
+	ld	a, h
+	or	a
+	jr	z, +_
+	ld	l, $00
+_: 	ld	a, l
+	cp	$4f
+	jr	c, +_
+	ld	a, $4f
+_: 	and	$f8
+	rrca	
+	rrca	
 	rrca 
-	ld      e, a
-	ld      d, $00
-	ld      hl, DATA_B28_88C5
-	add     hl, de
-	ld      a, (hl)
-	ld      ($D3C6), a
+	ld	e, a
+	ld	d, $00
+	ld	hl, DATA_B28_88C5
+	add	hl, de
+	ld	a, (hl)
+	ld	($D3C6), a
 	ret
 
 DATA_B28_88BB:
@@ -951,148 +951,148 @@ DATA_B28_8B6B:
 
 
 LABEL_B28_8B75:
-	set     7, (ix+$03)
-	ld      (ix+$0b), $40
-	ret     
+	set	7, (ix+$03)
+	ld	(ix+$0b), $40
+	ret	
 
 LABEL_B28_8B7E:
-	ld      a, (ix+$0a)
-	add     a, $04
-	ld      (ix+$0a), a
-	call    LABEL_200 + $36
-	ld      hl, $0100
-	bit     0, (ix+$1e)
-	jr      z, +_
-	ld      hl, -256
-_:  	ld      (ix+$16), l
-	ld      (ix+$17), h
-	call    VF_Engine_UpdateObjectPosition
-	ld      a, (ix+$0a)
-	and     $7f
-	jr      nz, LABEL_B28_8BCC
-	ld      l, (ix+$11)
-	ld      h, (ix+$12)
-	ld      e, (ix+$3a)
-	ld      d, (ix+$3b)
-	xor     a
-	sbc     hl, de
-	jr      nc, LABEL_B28_8BBE
-	res     0, (ix+$1e)
-	jr      LABEL_B28_8BCC
+	ld	a, (ix+$0a)
+	add	a, $04
+	ld	(ix+$0a), a
+	call	LABEL_200 + $36
+	ld	hl, $0100
+	bit	0, (ix+$1e)
+	jr	z, +_
+	ld	hl, -256
+_:  	ld	(ix+$16), l
+	ld	(ix+$17), h
+	call	VF_Engine_UpdateObjectPosition
+	ld	a, (ix+$0a)
+	and	$7f
+	jr	nz, LABEL_B28_8BCC
+	ld	l, (ix+$11)
+	ld	h, (ix+$12)
+	ld	e, (ix+$3a)
+	ld	d, (ix+$3b)
+	xor	a
+	sbc	hl, de
+	jr	nc, LABEL_B28_8BBE
+	res	0, (ix+$1e)
+	jr	LABEL_B28_8BCC
 
 LABEL_B28_8BBE
-	ld      a, h
-	or      a
-	jr      nz, +_
-	ld      a, l
-	cp      (ix+$3f)
-	jr      c, LABEL_B28_8BCC
-_: 	set     0, (ix+$1e)
+	ld	a, h
+	or	a
+	jr	nz, +_
+	ld	a, l
+	cp	(ix+$3f)
+	jr	c, LABEL_B28_8BCC
+_: 	set	0, (ix+$1e)
 LABEL_B28_8BCC:
-	ld      a, ($D3cd)
-	or      a
-	jr      z, +_
-	push    ix
-	pop     hl
-	call    VF_Engine_GetObjectIndexFromPointer
-	ld      b, a
-	ld      a, ($D3cd)
-	cp      b
-	ret     nz
-	ld      l, (ix+$11)
-	ld      h, (ix+$12)
-	set     7, h
-	ld      ($D3c9), hl
-	ld      l, (ix+$14)
-	ld      h, (ix+$15)
-	ld      de, -6
-	add     hl, de
-	ld      ($D3cb), hl
-_:	call    VF_Engine_CheckCollision
-	ld      a, (ix+$21)
-	and     $0f
-	ret     z
-	ld      a, ($D501)
-	cp      $22
-	jr      z, +++_
-	push    ix
-	pop     hl
-	call    VF_Engine_GetObjectIndexFromPointer
-	ld      ($D3cd), a
-	ld      a, $22
-	ld      ($D502), a
-	ld      a, $ae
-	ld      ($Dd04), a
-	ld      hl, $0300
-	ld      ($D3c7), hl
-	ld      l, (ix+$14)
-	ld      h, (ix+$15)
-	ld      de, -6
-	add     hl, de
-	ex      de, hl
-	ld      hl, ($D514)
-	xor     a
-	sbc     hl, de
-	ld      ($D3cb), de
-	jr      nc, LABEL_B28_8C6D
-	ld      l, (ix+$11)
-	ld      h, (ix+$12)
-	set     7, h
-	ld      ($D3c9), hl
-	ld      de, $0028
-	add     hl, de
-	ld      de, ($D511)
-	xor     a
-	sbc     hl, de
-	ld      a, h
-	or      a
-	jr      z, +_
-	ld      l, $00
-_:   	ld      a, l
-	cp      $4f
-	jr      c, +_
-	ld      a, $4f
-_:   	and     $f8
-	rrca    
-	rrca    
+	ld	a, ($D3cd)
+	or	a
+	jr	z, +_
+	push	ix
+	pop	hl
+	call	VF_Engine_GetObjectIndexFromPointer
+	ld	b, a
+	ld	a, ($D3cd)
+	cp	b
+	ret	nz
+	ld	l, (ix+$11)
+	ld	h, (ix+$12)
+	set	7, h
+	ld	($D3c9), hl
+	ld	l, (ix+$14)
+	ld	h, (ix+$15)
+	ld	de, -6
+	add	hl, de
+	ld	($D3cb), hl
+_:	call	VF_Engine_CheckCollision
+	ld	a, (ix+$21)
+	and	$0f
+	ret	z
+	ld	a, ($D501)
+	cp	$22
+	jr	z, +++_
+	push	ix
+	pop	hl
+	call	VF_Engine_GetObjectIndexFromPointer
+	ld	($D3cd), a
+	ld	a, $22
+	ld	($D502), a
+	ld	a, $ae
+	ld	($Dd04), a
+	ld	hl, $0300
+	ld	($D3c7), hl
+	ld	l, (ix+$14)
+	ld	h, (ix+$15)
+	ld	de, -6
+	add	hl, de
+	ex	de, hl
+	ld	hl, ($D514)
+	xor	a
+	sbc	hl, de
+	ld	($D3cb), de
+	jr	nc, LABEL_B28_8C6D
+	ld	l, (ix+$11)
+	ld	h, (ix+$12)
+	set	7, h
+	ld	($D3c9), hl
+	ld	de, $0028
+	add	hl, de
+	ld	de, ($D511)
+	xor	a
+	sbc	hl, de
+	ld	a, h
+	or	a
+	jr	z, +_
+	ld	l, $00
+_:   	ld	a, l
+	cp	$4f
+	jr	c, +_
+	ld	a, $4f
+_:   	and	$f8
+	rrca	
+	rrca	
 	rrca
-	ld      e, a
-	ld      d, $00
-	ld      hl, DATA_B28_8CA1
-	add     hl, de
-	ld      a, (hl)
-	ld      ($D3c6), a
-_:	ret     
+	ld	e, a
+	ld	d, $00
+	ld	hl, DATA_B28_8CA1
+	add	hl, de
+	ld	a, (hl)
+	ld	($D3c6), a
+_:	ret	
 
 LABEL_B28_8C6D:
-	ld      l, (ix+$11)
-	ld      h, (ix+$12)
-	set     7, h
-	ld      ($D3c9), hl
-	ld      de, $0028
-	add     hl, de
-	ld      de, ($D511)
-	xor     a
-	sbc     hl, de
-	ld      a, h
-	or      a
-	jr      z, +_
-	ld      l, $00
-_:  	ld      a, l
-	cp      $4f
-	jr      c, +_
-	ld      a, $4f
-_:  	and     $f8
-	rrca    
-	rrca    
+	ld	l, (ix+$11)
+	ld	h, (ix+$12)
+	set	7, h
+	ld	($D3c9), hl
+	ld	de, $0028
+	add	hl, de
+	ld	de, ($D511)
+	xor	a
+	sbc	hl, de
+	ld	a, h
+	or	a
+	jr	z, +_
+	ld	l, $00
+_:  	ld	a, l
+	cp	$4f
+	jr	c, +_
+	ld	a, $4f
+_:  	and	$f8
+	rrca	
+	rrca	
 	rrca
-	ld      e, a
-	ld      d, $00
-	ld      hl, DATA_B28_8CAB
-	add     hl, de
-	ld      a, (hl)
-	ld      ($D3c6), a
-	ret     
+	ld	e, a
+	ld	d, $00
+	ld	hl, DATA_B28_8CAB
+	add	hl, de
+	ld	a, (hl)
+	ld	($D3c6), a
+	ret	
 
 DATA_B28_8CA1:
 .db $38, $30, $20, $10, $00, $00, $F0, $E0, $D0, $C8
@@ -1118,116 +1118,116 @@ LABEL_B28_8CBF:
 
 
 LABEL_B28_8CC9:
-	ld      (ix+$02), $01
+	ld	(ix+$02), $01
 	ld	hl, $8000
-	ld      (ix+$0A), h
-	ld      (ix+$3F), l
-	ld      (ix+$1F), $00
-	ret     
+	ld	(ix+$0A), h
+	ld	(ix+$3F), l
+	ld	(ix+$1F), $00
+	ret	
 
 LABEL_B28_8CDB:
-	bit     0, (ix+$1f)
-	jr      nz, LABEL_B28_8D1C
-	ld      a, $00
-	call    LABEL_B28_8D95
-	ld      h, (ix+$0a)
-	ld      l, (ix+$3f)
-	ld      d, $00
-	ld      e, (ix+$1e)
-	xor     a
-	add     hl, de
-	ld      (ix+$0a), h
-	ld      (ix+$3f), l
-	jr      c, +_
-	xor     a
-	add     hl, de
-	ld      (ix+$0a), h
-	ld      (ix+$3f), l
-	jr      c, +_
-	xor     a
-	add     hl, de
-	ld      (ix+$0a), h
-	ld      (ix+$3f), l
-	jr      nc, LABEL_B28_8D78
-_:  	inc     (ix+$1f)
-	ld      (ix+$0a), $80
-	ld      (ix+$3f), $00
-	jr      LABEL_B28_8D78
+	bit	0, (ix+$1f)
+	jr	nz, LABEL_B28_8D1C
+	ld	a, $00
+	call	LABEL_B28_8D95
+	ld	h, (ix+$0a)
+	ld	l, (ix+$3f)
+	ld	d, $00
+	ld	e, (ix+$1e)
+	xor	a
+	add	hl, de
+	ld	(ix+$0a), h
+	ld	(ix+$3f), l
+	jr	c, +_
+	xor	a
+	add	hl, de
+	ld	(ix+$0a), h
+	ld	(ix+$3f), l
+	jr	c, +_
+	xor	a
+	add	hl, de
+	ld	(ix+$0a), h
+	ld	(ix+$3f), l
+	jr	nc, LABEL_B28_8D78
+_:  	inc	(ix+$1f)
+	ld	(ix+$0a), $80
+	ld	(ix+$3f), $00
+	jr	LABEL_B28_8D78
 
 LABEL_B28_8D1C:
-	ld      a, $01
-	call    LABEL_B28_8D95
-	ld      h, (ix+$0a)
-	ld      l, (ix+$3f)
-	ld      d, $00
-	ld      e, (ix+$1e)
-	xor     a
-	sbc     hl, de
-	ld      (ix+$0a), h
-	ld      (ix+$3f), l
-	jr      c, +_
-	xor     a
-	sbc     hl, de
-	ld      (ix+$0a), h
-	ld      (ix+$3f), l
-	jr      c, +_
-	xor     a
-	sbc     hl, de
-	ld      (ix+$0a), h
-	ld      (ix+$3f), l
-	jr      nc, LABEL_B28_8D78
-_:	inc     (ix+$1f)
-	ld      (ix+$0a), $80
-	ld      (ix+$3f), $00
-	ld      a, (ix+$3b)
-	ld      (ix+$12), a
-	ld      a, (ix+$3a)
-	ld      (ix+$11), a
-	ld      (ix+$10), $00
-	ld      a, (ix+$3d)
-	ld      (ix+$15), a
-	ld      a, (ix+$3c)
-	ld      (ix+$14), a
-	ld      (ix+$13), $00
+	ld	a, $01
+	call	LABEL_B28_8D95
+	ld	h, (ix+$0a)
+	ld	l, (ix+$3f)
+	ld	d, $00
+	ld	e, (ix+$1e)
+	xor	a
+	sbc	hl, de
+	ld	(ix+$0a), h
+	ld	(ix+$3f), l
+	jr	c, +_
+	xor	a
+	sbc	hl, de
+	ld	(ix+$0a), h
+	ld	(ix+$3f), l
+	jr	c, +_
+	xor	a
+	sbc	hl, de
+	ld	(ix+$0a), h
+	ld	(ix+$3f), l
+	jr	nc, LABEL_B28_8D78
+_:	inc	(ix+$1f)
+	ld	(ix+$0a), $80
+	ld	(ix+$3f), $00
+	ld	a, (ix+$3b)
+	ld	(ix+$12), a
+	ld	a, (ix+$3a)
+	ld	(ix+$11), a
+	ld	(ix+$10), $00
+	ld	a, (ix+$3d)
+	ld	(ix+$15), a
+	ld	a, (ix+$3c)
+	ld	(ix+$14), a
+	ld	(ix+$13), $00
 LABEL_B28_8D78:
-	ld      a, (ix+$1e)
-	sra     a
-	ld      (ix+$0b), a
-	call    LABEL_200 + $36
-	call    VF_Engine_CheckCollision
-	call    VF_Engine_UpdateObjectPosition
-	ld      a, (ix+$21)
-	and     $0f
-	ret     z
-	ld      a, $ff
-	ld      (Player_HurtTrigger), a
-	ret     
+	ld	a, (ix+$1e)
+	sra	a
+	ld	(ix+$0b), a
+	call	LABEL_200 + $36
+	call	VF_Engine_CheckCollision
+	call	VF_Engine_UpdateObjectPosition
+	ld	a, (ix+$21)
+	and	$0f
+	ret	z
+	ld	a, $ff
+	ld	(Player_HurtTrigger), a
+	ret	
 
 LABEL_B28_8D95:
-	bit     0, a
-	jr      nz, LABEL_B28_8DAC
-	ld      a, (ix+$0a)
-	cp      $c0
-	jr      nc, LABEL_B28_8DA4
-	sub     $80
-	jr      LABEL_B28_8DA6
+	bit	0, a
+	jr	nz, LABEL_B28_8DAC
+	ld	a, (ix+$0a)
+	cp	$c0
+	jr	nc, LABEL_B28_8DA4
+	sub	$80
+	jr	LABEL_B28_8DA6
 
 LABEL_B28_8DA4:
 	neg  
 LABEL_B28_8DA6:	
-	add     a, $40
-	ld      (ix+$1e), a
-	ret     
+	add	a, $40
+	ld	(ix+$1e), a
+	ret	
 
 LABEL_B28_8DAC:
-	ld      a, (ix+$0a)
-	cp      $40
-	jr      c, +_
-	neg     
-	sub     $80
-_:	add     a, $40
-	ld      (ix+$1e), a
-	ret     
+	ld	a, (ix+$0a)
+	cp	$40
+	jr	c, +_
+	neg	
+	sub	$80
+_:	add	a, $40
+	ld	(ix+$1e), a
+	ret	
 
 DATA_B28_8DBD:
 .dw DATA_B28_8DC7
@@ -1271,103 +1271,103 @@ DATA_B28_8DF2:
 .db $FF, $00
 
 LABEL_B28_8DF8:
-	bit     6, (ix+$04)
-	ret     nz
-	ld      hl, ($D514)
-	ld      e, (ix+$14)
-	ld      d, (ix+$15)
-	xor     a
-	sbc     hl, de
-	ret     c
-	ld      a, h
-	or      a
-	ret     nz
-	ld      b, l
-	srl     b
-	ld      de, ($D516)
-	bit     7, d
-	jr      z, +_
-	dec     de
-	ld      a, d
-	cpl     
-	ld      d, a
-	ld      a, e
-	cpl     
-	ld      e, a
-_:  	ld      hl, $0180
-	xor     a
-	sbc     hl, de
-	jr      nc, +_
-	ld      a, b
-	add     a, a
-	ld      b, a
-	ld      hl, $0380
-	xor     a
-	sbc     hl, de
-	jr      nc, +_
-	ld      a, b
-	add     a, b
-	ld      b, a
-	jr      nc, +_
-	ld      b, $ff
-_:  	ld      hl, ($D511)
-	ld      e, (ix+$11)
-	ld      d, (ix+$12)
-	xor     a
-	sbc     hl, de
-	jr      nc, +_
-	ex      de, hl
-	ld      hl, $0000
-	xor     a
-	sbc     hl, de
-_:  	ld      a, h
-	or      a
-	ret     nz
-	ld      a, l
-	cp      b
-	ret     nc
-	ld      (ix+$02), $02
-	ld      (ix+$1f), $10
-	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	ld	hl, ($D514)
+	ld	e, (ix+$14)
+	ld	d, (ix+$15)
+	xor	a
+	sbc	hl, de
+	ret	c
+	ld	a, h
+	or	a
+	ret	nz
+	ld	b, l
+	srl	b
+	ld	de, ($D516)
+	bit	7, d
+	jr	z, +_
+	dec	de
+	ld	a, d
+	cpl	
+	ld	d, a
+	ld	a, e
+	cpl	
+	ld	e, a
+_:  	ld	hl, $0180
+	xor	a
+	sbc	hl, de
+	jr	nc, +_
+	ld	a, b
+	add	a, a
+	ld	b, a
+	ld	hl, $0380
+	xor	a
+	sbc	hl, de
+	jr	nc, +_
+	ld	a, b
+	add	a, b
+	ld	b, a
+	jr	nc, +_
+	ld	b, $ff
+_:  	ld	hl, ($D511)
+	ld	e, (ix+$11)
+	ld	d, (ix+$12)
+	xor	a
+	sbc	hl, de
+	jr	nc, +_
+	ex	de, hl
+	ld	hl, $0000
+	xor	a
+	sbc	hl, de
+_:  	ld	a, h
+	or	a
+	ret	nz
+	ld	a, l
+	cp	b
+	ret	nc
+	ld	(ix+$02), $02
+	ld	(ix+$1f), $10
+	ret	
 
 LABEL_B28_8E5D:
-	dec     (ix+$1f)
-	ret     nz
-	ld      (ix+$02), $03
-	ret     
+	dec	(ix+$1f)
+	ret	nz
+	ld	(ix+$02), $03
+	ret	
 
 LABEL_B28_8E66:
-	call    VF_Engine_CheckCollision
-	ld      a, (ix+$21)
-	and     $0f
-	jr      nz, +_
-	ld      de, $0050
-	ld      bc, $0600
-	call    VF_Engine_SetObjectVerticalSpeed
-	call    VF_Engine_UpdateObjectPosition
-	call    LABEL_200 + $60
-	bit     1, (ix+$22)
-	ret     z
-_:  	ld      (ix+$02), $04
-	ret     
+	call	VF_Engine_CheckCollision
+	ld	a, (ix+$21)
+	and	$0f
+	jr	nz, +_
+	ld	de, $0050
+	ld	bc, $0600
+	call	VF_Engine_SetObjectVerticalSpeed
+	call	VF_Engine_UpdateObjectPosition
+	call	LABEL_200 + $60
+	bit	1, (ix+$22)
+	ret	z
+_:  	ld	(ix+$02), $04
+	ret	
 
 LABEL_B28_8E89:
-	ld      l, (ix+$11)
-	ld      h, (ix+$12)
-	ld      a, l
-	and     $e0
-	ld      l, a
-	ld      ($D35a), hl
-	ld      l, (ix+$14)
-	ld      h, (ix+$15)
-	ld      a, l
-	and     $e0
-	ld      l, a
-	ld      ($D35c), hl
-	call    VF_Engine_CreateBlockFragmentObjects
-	ld      (ix+$3f), $82
-	ld      (ix+$3e), $00
-	jp      VF_Engine_DisplayExplosionObject
+	ld	l, (ix+$11)
+	ld	h, (ix+$12)
+	ld	a, l
+	and	$e0
+	ld	l, a
+	ld	($D35a), hl
+	ld	l, (ix+$14)
+	ld	h, (ix+$15)
+	ld	a, l
+	and	$e0
+	ld	l, a
+	ld	($D35c), hl
+	call	VF_Engine_CreateBlockFragmentObjects
+	ld	(ix+$3f), $82
+	ld	(ix+$3e), $00
+	jp	VF_Engine_DisplayExplosionObject
 
 DATA_B28_8EB1:
 .dw DATA_B28_8EB5
@@ -1386,26 +1386,26 @@ DATA_B28_8EBE:
 
 
 LABEL_B28_8EC4:
-	set     7, (ix+$03)
-	ld      (ix+$08), $62
-	ld      hl, ($D511)
-	ld      a, l
-	and     $f0
-	or      $08
-	ld      l, a
-	ld      (ix+$11), l
-	ld      (ix+$12), h
-	ld      hl, ($D514)
-	ld      bc, $0020
-	add     hl, bc
-	ld      a, l
-	and     $e0
-	ld      l, a
-	ld      de, -12
-	add     hl, de
-	ld      (ix+$14), l
-	ld      (ix+$15), h
-	ret     
+	set	7, (ix+$03)
+	ld	(ix+$08), $62
+	ld	hl, ($D511)
+	ld	a, l
+	and	$f0
+	or	$08
+	ld	l, a
+	ld	(ix+$11), l
+	ld	(ix+$12), h
+	ld	hl, ($D514)
+	ld	bc, $0020
+	add	hl, bc
+	ld	a, l
+	and	$e0
+	ld	l, a
+	ld	de, -12
+	add	hl, de
+	ld	(ix+$14), l
+	ld	(ix+$15), h
+	ret	
 
 DATA_B28_8EF1:
 .dw DATA_B28_8EF7
@@ -1430,119 +1430,119 @@ DATA_B28_8F03:
 .db $FF, $00
 
 LABEL_B28_8F0D:
-	ld      (ix+$02), $01
-	ret     
+	ld	(ix+$02), $01
+	ret	
 
 LABEL_B28_8F12:
-	set     7, (ix+$04)
-	ld      a, (ix+$3b)
-	ld      (ix+$12), a
-	ld      a, (ix+$3a)
-	ld      (ix+$11), a
-	ld      a, (ix+$3d)
-	ld      (ix+$15), a
-	ld      a, (ix+$3c)
-	ld      (ix+$14), a
-	ld      a, (DATA_B28_901A+1)
-	ld      h, a
-	ld      a, (DATA_B28_901A)
-	ld      l, a
-	ld      (ix+$19), h
-	ld      (ix+$18), l
-	ld      (ix+$1e), $00
-	res     0, (ix+$1f)
-	bit     0, (ix+$3f)
-	jp      nz, LABEL_B28_8F76
-	ld      hl, ($D511)
-	ld      e, (ix+$11)
-	ld      d, (ix+$12)
-	xor     a
-	sbc     hl, de
-	jp      c, LABEL_B28_9017
-	ld      de, $00a0
-	xor     a
-	sbc     hl, de
-	jp      c, LABEL_B28_9017
-	ld      (ix+$02), $02
-	res     7, (ix+$04)
-	ld      hl, $0180
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	jp      LABEL_B28_9017
+	set	7, (ix+$04)
+	ld	a, (ix+$3b)
+	ld	(ix+$12), a
+	ld	a, (ix+$3a)
+	ld	(ix+$11), a
+	ld	a, (ix+$3d)
+	ld	(ix+$15), a
+	ld	a, (ix+$3c)
+	ld	(ix+$14), a
+	ld	a, (DATA_B28_901A+1)
+	ld	h, a
+	ld	a, (DATA_B28_901A)
+	ld	l, a
+	ld	(ix+$19), h
+	ld	(ix+$18), l
+	ld	(ix+$1e), $00
+	res	0, (ix+$1f)
+	bit	0, (ix+$3f)
+	jp	nz, LABEL_B28_8F76
+	ld	hl, ($D511)
+	ld	e, (ix+$11)
+	ld	d, (ix+$12)
+	xor	a
+	sbc	hl, de
+	jp	c, LABEL_B28_9017
+	ld	de, $00a0
+	xor	a
+	sbc	hl, de
+	jp	c, LABEL_B28_9017
+	ld	(ix+$02), $02
+	res	7, (ix+$04)
+	ld	hl, $0180
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	jp	LABEL_B28_9017
 
 LABEL_B28_8F76:
-	ld      de, ($D511)
-	ld      l, (ix+$11)
-	ld      h, (ix+$12)
-	xor     a
-	sbc     hl, de
-	jp      c, LABEL_B28_9017
-	ld      de, $00a0
-	xor     a
-	sbc     hl, de
-	jp      c, LABEL_B28_9017
-	ld      (ix+$02), $02
-	res     7, (ix+$04)
-	ld      hl, $fe80
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	jr      LABEL_B28_9017
+	ld	de, ($D511)
+	ld	l, (ix+$11)
+	ld	h, (ix+$12)
+	xor	a
+	sbc	hl, de
+	jp	c, LABEL_B28_9017
+	ld	de, $00a0
+	xor	a
+	sbc	hl, de
+	jp	c, LABEL_B28_9017
+	ld	(ix+$02), $02
+	res	7, (ix+$04)
+	ld	hl, $fe80
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	jr	LABEL_B28_9017
 
 LABEL_B28_8FA3:
-	bit     6, (ix+$04)
-	jr      z, LABEL_B28_8FB4
-	bit     0, (ix+$1f)
-	jr      z, LABEL_B28_8FB8
-	ld      (ix+$02), $00
-	ret     
+	bit	6, (ix+$04)
+	jr	z, LABEL_B28_8FB4
+	bit	0, (ix+$1f)
+	jr	z, LABEL_B28_8FB8
+	ld	(ix+$02), $00
+	ret	
 
 LABEL_B28_8FB4:
-	set     0, (ix+$1f)
+	set	0, (ix+$1f)
 LABEL_B28_8FB8:
-	call    LABEL_200 + $39
-	ld      a, (ix+$22)
-	and     $0c
-	jr      z, LABEL_B28_8FC9
-	ld      (ix+$3f), $80
-	jp      LABEL_200 + $5D
+	call	LABEL_200 + $39
+	ld	a, (ix+$22)
+	and	$0c
+	jr	z, LABEL_B28_8FC9
+	ld	(ix+$3f), $80
+	jp	LABEL_200 + $5D
 
 LABEL_B28_8FC9:
-	call    VF_Engine_CheckCollision
-	call    VF_Engine_UpdateObjectPosition
-	ld      a, (ix+$21)
-	and     $0f
-	jr      nz, LABEL_B28_9017
-	ld      h, (ix+$19)
-	ld      l, (ix+$18)
-	ld      de, $0020
-	xor     a
-	add     hl, de
-	ld      (ix+$19), h
-	ld      (ix+$18), l
-	call    LABEL_200 + $60
-	ld      a, (ix+$22)
-	and     $02
-	jr      z, LABEL_B28_9014
-	ld      a, (ix+$1e)
-	add     a, $01
-	ld      b, a
-	ld      (ix+$1e), a
-	and     $08
-	jr      nz, LABEL_B28_9017
-	ld      a, (DATA_B28_901A + 1)
-	ld      h, a
-	ld      a, (DATA_B28_901A)
-	ld      l, a
-	ld      de, $0040
-_:  	add     hl, de
-	djnz    -_
-	ld      (ix+$19), h
-	ld      (ix+$18), l
+	call	VF_Engine_CheckCollision
+	call	VF_Engine_UpdateObjectPosition
+	ld	a, (ix+$21)
+	and	$0f
+	jr	nz, LABEL_B28_9017
+	ld	h, (ix+$19)
+	ld	l, (ix+$18)
+	ld	de, $0020
+	xor	a
+	add	hl, de
+	ld	(ix+$19), h
+	ld	(ix+$18), l
+	call	LABEL_200 + $60
+	ld	a, (ix+$22)
+	and	$02
+	jr	z, LABEL_B28_9014
+	ld	a, (ix+$1e)
+	add	a, $01
+	ld	b, a
+	ld	(ix+$1e), a
+	and	$08
+	jr	nz, LABEL_B28_9017
+	ld	a, (DATA_B28_901A + 1)
+	ld	h, a
+	ld	a, (DATA_B28_901A)
+	ld	l, a
+	ld	de, $0040
+_:  	add	hl, de
+	djnz	-_
+	ld	(ix+$19), h
+	ld	(ix+$18), l
 LABEL_B28_9014:
-	jr      LABEL_B28_9017
+	jr	LABEL_B28_9017
 
 LABEL_B28_9017:
-	jp      VF_Logic_CheckDestroyObject
+	jp	VF_Logic_CheckDestroyObject
 	
 
 DATA_B28_901A:
@@ -1698,8 +1698,8 @@ DATA_B28_94A7:
 
 
 LABEL_B28_9518:  
-	res     4, (ix+$04)
-	ret     
+	res	4, (ix+$04)
+	ret	
 
 DATA_B28_951D:
 .db $06, $01
@@ -1859,46 +1859,46 @@ DATA_B28_95E8:
 
  
 LABEL_B28_9632:
-	ld      a, $ff
-	ld      ($D4a2), a
-	ld      (ix+$24), $08
-	ret     
+	ld	a, $ff
+	ld	($D4a2), a
+	ld	(ix+$24), $08
+	ret	
 
 LABEL_B28_963C:
-	call    VF_Engine_SetMinimumCameraX
-	ld      de, ($D174)
-	ld      l, (ix+$11)
-	ld      h, (ix+$12)
-	xor     a
-	sbc     hl, de
-	jr      c, +_
-	ld      a, h
-	or      a
-	ret     nz
-	ld      a, l
-	cp      $e0
-	ret     nc
-_:  	ld      (ix+$02), $01
-	ld      bc, $11f8
-	ld      de, $0090
-	call    VF_Engine_SetCameraAndLock
+	call	VF_Engine_SetMinimumCameraX
+	ld	de, ($D174)
+	ld	l, (ix+$11)
+	ld	h, (ix+$12)
+	xor	a
+	sbc	hl, de
+	jr	c, +_
+	ld	a, h
+	or	a
+	ret	nz
+	ld	a, l
+	cp	$e0
+	ret	nc
+_:  	ld	(ix+$02), $01
+	ld	bc, $11f8
+	ld	de, $0090
+	call	VF_Engine_SetCameraAndLock
 	ret
 
 LABEL_B28_9663:
-	ld      a, ($D2b9)
-	and     $03
-	add     a, a
-	add     a, a
-	ld      b, a
-	ld      a, ($D511)
-	and     $03
-	add     a, b
-	ld      e, a
-	ld      d, $00
-	ld      hl, DATA_B28_967D
-	add     hl, de
-	ld      a, (hl)
-	ld      (ix+$02), a
+	ld	a, ($D2b9)
+	and	$03
+	add	a, a
+	add	a, a
+	ld	b, a
+	ld	a, ($D511)
+	and	$03
+	add	a, b
+	ld	e, a
+	ld	d, $00
+	ld	hl, DATA_B28_967D
+	add	hl, de
+	ld	a, (hl)
+	ld	(ix+$02), a
 	ret
 
 
@@ -1907,162 +1907,162 @@ DATA_B28_967D:
 .db $04, $02, $04, $03, $02, $04, $03, $02
 
 LABEL_B28_968D:
-	ld      de, $0018
-	ld      bc, $0400
-	call    VF_Engine_SetObjectVerticalSpeed
-	call    LABEL_200 + $60
-	bit     7, (ix+$19)
-	jr      nz, LABEL_B28_96B1
-	bit     1, (ix+$22)
-	jr      z, LABEL_B28_96B1
-	ld      hl, $0100
-	ld      (ix+$18), l
-	ld      (ix+$19), h
-	jr      LABEL_B28_96D2
+	ld	de, $0018
+	ld	bc, $0400
+	call	VF_Engine_SetObjectVerticalSpeed
+	call	LABEL_200 + $60
+	bit	7, (ix+$19)
+	jr	nz, LABEL_B28_96B1
+	bit	1, (ix+$22)
+	jr	z, LABEL_B28_96B1
+	ld	hl, $0100
+	ld	(ix+$18), l
+	ld	(ix+$19), h
+	jr	LABEL_B28_96D2
 
 LABEL_B28_96B1:
-	call    LABEL_B28_AC2B
-	call    VF_Engine_UpdateObjectPosition
-	call    LABEL_B28_974D
-	ret     nc
-	ld      hl, $0000
-	ld      (ix+$16), l
-	ld      (ix+$17), h
-	bit     1, (ix+$22)
-	ret     z
-	jr      LABEL_B28_9706
+	call	LABEL_B28_AC2B
+	call	VF_Engine_UpdateObjectPosition
+	call	LABEL_B28_974D
+	ret	nc
+	ld	hl, $0000
+	ld	(ix+$16), l
+	ld	(ix+$17), h
+	bit	1, (ix+$22)
+	ret	z
+	jr	LABEL_B28_9706
 
 LABEL_B28_96CC:
-	call    LABEL_200 + $60
-	call    LABEL_B28_AC2B
+	call	LABEL_200 + $60
+	call	LABEL_B28_AC2B
 LABEL_B28_96D2:
-	ld      a, (ix+$17)
-	bit     7, a
-	jr      z, +_
-	neg     
-_:  	cp      $04
-	jr      nc, +_
-	ld      l, (ix+$16)
-	ld      h, (ix+$17)
-	ld      e, l
-	ld      d, h
-	ld      l, h
-	ld      a, h
-	and     $80
-	rlca    
-	neg     
-	ld      h, a
-	inc     a
-	add     a, l
-	ld      l, a
-	add     hl, hl
-	add     hl, hl
-	add     hl, hl
-	add     hl, de
-	ld      (ix+$16), l
-	ld      (ix+$17), h
-_:  	call    VF_Engine_UpdateObjectPosition
-	call    LABEL_B28_974D
-	ret     nc
-	jr      LABEL_B28_9706
+	ld	a, (ix+$17)
+	bit	7, a
+	jr	z, +_
+	neg	
+_:  	cp	$04
+	jr	nc, +_
+	ld	l, (ix+$16)
+	ld	h, (ix+$17)
+	ld	e, l
+	ld	d, h
+	ld	l, h
+	ld	a, h
+	and	$80
+	rlca	
+	neg	
+	ld	h, a
+	inc	a
+	add	a, l
+	ld	l, a
+	add	hl, hl
+	add	hl, hl
+	add	hl, hl
+	add	hl, de
+	ld	(ix+$16), l
+	ld	(ix+$17), h
+_:  	call	VF_Engine_UpdateObjectPosition
+	call	LABEL_B28_974D
+	ret	nc
+	jr	LABEL_B28_9706
 
 LABEL_B28_9706:
-	ld      hl, $fc00
-	ld      (ix+$18), l
-	ld      (ix+$19), h
-	ld      hl, ($D174)
-	ld      de, $0080
-	add     hl, de
-	ld      e, (ix+$11)
-	ld      d, (ix+$12)
-	xor     a
-	sbc     hl, de
-	ld      bc, -64
-	jr      c, +_
-_:	ld      bc, $0040
-  	ld      (ix+$16), c
-	ld      (ix+$17), b
-	ld      (ix+$02), $09
-	ret     
+	ld	hl, $fc00
+	ld	(ix+$18), l
+	ld	(ix+$19), h
+	ld	hl, ($D174)
+	ld	de, $0080
+	add	hl, de
+	ld	e, (ix+$11)
+	ld	d, (ix+$12)
+	xor	a
+	sbc	hl, de
+	ld	bc, -64
+	jr	c, +_
+_:	ld	bc, $0040
+  	ld	(ix+$16), c
+	ld	(ix+$17), b
+	ld	(ix+$02), $09
+	ret	
 
 LABEL_B28_9732:
-	call    LABEL_B28_AC2B
-	call    VF_Engine_UpdateObjectPosition
-	ld      de, $0040
-	ld      bc, $0600
-	call    VF_Engine_SetObjectVerticalSpeed
-	ld      hl, $02c0
-	call    LABEL_200 + $12
-	ret     nc
-	ld      (ix+$02), $01
-	ret     
+	call	LABEL_B28_AC2B
+	call	VF_Engine_UpdateObjectPosition
+	ld	de, $0040
+	ld	bc, $0600
+	call	VF_Engine_SetObjectVerticalSpeed
+	ld	hl, $02c0
+	call	LABEL_200 + $12
+	ret	nc
+	ld	(ix+$02), $01
+	ret	
 
 LABEL_B28_974D:
-	ld      de, ($D174)
-	ld      l, (ix+$11)
-	ld      h, (ix+$12)
-	xor     a
-	sbc     hl, de
-	jr      c, LABEL_B28_977F
-	ld      a, h
-	or      a
-	jr      nz, LABEL_B28_9790
-	ld      a, l
-	cp      $20
-	jr      c, LABEL_B28_977F
-	cp      $f0
-	jr      nc, LABEL_B28_9790
-	ld      e, (ix+$16)
-	ld      d, (ix+$17)
-	ld      l, (ix+$18)
-	ld      a, (ix+$19)
-	or      l
-	or      e
-	or      d
-	jr      z, LABEL_B28_977D
-	xor     a
-	ret     
+	ld	de, ($D174)
+	ld	l, (ix+$11)
+	ld	h, (ix+$12)
+	xor	a
+	sbc	hl, de
+	jr	c, LABEL_B28_977F
+	ld	a, h
+	or	a
+	jr	nz, LABEL_B28_9790
+	ld	a, l
+	cp	$20
+	jr	c, LABEL_B28_977F
+	cp	$f0
+	jr	nc, LABEL_B28_9790
+	ld	e, (ix+$16)
+	ld	d, (ix+$17)
+	ld	l, (ix+$18)
+	ld	a, (ix+$19)
+	or	l
+	or	e
+	or	d
+	jr	z, LABEL_B28_977D
+	xor	a
+	ret	
 
 LABEL_B28_977D:
-	scf     
-	ret     
+	scf	
+	ret	
 
 LABEL_B28_977F:
-	ld      e, (ix+$16)
-	ld      a, (ix+$17)
-	or      e
-	jr      z, +_
-	xor     a
-	bit     7, (ix+$17)
-	ret     z
-_:  	scf     
-	ret     
+	ld	e, (ix+$16)
+	ld	a, (ix+$17)
+	or	e
+	jr	z, +_
+	xor	a
+	bit	7, (ix+$17)
+	ret	z
+_:  	scf	
+	ret	
 
 LABEL_B28_9790:
-	xor     a
-	bit     7, (ix+$17)
-	ret     nz
-	scf     
-	ret     
+	xor	a
+	bit	7, (ix+$17)
+	ret	nz
+	scf	
+	ret	
 
 LABEL_B28_9798:
-	call    LABEL_B28_97B4
-	ld      hl, $0000
-	ld      (ix+$16), l
-	ld      (ix+$17), h
-	ld      hl, $0100
-	ld      (ix+$18), l
-	ld      (ix+$19), h
-	call    VF_Engine_UpdateObjectPosition
-	call    LABEL_200 + $60
-	ret     
+	call	LABEL_B28_97B4
+	ld	hl, $0000
+	ld	(ix+$16), l
+	ld	(ix+$17), h
+	ld	hl, $0100
+	ld	(ix+$18), l
+	ld	(ix+$19), h
+	call	VF_Engine_UpdateObjectPosition
+	call	LABEL_200 + $60
+	ret	
 
 LABEL_B28_97B4:
-	call    LABEL_200 + $24
-	ld      a, (ix+$24)
-	or      a
-	ret     nz
-	ld      (ix+$02), $0b
+	call	LABEL_200 + $24
+	ld	a, (ix+$24)
+	or	a
+	ret	nz
+	ld	(ix+$02), $0b
 	ret
 
 DATA_B28_97C1:
@@ -2241,224 +2241,224 @@ DATA_B28_98D0:
 .db $FF, $00
 
 LABEL_B28_98DF:
-	ld      a, $ff
-	ld      ($D4a2), a
-	ld      (ix+$24), $08
-	ret     
+	ld	a, $ff
+	ld	($D4a2), a
+	ld	(ix+$24), $08
+	ret	
 
 LABEL_B28_98E9:
-	ld      l, (ix+$14)
-	ld      h, (ix+$15)
-	ld      de, $0010
-	add     hl, de
-	ld      de, ($D514)
-	xor     a
-	sbc     hl, de
-	ret     c
-	ld      (ix+$02), $09
-	ret     
+	ld	l, (ix+$14)
+	ld	h, (ix+$15)
+	ld	de, $0010
+	add	hl, de
+	ld	de, ($D514)
+	xor	a
+	sbc	hl, de
+	ret	c
+	ld	(ix+$02), $09
+	ret	
 
 LABEL_B28_9900:
-	call    VF_Engine_SetMinimumCameraX
-	ld      l, (ix+$14)
-	ld      h, (ix+$15)
-	ld      de, $0010
-	add     hl, de
-	ld      de, ($D514)
-	xor     a
-	sbc     hl, de
-	ret     c
-	ld      de, ($D174)
-	ld      l, (ix+$11)
-	ld      h, (ix+$12)
-	xor     a
-	sbc     hl, de
-	jr      c, +_
-	ld      a, h
-	or      a
-	ret     nz
-	ld      a, l
-	cp      $e0
-	ret     nc
-_:  	call    LABEL_B28_9A01
-	ld      bc, $0221
-	ld      de, $0048
-	call    VF_Engine_SetCameraAndLock
-	ret     
+	call	VF_Engine_SetMinimumCameraX
+	ld	l, (ix+$14)
+	ld	h, (ix+$15)
+	ld	de, $0010
+	add	hl, de
+	ld	de, ($D514)
+	xor	a
+	sbc	hl, de
+	ret	c
+	ld	de, ($D174)
+	ld	l, (ix+$11)
+	ld	h, (ix+$12)
+	xor	a
+	sbc	hl, de
+	jr	c, +_
+	ld	a, h
+	or	a
+	ret	nz
+	ld	a, l
+	cp	$e0
+	ret	nc
+_:  	call	LABEL_B28_9A01
+	ld	bc, $0221
+	ld	de, $0048
+	call	VF_Engine_SetCameraAndLock
+	ret	
 
 LABEL_B28_9938:
-	xor     a
-	ld      (ix+$18), a
-	ld      (ix+$19), a
-	call    LABEL_200 + $1B
-	call    LABEL_B28_9A7E
-	bit     7, (ix+$17)
-	jr      nz, LABEL_B28_9954
-	bit     2, (ix+$21)
-	jr      nz, LABEL_B28_99AD
-	jr      LABEL_B28_9954
+	xor	a
+	ld	(ix+$18), a
+	ld	(ix+$19), a
+	call	LABEL_200 + $1B
+	call	LABEL_B28_9A7E
+	bit	7, (ix+$17)
+	jr	nz, LABEL_B28_9954
+	bit	2, (ix+$21)
+	jr	nz, LABEL_B28_99AD
+	jr	LABEL_B28_9954
 
 LABEL_B28_9954:
-	bit     3, (ix+$21)
-	jr      nz, LABEL_B28_99AD
-	ld      (ix+$21), $00
-	call    VF_Logic_UpdateObjectDirectionFlag
-	call    VF_Engine_UpdateObjectPosition
-	ld      l, (ix+$16)
-	ld      h, (ix+$17)
-	ld      e, l
-	ld      d, h
-	ld      l, h
-	ld      a, h
-	and     $80
-	rlca    
-	neg     
-	ld      h, a
-	inc     a
-	add     a, l
-	ld      l, a
-	add     hl, hl
-	add     hl, hl
-	add     hl, hl
-	add     hl, de
-	ld      (ix+$16), l
-	ld      (ix+$17), h
-	ld      de, ($D174)
-	ld      l, (ix+$11)
-	ld      h, (ix+$12)
-	xor     a
-	sbc     hl, de
-	jr      c, LABEL_B28_99A6
-	ld      a, h
-	or      a
-	jr      nz, LABEL_B28_999F
-	ld      a, l
-	cp      $20
-	jr      c, LABEL_B28_99A6
-	cp      $e8
-	jr      nc, LABEL_B28_999F
-	ret     
+	bit	3, (ix+$21)
+	jr	nz, LABEL_B28_99AD
+	ld	(ix+$21), $00
+	call	VF_Logic_UpdateObjectDirectionFlag
+	call	VF_Engine_UpdateObjectPosition
+	ld	l, (ix+$16)
+	ld	h, (ix+$17)
+	ld	e, l
+	ld	d, h
+	ld	l, h
+	ld	a, h
+	and	$80
+	rlca	
+	neg	
+	ld	h, a
+	inc	a
+	add	a, l
+	ld	l, a
+	add	hl, hl
+	add	hl, hl
+	add	hl, hl
+	add	hl, de
+	ld	(ix+$16), l
+	ld	(ix+$17), h
+	ld	de, ($D174)
+	ld	l, (ix+$11)
+	ld	h, (ix+$12)
+	xor	a
+	sbc	hl, de
+	jr	c, LABEL_B28_99A6
+	ld	a, h
+	or	a
+	jr	nz, LABEL_B28_999F
+	ld	a, l
+	cp	$20
+	jr	c, LABEL_B28_99A6
+	cp	$e8
+	jr	nc, LABEL_B28_999F
+	ret	
 
 LABEL_B28_999F:
-	bit     7, (ix+$17)
-	ret     nz
-	jr      LABEL_B28_99AD
+	bit	7, (ix+$17)
+	ret	nz
+	jr	LABEL_B28_99AD
 
 LABEL_B28_99A6:
-	bit     7, (ix+$17)
-	ret     z
-	jr      LABEL_B28_99AD
+	bit	7, (ix+$17)
+	ret	z
+	jr	LABEL_B28_99AD
 
 
 LABEL_B28_99AD:
-	ld      e, (ix+$16)
-	ld      d, (ix+$17)
-	ld      hl, $0000
-	xor     a
-	sbc     hl, de
-	ld      a, l
-	sra     h
-	rra     
-	sra     h
-	rra     
-	sra     h
-	rra     
-	sra     h
-	rra     
-	ld      (ix+$16), l
-	ld      (ix+$17), h
-	ld      hl, $fc00
-	ld      (ix+$18), l
-	ld      (ix+$19), h
-	call    LABEL_B28_9842
-	ld      a, $aa
-	ld      ($DD04), a
-	ld      (ix+$02), $04
-	ret     
+	ld	e, (ix+$16)
+	ld	d, (ix+$17)
+	ld	hl, $0000
+	xor	a
+	sbc	hl, de
+	ld	a, l
+	sra	h
+	rra	
+	sra	h
+	rra	
+	sra	h
+	rra	
+	sra	h
+	rra	
+	ld	(ix+$16), l
+	ld	(ix+$17), h
+	ld	hl, $fc00
+	ld	(ix+$18), l
+	ld	(ix+$19), h
+	call	LABEL_B28_9842
+	ld	a, $aa
+	ld	($DD04), a
+	ld	(ix+$02), $04
+	ret	
 
 LABEL_B28_99E2:
-	call    LABEL_200 + $24
-	call    VF_Engine_AdjustPlayerAfterCollision
-	ld      a, (ix+$24)
-	or      a
-	jr      z, LABEL_B28_99FC
-	ld      a, (ix+$1f)
-	or      a
-	ret     z
-	set     5, (ix+$04)
-	ld      (ix+$02), $07
-	ret     
+	call	LABEL_200 + $24
+	call	VF_Engine_AdjustPlayerAfterCollision
+	ld	a, (ix+$24)
+	or	a
+	jr	z, LABEL_B28_99FC
+	ld	a, (ix+$1f)
+	or	a
+	ret	z
+	set	5, (ix+$04)
+	ld	(ix+$02), $07
+	ret	
 
 LABEL_B28_99FC:
-	ld      (ix+$02), $05
-	ret     
+	ld	(ix+$02), $05
+	ret	
 
 LABEL_B28_9A01:
-	ld      hl, ($D174)
-	ld      de, $0080
-	add     hl, de
-	ld      e, (ix+$11)
-	ld      d, (ix+$12)
-	xor     a
-	sbc     hl, de
-	rla     
-	rlca    
-	dec     a
-	neg     
-	ld      (ix+$16), a
-	and     $80
-	rlca    
-	neg     
-	ld      (ix+$17), a
-	ld      (ix+$0a), $40
-	ld      (ix+$02), $06
+	ld	hl, ($D174)
+	ld	de, $0080
+	add	hl, de
+	ld	e, (ix+$11)
+	ld	d, (ix+$12)
+	xor	a
+	sbc	hl, de
+	rla	
+	rlca	
+	dec	a
+	neg	
+	ld	(ix+$16), a
+	and	$80
+	rlca	
+	neg	
+	ld	(ix+$17), a
+	ld	(ix+$0a), $40
+	ld	(ix+$02), $06
 	ret
 
 LABEL_B28_9A2A:
-	call    VF_Engine_CheckCollisionAndAdjustPlayer
-	ld      (ix+$21), $00
-	call    VF_Engine_UpdateObjectPosition
-	ld      de, $0040
-	ld      bc, $0600
-	call    VF_Engine_SetObjectVerticalSpeed
-	ld      hl, $0300
-	call    LABEL_200 + $12
-	ret     nc
-	ld      (ix+$02), $03
+	call	VF_Engine_CheckCollisionAndAdjustPlayer
+	ld	(ix+$21), $00
+	call	VF_Engine_UpdateObjectPosition
+	ld	de, $0040
+	ld	bc, $0600
+	call	VF_Engine_SetObjectVerticalSpeed
+	ld	hl, $0300
+	call	LABEL_200 + $12
+	ret	nc
+	ld	(ix+$02), $03
 	ret
 
 LABEL_B28_9A49:
-	call    LABEL_200 + $F3
-	ld      (ix+$00), $fe
+	call	LABEL_200 + $F3
+	ld	(ix+$00), $fe
 	ret
 
 LABEL_B28_9A51:
-	call    VF_Logic_UpdateObjectDirectionFlag
-	call    LABEL_200 + $1B
-	call    LABEL_B28_9A7E
-	ld      (ix+$21), $00
-	dec     (ix+$0a)
-	ret     nz
-	ld      (ix+$02), $02
-	ret     
+	call	VF_Logic_UpdateObjectDirectionFlag
+	call	LABEL_200 + $1B
+	call	LABEL_B28_9A7E
+	ld	(ix+$21), $00
+	dec	(ix+$0a)
+	ret	nz
+	ld	(ix+$02), $02
+	ret	
 
 LABEL_B28_9A67:
-	call    VF_Engine_CheckCollisionAndAdjustPlayer
-	ld      (ix+$21), $00
-	dec     (ix+$1f)
-	ret     nz
-	res     5, (ix+$04)
-	res     7, (ix+$04)
-	call    LABEL_B28_9A01
-	ret     
+	call	VF_Engine_CheckCollisionAndAdjustPlayer
+	ld	(ix+$21), $00
+	dec	(ix+$1f)
+	ret	nz
+	res	5, (ix+$04)
+	res	7, (ix+$04)
+	call	LABEL_B28_9A01
+	ret	
 
 LABEL_B28_9A7E:
-	ld      a, (ix+$21)
-	and     $03
-	ret     z
-	ld      a, $FF
-	ld      ($D3a8), a
-	ret     
+	ld	a, (ix+$21)
+	and	$03
+	ret	z
+	ld	a, $FF
+	ld	($D3a8), a
+	ret	
 
 DATA_B28_9A8A:
 .dw DATA_B28_9A8E
@@ -2480,62 +2480,62 @@ DATA_B28_9A97:
 
 
 LABEL_B28_9AA1:
-	ld      hl, ($D176)
-	ld      (ix+$14), l
-	ld      (ix+$15), h
-	ld      a, (ix+$3f)
-	ld      e, a
-	ld      d, $04
+	ld	hl, ($D176)
+	ld	(ix+$14), l
+	ld	(ix+$15), h
+	ld	a, (ix+$3f)
+	ld	e, a
+	ld	d, $04
 	mlt	de
-	ld      hl, DATA_B28_9AD1
-	add     hl, de
-	ld      e, (hl)
-	inc     hl
-	ld      d, (hl)
-	ex      de, hl
-	ld      bc, ($D511)
-	add     hl, bc
-	ld      (ix+$11), l
-	ld      (ix+$12), h
-	ex      de, hl
-	inc     hl
-	ld      e, (hl)
-	inc     hl
-	ld      d, (hl)
-	ld      (ix+$18), e
-	ld      (ix+$19), d
-	ret     
+	ld	hl, DATA_B28_9AD1
+	add	hl, de
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ex	de, hl
+	ld	bc, ($D511)
+	add	hl, bc
+	ld	(ix+$11), l
+	ld	(ix+$12), h
+	ex	de, hl
+	inc	hl
+	ld	e, (hl)
+	inc	hl
+	ld	d, (hl)
+	ld	(ix+$18), e
+	ld	(ix+$19), d
+	ret	
 
 DATA_B28_9AD1:
 .db $30, $00, $40, $01, $D0, $FF, $40, $01, $00, $00, $C0, $00
 
 
 LABEL_B28_9ADD:
-	call    VF_Engine_CheckCollision
-	ld      a, (ix+$21)
-	and     $0f
-	jr      nz, LABEL_B28_9B0B
-	ld      de, $0004
-	ld      bc, $0600
-	call    VF_Engine_SetObjectVerticalSpeed
-	call    VF_Engine_UpdateObjectPosition
-	ld      hl, ($D176)
-	ld      de, $00c0
-	add     hl, de
-	ld      e, (ix+$14)
-	ld      d, (ix+$15)
-	xor     a
-	sbc     hl, de
-	ret     nc
-	ret     z
-	ld      (ix+$00), $ff
+	call	VF_Engine_CheckCollision
+	ld	a, (ix+$21)
+	and	$0f
+	jr	nz, LABEL_B28_9B0B
+	ld	de, $0004
+	ld	bc, $0600
+	call	VF_Engine_SetObjectVerticalSpeed
+	call	VF_Engine_UpdateObjectPosition
+	ld	hl, ($D176)
+	ld	de, $00c0
+	add	hl, de
+	ld	e, (ix+$14)
+	ld	d, (ix+$15)
+	xor	a
+	sbc	hl, de
+	ret	nc
+	ret	z
+	ld	(ix+$00), $ff
 	ret
 
 LABEL_B28_9B0B:
-	ld      a, $ff
-	ld      ($D3A8), a
-	ld      (ix+$00), $ff
-	ret     
+	ld	a, $ff
+	ld	($D3A8), a
+	ld	(ix+$00), $ff
+	ret	
 
 
 ; Logic for SHZ3 boss objects
@@ -2577,109 +2577,109 @@ DATA_B28_9FE1:
 .db $FF, $00
 
 LABEL_B28_9FE7:
-	push    ix
-	pop     hl
-	call    VF_Engine_GetObjectIndexFromPointer
-	ld      ($D46B), a
-	ld      hl, $0040
-	bit     4, (ix+$04)
-	jr      z, +_
-	ld      hl, -64
-_:  	ld      (ix+$16), l
-	ld      (ix+$17), h
-	ld      hl, -128
-	ld      (ix+$18), l
-	ld      (ix+$19), h
-	ret     
+	push	ix
+	pop	hl
+	call	VF_Engine_GetObjectIndexFromPointer
+	ld	($D46B), a
+	ld	hl, $0040
+	bit	4, (ix+$04)
+	jr	z, +_
+	ld	hl, -64
+_:  	ld	(ix+$16), l
+	ld	(ix+$17), h
+	ld	hl, -128
+	ld	(ix+$18), l
+	ld	(ix+$19), h
+	ret	
 
 LABEL_B28_A00C
-	call    VF_Engine_CheckCollision
-	ld      a, (ix+$21)
-	and     $0f
-	jp      nz, LABEL_200 + $5D
-	call    VF_Engine_UpdateObjectPosition
-	ld      de, $0020
-	ld      bc, $0600
-	call    VF_Engine_SetObjectVerticalSpeed
-	bit     7, (ix+$19)
-	ret     nz
-	ld      a, ($D46a)
-	call    VF_Engine_GetObjectDescriptorPointer
-	push    hl
-	pop     iy
-	ld      l, (iy+$14)
-	ld      h, (iy+$15)
-	ld      de, -32
-	add     hl, de
-	ld      e, (ix+$14)
-	ld      d, (ix+$15)
-	xor     a
-	sbc     hl, de
-	ret     nc
-	ld      a, (iy+$01)
-	cp      $03
-	jr      z, LABEL_B28_A055
-	ld      (iy+$02), $05
-	ld      (ix+$00), $ff
-	ret     
+	call	VF_Engine_CheckCollision
+	ld	a, (ix+$21)
+	and	$0f
+	jp	nz, LABEL_200 + $5D
+	call	VF_Engine_UpdateObjectPosition
+	ld	de, $0020
+	ld	bc, $0600
+	call	VF_Engine_SetObjectVerticalSpeed
+	bit	7, (ix+$19)
+	ret	nz
+	ld	a, ($D46a)
+	call	VF_Engine_GetObjectDescriptorPointer
+	push	hl
+	pop	iy
+	ld	l, (iy+$14)
+	ld	h, (iy+$15)
+	ld	de, -32
+	add	hl, de
+	ld	e, (ix+$14)
+	ld	d, (ix+$15)
+	xor	a
+	sbc	hl, de
+	ret	nc
+	ld	a, (iy+$01)
+	cp	$03
+	jr	z, LABEL_B28_A055
+	ld	(iy+$02), $05
+	ld	(ix+$00), $ff
+	ret	
 
 LABEL_B28_A055:
-	ld      a, (iy+$0a)
-	and     $01
-	jr      nz, LABEL_B28_A07C
-	ld      hl, -384
-	ld      (ix+$18), l
-	ld      (ix+$19), h
-	ld      hl, $0380
-	bit     4, (ix+$04)
-	jr      z, +_
-	ld      hl, -896
-_:  	ld      (ix+$16), l
-	ld      (ix+$17), h
-	ld      (ix+$02), $02
-	ret     
+	ld	a, (iy+$0a)
+	and	$01
+	jr	nz, LABEL_B28_A07C
+	ld	hl, -384
+	ld	(ix+$18), l
+	ld	(ix+$19), h
+	ld	hl, $0380
+	bit	4, (ix+$04)
+	jr	z, +_
+	ld	hl, -896
+_:  	ld	(ix+$16), l
+	ld	(ix+$17), h
+	ld	(ix+$02), $02
+	ret	
 
 LABEL_B28_A07C
-	ld      hl, -1408
-	ld      (ix+$18), l
-	ld      (ix+$19), h
-	ld      hl, $0100
-	bit     4, (ix+$04)
-	jr      z, +_
-	ld      hl, -256
-_:  	ld      (ix+$16), l
-	ld      (ix+$17), h
-	ld      (ix+$02), $02
-	ret     
+	ld	hl, -1408
+	ld	(ix+$18), l
+	ld	(ix+$19), h
+	ld	hl, $0100
+	bit	4, (ix+$04)
+	jr	z, +_
+	ld	hl, -256
+_:  	ld	(ix+$16), l
+	ld	(ix+$17), h
+	ld	(ix+$02), $02
+	ret	
 
 LABEL_B28_A09C:
-	bit     6, (ix+$04)
-	jr      z, LABEL_B28_A0A7
-	ld      (ix+$00), $ff
-	ret     
+	bit	6, (ix+$04)
+	jr	z, LABEL_B28_A0A7
+	ld	(ix+$00), $ff
+	ret	
 
 LABEL_B28_A0A7:
-	call    VF_Engine_CheckCollision
-	ld      a, (ix+$21)
-	and     $0f
-	jr      z, LABEL_B28_A0BA
-	ld      a, $ff
-	ld      ($D3a8), a
-	jp      LABEL_200 + $5D
+	call	VF_Engine_CheckCollision
+	ld	a, (ix+$21)
+	and	$0f
+	jr	z, LABEL_B28_A0BA
+	ld	a, $ff
+	ld	($D3a8), a
+	jp	LABEL_200 + $5D
 
 LABEL_B28_A0BA:
-	call    VF_Engine_UpdateObjectPosition
-	ld      de, $0050
-	ld      bc, $0600
-	call    VF_Engine_SetObjectVerticalSpeed
-	ld      hl, $0080
-	call    LABEL_200 + $12
-	ret     nz
-	bit     6, (ix+$04)
-	ret     nz
-	ld      a, $a8
-	ld      ($Dd04), a
-	ret     
+	call	VF_Engine_UpdateObjectPosition
+	ld	de, $0050
+	ld	bc, $0600
+	call	VF_Engine_SetObjectVerticalSpeed
+	ld	hl, $0080
+	call	LABEL_200 + $12
+	ret	nz
+	bit	6, (ix+$04)
+	ret	nz
+	ld	a, $a8
+	ld	($Dd04), a
+	ret	
 
 DATA_B28_A0D8:
 .db $FF, $08
@@ -2867,202 +2867,202 @@ DATA_B28_A1B1:
 .db $FF, $00
 
 LABEL_B28_A213:
-	inc     (ix+$0a)
+	inc	(ix+$0a)
 	ret
 
 LABEL_B28_A217:
-	ld      b, $03
-	ld      a, (ix+$0a)
-	dec     a
-	jr      nz, +_
-	ld      b, $04
-_:  	ld      (ix+$02), b
-	ret     
+	ld	b, $03
+	ld	a, (ix+$0a)
+	dec	a
+	jr	nz, +_
+	ld	b, $04
+_:  	ld	(ix+$02), b
+	ret	
 
 LABEL_B28_A225:
-	res     5, (ix+$04)
-	res     7, (ix+$04)
-	ld      (ix+$02), $06
-	ld      (ix+$1e), $80
-	ret     
+	res	5, (ix+$04)
+	res	7, (ix+$04)
+	ld	(ix+$02), $06
+	ld	(ix+$1e), $80
+	ret	
 
 LABEL_B28_A236:
-	set     5, (ix+$04)
-	dec     (ix+$24)
-	ret     nz
-	res     5, (ix+$04)
-	ld      (ix+$02), $09
-	ret     
+	set	5, (ix+$04)
+	dec	(ix+$24)
+	ret	nz
+	res	5, (ix+$04)
+	ld	(ix+$02), $09
+	ret	
 
 LABEL_B28_A247:
-	call    LABEL_200 + $F3
-	ld      (ix+$00), $fe
+	call	LABEL_200 + $F3
+	ld	(ix+$00), $fe
 	ret
 
 LABEL_B28_A24F:
-	ld      a, $ff
-	ld      ($D4a2), a
-	push    ix
-	pop     hl
-	call    VF_Engine_GetObjectIndexFromPointer
-	ld      ($D46a), a
-	ld      (ix+$24), $06
+	ld	a, $ff
+	ld	($D4a2), a
+	push	ix
+	pop	hl
+	call	VF_Engine_GetObjectIndexFromPointer
+	ld	($D46a), a
+	ld	(ix+$24), $06
 	ret
 
 LABEL_B28_A262:
-	call    VF_Engine_SetMinimumCameraX
-	ld      de, ($D174)
-	ld      l, (ix+$11)
-	ld      h, (ix+$12)
-	xor     a
-	sbc     hl, de
-	jr      c, +_
-	ld      a, h
-	or      a
-	ret     nz
-	ld      a, l
-	cp      $e0
-	ret     nc
-_:  	ld      (ix+$02), $02
-	ld      bc, $0d60
-	ld      de, $0080
-	call    VF_Engine_SetCameraAndLock
-	ret     
+	call	VF_Engine_SetMinimumCameraX
+	ld	de, ($D174)
+	ld	l, (ix+$11)
+	ld	h, (ix+$12)
+	xor	a
+	sbc	hl, de
+	jr	c, +_
+	ld	a, h
+	or	a
+	ret	nz
+	ld	a, l
+	cp	$e0
+	ret	nc
+_:  	ld	(ix+$02), $02
+	ld	bc, $0d60
+	ld	de, $0080
+	call	VF_Engine_SetCameraAndLock
+	ret	
 
 LABEL_B28_A289:
-	call    VF_Engine_CheckCollisionAndAdjustPlayer
-	ld      a, (ix+$21)
-	and     $01
-	jr      nz, LABEL_B28_A297
-	call    LABEL_200 + $1E
-	ret     
+	call	VF_Engine_CheckCollisionAndAdjustPlayer
+	ld	a, (ix+$21)
+	and	$01
+	jr	nz, LABEL_B28_A297
+	call	LABEL_200 + $1E
+	ret	
 
 LABEL_B28_A297:
-	ld      (ix+$02), $05
-	ret     
+	ld	(ix+$02), $05
+	ret	
 
 LABEL_B28_A29C:
-	call    LABEL_200 + $1B
-	call    VF_Engine_UpdateObjectPosition
-	ld      de, $0080
-	ld      bc, $0200
-	call    VF_Engine_SetObjectVerticalSpeed
-	ld      bc, $0000
-	ld      de, $0000
-	call    VF_Engine_GetCollisionValueForBlock
-	cp      $00
-	ret     z
-	bit     7, (ix+$19)
-	ret     nz
-	xor     a
-	ld      (ix+$16), a
-	ld      (ix+$17), a
-	ld      (ix+$18), a
-	ld      (ix+$19), a
-	ret     
+	call	LABEL_200 + $1B
+	call	VF_Engine_UpdateObjectPosition
+	ld	de, $0080
+	ld	bc, $0200
+	call	VF_Engine_SetObjectVerticalSpeed
+	ld	bc, $0000
+	ld	de, $0000
+	call	VF_Engine_GetCollisionValueForBlock
+	cp	$00
+	ret	z
+	bit	7, (ix+$19)
+	ret	nz
+	xor	a
+	ld	(ix+$16), a
+	ld	(ix+$17), a
+	ld	(ix+$18), a
+	ld	(ix+$19), a
+	ret	
 
 LABEL_B28_A2CA:
-	call    LABEL_200 + $1B
-	call    VF_Engine_UpdateObjectPosition
-	call    LABEL_200 + $3F
-	dec     (ix+$1e)
-	jr      z, LABEL_B28_A335
-	ld      hl, ($D511)
-	ld      e, (ix+$11)
-	ld      d, (ix+$12)
-	xor     a
-	ld      (ix+$16), a
-	ld      (ix+$17), a
-	bit     4, (ix+$04)
-	jr      nz, LABEL_B28_A303
-	xor     a
-	sbc     hl, de
-	ld      a, h
-	or      a
-	ret     nz
-	ld      a, l
-	cp      $60
-	jr      c, LABEL_B28_A319
-	ld      hl, $0100
-	ld      (ix+$16), l
-	ld      (ix+$17), h
+	call	LABEL_200 + $1B
+	call	VF_Engine_UpdateObjectPosition
+	call	LABEL_200 + $3F
+	dec	(ix+$1e)
+	jr	z, LABEL_B28_A335
+	ld	hl, ($D511)
+	ld	e, (ix+$11)
+	ld	d, (ix+$12)
+	xor	a
+	ld	(ix+$16), a
+	ld	(ix+$17), a
+	bit	4, (ix+$04)
+	jr	nz, LABEL_B28_A303
+	xor	a
+	sbc	hl, de
+	ld	a, h
+	or	a
+	ret	nz
+	ld	a, l
+	cp	$60
+	jr	c, LABEL_B28_A319
+	ld	hl, $0100
+	ld	(ix+$16), l
+	ld	(ix+$17), h
 	ret
 
 LABEL_B28_A303:
-	ex      de, hl
-	xor     a
-	sbc     hl, de
-	ld      a, h
-	or      a
-	ret     nz
-	ld      a, l
-	cp      $60
-	jr      c, LABEL_B28_A319
-	ld      hl, -256
-	ld      (ix+$16), l
-	ld      (ix+$17), h
-	ret     
+	ex	de, hl
+	xor	a
+	sbc	hl, de
+	ld	a, h
+	or	a
+	ret	nz
+	ld	a, l
+	cp	$60
+	jr	c, LABEL_B28_A319
+	ld	hl, -256
+	ld	(ix+$16), l
+	ld	(ix+$17), h
+	ret	
 
 LABEL_B28_A319:
-	ld      a, ($D501)
-	cp      $0a
-	ret     nz
-	ld      hl, ($D514)
-	ld      de, $0028
-	add     hl, de
-	ld      e, (ix+$14)
-	ld      d, (ix+$15)
-	xor     a
-	sbc     hl, de
-	ret     nc
-	ld      (ix+$02), $07
-	ret     
+	ld	a, ($D501)
+	cp	$0a
+	ret	nz
+	ld	hl, ($D514)
+	ld	de, $0028
+	add	hl, de
+	ld	e, (ix+$14)
+	ld	d, (ix+$15)
+	xor	a
+	sbc	hl, de
+	ret	nc
+	ld	(ix+$02), $07
+	ret	
 
 LABEL_B28_A335:
-	ld      (ix+$02), $02
-	ret     
+	ld	(ix+$02), $02
+	ret	
 
 LABEL_B28_A33A:
-	ld      a, ($D501)
-	cp      $0a
-	jr      nz, LABEL_B28_A335
-	ld      de, -8
-	call    LABEL_200 + $45
-	call    VF_Engine_UpdateObjectPosition
-	call    VF_Engine_CheckCollisionAndAdjustPlayer
-	ld      a, (ix+$21)
-	and     $0f
-	ret     z
-	ld      (ix+$02), $08
-	ld      (ix+$1e), $08
+	ld	a, ($D501)
+	cp	$0a
+	jr	nz, LABEL_B28_A335
+	ld	de, -8
+	call	LABEL_200 + $45
+	call	VF_Engine_UpdateObjectPosition
+	call	VF_Engine_CheckCollisionAndAdjustPlayer
+	ld	a, (ix+$21)
+	and	$0f
+	ret	z
+	ld	(ix+$02), $08
+	ld	(ix+$1e), $08
 	ret
 
 LABEL_B28_A35D:
-	ld      hl, ($D174)
-	ld      de, $0080
-	add     hl, de
-	ex      de, hl
-	call    LABEL_200 + $42
-	ld      de, -8
-	call    LABEL_200 + $45
-	call    VF_Engine_UpdateObjectPosition
-	call    VF_Engine_CheckCollisionAndAdjustPlayer
-	ld      a, (ix+$21)
-	and     $0f
-	ret     z
-	dec     (ix+$1e)
-	ret     nz
-	ld      (ix+$02), $02
-	ld      a, $1b
-	ld      ($D502), a
-	ld      hl, -1792
-	ld      ($D518), hl
-	ld      hl, $0500
-	bit     4, (ix+$04)
-	jr      z, +_ 
-	ld      hl, -1280
-_: 	ld      ($D516), hl
-	ret     
+	ld	hl, ($D174)
+	ld	de, $0080
+	add	hl, de
+	ex	de, hl
+	call	LABEL_200 + $42
+	ld	de, -8
+	call	LABEL_200 + $45
+	call	VF_Engine_UpdateObjectPosition
+	call	VF_Engine_CheckCollisionAndAdjustPlayer
+	ld	a, (ix+$21)
+	and	$0f
+	ret	z
+	dec	(ix+$1e)
+	ret	nz
+	ld	(ix+$02), $02
+	ld	a, $1b
+	ld	($D502), a
+	ld	hl, -1792
+	ld	($D518), hl
+	ld	hl, $0500
+	bit	4, (ix+$04)
+	jr	z, +_ 
+	ld	hl, -1280
+_: 	ld	($D516), hl
+	ret	
 
 ;************************************
 ;* Logic for UGZ3 Boss - Robotnik	*
@@ -3102,10 +3102,10 @@ DATA_B28_A837:
 
 
 LABEL_B28_A846:
-	ld      a, $ff
-	ld      ($D4a2), a
-	ld      (ix+$24), $08
-	ret     
+	ld	a, $ff
+	ld	($D4a2), a
+	ld	(ix+$24), $08
+	ret	
 
 
 DATA_B28_A850:
@@ -3355,68 +3355,68 @@ DATA_B28_A973:
 
 
 LABEL_B28_A9DF:
-	ld      hl, $D293
-	set     4, (hl)
+	ld	hl, $D293
+	set	4, (hl)
 LABEL_B28_A9E4:
-	ld      (ix+$00), $fe
-	ret     
+	ld	(ix+$00), $fe
+	ret	
 
 LABEL_B28_A9E9:
-	ld      hl, ($D511)
-	ld      e, (ix+$11)
-	ld      d, (ix+$12)
-	xor     a
-	sbc     hl, de
-	jr      nc, +_
-	ex      de, hl
-	ld      hl, $0000
-	xor     a
-	sbc     hl, de
-_:  	ld      a, h
-	or      a
-	ret     nz
-	ld      a, l
-	cp      $80
-	ret     nc
-	ld      de, ($D514)
-	ld      l, (ix+$14)
-	ld      h, (ix+$15)
-	xor     a
-	sbc     hl, de
-	ret     c
-	ld      (ix+$02), $02
-	ld      bc, $00E0
-	ld      de, $000A
-	call    LABEL_200 + $F6
-	ret     
+	ld	hl, ($D511)
+	ld	e, (ix+$11)
+	ld	d, (ix+$12)
+	xor	a
+	sbc	hl, de
+	jr	nc, +_
+	ex	de, hl
+	ld	hl, $0000
+	xor	a
+	sbc	hl, de
+_:  	ld	a, h
+	or	a
+	ret	nz
+	ld	a, l
+	cp	$80
+	ret	nc
+	ld	de, ($D514)
+	ld	l, (ix+$14)
+	ld	h, (ix+$15)
+	xor	a
+	sbc	hl, de
+	ret	c
+	ld	(ix+$02), $02
+	ld	bc, $00E0
+	ld	de, $000A
+	call	LABEL_200 + $F6
+	ret	
 
 LABEL_B28_AA21:
-	ld      hl, ($D174)
-	ld      de, $0080
-	add     hl, de
-	ex      de, hl
-	call    LABEL_200 + $42
-	ld      a, ($D2b9)
-	ld      b, a
-	ld      a, ($D2b9)
-	rrca    
-	rrca    
-	rrca    
-	ld      c, a
-	ld      a, ($D510)
-	add     a, b
-	add     a, c
-	and     $03
+	ld	hl, ($D174)
+	ld	de, $0080
+	add	hl, de
+	ex	de, hl
+	call	LABEL_200 + $42
+	ld	a, ($D2b9)
+	ld	b, a
+	ld	a, ($D2b9)
+	rrca	
+	rrca	
+	rrca	
+	ld	c, a
+	ld	a, ($D510)
+	add	a, b
+	add	a, c
+	and	$03
 	add	a, a
-	ld      e, a
-	ld      d, $00
-	ld      hl, DATA_B28_AA4B
-	add     hl, de
-	ld      a, (hl)
-	inc     hl
-	ld      h, (hl)
-	ld      l, a
-	jp      (hl)
+	ld	e, a
+	ld	d, $00
+	ld	hl, DATA_B28_AA4B
+	add	hl, de
+	ld	a, (hl)
+	inc	hl
+	ld	h, (hl)
+	ld	l, a
+	jp	(hl)
 
 DATA_B28_AA4B:
 .dw LABEL_B28_AA65
@@ -3425,302 +3425,302 @@ DATA_B28_AA4B:
 .dw LABEL_B28_AA7C
 
 LABEL_B28_AA53:
-	ld      (ix+$1e), $40
-	ld      (ix+$02), $07
-	ret     
+	ld	(ix+$1e), $40
+	ld	(ix+$02), $07
+	ret	
 
 LABEL_B28_AA5C:
-	ld      (ix+$1e), $40
-	ld      (ix+$02), $06
-	ret     
+	ld	(ix+$1e), $40
+	ld	(ix+$02), $06
+	ret	
 
 LABEL_B28_AA65:
-	ld      hl, $fe00
-	ld      (ix+$18), l
-	ld      (ix+$19), h
-	ld      hl, $0000
-	ld      (ix+$16), l
-	ld      (ix+$17), h
-	ld      (ix+$02), $05
-	ret     
+	ld	hl, $fe00
+	ld	(ix+$18), l
+	ld	(ix+$19), h
+	ld	hl, $0000
+	ld	(ix+$16), l
+	ld	(ix+$17), h
+	ld	(ix+$02), $05
+	ret	
 
 LABEL_B28_AA7C:
-	ld      a, ($D2b9)
-	and     $01
+	ld	a, ($D2b9)
+	and	$01
 	jr	z, LABEL_B28_AA88
-	ld      (ix+$02), $03
-	ret     
+	ld	(ix+$02), $03
+	ret	
 
 LABEL_B28_AA88:
-	ld      hl, $fd00
-	ld      (ix+$18), l
-	ld      (ix+$19), h
-	ld      hl, $0000
-	ld      (ix+$16), l
-	ld      (ix+$17), h
-	ld      (ix+$02), $04
-	ret     
+	ld	hl, $fd00
+	ld	(ix+$18), l
+	ld	(ix+$19), h
+	ld	hl, $0000
+	ld	(ix+$16), l
+	ld	(ix+$17), h
+	ld	(ix+$02), $04
+	ret	
 
 LABEL_B28_AA9F:
-	call    LABEL_B28_AC6E
-	ld      a, (ix+$24)
-	or      a
-	jp      z, LABEL_B28_AC9B
-	call    VF_Engine_UpdateObjectPosition
-	ld      de, $0020
-	ld      bc, $0100
-	call    VF_Engine_SetObjectVerticalSpeed
-	bit     7, (ix+$19)
-	ret     nz
-	ld      bc, $0000
-	ld      de, $0000
-	call    VF_Engine_GetCollisionValueForBlock
-	cp      $00
-	ret     z
-	ld      (ix+$02), $02
-	ret     
+	call	LABEL_B28_AC6E
+	ld	a, (ix+$24)
+	or	a
+	jp	z, LABEL_B28_AC9B
+	call	VF_Engine_UpdateObjectPosition
+	ld	de, $0020
+	ld	bc, $0100
+	call	VF_Engine_SetObjectVerticalSpeed
+	bit	7, (ix+$19)
+	ret	nz
+	ld	bc, $0000
+	ld	de, $0000
+	call	VF_Engine_GetCollisionValueForBlock
+	cp	$00
+	ret	z
+	ld	(ix+$02), $02
+	ret	
 
 LABEL_B28_AACB:
-	call    LABEL_B28_AC6E
-	ld      a, (ix+$24)
-	or      a
-	jp      z, LABEL_B28_AC9B
-	call    VF_Engine_UpdateObjectPosition
-	ld      de, $0020
-	ld      bc, $0100
-	call    VF_Engine_SetObjectVerticalSpeed
-	bit     7, (ix+$19)
-	ret     nz
-	ld      bc, $0000
-	ld      de, $0002
-	call    VF_Engine_GetCollisionValueForBlock
-	cp      $00
-	ret     z
-	ld      (ix+$02), $08
-	ret     
+	call	LABEL_B28_AC6E
+	ld	a, (ix+$24)
+	or	a
+	jp	z, LABEL_B28_AC9B
+	call	VF_Engine_UpdateObjectPosition
+	ld	de, $0020
+	ld	bc, $0100
+	call	VF_Engine_SetObjectVerticalSpeed
+	bit	7, (ix+$19)
+	ret	nz
+	ld	bc, $0000
+	ld	de, $0002
+	call	VF_Engine_GetCollisionValueForBlock
+	cp	$00
+	ret	z
+	ld	(ix+$02), $08
+	ret	
 
 LABEL_B28_AAF7:
-	call    LABEL_B28_AC6E
-	ld      a, (ix+$24)
-	or      a
-	jp      z, LABEL_B28_AC9B
-	call    VF_Engine_UpdateObjectPosition
-	call    LABEL_B28_ABE0
-	ret     nc
-	ld      hl, -256
-	ld      (ix+$18), l
-	ld      (ix+$19), h
-	ld      hl, $0000
-	ld      (ix+$16), l
-	ld      (ix+$17), h
-	ld      (ix+$02), $05
-	ld      (ix+$02), $09
-	ret     
+	call	LABEL_B28_AC6E
+	ld	a, (ix+$24)
+	or	a
+	jp	z, LABEL_B28_AC9B
+	call	VF_Engine_UpdateObjectPosition
+	call	LABEL_B28_ABE0
+	ret	nc
+	ld	hl, -256
+	ld	(ix+$18), l
+	ld	(ix+$19), h
+	ld	hl, $0000
+	ld	(ix+$16), l
+	ld	(ix+$17), h
+	ld	(ix+$02), $05
+	ld	(ix+$02), $09
+	ret	
 
 LABEL_B28_AB23:
-	call    LABEL_B28_AC6E
-	ld      a, (ix+$24)
-	or      a
-	jp      z, LABEL_B28_AC9B
-	call    VF_Engine_UpdateObjectPosition
-	ld      de, $0020
-	ld      bc, $0100
-	call    VF_Engine_SetObjectVerticalSpeed
-	bit     7, (ix+$19)
-	ret     nz
-	ld      bc, $0000
-	ld      de, $0000
-	call    VF_Engine_GetCollisionValueForBlock
-	cp      $00
-	ret     z
-	ld      (ix+$02), $02
-	ret     
+	call	LABEL_B28_AC6E
+	ld	a, (ix+$24)
+	or	a
+	jp	z, LABEL_B28_AC9B
+	call	VF_Engine_UpdateObjectPosition
+	ld	de, $0020
+	ld	bc, $0100
+	call	VF_Engine_SetObjectVerticalSpeed
+	bit	7, (ix+$19)
+	ret	nz
+	ld	bc, $0000
+	ld	de, $0000
+	call	VF_Engine_GetCollisionValueForBlock
+	cp	$00
+	ret	z
+	ld	(ix+$02), $02
+	ret	
 
 LABEL_B28_AB4F:
-	call    LABEL_B28_AC2B
-	dec     (ix+$1e)
-	jr      z, LABEL_B28_AB58
-	ret     
+	call	LABEL_B28_AC2B
+	dec	(ix+$1e)
+	jr	z, LABEL_B28_AB58
+	ret	
 
 LABEL_B28_AB58:
-	ld      hl, $fc00
-	ld      (ix+$18), l
-	ld      (ix+$19), h
-	ld      (ix+$02), $0b
-	ret     
+	ld	hl, $fc00
+	ld	(ix+$18), l
+	ld	(ix+$19), h
+	ld	(ix+$02), $0b
+	ret	
 
 LABEL_B28_AB66:
-	call    LABEL_B28_AC2B
-	ld      de, $001c
-	ld      bc, $0400
-	call    VF_Engine_SetObjectVerticalSpeed
-	bit     7, (ix+$19)
-	jr      nz, LABEL_B28_AB8E
-	ld      bc, $0000
-	ld      de, $0000
-	call    VF_Engine_GetCollisionValueForBlock
-	cp      $00
-	jr      z, LABEL_B28_AB8E
-	xor     a
-	ld      (ix+$18), a
-	ld      (ix+$19), a
-	jr      LABEL_B28_AB9D
+	call	LABEL_B28_AC2B
+	ld	de, $001c
+	ld	bc, $0400
+	call	VF_Engine_SetObjectVerticalSpeed
+	bit	7, (ix+$19)
+	jr	nz, LABEL_B28_AB8E
+	ld	bc, $0000
+	ld	de, $0000
+	call	VF_Engine_GetCollisionValueForBlock
+	cp	$00
+	jr	z, LABEL_B28_AB8E
+	xor	a
+	ld	(ix+$18), a
+	ld	(ix+$19), a
+	jr	LABEL_B28_AB9D
 
 LABEL_B28_AB8E:
-	call    VF_Engine_UpdateObjectPosition
-	call    LABEL_B28_ABE0
-	ret     nc
-	xor     a
-	ld      (ix+$16), a
-	ld      (ix+$17), a
-	ret     
+	call	VF_Engine_UpdateObjectPosition
+	call	LABEL_B28_ABE0
+	ret	nc
+	xor	a
+	ld	(ix+$16), a
+	ld	(ix+$17), a
+	ret	
 
 LABEL_B28_AB9D:
-	call    VF_Engine_UpdateObjectPosition
-	call    LABEL_B28_ABE0
-	ret     nc
-	ld      (ix+$02), $0c
-	ret     
+	call	VF_Engine_UpdateObjectPosition
+	call	LABEL_B28_ABE0
+	ret	nc
+	ld	(ix+$02), $0c
+	ret	
 
 LABEL_B28_ABA9:
-	call    LABEL_B28_AC2B
-	dec     (ix+$1e)
-	ret     nz
-	ld      (ix+$02), $0e
-	ret     
+	call	LABEL_B28_AC2B
+	dec	(ix+$1e)
+	ret	nz
+	ld	(ix+$02), $0e
+	ret	
 
 LABEL_B28_ABB5:
-	call    LABEL_B28_AC2B
-	call    VF_Engine_UpdateObjectPosition
-	call    LABEL_B28_ABE0
-	ret     nc
-	ld      l, (ix+$16)
-	ld      h, (ix+$17)
-	ld      de, $0000
-	ex      de, hl
-	xor     a
-	sbc     hl, de
-	ld      (ix+$16), l
-	ld      (ix+$17), h
-	ld      hl, $fc00
-	ld      (ix+$18), l
-	ld      (ix+$19), h
-	ld      (ix+$02), $0b
-	ret     
+	call	LABEL_B28_AC2B
+	call	VF_Engine_UpdateObjectPosition
+	call	LABEL_B28_ABE0
+	ret	nc
+	ld	l, (ix+$16)
+	ld	h, (ix+$17)
+	ld	de, $0000
+	ex	de, hl
+	xor	a
+	sbc	hl, de
+	ld	(ix+$16), l
+	ld	(ix+$17), h
+	ld	hl, $fc00
+	ld	(ix+$18), l
+	ld	(ix+$19), h
+	ld	(ix+$02), $0b
+	ret	
 
 LABEL_B28_ABE0:
-	ld      de, ($D174)
-	ld      l, (ix+$11)
-	ld      h, (ix+$12)
-	xor     a
-	sbc     hl, de
-	jr      c, LABEL_B28_AC12
-	ld      a, h
-	or      a
-	jr      nz, LABEL_B28_AC23
-	ld      a, l
-	cp      $30
-	jr      c, LABEL_B28_AC12
-	cp      $D0
-	jr      nc, LABEL_B28_AC23
-	ld      e, (ix+$16)
-	ld      d, (ix+$17)
-	ld      l, (ix+$18)
-	ld      a, (ix+$19)
-	or      l
-	or      e
-	or      d
-	jr      z, LABEL_B28_AC10
-	xor     a
-	ret     
+	ld	de, ($D174)
+	ld	l, (ix+$11)
+	ld	h, (ix+$12)
+	xor	a
+	sbc	hl, de
+	jr	c, LABEL_B28_AC12
+	ld	a, h
+	or	a
+	jr	nz, LABEL_B28_AC23
+	ld	a, l
+	cp	$30
+	jr	c, LABEL_B28_AC12
+	cp	$D0
+	jr	nc, LABEL_B28_AC23
+	ld	e, (ix+$16)
+	ld	d, (ix+$17)
+	ld	l, (ix+$18)
+	ld	a, (ix+$19)
+	or	l
+	or	e
+	or	d
+	jr	z, LABEL_B28_AC10
+	xor	a
+	ret	
 
 LABEL_B28_AC10:
-	scf     
-	ret     
+	scf	
+	ret	
 
 LABEL_B28_AC12:
-	ld      e, (ix+$16)
-	ld      a, (ix+$17)
-	or      e
-	jr      z, +_
-	xor     a
-	bit     7, (ix+$17)
-	ret     z
-_:  	scf     
-	ret     
+	ld	e, (ix+$16)
+	ld	a, (ix+$17)
+	or	e
+	jr	z, +_
+	xor	a
+	bit	7, (ix+$17)
+	ret	z
+_:  	scf	
+	ret	
 
 LABEL_B28_AC23:
-	xor     a
-	bit     7, (ix+$17)
-	ret     nz
-	scf     
-	ret     
+	xor	a
+	bit	7, (ix+$17)
+	ret	nz
+	scf	
+	ret	
 
 LABEL_B28_AC2B:
-	call    LABEL_200 + $1B
-	ld      a, (ix+$00)
-	cp      $42
-	jr      nz, +_
-	ld      a, (ix+$21)
-	and     $0f
-	jr      z, ++_
-	ld      a, $ff
-	ld      ($D3a8), a
-_:	ld      a, (ix+$21)
-	and     $0f
-	jr      z, +_
-	ld      e, (ix+$16)
-	ld      d, (ix+$17)
-	ld      hl, $0000
-	xor     a
-	sbc     hl, de
-	ld      (ix+$16), l
-	ld      (ix+$17), h
-_:   	ld      a, (ix+$1f)
-	or      a
-	jr      nz, LABEL_B28_ACAC
-	res     5, (ix+$04)
-	res     7, (ix+$04)
-	ld      (ix+$21), $00
-	ret     
+	call	LABEL_200 + $1B
+	ld	a, (ix+$00)
+	cp	$42
+	jr	nz, +_
+	ld	a, (ix+$21)
+	and	$0f
+	jr	z, ++_
+	ld	a, $ff
+	ld	($D3a8), a
+_:	ld	a, (ix+$21)
+	and	$0f
+	jr	z, +_
+	ld	e, (ix+$16)
+	ld	d, (ix+$17)
+	ld	hl, $0000
+	xor	a
+	sbc	hl, de
+	ld	(ix+$16), l
+	ld	(ix+$17), h
+_:   	ld	a, (ix+$1f)
+	or	a
+	jr	nz, LABEL_B28_ACAC
+	res	5, (ix+$04)
+	res	7, (ix+$04)
+	ld	(ix+$21), $00
+	ret	
 
 LABEL_B28_AC6E:
-	ld      a, (ix+$1f)
-	or      a
-	jr      nz, LABEL_B28_ACAC
-	res     5, (ix+$04)
-	res     7, (ix+$04)
-	call    VF_Engine_CheckCollisionAndAdjustPlayer
-	ld      a, (ix+$21)
-	and     $0f
-	ret     z
-	ld      (ix+$1f), $40
-	dec     (ix+$24)
-	ld      a, $aa
-	ld      ($Dd04), a
-	ret     
+	ld	a, (ix+$1f)
+	or	a
+	jr	nz, LABEL_B28_ACAC
+	res	5, (ix+$04)
+	res	7, (ix+$04)
+	call	VF_Engine_CheckCollisionAndAdjustPlayer
+	ld	a, (ix+$21)
+	and	$0f
+	ret	z
+	ld	(ix+$1f), $40
+	dec	(ix+$24)
+	ld	a, $aa
+	ld	($Dd04), a
+	ret	
 
 LABEL_B28_AC93:
-	call    LABEL_B28_AC6E
-	ld      a, (ix+$24)
-	or      a
-	ret     nz
+	call	LABEL_B28_AC6E
+	ld	a, (ix+$24)
+	or	a
+	ret	nz
 LABEL_B28_AC9B:
-	ld      a, ($D2c5)
-	cp      $1f
-	jr      z, LABEL_B28_ACA7
-	ld      (ix+$02), $10
-	ret     
+	ld	a, ($D2c5)
+	cp	$1f
+	jr	z, LABEL_B28_ACA7
+	ld	(ix+$02), $10
+	ret	
 
 LABEL_B28_ACA7:
-	ld      (ix+$02), $11
-	ret     
+	ld	(ix+$02), $11
+	ret	
 
 LABEL_B28_ACAC:
-	dec     (ix+$1f)
-	set     5, (ix+$04)
-	ld      (ix+$21), $00
-	ret     
+	dec	(ix+$1f)
+	set	5, (ix+$04)
+	ld	(ix+$21), $00
+	ret	
 
 DATA_B28_ACB8:
 .dw DATA_B28_ACCA
@@ -3805,182 +3805,182 @@ DATA_B28_AD27:
 
 
 LABEL_B28_AD31:
-	bit     6, (ix+$04)
-	ret     nz
-	ld      a, (ix+$3f)
-	and     $01
-	jr      nz, LABEL_B28_AD42
-	ld      (ix+$02), $01
-	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	ld	a, (ix+$3f)
+	and	$01
+	jr	nz, LABEL_B28_AD42
+	ld	(ix+$02), $01
+	ret	
 
 LABEL_B28_AD42:
-	ld      (ix+$02), $05
-	ret     
+	ld	(ix+$02), $05
+	ret	
 
 LABEL_B28_AD47:
-	bit     6, (ix+$04)
-	ret     nz
-	call    LABEL_200 + $3F
-	call    VF_Engine_CheckCollision
-	call    VF_Engine_UpdateObjectPosition
-	ld      a, (ix+$21)
-	and     $0f
-	jp      nz, LABEL_B28_AEB2
-	ld      a, $40
-	call    Logic_CheckPlayerHorizontalProximity
-	cp      $00
-	jr      z, +_
-	ld      a, $40
-	call    Logic_CheckPlayerVerticalProximity
-	cp      $00
-	jr      z, +_
-	ld      (ix+$02), $02
-_:  	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	call	LABEL_200 + $3F
+	call	VF_Engine_CheckCollision
+	call	VF_Engine_UpdateObjectPosition
+	ld	a, (ix+$21)
+	and	$0f
+	jp	nz, LABEL_B28_AEB2
+	ld	a, $40
+	call	Logic_CheckPlayerHorizontalProximity
+	cp	$00
+	jr	z, +_
+	ld	a, $40
+	call	Logic_CheckPlayerVerticalProximity
+	cp	$00
+	jr	z, +_
+	ld	(ix+$02), $02
+_:  	ret	
 
 LABEL_B28_AD74:
-	bit     6, (ix+$04)
-	ret     nz
-	call    VF_Engine_CheckCollision
-	call    VF_Engine_UpdateObjectPosition
-	ld      a, (ix+$21)
-	and     $0f
-	jp      nz, LABEL_B28_AEB2
-	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	call	VF_Engine_CheckCollision
+	call	VF_Engine_UpdateObjectPosition
+	ld	a, (ix+$21)
+	and	$0f
+	jp	nz, LABEL_B28_AEB2
+	ret	
 
 LABEL_B28_AD88:
-	bit     6, (ix+$04)
-	ret     nz
-	call    LABEL_200 + $3F
-	ld      (ix+$19), $00
-	ld      (ix+$18), $00
-	ld      (ix+$02), $04
-	ld      hl, ($D511)
-	ld      d, (ix+$12)
-	ld      e, (ix+$11)
-	xor     a
-	sbc     hl, de
-	jr      c, LABEL_B28_ADBA
-	bit     1, (ix+$3f)
-	jr      nz, LABEL_B28_ADBA
-	ld      hl, $0200
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	call	LABEL_200 + $3F
+	ld	(ix+$19), $00
+	ld	(ix+$18), $00
+	ld	(ix+$02), $04
+	ld	hl, ($D511)
+	ld	d, (ix+$12)
+	ld	e, (ix+$11)
+	xor	a
+	sbc	hl, de
+	jr	c, LABEL_B28_ADBA
+	bit	1, (ix+$3f)
+	jr	nz, LABEL_B28_ADBA
+	ld	hl, $0200
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ret	
 
 LABEL_B28_ADBA:
-	ld      hl, $fe00
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ret     
+	ld	hl, $fe00
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ret	
 
 LABEL_B28_ADC4:
-	bit     6, (ix+$04)
-	ret     nz
-	call    VF_Engine_CheckCollision
-	call    VF_Engine_UpdateObjectPosition
-	ld      a, (ix+$21)
-	and     $0f
-	jp      nz, LABEL_B28_AEB2
-	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	call	VF_Engine_CheckCollision
+	call	VF_Engine_UpdateObjectPosition
+	ld	a, (ix+$21)
+	and	$0f
+	jp	nz, LABEL_B28_AEB2
+	ret	
 
 LABEL_B28_ADD8:
-	bit     6, (ix+$04)
-	ret     nz
-	ld      (ix+$02), $06
-	ld      (ix+$19), $00
-	ld      (ix+$18), $00
-	ld      hl, ($D511)
-	ld      d, (ix+$12)
-	ld      e, (ix+$11)
-	xor     a
-	sbc     hl, de
-	jr      nc, LABEL_B28_AE01
-	ld      hl, $fe00
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	ld	(ix+$02), $06
+	ld	(ix+$19), $00
+	ld	(ix+$18), $00
+	ld	hl, ($D511)
+	ld	d, (ix+$12)
+	ld	e, (ix+$11)
+	xor	a
+	sbc	hl, de
+	jr	nc, LABEL_B28_AE01
+	ld	hl, $fe00
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ret	
 
 LABEL_B28_AE01:
-	ld      hl, $0200
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ret     
+	ld	hl, $0200
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ret	
 
 LABEL_B28_AE0B:
-	bit     6, (ix+$04)
-	ret     nz
-	call    VF_Engine_CheckCollision
-	call    VF_Engine_UpdateObjectPosition
-	ld      a, (ix+$21)
-	and     $0f
-	jp      nz, LABEL_B28_AEB2
-	ld      a, $40
-	call    Logic_CheckPlayerHorizontalProximity
-	cp      $00
-	ret     z
-	ld      (ix+$17), $00
-	ld      (ix+$16), $00
-	ld      (ix+$02), $07
-	ld      hl, $0100
-	ld      (ix+$19), h
-	ld      (ix+$18), l
-	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	call	VF_Engine_CheckCollision
+	call	VF_Engine_UpdateObjectPosition
+	ld	a, (ix+$21)
+	and	$0f
+	jp	nz, LABEL_B28_AEB2
+	ld	a, $40
+	call	Logic_CheckPlayerHorizontalProximity
+	cp	$00
+	ret	z
+	ld	(ix+$17), $00
+	ld	(ix+$16), $00
+	ld	(ix+$02), $07
+	ld	hl, $0100
+	ld	(ix+$19), h
+	ld	(ix+$18), l
+	ret	
 
 LABEL_B28_AE3C:
-	bit     6, (ix+$04)
-	ret     nz
-	call    LABEL_200 + $3F
-	call    VF_Engine_CheckCollision
-	call    VF_Engine_UpdateObjectPosition
-	ld      a, (ix+$21)
-	and     $0f
-	jr      nz, LABEL_B28_AEB2
-	ld      bc, $0000
-	ld      de, $0000
-	call    VF_Engine_GetCollisionValueForBlock
-	cp      $81
-	jr      nz, LABEL_B28_AE85
-	ld      (ix+$02), $08
-	ld      hl, ($D511)
-	ld      d, (ix+$12)
-	ld      e, (ix+$11)
-	xor     a
-	sbc     hl, de
-	jr      nc, LABEL_B28_AE7B
-	ld      hl, -2048
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	call	LABEL_200 + $3F
+	call	VF_Engine_CheckCollision
+	call	VF_Engine_UpdateObjectPosition
+	ld	a, (ix+$21)
+	and	$0f
+	jr	nz, LABEL_B28_AEB2
+	ld	bc, $0000
+	ld	de, $0000
+	call	VF_Engine_GetCollisionValueForBlock
+	cp	$81
+	jr	nz, LABEL_B28_AE85
+	ld	(ix+$02), $08
+	ld	hl, ($D511)
+	ld	d, (ix+$12)
+	ld	e, (ix+$11)
+	xor	a
+	sbc	hl, de
+	jr	nc, LABEL_B28_AE7B
+	ld	hl, -2048
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ret	
 
 LABEL_B28_AE7B:
-	ld      hl, $0080
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ret     
+	ld	hl, $0080
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ret	
 
 LABEL_B28_AE85:
-	ret     
+	ret	
 
 LABEL_B28_AE86
-	bit     6, (ix+$04)
-	ret     nz
-	ld      hl, $0100
-	ld      (ix+$18), l
-	ld      (ix+$19), h
-	call    Logic_CheckBackgroundCollision
-	bit     0, a
-	jr      z, LABEL_B28_AEA0
-	ld      (ix+$02), $02
-	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	ld	hl, $0100
+	ld	(ix+$18), l
+	ld	(ix+$19), h
+	call	Logic_CheckBackgroundCollision
+	bit	0, a
+	jr	z, LABEL_B28_AEA0
+	ld	(ix+$02), $02
+	ret	
 
 LABEL_B28_AEA0:
-	call    VF_Engine_CheckCollision
-	call    VF_Engine_UpdateObjectPosition
-	call    LABEL_200 + $60
-	ld      a, (ix+$21)
-	and     $0f
-	jr      nz, LABEL_B28_AEB2
-	ret     
+	call	VF_Engine_CheckCollision
+	call	VF_Engine_UpdateObjectPosition
+	call	LABEL_200 + $60
+	ld	a, (ix+$21)
+	and	$0f
+	jr	nz, LABEL_B28_AEB2
+	ret	
 
 LABEL_B28_AEB2:
 	jp	VF_Logic_CheckDestroyObject
@@ -4020,110 +4020,110 @@ DATA_B28_AED6:
 
 
 LABEL_B28_AEE0:
-	bit     6, (ix+$04)
-	ret     nz
-	call    VF_Engine_CheckCollision
-	call    LABEL_200 + $3F
-	jp      VF_Logic_CheckDestroyObject
+	bit	6, (ix+$04)
+	ret	nz
+	call	VF_Engine_CheckCollision
+	call	LABEL_200 + $3F
+	jp	VF_Logic_CheckDestroyObject
 
 LABEL_B28_AEEE:
-	bit     6, (ix+$04)
-	ret     nz
-	call    VF_Engine_CheckCollision
-	call    LABEL_200 + $3F
-	ld      hl, ($D511)
-	ld      e, (ix+$11)
-	ld      d, (ix+$12)
-	xor     a
-	sbc     hl, de
-	jr      nc, +_
-	ex      de, hl
-	ld      hl, $0000
-	xor     a
-	sbc     hl, de
-_:  	ld      a, h
-	or      a
-	jp      nz, VF_Logic_CheckDestroyObject
-	ld      b, l
-	ld      hl, ($D514)
-	ld      e, (ix+$14)
-	ld      d, (ix+$15)
-	xor     a
-	sbc     hl, de
-	jr      nc, +_
-	ex      de, hl
-	ld      hl, $0000
-	xor     a
-	sbc     hl, de
-_: 	ld      a, h
-	or      a
-	jp      nz, VF_Logic_CheckDestroyObject
-	ld      a, l
-	add     a, b
-	jp      c, VF_Logic_CheckDestroyObject
-	cp      $80
-	jp      nc, VF_Logic_CheckDestroyObject
-	ld      (ix+$02), $02
-	ld      (ix+$1f), $50
-	jp      VF_Logic_CheckDestroyObject
+	bit	6, (ix+$04)
+	ret	nz
+	call	VF_Engine_CheckCollision
+	call	LABEL_200 + $3F
+	ld	hl, ($D511)
+	ld	e, (ix+$11)
+	ld	d, (ix+$12)
+	xor	a
+	sbc	hl, de
+	jr	nc, +_
+	ex	de, hl
+	ld	hl, $0000
+	xor	a
+	sbc	hl, de
+_:  	ld	a, h
+	or	a
+	jp	nz, VF_Logic_CheckDestroyObject
+	ld	b, l
+	ld	hl, ($D514)
+	ld	e, (ix+$14)
+	ld	d, (ix+$15)
+	xor	a
+	sbc	hl, de
+	jr	nc, +_
+	ex	de, hl
+	ld	hl, $0000
+	xor	a
+	sbc	hl, de
+_: 	ld	a, h
+	or	a
+	jp	nz, VF_Logic_CheckDestroyObject
+	ld	a, l
+	add	a, b
+	jp	c, VF_Logic_CheckDestroyObject
+	cp	$80
+	jp	nc, VF_Logic_CheckDestroyObject
+	ld	(ix+$02), $02
+	ld	(ix+$1f), $50
+	jp	VF_Logic_CheckDestroyObject
 
 LABEL_B28_AF43:
-	bit     6, (ix+$04)
-	ret     nz
-	ld      hl, ($D511)
-	ld      de, $0000
-	ld      bc, $00c0
-	call    LABEL_200 + $48
-	ld      hl, ($D514)
-	ld      de, $0000
-	ld      bc, $00c0
-	call    LABEL_200 + $4B
-	call    VF_Engine_CheckCollision
-	call    LABEL_200 + $39
-	ld      a, (ix+$22)
-	and     $0c
-	jr      nz, +_
-	call    VF_Engine_UpdateObjectPosition
-	call    LABEL_200 + $60
-	call    LABEL_200 + $3F
-	ld      a, (ix+$21)
-	and     $0f
-	jr      nz, +_
-	dec     (ix+$1f)
-	jp      nz, VF_Logic_CheckDestroyObject
-_:  	ld      (ix+$02), $03
-	jp      VF_Logic_CheckDestroyObject
+	bit	6, (ix+$04)
+	ret	nz
+	ld	hl, ($D511)
+	ld	de, $0000
+	ld	bc, $00c0
+	call	LABEL_200 + $48
+	ld	hl, ($D514)
+	ld	de, $0000
+	ld	bc, $00c0
+	call	LABEL_200 + $4B
+	call	VF_Engine_CheckCollision
+	call	LABEL_200 + $39
+	ld	a, (ix+$22)
+	and	$0c
+	jr	nz, +_
+	call	VF_Engine_UpdateObjectPosition
+	call	LABEL_200 + $60
+	call	LABEL_200 + $3F
+	ld	a, (ix+$21)
+	and	$0f
+	jr	nz, +_
+	dec	(ix+$1f)
+	jp	nz, VF_Logic_CheckDestroyObject
+_:  	ld	(ix+$02), $03
+	jp	VF_Logic_CheckDestroyObject
 
 LABEL_B28_AF8A:
-	bit     6, (ix+$04)
-	ret     nz
-	call    LABEL_200 + $60
-	call    LABEL_200 + $3f
-	ld      a, (ix+$06)
-	cp      $04
-	jr      z, +_
-	call    VF_Engine_UpdateObjectPosition
-_:  	call    VF_Engine_CheckCollision
-	ld      l, (ix+$3a)
-	ld      h, (ix+$3b)
-	ld      de, $0000
-	ld      bc, $0180
-	call    LABEL_200 + $48
-	ld      l, (ix+$3c)
-	ld      h, (ix+$3d)
-	ld      de, $0000
-	ld      bc, $0180
-	call    LABEL_200 + $4B
-	ld      a, (ix+$16)
-	ld      h, (ix+$17)
-	or      h
-	jp      nz, VF_Logic_CheckDestroyObject
-	ld      a, (ix+$18)
-	ld      h, (ix+$19)
-	or      h
-	jp      nz, VF_Logic_CheckDestroyObject
-	ld      (ix+$02), $01
-	jp      VF_Logic_CheckDestroyObject
+	bit	6, (ix+$04)
+	ret	nz
+	call	LABEL_200 + $60
+	call	LABEL_200 + $3f
+	ld	a, (ix+$06)
+	cp	$04
+	jr	z, +_
+	call	VF_Engine_UpdateObjectPosition
+_:  	call	VF_Engine_CheckCollision
+	ld	l, (ix+$3a)
+	ld	h, (ix+$3b)
+	ld	de, $0000
+	ld	bc, $0180
+	call	LABEL_200 + $48
+	ld	l, (ix+$3c)
+	ld	h, (ix+$3d)
+	ld	de, $0000
+	ld	bc, $0180
+	call	LABEL_200 + $4B
+	ld	a, (ix+$16)
+	ld	h, (ix+$17)
+	or	h
+	jp	nz, VF_Logic_CheckDestroyObject
+	ld	a, (ix+$18)
+	ld	h, (ix+$19)
+	or	h
+	jp	nz, VF_Logic_CheckDestroyObject
+	ld	(ix+$02), $01
+	jp	VF_Logic_CheckDestroyObject
 
 
 Logic_Motobug:		;$AFDB
@@ -4298,260 +4298,260 @@ Motobug_State_08:	;$B0E9
 
 
 Motobug_Init:		;$B0F7
-	bit     6, (ix+$04)
-	ret     nz
-	ld      (ix+$02), $01	;set state = $01
-	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	ld	(ix+$02), $01	;set state = $01
+	ret	
 
 Motobug_MoveRight:	;$B101
 LABEL_B28_B101:
-	bit     6, (ix+$04)
-	ret     nz
-	ld      hl, $0100		;set horizontal speed
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ld      hl, $0100		;set vertical speed
-	ld      (ix+$19), h
-	ld      (ix+$18), l
-	call    VF_Engine_UpdateObjectPosition
+	bit	6, (ix+$04)
+	ret	nz
+	ld	hl, $0100		;set horizontal speed
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ld	hl, $0100		;set vertical speed
+	ld	(ix+$19), h
+	ld	(ix+$18), l
+	call	VF_Engine_UpdateObjectPosition
 	
-	call    LABEL_200 + $60		;check collisions
-	call    VF_Engine_CheckCollision
+	call	LABEL_200 + $60		;check collisions
+	call	VF_Engine_CheckCollision
 	
-	ld      a, $40		;check player proximity
-	call    Logic_CheckPlayerVerticalProximity
-	or      a
-	jr      z, +_		;jump if player is not close enough
+	ld	a, $40		;check player proximity
+	call	Logic_CheckPlayerVerticalProximity
+	or	a
+	jr	z, +_		;jump if player is not close enough
 	
-	ld      hl, ($D511)	;HL = player hpos
-	ld      d, (ix+$12)		;DE = object hpos
-	ld      e, (ix+$11)
-	xor     a
-	sbc     hl, de
-	jr      c, +_		;jump if object to right of player
+	ld	hl, ($D511)	;HL = player hpos
+	ld	d, (ix+$12)		;DE = object hpos
+	ld	e, (ix+$11)
+	xor	a
+	sbc	hl, de
+	jr	c, +_		;jump if object to right of player
 	
-	ld      de, $0040
-	xor     a
-	sbc     hl, de
-	jr      nc, +_		;jump if player not with 64 pixels of object
+	ld	de, $0040
+	xor	a
+	sbc	hl, de
+	jr	nc, +_		;jump if player not with 64 pixels of object
 	
-	ld      (ix+$02), $07		;set state = $07
-	ld      (ix+$17), $00		;set horizontal velocity
-	ld      (ix+$16), $00
+	ld	(ix+$02), $07		;set state = $07
+	ld	(ix+$17), $00		;set horizontal velocity
+	ld	(ix+$16), $00
 	
-_:  	ld      a, (ix+$21)		;check collision flags
-	and     $0F		;jump if there was a collision
-	jp      nz, Logic_Generic_CheckDestroyObject
+_:  	ld	a, (ix+$21)		;check collision flags
+	and	$0F		;jump if there was a collision
+	jp	nz, Logic_Generic_CheckDestroyObject
 
-	call    VF_Logic_UpdateObjectDirectionFlag
-	call    Logic_CheckBackgroundCollision
-	bit     0, a		;did the object collide with the level?
-	ret     z
+	call	VF_Logic_UpdateObjectDirectionFlag
+	call	Logic_CheckBackgroundCollision
+	bit	0, a		;did the object collide with the level?
+	ret	z
 	
-	ld      (ix+$02), $02		;set state = $02 (move left)
-	ret     
+	ld	(ix+$02), $02		;set state = $02 (move left)
+	ret	
 
 
 Motobug_MoveLeft:	;$B161
-	bit     6, (ix+$04)
-	ret     nz
-	ld      hl, -256		;set horizontal speed
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ld      hl, $0100		;set vertical speed
-	ld      (ix+$19), h
-	ld      (ix+$18), l
+	bit	6, (ix+$04)
+	ret	nz
+	ld	hl, -256		;set horizontal speed
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ld	hl, $0100		;set vertical speed
+	ld	(ix+$19), h
+	ld	(ix+$18), l
 	
-	call    VF_Engine_CheckCollision
-	call    VF_Engine_UpdateObjectPosition
-	call    LABEL_200 + $60
+	call	VF_Engine_CheckCollision
+	call	VF_Engine_UpdateObjectPosition
+	call	LABEL_200 + $60
 	
-	ld      a, $40		;check to see if player is close
-	call    Logic_CheckPlayerVerticalProximity
-	or      a
-	jr      z, +_		;jump if player not close enough
+	ld	a, $40		;check to see if player is close
+	call	Logic_CheckPlayerVerticalProximity
+	or	a
+	jr	z, +_		;jump if player not close enough
 	
-	ld      de, ($D511)		;DE = player hpos
-	ld      h, (ix+$12)		;HL = object hpos
-	ld      l, (ix+$11)
+	ld	de, ($D511)		;DE = player hpos
+	ld	h, (ix+$12)		;HL = object hpos
+	ld	l, (ix+$11)
 
-	xor     a
-	sbc     hl, de
-	jr      c, +_		;jump if player is to right of object
+	xor	a
+	sbc	hl, de
+	jr	c, +_		;jump if player is to right of object
 
-	ld      de, $0040
-	xor     a
-	sbc     hl, de
-	jr      nc, +_		;jump if player not with 64 pixels of object
+	ld	de, $0040
+	xor	a
+	sbc	hl, de
+	jr	nc, +_		;jump if player not with 64 pixels of object
 
-	ld      (ix+$02), $08	;set state = $08
-	ld      (ix+$17), $00	;set horizontal velocity
-	ld      (ix+$16), $00
+	ld	(ix+$02), $08	;set state = $08
+	ld	(ix+$17), $00	;set horizontal velocity
+	ld	(ix+$16), $00
 
-_:  	ld      a, (ix+$21)		;check collision flags and
-	and     $0F			;jump if there was a collision
-	jp      nz, Logic_Generic_CheckDestroyObject
+_:  	ld	a, (ix+$21)		;check collision flags and
+	and	$0F			;jump if there was a collision
+	jp	nz, Logic_Generic_CheckDestroyObject
 	
-	call    VF_Logic_UpdateObjectDirectionFlag
-	call    Logic_CheckBackgroundCollision
-	bit     0, a		;did the object collide with the level?
-	ret     z
+	call	VF_Logic_UpdateObjectDirectionFlag
+	call	Logic_CheckBackgroundCollision
+	bit	0, a		;did the object collide with the level?
+	ret	z
 	
-	ld      (ix+$02), $01	;set state = $01 (move right)
-	ret     
+	ld	(ix+$02), $01	;set state = $01 (move right)
+	ret	
 
 
 LABEL_B28_B1C2:
-	bit     6, (ix+$04)
-	ret     nz
-	call    VF_Logic_UpdateObjectDirectionFlag
-	call    VF_Engine_CheckCollision
-	call    Logic_CheckBackgroundCollision
-	bit     0, a
-	jr      z, LABEL_B28_B1D9
-	ld      (ix+$02), $05
-	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	call	VF_Logic_UpdateObjectDirectionFlag
+	call	VF_Engine_CheckCollision
+	call	Logic_CheckBackgroundCollision
+	bit	0, a
+	jr	z, LABEL_B28_B1D9
+	ld	(ix+$02), $05
+	ret	
 
 
 LABEL_B28_B1D9:
-	call    VF_Engine_UpdateObjectPosition
-	call    LABEL_200 + $60
+	call	VF_Engine_UpdateObjectPosition
+	call	LABEL_200 + $60
 	
-	ld      a, (ix+$21)	;check for collisions
-	and     $0F
-	jp      nz, Logic_Generic_CheckDestroyObject
+	ld	a, (ix+$21)	;check for collisions
+	and	$0F
+	jp	nz, Logic_Generic_CheckDestroyObject
 	
-	ld      h, (ix+$17)	;HL = horizontal speed
-	ld      l, (ix+$16)
-	ld      de, $0002
-	xor     a
-	sbc     hl, de
-	ld      (ix+$17), h	;horizontal speed -= 2
-	ld      (ix+$16), l
+	ld	h, (ix+$17)	;HL = horizontal speed
+	ld	l, (ix+$16)
+	ld	de, $0002
+	xor	a
+	sbc	hl, de
+	ld	(ix+$17), h	;horizontal speed -= 2
+	ld	(ix+$16), l
 
-	ld      de, -256	
-	xor     a
-	sbc     hl, de
-	ret     nz		;return if speed < $FF00
+	ld	de, -256	
+	xor	a
+	sbc	hl, de
+	ret	nz		;return if speed < $FF00
 
-	ld      (ix+$02), $02	;set state = $02
-	ret     
+	ld	(ix+$02), $02	;set state = $02
+	ret	
 
 
 LABEL_B28_B205:
-	bit     6, (ix+$04)
-	ret     nz
-	call    VF_Logic_UpdateObjectDirectionFlag
-	call    VF_Engine_CheckCollision
-	call    Logic_CheckBackgroundCollision
-	bit     0, a
-	jr      z, LABEL_B28_B21C
-	ld      (ix+$02), $06
-	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	call	VF_Logic_UpdateObjectDirectionFlag
+	call	VF_Engine_CheckCollision
+	call	Logic_CheckBackgroundCollision
+	bit	0, a
+	jr	z, LABEL_B28_B21C
+	ld	(ix+$02), $06
+	ret	
 
 LABEL_B28_B21C:
-	call    VF_Engine_UpdateObjectPosition
-	call    LABEL_200 + $60
-	ld      a, (ix+$21)
-	and     $0f
-	jp      nz, Logic_Generic_CheckDestroyObject
-	ld      h, (ix+$17)
-	ld      l, (ix+$16)
-	ld      de, $0002
-	xor     a
-	adc     hl, de
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ld      de, $0100
-	xor     a
-	sbc     hl, de
-	ret     nz
-	ld      (ix+$02), $01
-	ret     
+	call	VF_Engine_UpdateObjectPosition
+	call	LABEL_200 + $60
+	ld	a, (ix+$21)
+	and	$0f
+	jp	nz, Logic_Generic_CheckDestroyObject
+	ld	h, (ix+$17)
+	ld	l, (ix+$16)
+	ld	de, $0002
+	xor	a
+	adc	hl, de
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ld	de, $0100
+	xor	a
+	sbc	hl, de
+	ret	nz
+	ld	(ix+$02), $01
+	ret	
 
 LABEL_B28_B248:
-	ld      hl, -2
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ld      hl, $0100
-	ld      (ix+$19), h
-	ld      (ix+$18), l
-	call    VF_Engine_CheckCollision
-	call    VF_Engine_UpdateObjectPosition
-	call    LABEL_200 + $60
-	ld      a, (ix+$21)
-	and     $0f
-	jp      nz, Logic_Generic_CheckDestroyObject
-	ret     
+	ld	hl, -2
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ld	hl, $0100
+	ld	(ix+$19), h
+	ld	(ix+$18), l
+	call	VF_Engine_CheckCollision
+	call	VF_Engine_UpdateObjectPosition
+	call	LABEL_200 + $60
+	ld	a, (ix+$21)
+	and	$0f
+	jp	nz, Logic_Generic_CheckDestroyObject
+	ret	
 
 LABEL_B28_B26C:
-	ld      hl, $0002
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ld      hl, $0100
-	ld      (ix+$19), h
-	ld      (ix+$18), l
-	call    VF_Engine_CheckCollision
-	call    VF_Engine_UpdateObjectPosition
-	call    LABEL_200 + $60
-	ld      a, (ix+$21)
-	and     $0f
-	jp      nz, Logic_Generic_CheckDestroyObject
+	ld	hl, $0002
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ld	hl, $0100
+	ld	(ix+$19), h
+	ld	(ix+$18), l
+	call	VF_Engine_CheckCollision
+	call	VF_Engine_UpdateObjectPosition
+	call	LABEL_200 + $60
+	ld	a, (ix+$21)
+	and	$0f
+	jp	nz, Logic_Generic_CheckDestroyObject
 	ret
 
 LABEL_B28_B290:
-	call    VF_Engine_UpdateObjectPosition
-	call    LABEL_200 + $60
-	call    VF_Engine_CheckCollision
-	ld      a, (ix+$21)
-	and     $0f
-	jp      nz, Logic_Generic_CheckDestroyObject
-	call    VF_Logic_UpdateObjectDirectionFlag
-	call    Logic_CheckBackgroundCollision
-	bit     0, a
-	jr      nz, +_
-	ld      h, (ix+$17)
-	ld      l, (ix+$16)
-	ld      de, $0004
-	xor     a
-	add     hl, de
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ld      de, $0280
-	xor     a
-	sbc     hl, de
-	ret     c
-_:  	ld      (ix+$17), $00
-	ld      (ix+$16), $00
-	ld      (ix+$02), $05
-	ret     
+	call	VF_Engine_UpdateObjectPosition
+	call	LABEL_200 + $60
+	call	VF_Engine_CheckCollision
+	ld	a, (ix+$21)
+	and	$0f
+	jp	nz, Logic_Generic_CheckDestroyObject
+	call	VF_Logic_UpdateObjectDirectionFlag
+	call	Logic_CheckBackgroundCollision
+	bit	0, a
+	jr	nz, +_
+	ld	h, (ix+$17)
+	ld	l, (ix+$16)
+	ld	de, $0004
+	xor	a
+	add	hl, de
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ld	de, $0280
+	xor	a
+	sbc	hl, de
+	ret	c
+_:  	ld	(ix+$17), $00
+	ld	(ix+$16), $00
+	ld	(ix+$02), $05
+	ret	
 
 LABEL_B28_B2D0:
-	call    VF_Engine_UpdateObjectPosition
-	call    LABEL_200 + $60
-	call    VF_Engine_CheckCollision
-	ld      a, (ix+$21)
-	and     $0f
-	jp      nz, Logic_Generic_CheckDestroyObject
-	call    VF_Logic_UpdateObjectDirectionFlag
-	call    Logic_CheckBackgroundCollision
-	bit     0, a
-	jr      nz, +_
-	ld      h, (ix+$17)
-	ld      l, (ix+$16)
-	ld      de, $0004
-	xor     a
-	sbc     hl, de
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ld      de, $fd80
-	xor     a
-	sbc     hl, de
-	ret     nc
-_:  	ld      (ix+$17), $00
-	ld      (ix+$16), $00
-	ld      (ix+$02), $06
-	ret     
+	call	VF_Engine_UpdateObjectPosition
+	call	LABEL_200 + $60
+	call	VF_Engine_CheckCollision
+	ld	a, (ix+$21)
+	and	$0f
+	jp	nz, Logic_Generic_CheckDestroyObject
+	call	VF_Logic_UpdateObjectDirectionFlag
+	call	Logic_CheckBackgroundCollision
+	bit	0, a
+	jr	nz, +_
+	ld	h, (ix+$17)
+	ld	l, (ix+$16)
+	ld	de, $0004
+	xor	a
+	sbc	hl, de
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ld	de, $fd80
+	xor	a
+	sbc	hl, de
+	ret	nc
+_:  	ld	(ix+$17), $00
+	ld	(ix+$16), $00
+	ld	(ix+$02), $06
+	ret	
 
 
 ;************************************************************
@@ -4562,7 +4562,7 @@ _:  	ld      (ix+$17), $00
 ;*	the VF_Logic_CheckDestroyObject subroutine.		*
 ;************************************************************
 Logic_Generic_CheckDestroyObject:	;$B311
-	jp      VF_Logic_CheckDestroyObject
+	jp	VF_Logic_CheckDestroyObject
 
 
 
@@ -4682,194 +4682,194 @@ DATA_B28_B4E3:
 
 
 LABEL_B28_B4ED:
-	ld      (ix+$02), $01
-	ret     
+	ld	(ix+$02), $01
+	ret	
 
 LABEL_B28_B4F2:
-	call    VF_Engine_UpdateObjectPosition
-	ld      de, $0080
-	ld      bc, $0600
-	call    VF_Engine_SetObjectVerticalSpeed
-	bit     7, (ix+$19)
-	ret     nz
-	ld      (ix+$02), $02
-	ld      (ix+$19), $00
-	ld      (ix+$18), $00
-	jp      LABEL_B28_B686
+	call	VF_Engine_UpdateObjectPosition
+	ld	de, $0080
+	ld	bc, $0600
+	call	VF_Engine_SetObjectVerticalSpeed
+	bit	7, (ix+$19)
+	ret	nz
+	ld	(ix+$02), $02
+	ld	(ix+$19), $00
+	ld	(ix+$18), $00
+	jp	LABEL_B28_B686
 
 LABEL_B28_B512:
-	ld      h, (ix+$19)
-	ld      l, (ix+$18)
-	ld      de, $0020
-	add     hl, de
-	ld      (ix+$19), h
-	ld      (ix+$18), l
-	call    VF_Engine_CheckCollision
-	call    VF_Engine_UpdateObjectPosition
-	call    LABEL_200 + $60
-	ld      bc, $0000
-	ld      de, $0000
-	call    VF_Engine_GetCollisionValueForBlock
-	cp      $81
-	jp      nz, LABEL_B28_B686
-	ld      (ix+$19), $00
-	ld      (ix+$18), $00
-	ld      (ix+$1e), $20
-	ld      (ix+$02), $03
-	ld      a, (ix+$3f)
-	bit     0, a
-	jr      nz, LABEL_B28_B553
-	jp      LABEL_B28_B686
+	ld	h, (ix+$19)
+	ld	l, (ix+$18)
+	ld	de, $0020
+	add	hl, de
+	ld	(ix+$19), h
+	ld	(ix+$18), l
+	call	VF_Engine_CheckCollision
+	call	VF_Engine_UpdateObjectPosition
+	call	LABEL_200 + $60
+	ld	bc, $0000
+	ld	de, $0000
+	call	VF_Engine_GetCollisionValueForBlock
+	cp	$81
+	jp	nz, LABEL_B28_B686
+	ld	(ix+$19), $00
+	ld	(ix+$18), $00
+	ld	(ix+$1e), $20
+	ld	(ix+$02), $03
+	ld	a, (ix+$3f)
+	bit	0, a
+	jr	nz, LABEL_B28_B553
+	jp	LABEL_B28_B686
 
 LABEL_B28_B553:
-	ld      (ix+$02), $08
-	jp      LABEL_B28_B686
+	ld	(ix+$02), $08
+	jp	LABEL_B28_B686
 
 LABEL_B28_B55A:
-	call    VF_Engine_CheckCollision
-	dec     (ix+$1e)
-	jp      nz, LABEL_B28_B686
-	ld      (ix+$02), $04
-	jp      LABEL_B28_B686
+	call	VF_Engine_CheckCollision
+	dec	(ix+$1e)
+	jp	nz, LABEL_B28_B686
+	ld	(ix+$02), $04
+	jp	LABEL_B28_B686
 
 LABEL_B28_B56A:
-	ld      hl, $fb00
-	ld      (ix+$19), h
-	ld      (ix+$18), l
-	ld      hl, ($D511)
-	ld      d, (ix+$12)
-	ld      e, (ix+$11)
-	xor     a
-	sbc     hl, de
-	jr      c, LABEL_B28_B591
-	ld      hl, $0100
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ld      (ix+$02), $05
-	jp      LABEL_B28_B686
+	ld	hl, $fb00
+	ld	(ix+$19), h
+	ld	(ix+$18), l
+	ld	hl, ($D511)
+	ld	d, (ix+$12)
+	ld	e, (ix+$11)
+	xor	a
+	sbc	hl, de
+	jr	c, LABEL_B28_B591
+	ld	hl, $0100
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ld	(ix+$02), $05
+	jp	LABEL_B28_B686
 
 LABEL_B28_B591:
-	ld      hl, -256
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ld      (ix+$02), $06
-	jp      LABEL_B28_B686
+	ld	hl, -256
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ld	(ix+$02), $06
+	jp	LABEL_B28_B686
 
 LABEL_B28_B5A1:
-	ld      h, (ix+$19)
-	ld      l, (ix+$18)
-	ld      de, $0040
-	add     hl, de
-	ld      (ix+$19), h
-	ld      (ix+$18), l
-	call    VF_Engine_CheckCollision
-	call    VF_Engine_UpdateObjectPosition
-	call    LABEL_200 + $60
-	ld      bc, $0000
-	ld      de, $0008
-	call    VF_Engine_GetCollisionValueForBlock
-	cp      $81
-	jp      nz, LABEL_B28_B686
-	ld      (ix+$17), $00
-	ld      (ix+$16), $00
-	ld      (ix+$19), $00
-	ld      (ix+$18), $00
-	ld      (ix+$1e), $20
-	ld      a, (ix+$01)
-	cp      $05
-	jr      nz, LABEL_B28_B5EA
-	ld      (ix+$02), $03
-	jp      LABEL_B28_B686
+	ld	h, (ix+$19)
+	ld	l, (ix+$18)
+	ld	de, $0040
+	add	hl, de
+	ld	(ix+$19), h
+	ld	(ix+$18), l
+	call	VF_Engine_CheckCollision
+	call	VF_Engine_UpdateObjectPosition
+	call	LABEL_200 + $60
+	ld	bc, $0000
+	ld	de, $0008
+	call	VF_Engine_GetCollisionValueForBlock
+	cp	$81
+	jp	nz, LABEL_B28_B686
+	ld	(ix+$17), $00
+	ld	(ix+$16), $00
+	ld	(ix+$19), $00
+	ld	(ix+$18), $00
+	ld	(ix+$1e), $20
+	ld	a, (ix+$01)
+	cp	$05
+	jr	nz, LABEL_B28_B5EA
+	ld	(ix+$02), $03
+	jp	LABEL_B28_B686
 
 LABEL_B28_B5EA:
-	ld      (ix+$02), $07
-	jp      LABEL_B28_B686
+	ld	(ix+$02), $07
+	jp	LABEL_B28_B686
 
 LABEL_B28_B5F1:
-	call    VF_Engine_CheckCollision
-	dec     (ix+$1e)
-	jp      nz, LABEL_B28_B686
-	ld      (ix+$02), $04
-	jp      LABEL_B28_B686
+	call	VF_Engine_CheckCollision
+	dec	(ix+$1e)
+	jp	nz, LABEL_B28_B686
+	ld	(ix+$02), $04
+	jp	LABEL_B28_B686
 
 LABEL_B28_B601:
-	call    VF_Engine_UpdateObjectPosition
-	call    VF_Engine_CheckCollision
-	dec     (ix+$1e)
-	jp      nz, LABEL_B28_B686
-	ld      (ix+$02), $0a
-	ld      hl, $fb00
-	ld      (ix+$19), h
-	ld      (ix+$18), l
-	jr      LABEL_B28_B686
+	call	VF_Engine_UpdateObjectPosition
+	call	VF_Engine_CheckCollision
+	dec	(ix+$1e)
+	jp	nz, LABEL_B28_B686
+	ld	(ix+$02), $0a
+	ld	hl, $fb00
+	ld	(ix+$19), h
+	ld	(ix+$18), l
+	jr	LABEL_B28_B686
 
 LABEL_B28_B61D:
-	ld      (ix+$17), $00
-	ld      (ix+$16), $00
-	ld      h, (ix+$19)
-	ld      l, (ix+$18)
-	ld      de, $0040
-	add     hl, de
-	ld      (ix+$19), h
-	ld      (ix+$18), l
-	call    VF_Engine_CheckCollision
-	call    VF_Engine_UpdateObjectPosition
-	call    LABEL_200 + $60
-	ld      bc, $0000
-	ld      de, $0008
-	call    VF_Engine_GetCollisionValueForBlock
-	cp      $81
-	jr      nz, LABEL_B28_B686
-	ld      (ix+$19), $00
-	ld      (ix+$18), $00
-	ld      (ix+$1e), $40
-	ld      hl, ($D511)
-	ld      d, (ix+$12)
-	ld      e, (ix+$11)
-	xor     a
-	sbc     hl, de
-	jr      c, LABEL_B28_B676
-	ld      hl, $0080
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ld      (ix+$02), $08
-	jr      LABEL_B28_B686
+	ld	(ix+$17), $00
+	ld	(ix+$16), $00
+	ld	h, (ix+$19)
+	ld	l, (ix+$18)
+	ld	de, $0040
+	add	hl, de
+	ld	(ix+$19), h
+	ld	(ix+$18), l
+	call	VF_Engine_CheckCollision
+	call	VF_Engine_UpdateObjectPosition
+	call	LABEL_200 + $60
+	ld	bc, $0000
+	ld	de, $0008
+	call	VF_Engine_GetCollisionValueForBlock
+	cp	$81
+	jr	nz, LABEL_B28_B686
+	ld	(ix+$19), $00
+	ld	(ix+$18), $00
+	ld	(ix+$1e), $40
+	ld	hl, ($D511)
+	ld	d, (ix+$12)
+	ld	e, (ix+$11)
+	xor	a
+	sbc	hl, de
+	jr	c, LABEL_B28_B676
+	ld	hl, $0080
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ld	(ix+$02), $08
+	jr	LABEL_B28_B686
 
 LABEL_B28_B676:
-	ld      hl, -128
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ld      (ix+$02), $09
-	jr      LABEL_B28_B686
+	ld	hl, -128
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ld	(ix+$02), $09
+	jr	LABEL_B28_B686
 
 LABEL_B28_B686:
-	ld      a, (ix+$21)
-	and     $0f
-	ret     z
-	ld      a, ($D503)
-	bit     1, a
-	ret     z
-	call    LABEL_B28_B698
-	jp      VF_Logic_CheckDestroyObject
+	ld	a, (ix+$21)
+	and	$0f
+	ret	z
+	ld	a, ($D503)
+	bit	1, a
+	ret	z
+	call	LABEL_B28_B698
+	jp	VF_Logic_CheckDestroyObject
 
 LABEL_B28_B698:
-	push    ix
-	pop     hl
-	call    VF_Engine_GetObjectIndexFromPointer
-	ld      c, a
-	ld      b, $08
-	ld      de, $D3BC
-_:  	ld      a, (de)
-	cp      c
-	jr      z, LABEL_B28_B6AC
-	inc     de
-	djnz    -_
-	ret     
+	push	ix
+	pop	hl
+	call	VF_Engine_GetObjectIndexFromPointer
+	ld	c, a
+	ld	b, $08
+	ld	de, $D3BC
+_:  	ld	a, (de)
+	cp	c
+	jr	z, LABEL_B28_B6AC
+	inc	de
+	djnz	-_
+	ret	
 
 LABEL_B28_B6AC:
-	xor     a
-	ld      (de), a
-	ret     
+	xor	a
+	ld	(de), a
+	ret	
 
 
 DATA_B28_B6AF:
@@ -4890,53 +4890,53 @@ DATA_B28_B6B9:
 
 
 LABEL_B28_B6C3:
-	bit     6, (ix+$04)
-	ret     nz
-	ld      (ix+$02), $01
-	ld      hl, $0080
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ld      (ix+$1e), $00
-	ld      hl, $0020
-	ld      (ix+$19), h
-	ld      (ix+$18), l
-	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	ld	(ix+$02), $01
+	ld	hl, $0080
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ld	(ix+$1e), $00
+	ld	hl, $0020
+	ld	(ix+$19), h
+	ld	(ix+$18), l
+	ret	
 
 LABEL_B28_B6E3:
-	bit     6, (ix+$04)
-	ret     nz
-	ld      a, (ix+$1e)
-	add     a, $01
-	ld      (ix+$1e), a
-	and     $80
-	jr      z, +_
-	ld      h, (ix+$19)
-	ld      l, (ix+$18)
-	call    LABEL_B28_BC23
-	ld      (ix+$19), h
-	ld      (ix+$18), l
-	ld      (ix+$1e), $00
-_:  	call    VF_Logic_UpdateObjectDirectionFlag
-	call    VF_Engine_CheckCollision
-	call    VF_Engine_UpdateObjectPosition
-	ld      a, (ix+$21)
-	and     $0f
-	jr      nz, LABEL_B28_B737
-	ld      b, $c0
-	call    LABEL_B28_BCB3
-	call    LABEL_200 + $39
-	ld      a, (ix+$22)
-	and     $0c
-	jr      z, +_
-	ld      h, (ix+$17)
-	ld      l, (ix+$16)
-	call    LABEL_B28_BC23
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-_:  	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	ld	a, (ix+$1e)
+	add	a, $01
+	ld	(ix+$1e), a
+	and	$80
+	jr	z, +_
+	ld	h, (ix+$19)
+	ld	l, (ix+$18)
+	call	LABEL_B28_BC23
+	ld	(ix+$19), h
+	ld	(ix+$18), l
+	ld	(ix+$1e), $00
+_:  	call	VF_Logic_UpdateObjectDirectionFlag
+	call	VF_Engine_CheckCollision
+	call	VF_Engine_UpdateObjectPosition
+	ld	a, (ix+$21)
+	and	$0f
+	jr	nz, LABEL_B28_B737
+	ld	b, $c0
+	call	LABEL_B28_BCB3
+	call	LABEL_200 + $39
+	ld	a, (ix+$22)
+	and	$0c
+	jr	z, +_
+	ld	h, (ix+$17)
+	ld	l, (ix+$16)
+	call	LABEL_B28_BC23
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+_:  	ret	
 
 LABEL_B28_B737:
-	jp      VF_Logic_CheckDestroyObject
+	jp	VF_Logic_CheckDestroyObject
 
 
 DATA_B28_B73A:
@@ -4975,177 +4975,177 @@ DATA_B28_B75C:
 
 
 LABEL_B28_B766:
-	bit     6, (ix+$04)
-	jr      nz, +_
-	ld      (ix+$02), $01
-_:  	ret     
+	bit	6, (ix+$04)
+	jr	nz, +_
+	ld	(ix+$02), $01
+_:  	ret	
 
 LABEL_B28_B771:
-	bit     6, (ix+$04)
-	ret     nz
-	call    LABEL_200 + $3F
-	ld      a, $60
-	call    Logic_CheckPlayerVerticalProximity
-	cp      $00
-	jr      z, LABEL_B28_B7B0
-	ld      a, $60
-	call    Logic_CheckPlayerHorizontalProximity
-	cp      $00
-	jr      z, LABEL_B28_B7B0
-	ld      (ix+$02), $02
-	ld      hl, -384
-	ld      (ix+$19), h
-	ld      (ix+$18), l
-	bit     0, a
-	jr      z, LABEL_B28_B7A6
-	ld      hl, -128
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	call	LABEL_200 + $3F
+	ld	a, $60
+	call	Logic_CheckPlayerVerticalProximity
+	cp	$00
+	jr	z, LABEL_B28_B7B0
+	ld	a, $60
+	call	Logic_CheckPlayerHorizontalProximity
+	cp	$00
+	jr	z, LABEL_B28_B7B0
+	ld	(ix+$02), $02
+	ld	hl, -384
+	ld	(ix+$19), h
+	ld	(ix+$18), l
+	bit	0, a
+	jr	z, LABEL_B28_B7A6
+	ld	hl, -128
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ret	
 
 LABEL_B28_B7A6:
-	ld      hl, $0080
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ret     
+	ld	hl, $0080
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ret	
 
 LABEL_B28_B7B0:
-	ret     
+	ret	
 
 LABEL_B28_B7B1:
-	bit     6, (ix+$04)
-	ret     nz
-	call    LABEL_200 + $3F
-	call    VF_Engine_CheckCollision
-	call    VF_Engine_UpdateObjectPosition
-	ld      a, (ix+$21)
-	and     $0f
-	jp      nz, LABEL_B28_B8DF
-	ld      l, (ix+$18)
-	ld      h, (ix+$19)
-	ld      de, $0014
-	add     hl, de
-	ld      (ix+$18), l
-	ld      (ix+$19), h
-	call    VF_Engine_UpdateObjectPosition
-	ld      bc, $0000
-	ld      de, $0000
-	call    VF_Engine_GetCollisionValueForBlock
-	cp      $81
-	jr      nz, LABEL_B28_B80F
-	ld      (ix+$02), $03
-	ld      h, (ix+$12)
-	ld      l, (ix+$11)
-	ld      d, (ix+$3b)
-	ld      e, (ix+$3a)
-	xor     a
-	sbc     hl, de
-	jr      nc, LABEL_B28_B806
-	ld      hl, $0080
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	call	LABEL_200 + $3F
+	call	VF_Engine_CheckCollision
+	call	VF_Engine_UpdateObjectPosition
+	ld	a, (ix+$21)
+	and	$0f
+	jp	nz, LABEL_B28_B8DF
+	ld	l, (ix+$18)
+	ld	h, (ix+$19)
+	ld	de, $0014
+	add	hl, de
+	ld	(ix+$18), l
+	ld	(ix+$19), h
+	call	VF_Engine_UpdateObjectPosition
+	ld	bc, $0000
+	ld	de, $0000
+	call	VF_Engine_GetCollisionValueForBlock
+	cp	$81
+	jr	nz, LABEL_B28_B80F
+	ld	(ix+$02), $03
+	ld	h, (ix+$12)
+	ld	l, (ix+$11)
+	ld	d, (ix+$3b)
+	ld	e, (ix+$3a)
+	xor	a
+	sbc	hl, de
+	jr	nc, LABEL_B28_B806
+	ld	hl, $0080
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ret	
 
 LABEL_B28_B806:
-	ld      hl, -128
-	ld      (ix+$17), h
-	ld      (ix+$16), l
+	ld	hl, -128
+	ld	(ix+$17), h
+	ld	(ix+$16), l
 LABEL_B28_B80F
-	ret     
+	ret	
 
 LABEL_B28_B810:
-	bit     6, (ix+$04)
-	ret     nz
-	ld      (ix+$02), $04
-	ld      hl, $0000
-	ld      (ix+$19), h
-	ld      (ix+$18), l
-	ld      h, (ix+$17)
-	ld      l, (ix+$16)
-	ld      de, $0000
-	xor     a
-	sbc     hl, de
-	jr      nc, LABEL_B28_B83A
-	ld      hl, $0080
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	ld	(ix+$02), $04
+	ld	hl, $0000
+	ld	(ix+$19), h
+	ld	(ix+$18), l
+	ld	h, (ix+$17)
+	ld	l, (ix+$16)
+	ld	de, $0000
+	xor	a
+	sbc	hl, de
+	jr	nc, LABEL_B28_B83A
+	ld	hl, $0080
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ret	
 
 LABEL_B28_B83A:
-	ld      hl, -128
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ret     
+	ld	hl, -128
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ret	
 
 LABEL_B28_B844:
-	bit     6, (ix+$04)
-	ret     nz
-	ld      hl, $00c0
-	ld      (ix+$19), h
-	ld      (ix+$18), l
-	call    LABEL_200 + $3F
-	call    VF_Engine_CheckCollision
-	call    VF_Engine_UpdateObjectPosition
-	call    LABEL_200 + $60
-	ld      a, (ix+$21)
-	and     $0f
-	jp      nz, LABEL_B28_B8DF
-	call    Logic_CheckBackgroundCollision
-	bit     0, a
-	jr      z, +_
-	call    LABEL_B28_BD26
-_:  	bit     7, (ix+$17)
-	jr      nz, LABEL_B28_B89A
-	ld      h, (ix+$12)
-	ld      l, (ix+$11)
-	ld      d, (ix+$3b)
-	ld      e, (ix+$3a)
-	xor     a
-	sbc     hl, de
-	jr      c, LABEL_B28_B8BC
-	ld      de, $0080
-	xor     a
-	sbc     hl, de
-	jr      c, LABEL_B28_B8BC
-	ld      hl, -128
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	jr      LABEL_B28_B8BC
+	bit	6, (ix+$04)
+	ret	nz
+	ld	hl, $00c0
+	ld	(ix+$19), h
+	ld	(ix+$18), l
+	call	LABEL_200 + $3F
+	call	VF_Engine_CheckCollision
+	call	VF_Engine_UpdateObjectPosition
+	call	LABEL_200 + $60
+	ld	a, (ix+$21)
+	and	$0f
+	jp	nz, LABEL_B28_B8DF
+	call	Logic_CheckBackgroundCollision
+	bit	0, a
+	jr	z, +_
+	call	LABEL_B28_BD26
+_:  	bit	7, (ix+$17)
+	jr	nz, LABEL_B28_B89A
+	ld	h, (ix+$12)
+	ld	l, (ix+$11)
+	ld	d, (ix+$3b)
+	ld	e, (ix+$3a)
+	xor	a
+	sbc	hl, de
+	jr	c, LABEL_B28_B8BC
+	ld	de, $0080
+	xor	a
+	sbc	hl, de
+	jr	c, LABEL_B28_B8BC
+	ld	hl, -128
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	jr	LABEL_B28_B8BC
 
 LABEL_B28_B89A:
-	ld      h, (ix+$3b)
-	ld      l, (ix+$3a)
-	ld      d, (ix+$12)
-	ld      e, (ix+$11)
-	xor     a
-	sbc     hl, de
-	jr      c, LABEL_B28_B8BC
-	ld      de, $0080
-	xor     a
-	sbc     hl, de
-	jr      c, LABEL_B28_B8BC
-	ld      hl, $0080
-	ld      (ix+$17), h
-	ld      (ix+$16), l
+	ld	h, (ix+$3b)
+	ld	l, (ix+$3a)
+	ld	d, (ix+$12)
+	ld	e, (ix+$11)
+	xor	a
+	sbc	hl, de
+	jr	c, LABEL_B28_B8BC
+	ld	de, $0080
+	xor	a
+	sbc	hl, de
+	jr	c, LABEL_B28_B8BC
+	ld	hl, $0080
+	ld	(ix+$17), h
+	ld	(ix+$16), l
 	
 LABEL_B28_B8BC:
-	ld      a, $40
-	call    Logic_CheckPlayerHorizontalProximity
-	or      a
-	ret     z
-	ld      a, ($D503)
-	bit     0, a
-	ret     z
-	ld      (ix+$02), $02
-	ld      hl, $fe80
-	ld      (ix+$19), h
-	ld      (ix+$18), l
-	ld      (ix+$17), $00
-	ld      (ix+$16), $00
-	ret     
+	ld	a, $40
+	call	Logic_CheckPlayerHorizontalProximity
+	or	a
+	ret	z
+	ld	a, ($D503)
+	bit	0, a
+	ret	z
+	ld	(ix+$02), $02
+	ld	hl, $fe80
+	ld	(ix+$19), h
+	ld	(ix+$18), l
+	ld	(ix+$17), $00
+	ld	(ix+$16), $00
+	ret	
 
 LABEL_B28_B8DF:
-	jp      VF_Logic_CheckDestroyObject
+	jp	VF_Logic_CheckDestroyObject
 
 
 DATA_B28_B8E2:
@@ -5209,75 +5209,75 @@ DATA_B28_B829:
 
 
 LABEL_B28_B93F:
-	bit     6, (ix+$04)
-	ret     nz
-	ld      (ix+$0a), $01
-	ld      (ix+$02), $01
-	ld      hl, $0020
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	ld	(ix+$0a), $01
+	ld	(ix+$02), $01
+	ld	hl, $0020
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ret	
 
 LABEL_B28_B956:
-	bit     6, (ix+$04)
-	ret     nz
-	call    VF_Logic_UpdateObjectDirectionFlag
-	ld      a, $40
-	call    Logic_CheckPlayerVerticalProximity
-	cp      $00
-	jr      z, +_
-	ld      a, $40
-	call    Logic_CheckPlayerHorizontalProximity
-	cp      $00
-	jr      z, +_
-	ld      (ix+$02), $02
-_:  	call    VF_Engine_CheckCollision
-	call    VF_Engine_UpdateObjectPosition
-	ld      a, $00
-	ld      b, $60
-	call    LABEL_B28_BCB3
-	call    Logic_CheckBackgroundCollision
-	bit     0, a
-	jr      z, +_
-	call    LABEL_B28_BD26
-_:  	ld      a, (ix+$21)
-	and     $0f
-	jr      nz, LABEL_B28_B9C6
-	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	call	VF_Logic_UpdateObjectDirectionFlag
+	ld	a, $40
+	call	Logic_CheckPlayerVerticalProximity
+	cp	$00
+	jr	z, +_
+	ld	a, $40
+	call	Logic_CheckPlayerHorizontalProximity
+	cp	$00
+	jr	z, +_
+	ld	(ix+$02), $02
+_:  	call	VF_Engine_CheckCollision
+	call	VF_Engine_UpdateObjectPosition
+	ld	a, $00
+	ld	b, $60
+	call	LABEL_B28_BCB3
+	call	Logic_CheckBackgroundCollision
+	bit	0, a
+	jr	z, +_
+	call	LABEL_B28_BD26
+_:  	ld	a, (ix+$21)
+	and	$0f
+	jr	nz, LABEL_B28_B9C6
+	ret	
 
 LABEL_B28_B994:
-	call    VF_Logic_UpdateObjectDirectionFlag
-	call    VF_Engine_CheckCollision
-	call    VF_Engine_UpdateObjectPosition
-	call    LABEL_B28_BD26
-	ld      a, (ix+$21)
-	and     $0f
-	jr      nz, LABEL_B28_B9C6
-	ld      a, ($D503)
-	bit     0, a
-	ret     z
-	ld      a, $10
-	call    Logic_CheckPlayerHorizontalProximity
-	bit     0, a
-	ret     z
-	ld      (ix+$02), $03
-	ret     
+	call	VF_Logic_UpdateObjectDirectionFlag
+	call	VF_Engine_CheckCollision
+	call	VF_Engine_UpdateObjectPosition
+	call	LABEL_B28_BD26
+	ld	a, (ix+$21)
+	and	$0f
+	jr	nz, LABEL_B28_B9C6
+	ld	a, ($D503)
+	bit	0, a
+	ret	z
+	ld	a, $10
+	call	Logic_CheckPlayerHorizontalProximity
+	bit	0, a
+	ret	z
+	ld	(ix+$02), $03
+	ret	
 
 LABEL_B28_B9BB:
-	jr      LABEL_B28_B9BE
+	jr	LABEL_B28_B9BE
 
 LABEL_B28_B9BD:
-	ret     
+	ret	
 
 LABEL_B28_B9BE:
-	ld      (ix+$3f), $80
-	call    LABEL_200 + $5D
-	ret     
+	ld	(ix+$3f), $80
+	call	LABEL_200 + $5D
+	ret	
 
 LABEL_B28_B9C6:
-	ld      a, $ff
-	ld      ($D3a8), a
-	ret     
+	ld	a, $ff
+	ld	($D3a8), a
+	ret	
 
 
 DATA_B28_B9CC:
@@ -5312,132 +5312,132 @@ DATA_B28_B9EA:
 
 
 LABEL_B28_B9F4:
-	bit     6, (ix+$04)
-	ret     nz
-	ld      (ix+$17), $00
-	ld      (ix+$16), $00
-	ld      hl, $fe80
-	ld      (ix+$18), l
-	ld      (ix+$19), h
-	ld      (ix+$1e), $00
-	ld      (ix+$0a), $00
-	ld      (ix+$02), $01
-	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	ld	(ix+$17), $00
+	ld	(ix+$16), $00
+	ld	hl, $fe80
+	ld	(ix+$18), l
+	ld	(ix+$19), h
+	ld	(ix+$1e), $00
+	ld	(ix+$0a), $00
+	ld	(ix+$02), $01
+	ret	
 
 LABEL_B28_BA17:
-	bit     6, (ix+$04)
-	ret     nz
-	ld      (ix+$17), $00
-	ld      (ix+$16), $00
-	ld      a, (ix+$1e)
-	cp      $03
-	jr      nz, LABEL_B28_BA30
-	ld      (ix+$02), $02
-	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	ld	(ix+$17), $00
+	ld	(ix+$16), $00
+	ld	a, (ix+$1e)
+	cp	$03
+	jr	nz, LABEL_B28_BA30
+	ld	(ix+$02), $02
+	ret	
 
 LABEL_B28_BA30:
-	call    VF_Engine_CheckCollision
-	call    VF_Engine_UpdateObjectPosition
-	ld      a, (ix+$21)
-	and     $0f
-	jp      nz, LABEL_B28_BB27
-	ld      l, (ix+$18)
-	ld      h, (ix+$19)
-	ld      de, $0014
-	add     hl, de
-	ld      (ix+$18), l
-	ld      (ix+$19), h
-	call    VF_Engine_UpdateObjectPosition
-	ld      bc, $0000
-	ld      de, $0000
-	call    VF_Engine_GetCollisionValueForBlock
-	cp      $81
-	jr      nz, +_
-	ld      hl, ($bb2a)
-	ld      (ix+$18), l
-	ld      (ix+$19), h
-	ld      a, (ix+$1e)
-	add     a, $01
-	ld      (ix+$1e), a
-_:  	ret     
+	call	VF_Engine_CheckCollision
+	call	VF_Engine_UpdateObjectPosition
+	ld	a, (ix+$21)
+	and	$0f
+	jp	nz, LABEL_B28_BB27
+	ld	l, (ix+$18)
+	ld	h, (ix+$19)
+	ld	de, $0014
+	add	hl, de
+	ld	(ix+$18), l
+	ld	(ix+$19), h
+	call	VF_Engine_UpdateObjectPosition
+	ld	bc, $0000
+	ld	de, $0000
+	call	VF_Engine_GetCollisionValueForBlock
+	cp	$81
+	jr	nz, +_
+	ld	hl, ($bb2a)
+	ld	(ix+$18), l
+	ld	(ix+$19), h
+	ld	a, (ix+$1e)
+	add	a, $01
+	ld	(ix+$1e), a
+_:  	ret	
 
 LABEL_B28_BA70:
-	bit     6, (ix+$04)
-	ret     nz
-	ld      (ix+$1e), $00
-	ld      hl, -256
-	ld      (ix+$19), h
-	ld      (ix+$18), l
-	inc     (ix+$0a)
-	ld      (ix+$02), $03
-	bit     0, (ix+$0a)
-	jr      nz, LABEL_B28_BA99
-	ld      hl, -96
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	ld	(ix+$1e), $00
+	ld	hl, -256
+	ld	(ix+$19), h
+	ld	(ix+$18), l
+	inc	(ix+$0a)
+	ld	(ix+$02), $03
+	bit	0, (ix+$0a)
+	jr	nz, LABEL_B28_BA99
+	ld	hl, -96
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ret	
 
 LABEL_B28_BA99:
-	ld      hl, $0060
-	ld      (ix+$16), l
-	ld      (ix+$17), h
-	ret     
+	ld	hl, $0060
+	ld	(ix+$16), l
+	ld	(ix+$17), h
+	ret	
 
 LABEL_B28_BAA3:
-	bit     6, (ix+$04)
-	ret     nz
-	ld      a, (ix+$1e)
-	cp      $03
-	jr      nz, LABEL_B28_BAC9
-	ld      (ix+$1e), $00
-	ld      (ix+$02), $01
-	ld      (ix+$17), $00
-	ld      (ix+$16), $00
-	ld      hl, ($bb2a)
-	ld      (ix+$18), l
-	ld      (ix+$19), h
-	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	ld	a, (ix+$1e)
+	cp	$03
+	jr	nz, LABEL_B28_BAC9
+	ld	(ix+$1e), $00
+	ld	(ix+$02), $01
+	ld	(ix+$17), $00
+	ld	(ix+$16), $00
+	ld	hl, ($bb2a)
+	ld	(ix+$18), l
+	ld	(ix+$19), h
+	ret	
 
 LABEL_B28_BAC9:
-	ld      a, (ix+$17)
-	or      a
-	jr      nz, +_
-	ld      a, (ix+$16)
-	or      a
-	jr      z, ++_
-_:  	call    LABEL_200 + $39
-	ld      a, (ix+$22)
-	and     $0c
-	jr      z, +_
-	ld      (ix+$17), $00
-	ld      (ix+$16), $00
-_:  	call    VF_Engine_CheckCollision
-	call    VF_Engine_UpdateObjectPosition
-	ld      a, (ix+$21)
-	and     $0f
-	jr      nz, LABEL_B28_BB27
-	ld      l, (ix+$18)
-	ld      h, (ix+$19)
-	ld      de, $0014
-	add     hl, de
-	ld      (ix+$18), l
-	ld      (ix+$19), h
-	call    VF_Engine_UpdateObjectPosition
-	ld      bc, $0000
-	ld      de, $0000
-	call    VF_Engine_GetCollisionValueForBlock
-	cp      $81
-	jr      nz, +_
-	ld      hl, -256
-	ld      (ix+$18), l
-	ld      (ix+$19), h
-	ld      a, (ix+$1e)
-	add     a, $01
-	ld      (ix+$1e), a
-_: 	ret     
+	ld	a, (ix+$17)
+	or	a
+	jr	nz, +_
+	ld	a, (ix+$16)
+	or	a
+	jr	z, ++_
+_:  	call	LABEL_200 + $39
+	ld	a, (ix+$22)
+	and	$0c
+	jr	z, +_
+	ld	(ix+$17), $00
+	ld	(ix+$16), $00
+_:  	call	VF_Engine_CheckCollision
+	call	VF_Engine_UpdateObjectPosition
+	ld	a, (ix+$21)
+	and	$0f
+	jr	nz, LABEL_B28_BB27
+	ld	l, (ix+$18)
+	ld	h, (ix+$19)
+	ld	de, $0014
+	add	hl, de
+	ld	(ix+$18), l
+	ld	(ix+$19), h
+	call	VF_Engine_UpdateObjectPosition
+	ld	bc, $0000
+	ld	de, $0000
+	call	VF_Engine_GetCollisionValueForBlock
+	cp	$81
+	jr	nz, +_
+	ld	hl, -256
+	ld	(ix+$18), l
+	ld	(ix+$19), h
+	ld	a, (ix+$1e)
+	add	a, $01
+	ld	(ix+$1e), a
+_: 	ret	
 
 LABEL_B28_BB27:
-	jp      VF_Logic_CheckDestroyObject
+	jp	VF_Logic_CheckDestroyObject
 
 
 DATA_B28_BB2A:
@@ -5459,121 +5459,121 @@ LABEL_B28_BB36:
 
 
 LABEL_B28_BB3C:
-	bit     6, (ix+$04)
-	jr      z, +_
-	ld      a, $ff
-	ld      (ix+$00), a
-_:  	ld      (ix+$02), $01
-	ld      (ix+$1e), $00
-	ld      l, (ix+$11)
-	ld      h, (ix+$12)
-	ld      (ix+$3a), l
-	ld      (ix+$3b), h
-	ld      l, (ix+$14)
-	ld      h, (ix+$15)
-	ld      (ix+$3c), l
-	ld      (ix+$3d), h
-	ld      a, (ix+$3f)
-	cp      $02
-	jr      z, LABEL_B28_BB81
-	ld      hl, $0140
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ld      hl, $fc80
-	ld      (ix+$19), h
-	ld      (ix+$18), l
-	ret     
+	bit	6, (ix+$04)
+	jr	z, +_
+	ld	a, $ff
+	ld	(ix+$00), a
+_:  	ld	(ix+$02), $01
+	ld	(ix+$1e), $00
+	ld	l, (ix+$11)
+	ld	h, (ix+$12)
+	ld	(ix+$3a), l
+	ld	(ix+$3b), h
+	ld	l, (ix+$14)
+	ld	h, (ix+$15)
+	ld	(ix+$3c), l
+	ld	(ix+$3d), h
+	ld	a, (ix+$3f)
+	cp	$02
+	jr	z, LABEL_B28_BB81
+	ld	hl, $0140
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ld	hl, $fc80
+	ld	(ix+$19), h
+	ld	(ix+$18), l
+	ret	
 
 LABEL_B28_BB81:
-	ld      hl, $00d0
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ld      hl, $fe20
-	ld      (ix+$19), h
-	ld      (ix+$18), l
-	ret     
+	ld	hl, $00d0
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ld	hl, $fe20
+	ld	(ix+$19), h
+	ld	(ix+$18), l
+	ret	
 
 LABEL_B28_BB94:
-	ld      hl, ($D176)
-	ld      de, $00E0
-	xor     a
-	add     hl, de
-	ld      d, (ix+$15)
-	ld      e, (ix+$14)
-	xor     a
-	sbc     hl, de
-	jr      nc, LABEL_B28_BBAD
-	ld      a, $ff
-	ld      (ix+$00), a
-	ret     
+	ld	hl, ($D176)
+	ld	de, $00E0
+	xor	a
+	add	hl, de
+	ld	d, (ix+$15)
+	ld	e, (ix+$14)
+	xor	a
+	sbc	hl, de
+	jr	nc, LABEL_B28_BBAD
+	ld	a, $ff
+	ld	(ix+$00), a
+	ret	
 
 LABEL_B28_BBAD:
-	bit     0, (ix+$1e)
-	jr      nz, LABEL_B28_BBD1
-	inc     (ix+$1e)
-	ld      h, (ix+$3b)
-	ld      l, (ix+$3a)
-	ld      b, h
-	ld      c, l
-	ld      d, (ix+$12)
-	ld      e, (ix+$11)
-	xor     a
-	sbc     hl, de
-	xor     a
-	add     hl, bc
-	ld      (ix+$12), h
-	ld      (ix+$11), l
-	jr      LABEL_B28_BBFD
+	bit	0, (ix+$1e)
+	jr	nz, LABEL_B28_BBD1
+	inc	(ix+$1e)
+	ld	h, (ix+$3b)
+	ld	l, (ix+$3a)
+	ld	b, h
+	ld	c, l
+	ld	d, (ix+$12)
+	ld	e, (ix+$11)
+	xor	a
+	sbc	hl, de
+	xor	a
+	add	hl, bc
+	ld	(ix+$12), h
+	ld	(ix+$11), l
+	jr	LABEL_B28_BBFD
 
 LABEL_B28_BBD1:
-	inc     (ix+$1e)
-	ld      h, (ix+$12)
-	ld      l, (ix+$11)
-	ld      d, (ix+$3b)
-	ld      e, (ix+$3a)
-	xor     a
-	sbc     hl, de
-	ex      de, hl
-	xor     a
-	sbc     hl, de
-	ld      (ix+$12), h
-	ld      (ix+$11), l
-	call    VF_Engine_CheckCollision
-	ld      a, (ix+$21)
-	and     $0f
-	ret     z
-	ld      hl, $D3A8
-	ld      a, $ff
-	ld      (hl), a
-	ret     
+	inc	(ix+$1e)
+	ld	h, (ix+$12)
+	ld	l, (ix+$11)
+	ld	d, (ix+$3b)
+	ld	e, (ix+$3a)
+	xor	a
+	sbc	hl, de
+	ex	de, hl
+	xor	a
+	sbc	hl, de
+	ld	(ix+$12), h
+	ld	(ix+$11), l
+	call	VF_Engine_CheckCollision
+	ld	a, (ix+$21)
+	and	$0f
+	ret	z
+	ld	hl, $D3A8
+	ld	a, $ff
+	ld	(hl), a
+	ret	
 
 LABEL_B28_BBFD:
-	ld      h, (ix+$19)
-	ld      l, (ix+$18)
-	ld      de, $0030
-	add     hl, de
-	ld      (ix+$19), h
-	ld      (ix+$18), l
-	call    VF_Engine_UpdateObjectPosition
-	call    VF_Engine_UpdateObjectPosition
-	call    VF_Engine_CheckCollision
-	ld      a, (ix+$21)
-	and     $0f
-	ret     z
-	ld      hl, $D3A8
-	ld      a, $ff
-	ld      (hl), a
-	ret     
+	ld	h, (ix+$19)
+	ld	l, (ix+$18)
+	ld	de, $0030
+	add	hl, de
+	ld	(ix+$19), h
+	ld	(ix+$18), l
+	call	VF_Engine_UpdateObjectPosition
+	call	VF_Engine_UpdateObjectPosition
+	call	VF_Engine_CheckCollision
+	ld	a, (ix+$21)
+	and	$0f
+	ret	z
+	ld	hl, $D3A8
+	ld	a, $ff
+	ld	(hl), a
+	ret	
 
 LABEL_B28_BC23:
-	dec     hl
-	ld      a, l
-	cpl     
-	ld      l, a
-	ld      a, h
-	cpl     
-	ld      h, a
-	ret     
+	dec	hl
+	ld	a, l
+	cpl	
+	ld	l, a
+	ld	a, h
+	cpl	
+	ld	h, a
+	ret	
 
 
 ;****************************************************************************************
@@ -5588,53 +5588,53 @@ LABEL_B28_BC23:
 ;*	destroys	DE, HL				*
 ;****************************************************************************************
 Logic_CheckPlayerHorizontalProximity:	;$BC2B
-	ld      b, a
-	ld      de, ($D511)	;DE = player hpos
-	ld      l, (ix+$11)	;HL = object hpos
-	ld      h, (ix+$12)
+	ld	b, a
+	ld	de, ($D511)	;DE = player hpos
+	ld	l, (ix+$11)	;HL = object hpos
+	ld	h, (ix+$12)
 	
-	xor     a
-	sbc     hl, de		;jump if player to object's right
-	jp      c, Logic_CheckPlayerHorizontalProximity_Right
+	xor	a
+	sbc	hl, de		;jump if player to object's right
+	jp	c, Logic_CheckPlayerHorizontalProximity_Right
 	
-	ld      a, h
-	or      a		;jump if player not close to object
-	jp      nz, Logic_CheckPlayerHorizontalProximity_Return
+	ld	a, h
+	or	a		;jump if player not close to object
+	jp	nz, Logic_CheckPlayerHorizontalProximity_Return
 	
-	ld      a, l
-	cp      b		;compare with B jump if player not within B of object
-	jp      nc, Logic_CheckPlayerHorizontalProximity_Return	
+	ld	a, l
+	cp	b		;compare with B jump if player not within B of object
+	jp	nc, Logic_CheckPlayerHorizontalProximity_Return	
 	
-	ld      a, $01		;flag player is close
-	ld      b, $01		;flag player to left of object
-	ret     
+	ld	a, $01		;flag player is close
+	ld	b, $01		;flag player to left of object
+	ret	
 
 ;ckeck player's proximity to the right of the object
 Logic_CheckPlayerHorizontalProximity_Right:	;$BC4B
-	ld      hl, ($D511)	;HL = player hpos
-	ld      e, (ix+$11)	;DE = object hpos
-	ld      d, (ix+$12)
+	ld	hl, ($D511)	;HL = player hpos
+	ld	e, (ix+$11)	;DE = object hpos
+	ld	d, (ix+$12)
 	
-	xor     a
-	sbc     hl, de		;jump if object is to player's right
-	jp      c, Logic_CheckPlayerHorizontalProximity_Return
+	xor	a
+	sbc	hl, de		;jump if object is to player's right
+	jp	c, Logic_CheckPlayerHorizontalProximity_Return
 	
-	ld      a, h
-	or      a		;jump if player is not close enough
-	jp      nz, Logic_CheckPlayerHorizontalProximity_Return
+	ld	a, h
+	or	a		;jump if player is not close enough
+	jp	nz, Logic_CheckPlayerHorizontalProximity_Return
 	
-	ld      a, l
-	cp      b		;jump if player not within B of object
-	jp      nc, Logic_CheckPlayerHorizontalProximity_Return	
+	ld	a, l
+	cp	b		;jump if player not within B of object
+	jp	nc, Logic_CheckPlayerHorizontalProximity_Return	
 	
-	ld      a, $01		;flag player close
-	ld      b, $00		;flag player to right of object
-	ret     
+	ld	a, $01		;flag player close
+	ld	b, $00		;flag player to right of object
+	ret	
 
 Logic_CheckPlayerHorizontalProximity_Return:
-	ld      a, $FF		;FIXME: pointless
-	ld      b, a
-	ld      a, $00
+	ld	a, $FF		;FIXME: pointless
+	ld	b, a
+	ld	a, $00
 	ret
 
 
@@ -5650,173 +5650,173 @@ Logic_CheckPlayerHorizontalProximity_Return:
 ;*	destroys	DE, HL				*
 ;****************************************************************************************
 Logic_CheckPlayerVerticalProximity:	;$BC6F
-	ld      b, a		;B = proximity tolerance
-	ld      de, ($D514)	;DE = player's vpos
-	ld      l, (ix+$14)	;HL = object's vpos
-	ld      h, (ix+$15)
+	ld	b, a		;B = proximity tolerance
+	ld	de, ($D514)	;DE = player's vpos
+	ld	l, (ix+$14)	;HL = object's vpos
+	ld	h, (ix+$15)
 	
-	xor     a
-	sbc     hl, de		;jump if player is below object
-	jp      c, Logic_CheckPlayerVerticalProximity_Below
+	xor	a
+	sbc	hl, de		;jump if player is below object
+	jp	c, Logic_CheckPlayerVerticalProximity_Below
 	
-	ld      a, h
-	or      a		;jump if player not close enough
-	jp      nz, Logic_CheckPlayerVerticalProximity_Return
+	ld	a, h
+	or	a		;jump if player not close enough
+	jp	nz, Logic_CheckPlayerVerticalProximity_Return
 	
-	ld      a, l
-	cp      b		;jump if player not within tolerance
-	jp      nc, Logic_CheckPlayerVerticalProximity_Return
+	ld	a, l
+	cp	b		;jump if player not within tolerance
+	jp	nc, Logic_CheckPlayerVerticalProximity_Return
 	
-	ld      a, $01		;flag player is close
-	ld      b, $01		;flag player above object
-	ret     
+	ld	a, $01		;flag player is close
+	ld	b, $01		;flag player above object
+	ret	
 
 Logic_CheckPlayerVerticalProximity_Below:	;$BC8F
-	ld      hl, ($D514)	;HL = player's vpos
-	ld      e, (ix+$14)	;DE = object's vpos
-	ld      d, (ix+$15)
+	ld	hl, ($D514)	;HL = player's vpos
+	ld	e, (ix+$14)	;DE = object's vpos
+	ld	d, (ix+$15)
 	
-	xor     a
-	sbc     hl, de		;jump if player is above object
-	jp      c, Logic_CheckPlayerVerticalProximity_Return
+	xor	a
+	sbc	hl, de		;jump if player is above object
+	jp	c, Logic_CheckPlayerVerticalProximity_Return
 	
-	ld      a, h
-	or      a		;jump if player not close enough
-	jp      nz, Logic_CheckPlayerVerticalProximity_Return
+	ld	a, h
+	or	a		;jump if player not close enough
+	jp	nz, Logic_CheckPlayerVerticalProximity_Return
 	
-	ld      a, l
-	cp      b		;jump if player not within tolerance
-	jp      nc, Logic_CheckPlayerVerticalProximity_Return
+	ld	a, l
+	cp	b		;jump if player not within tolerance
+	jp	nc, Logic_CheckPlayerVerticalProximity_Return
 	
-	ld      a, $01		;flag player is close
-	ld      b, $00		;flag player below object
-	ret     
+	ld	a, $01		;flag player is close
+	ld	b, $00		;flag player below object
+	ret	
 
 Logic_CheckPlayerVerticalProximity_Return:	;$BCAD
-	ld      a, $FF
-	ld      b, a		;flag player not close enough
-	ld      a, $00
-	ret     
+	ld	a, $FF
+	ld	b, a		;flag player not close enough
+	ld	a, $00
+	ret	
 
 
 
 LABEL_B28_BCB3:
-	ld      c, a
-	ld      h, (ix+$12)
-	ld      l, (ix+$11)
-	ld      d, (ix+$3b)
-	ld      e, (ix+$3a)
-	xor     a
-	sbc     hl, de
-	jr      c, LABEL_B28_BCE4
-	ld      a, h
-	or      a
-	jr      nz, LABEL_B28_BD14
-	ld      a, l
-	cp      b
-	jr      c, LABEL_B28_BD14
-	ld      a, c
-	and     $01
-	jr      nz, +_
-	ld      h, (ix+$17)
-	ld      l, (ix+$16)
-	call    LABEL_B28_BC23
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-_:  	ld      a, $01
-	ret     
+	ld	c, a
+	ld	h, (ix+$12)
+	ld	l, (ix+$11)
+	ld	d, (ix+$3b)
+	ld	e, (ix+$3a)
+	xor	a
+	sbc	hl, de
+	jr	c, LABEL_B28_BCE4
+	ld	a, h
+	or	a
+	jr	nz, LABEL_B28_BD14
+	ld	a, l
+	cp	b
+	jr	c, LABEL_B28_BD14
+	ld	a, c
+	and	$01
+	jr	nz, +_
+	ld	h, (ix+$17)
+	ld	l, (ix+$16)
+	call	LABEL_B28_BC23
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+_:  	ld	a, $01
+	ret	
 
 LABEL_B28_BCE4:
-	ld      d, (ix+$12)
-	ld      e, (ix+$11)
-	ld      h, (ix+$3b)
-	ld      l, (ix+$3a)
-	xor     a
-	sbc     hl, de
-	jr      c, LABEL_B28_BD14
-	ld      a, h
-	or      a
-	jr      nz, LABEL_B28_BD14
-	ld      a, l
-	cp      b
-	jr      c, LABEL_B28_BD14
-	ld      a, c
-	and     $01
-	jr      nz, +_
-	ld      h, (ix+$17)
-	ld      l, (ix+$16)
-	call    LABEL_B28_BC23
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-_:  	ld      a, $01
-	ret     
+	ld	d, (ix+$12)
+	ld	e, (ix+$11)
+	ld	h, (ix+$3b)
+	ld	l, (ix+$3a)
+	xor	a
+	sbc	hl, de
+	jr	c, LABEL_B28_BD14
+	ld	a, h
+	or	a
+	jr	nz, LABEL_B28_BD14
+	ld	a, l
+	cp	b
+	jr	c, LABEL_B28_BD14
+	ld	a, c
+	and	$01
+	jr	nz, +_
+	ld	h, (ix+$17)
+	ld	l, (ix+$16)
+	call	LABEL_B28_BC23
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+_:  	ld	a, $01
+	ret	
 
 LABEL_B28_BD14:
-	ld      a, $00
-	ret     
+	ld	a, $00
+	ret	
 
 LABEL_B28_BD17:
-	ld      h, (ix+$19)
-	ld      l, (ix+$18)
-	call    LABEL_B28_BC23
-	ld      (ix+$19), h
-	ld      (ix+$18), l
+	ld	h, (ix+$19)
+	ld	l, (ix+$18)
+	call	LABEL_B28_BC23
+	ld	(ix+$19), h
+	ld	(ix+$18), l
 LABEL_B28_BD26:
-	ld      h, (ix+$17)
-	ld      l, (ix+$16)
-	call    LABEL_B28_BC23
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ret     
+	ld	h, (ix+$17)
+	ld	l, (ix+$16)
+	call	LABEL_B28_BC23
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ret	
 
 ;test for a collision with the background tiles
 Logic_CheckBackgroundCollision:		;$BD36
-	bit     7, (ix+$17)	;which direction is the object moving?
-	jr      nz, +_		;jump if moving left
+	bit	7, (ix+$17)	;which direction is the object moving?
+	jr	nz, +_		;jump if moving left
 	
 			;get the mapping block type
-	ld      bc, $0008	;horizontal adjustment value if moving right
-	jr      ++_
+	ld	bc, $0008	;horizontal adjustment value if moving right
+	jr	++_
 	
-_:  	ld      bc, -8	;horizontal adjustment value if moving left
+_:  	ld	bc, -8	;horizontal adjustment value if moving left
 
-_:   	ld      de, -16	;vertical adjustment value (-16px)
-	call    VF_Engine_GetCollisionValueForBlock
-	cp      $81
-	jr      z, +_
-	cp      $8D
-	jr      z, +_
-	cp      $90
-	jr      z, +_
-	jr      Logic_CheckBackgroundCollision_Bottom
+_:   	ld	de, -16	;vertical adjustment value (-16px)
+	call	VF_Engine_GetCollisionValueForBlock
+	cp	$81
+	jr	z, +_
+	cp	$8D
+	jr	z, +_
+	cp	$90
+	jr	z, +_
+	jr	Logic_CheckBackgroundCollision_Bottom
 	
-_:  	ld      a, ($D353)		;search the 8-element array at $BD86 for the current mapping number.
-	ld      hl, Logic_CheckBackgroundCollision_MappingData
-	ld      bc, $0008
-	cpir    			;jump if mapping number found
-	jr      z, Logic_CheckBackgroundCollision_Bottom
+_:  	ld	a, ($D353)		;search the 8-element array at $BD86 for the current mapping number.
+	ld	hl, Logic_CheckBackgroundCollision_MappingData
+	ld	bc, $0008
+	cpir				;jump if mapping number found
+	jr	z, Logic_CheckBackgroundCollision_Bottom
 	
-	ld      a, $01
-	ret     
+	ld	a, $01
+	ret	
 
 ;test for a collision at the bottom of the object with the background tiles
 Logic_CheckBackgroundCollision_Bottom:	;$BD68
-	bit     7, (ix+$17)	;which direction is the sprite moving?
-	jr      nz, +_		;jump if moving left
-	ld      bc, $0008	;horizontal adjustment value if moving right
-	jr      ++_
-_:  	ld      bc, -8		;horizontal adjustment value if moving left
-_:   	ld      de, $0010	;vertical adjustment value (+16px)
-	call    VF_Engine_GetCollisionValueForBlock
+	bit	7, (ix+$17)	;which direction is the sprite moving?
+	jr	nz, +_		;jump if moving left
+	ld	bc, $0008	;horizontal adjustment value if moving right
+	jr	++_
+_:  	ld	bc, -8		;horizontal adjustment value if moving left
+_:   	ld	de, $0010	;vertical adjustment value (+16px)
+	call	VF_Engine_GetCollisionValueForBlock
 	
-	bit     7, a
-	jr      z, +_		;jump if block value < $80
+	bit	7, a
+	jr	z, +_		;jump if block value < $80
 	
-	ld      a, $00
-	ret     
+	ld	a, $00
+	ret	
 
-_:  	ld      a, $01
-	ret     
+_:  	ld	a, $01
+	ret	
 
 ;note: these mappings are half-solid, i.e. the bottom 2 rows of
 ;tiles are solid, the top 2 rows are not.
@@ -5848,39 +5848,39 @@ LABEL_B28_BDA3:
 
 
 LABEL_B28_BDA9:
-	ld      hl, -368
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ld      (ix+$19), $00
-	ld      (ix+$18), $00
-	ld      (ix+$02), $01
-	ret     
+	ld	hl, -368
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ld	(ix+$19), $00
+	ld	(ix+$18), $00
+	ld	(ix+$02), $01
+	ret	
 
 LABEL_B28_BDBF:
-	bit     6, (ix+$04)
-	jr      nz, LABEL_B28_BDEB
-	call    VF_Engine_CheckCollision
-	call    VF_Engine_UpdateObjectPosition
-	ld      a, (ix+$21)
-	and     $0f
-	ret     z
+	bit	6, (ix+$04)
+	jr	nz, LABEL_B28_BDEB
+	call	VF_Engine_CheckCollision
+	call	VF_Engine_UpdateObjectPosition
+	ld	a, (ix+$21)
+	and	$0f
+	ret	z
 LABEL_B28_BDD1:
-	ld      hl, $D3A8
-	ld      (hl), $ff
+	ld	hl, $D3A8
+	ld	(hl), $ff
 	ret
 
 LABEL_B28_BDD7:
-	bit     6, (ix+$04)
-	jr      nz, LABEL_B28_BDEB
-	call    VF_Engine_CheckCollision
-	call    VF_Engine_UpdateObjectPosition
-	ld      a, (ix+$21)
-	and     $0f
-	ret     z
-	jr      LABEL_B28_BDD1
+	bit	6, (ix+$04)
+	jr	nz, LABEL_B28_BDEB
+	call	VF_Engine_CheckCollision
+	call	VF_Engine_UpdateObjectPosition
+	ld	a, (ix+$21)
+	and	$0f
+	ret	z
+	jr	LABEL_B28_BDD1
 LABEL_B28_BDEB:
-	ld      (ix+$00), $ff
-	ret     
+	ld	(ix+$00), $ff
+	ret	
 
 
 DATA_B28_BDF0:
@@ -5935,91 +5935,91 @@ DATA_B28_BE26:
 
 
 LABEL_B28_BE37:
-	bit     6, (ix+$04)
-	ret     nz
-	ld      hl, $00c0
-	ld      (ix+$17), h
-	ld      (ix+$16), l
-	ld      hl, $0100
-	ld      (ix+$19), h
-	ld      (ix+$18), l
-	ld      (ix+$02), $01
-	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	ld	hl, $00c0
+	ld	(ix+$17), h
+	ld	(ix+$16), l
+	ld	hl, $0100
+	ld	(ix+$19), h
+	ld	(ix+$18), l
+	ld	(ix+$02), $01
+	ret	
 
 LABEL_B28_BE53:
-	bit     6, (ix+$04)
-	ret     nz
-	call    LABEL_200 + $3F
-	call    VF_Engine_CheckCollision
-	call    Logic_CheckBackgroundCollision
-	bit     0, a
-	jr      z, +_
-	call    LABEL_B28_BD26
-_:  	call    VF_Engine_UpdateObjectPosition
-	call    LABEL_200 + $60
-	ld      a, (ix+$21)
-	and     $0f
-	jr      nz, LABEL_B28_BEE7
-	ld      a, $00
-	ld      b, $40
-	call    LABEL_B28_BCB3
-	and     $01
-	jr      z, LABEL_B28_BEB7
-	ld      h, (ix+$3b)
-	ld      l, (ix+$3a)
-	ld      d, (ix+$12)
-	ld      e, (ix+$11)
-	xor     a
-	sbc     hl, de
-	jr      nc, LABEL_B28_BEA5
-	ld      hl, ($D511)
-	ld      d, (ix+$12)
-	ld      e, (ix+$11)
-	xor     a
-	sbc     hl, de
-	jr      c, LABEL_B28_BEB7
-	ld      (ix+$02), $02
-	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	call	LABEL_200 + $3F
+	call	VF_Engine_CheckCollision
+	call	Logic_CheckBackgroundCollision
+	bit	0, a
+	jr	z, +_
+	call	LABEL_B28_BD26
+_:  	call	VF_Engine_UpdateObjectPosition
+	call	LABEL_200 + $60
+	ld	a, (ix+$21)
+	and	$0f
+	jr	nz, LABEL_B28_BEE7
+	ld	a, $00
+	ld	b, $40
+	call	LABEL_B28_BCB3
+	and	$01
+	jr	z, LABEL_B28_BEB7
+	ld	h, (ix+$3b)
+	ld	l, (ix+$3a)
+	ld	d, (ix+$12)
+	ld	e, (ix+$11)
+	xor	a
+	sbc	hl, de
+	jr	nc, LABEL_B28_BEA5
+	ld	hl, ($D511)
+	ld	d, (ix+$12)
+	ld	e, (ix+$11)
+	xor	a
+	sbc	hl, de
+	jr	c, LABEL_B28_BEB7
+	ld	(ix+$02), $02
+	ret	
 
 LABEL_B28_BEA5:
-	ld      hl, ($D511)
-	ld      d, (ix+$12)
-	ld      e, (ix+$11)
-	xor     a
-	sbc     hl, de
-	jr      nc,  LABEL_B28_BEB7
-	ld      (ix+$02), $03
+	ld	hl, ($D511)
+	ld	d, (ix+$12)
+	ld	e, (ix+$11)
+	xor	a
+	sbc	hl, de
+	jr	nc,  LABEL_B28_BEB7
+	ld	(ix+$02), $03
 LABEL_B28_BEB7:
 	ret
 
 LABEL_B28_BEB8:
-	bit     6, (ix+$04)
-	ret     nz
-	ld      a, (ix+$21)
-	and     $0f
-	jr      nz, LABEL_B28_BEE7
-	ld      (ix+$02), $04
-	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	ld	a, (ix+$21)
+	and	$0f
+	jr	nz, LABEL_B28_BEE7
+	ld	(ix+$02), $04
+	ret	
 
 LABEL_B28_BEC9:
-	bit     6, (ix+$04)
-	ret     nz
-	ld      a, (ix+$21)
-	and     $0f
-	jr      nz, LABEL_B28_BEE7
-	ld      (ix+$02), $04
-	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	ld	a, (ix+$21)
+	and	$0f
+	jr	nz, LABEL_B28_BEE7
+	ld	(ix+$02), $04
+	ret	
 
 LABEL_B28_BEDA:
-	bit     6, (ix+$04)
-	ret     nz
-	ld      a, (ix+$21)
-	and     $0f
-	jr      nz, LABEL_B28_BEE7
-	ret     
+	bit	6, (ix+$04)
+	ret	nz
+	ld	a, (ix+$21)
+	and	$0f
+	jr	nz, LABEL_B28_BEE7
+	ret	
 
 LABEL_B28_BEE7:
-	jp      VF_Logic_CheckDestroyObject
+	jp	VF_Logic_CheckDestroyObject
 
 
 DATA_B28_BEEA:
@@ -6038,82 +6038,82 @@ DATA_B28_BEF4:
 
 
 LABEL_B28_BEFA:
-	ld      (ix+$1e), $00
-	ld      h, (ix+$12)
-	ld      l, (ix+$11)
-	ld      (ix+$3b), h
-	ld      (ix+$3a), l
-	ld      h, (ix+$15)
-	ld      l, (ix+$14)
-	ld      (ix+$3d), h
-	ld      (ix+$3c), l
-	ld      (ix+$02), $01
-	ld      a, (ix+$3f)
-	and     $01
-	jr      z, LABEL_B28_BF34
-	ld      hl, -256
-	ld      (ix+$16), l
-	ld      (ix+$17), h
-	ld      hl, -896
-	ld      (ix+$18), l
-	ld      (ix+$19), h
-	ret     
+	ld	(ix+$1e), $00
+	ld	h, (ix+$12)
+	ld	l, (ix+$11)
+	ld	(ix+$3b), h
+	ld	(ix+$3a), l
+	ld	h, (ix+$15)
+	ld	l, (ix+$14)
+	ld	(ix+$3d), h
+	ld	(ix+$3c), l
+	ld	(ix+$02), $01
+	ld	a, (ix+$3f)
+	and	$01
+	jr	z, LABEL_B28_BF34
+	ld	hl, -256
+	ld	(ix+$16), l
+	ld	(ix+$17), h
+	ld	hl, -896
+	ld	(ix+$18), l
+	ld	(ix+$19), h
+	ret	
 
 LABEL_B28_BF34:
-	ld      hl, $0100
-	ld      (ix+$16), l
-	ld      (ix+$17), h
-	ld      hl, -896
-	ld      (ix+$18), l
-	ld      (ix+$19), h
-	ret     
+	ld	hl, $0100
+	ld	(ix+$16), l
+	ld	(ix+$17), h
+	ld	hl, -896
+	ld	(ix+$18), l
+	ld	(ix+$19), h
+	ret	
 
 LABEL_B28_BF47:
-	call    VF_Engine_CheckCollision
-	ld      l, (ix+$18)
-	ld      h, (ix+$19)
-	ld      de, $0020
-	add     hl, de
-	ld      (ix+$18), l
-	ld      (ix+$19), h
-	call    VF_Engine_UpdateObjectPosition
-	ld      a, (ix+$21)
-	and     $0f
-	jr      z, LABEL_B28_BF6E
-	ld      hl, $D3A8
-	ld      a, $FF
-	ld      (hl), a
-	jr      LABEL_B28_BFA4
+	call	VF_Engine_CheckCollision
+	ld	l, (ix+$18)
+	ld	h, (ix+$19)
+	ld	de, $0020
+	add	hl, de
+	ld	(ix+$18), l
+	ld	(ix+$19), h
+	call	VF_Engine_UpdateObjectPosition
+	ld	a, (ix+$21)
+	and	$0f
+	jr	z, LABEL_B28_BF6E
+	ld	hl, $D3A8
+	ld	a, $FF
+	ld	(hl), a
+	jr	LABEL_B28_BFA4
 
 LABEL_B28_BF6E:
-	call    LABEL_200 + $60
-	ld      a, (ix+$22)
-	bit     2, a
-	jr      nz, LABEL_B28_BFA4
-	bit     3, a
-	jr      nz, LABEL_B28_BFA4
-	bit     0, a
-	jr      nz, LABEL_B28_BFA4
-	bit     1, a
-	jr      z, +_
-	ld      h, (ix+$19)
-	ld      l, (ix+$18)
-	call    LABEL_B28_BC23
-	ld      de, $0040
-	add     hl, de
-	ld      (ix+$19), h
-	ld      (ix+$18), l
-	ld      a, (ix+$1E)
-	add     a, $01
-	ld      (ix+$1e), a
-	cp      $06
-	jr      nc, LABEL_B28_BFA4
-  	ret     
+	call	LABEL_200 + $60
+	ld	a, (ix+$22)
+	bit	2, a
+	jr	nz, LABEL_B28_BFA4
+	bit	3, a
+	jr	nz, LABEL_B28_BFA4
+	bit	0, a
+	jr	nz, LABEL_B28_BFA4
+	bit	1, a
+	jr	z, +_
+	ld	h, (ix+$19)
+	ld	l, (ix+$18)
+	call	LABEL_B28_BC23
+	ld	de, $0040
+	add	hl, de
+	ld	(ix+$19), h
+	ld	(ix+$18), l
+	ld	a, (ix+$1E)
+	add	a, $01
+	ld	(ix+$1e), a
+	cp	$06
+	jr	nc, LABEL_B28_BFA4
+  	ret	
 
 LABEL_B28_BFA4:
-	ld      (ix+$3f), $80
-	jp      LABEL_200 + $5D
-_:	ret     
+	ld	(ix+$3f), $80
+	jp	LABEL_200 + $5D
+_:	ret	
 
 DATA_B28_BFAC:
 

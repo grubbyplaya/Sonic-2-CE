@@ -1417,7 +1417,7 @@ LABEL_B30_9826:
 	inc	hl
 	ld	(ix+$1e), l
 	ld	(ix+$1f), h
-	ld	de, $00F0
+	ld	de, $01E0
 	xor	a
 	sbc	hl, de
 	ld	a, h

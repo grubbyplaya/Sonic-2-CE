@@ -320,48 +320,48 @@ DATA_B31_A8A7:
 
 DATA_B31_A8B9:
 .db $06, $48
-	.dw LABEL_41DD
+	.dw LABEL_200 + $90
 .db $06, $49
-	.dw LABEL_41DD
+	.dw LABEL_200 + $90
 .db $06, $48
-	.dw LABEL_41DD
+	.dw LABEL_200 + $90
 .db $06, $4A
-	.dw LABEL_41DD
+	.dw LABEL_200 + $90
 .db $FF, $00
 
 DATA_B31_A8CB:
 .db $08, $58
-	.dw LABEL_46C0
+	.dw LABEL_200 + $D2
 .db $FF, $02
-	.dw LABEL_46BB
+	.dw LABEL_200 + $81
 .db $FF, $03
 DATA_B31_A8D5:
 .db $FF, $07
-	.dw Player_MineCart_Handle
-	.dw LABEL_46EA
+	.dw LABEL_200 + $DB
+	.dw LABEL_200 + $D5
 .db $FF, $00
 
 DATA_B31_A8DD:
 .db $FF, $07
 	.dw VF_Player_CalculateLoopFallFrame
-	.dw LABEL_3467
+	.dw LABEL_200 + $C0
 .db $FF, $00
 
 DATA_B31_A8E5:
 .db $06, $1B
-	.dw LABEL_3484
+	.dw LABEL_200 + $8A
 .db $FF, $00 
 
 DATA_B31_A8EB:
 .db $80, $63
-	.dw LABEL_34DA
+	.dw LABEL_200 + $87
 .db $FF, $00
 
 DATA_B31_A8F1:
 .db $08, $19
-	.dw LABEL_34E1
+	.dw LABEL_200 + $108
 .db $08, $19
-	.dw LABEL_34E1
+	.dw LABEL_200 + $108
 .db $FF, $06
 	.db $0A
 	.dw $0000
@@ -423,10 +423,10 @@ DATA_B31_A953:
 	.dw $0000
 .db $FF, $07 
 	.dw LABEL_B31_A967
-	.dw LABEL_348F
+	.dw LABEL_200 + $E7
 .db $FF, $07
 	.dw LABEL_B31_A96E
-	.dw LABEL_348F
+	.dw LABEL_200 + $E7
 .db $FF, $00
 
 
@@ -700,7 +700,7 @@ LABEL_B31_AB06:
 	ld	(ix + Object.VelY), l
 	ld	(ix + Object.VelY + 1), h
 
-	call	LABEL_75C5
+	call	LABEL_200 + $60
 	call	VF_Engine_UpdateObjectPosition
 
 	ld	l, (ix + Object.X)

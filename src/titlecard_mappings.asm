@@ -13,8 +13,12 @@ DATA_28FE:	;mappings for act logo
 .dw DATA_2F1C
 
 
-DATA_2904:
+DATA_2904:	;mappings for "GREEN HILLS"
+ #if Language = 1
   #import "mappings/titlecard/titlecard_mappings_2904.bin"
+#else Language = 2
+  #import "mappings/titlecard/titlecard_mappings_2904_FR.bin"
+#endif
 
 
 DATA_2974:
@@ -25,20 +29,37 @@ DATA_299C:
   #import "mappings/titlecard/titlecard_mappings_299C.bin"
 
 
-DATA_29C4:
+DATA_29C4:	;mappings for "AQUA LAKE"
+#if Language = 1
   #import "mappings/titlecard/titlecard_mappings_29C4.bin"
+#else Language = 2
+  #import "mappings/titlecard/titlecard_mappings_29C4_FR.bin"
+#endif
 
 
 DATA_2A34:	;mappings for "UNDER GROUND"
+#if Language = 1
   #import "mappings/titlecard/titlecard_mappings_2A34.bin"
+#else Language = 2
+  #import "mappings/titlecard/titlecard_mappings_2A34_FR.bin"
+#endif
 
 
 DATA_2AA4:	;mappings for "SKY HIGH"
+#if Language = 1
   #import "mappings/titlecard/titlecard_mappings_2AA4.bin"
+#else Language = 2
+  #import "mappings/titlecard/titlecard_mappings_2AA4_FR.bin"
+#endif
+
 
 
 DATA_2B14:	;mappings for "GIMMICK MT."
+#if Language = 1
   #import "mappings/titlecard/titlecard_mappings_2B14.bin"
+#else Language = 2
+  #import "mappings/titlecard/titlecard_mappings_2B14_FR.bin"
+#endif
 
 
 DATA_2B84:	;unused "MOUNTAIN" mappings
@@ -46,12 +67,19 @@ DATA_2B84:	;unused "MOUNTAIN" mappings
 
 
 DATA_2BF4:	;mappings for "SCRAMBLED EGG"
+#if Language = 1
   #import "mappings/titlecard/titlecard_mappings_2BF4.bin"
+#else Language = 2
+  #import "mappings/titlecard/titlecard_mappings_2BF4_FR.bin"
+#endif
 
 
 DATA_2C64:	;mappings for "CRYSTAL EGG"
+#if Language = 1
   #import "mappings/titlecard/titlecard_mappings_2C64.bin"
-
+#else Language = 2
+  #import "mappings/titlecard/titlecard_mappings_2C64_FR.bin"
+#endif
 
 DATA_2D0C:	
   #import "mappings/titlecard/titlecard_mappings_2D0C.bin"

@@ -94,7 +94,7 @@ LABEL_B31_B017:
 	call    VF_Engine_UpdateObjectPosition
 	res     1, (ix+$22)
 	bit     7, (ix+$19)
-	call    z, LABEL_75C5
+	call    z, LABEL_200 + $60
 	bit     1, (ix+$22)
 	jr      z, +_
 	res     6, (ix+$03)

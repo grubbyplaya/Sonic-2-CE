@@ -125,5 +125,5 @@ ChaosEmerald_CheckCollisions_CEZ:	; $B883
 	ld	bc, $0600
 	call	VF_Engine_SetObjectVerticalSpeed
 	ld	hl, $0080
-	call	LABEL_631A
+	call	LABEL_200 + $12
 	ret

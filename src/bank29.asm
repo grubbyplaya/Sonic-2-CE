@@ -163,11 +163,8 @@ _:	call    LABEL_B29_B4F5
 	dec     a
 _:	or      c
 	ld      c, a
-	inc     ix
-	inc     ix
-	inc     ix
-	inc     iy
-	inc     iy
+	lea	ix, ix+3
+	lea	iy, iy+2
 	djnz    ---_
 	ld      a, c
 	or      a

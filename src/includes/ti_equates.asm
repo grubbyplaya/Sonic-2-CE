@@ -11,6 +11,7 @@
 #define Arc_Unarc		$021448
 #define ramStart		$D00000
 #define tempSP			$D0053F
+#define ScrapMem		$D02AD7
 #define cmdPixelShadow		$D07396
 #define plotSScreen		$D09466
 #define saveSScreen		$D0EA1F

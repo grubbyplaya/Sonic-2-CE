@@ -25,10 +25,6 @@ DrawScreen:
 	ret
 .ASSUME ADL=1
 
-RenderScreen:
-	call.lil RenderScreenMap
-	ret
-
 RenderScreenMap:
 	ld	hl, RenderedScreenMap
 	ld	de, VRAM+$1E20		;first letter in letterbox
@@ -152,8 +148,6 @@ _:	call	GetTilePointer
 	;reset self-modifying code
 	ld	a, $13				;INC DE
 	ld	(DrawPixel), a
-	ld	hl, $0019			;ADD HL, DE \ NOP
-	ld	(MoveToNextLine), hl
 	ld	hl, 248
 	ld	(SetScanlineSkip+1), hl
 	ld	hl, $0077FD
@@ -185,22 +179,16 @@ _:	bit	2, a			;do we flip the tile vertically?
 	ex	de, hl
 	add	hl, bc
 	ex	de, hl
-	ld	bc, $42ED
-	ld	(SetCachedTile_DrawingY), bc
-	ld	bc, 264
+	ld	bc, -264
 	ld	(SetCachedTile_DrawingGapY+1), bc
 
 _:	ld	a, $08
 _:	ld	bc, $0008		;BC = tile width
 	ldir
-	nop
 	ex	de, hl
 SetCachedTile_DrawingGapY:
 	ld	bc, 248
-SetCachedTile_DrawingY:
 	add	hl, bc
-	nop
-	nop
 	ex	de, hl
 	dec	a
 	jr	nz, -_
@@ -208,8 +196,6 @@ SetCachedTile_DrawingY:
 	inc	hl
 	set	7, (hl)
 	;reset self-modifying code
-	ld	bc, $09		;ADD HL, BC
-	ld	(SetCachedTile_DrawingY), bc
 	ld	bc, 248
 	ld	(SetCachedTile_DrawingGapY+1), bc
 	ret
@@ -229,11 +215,8 @@ DrawCachedTile_FlippedX:
 	ex	de, hl
 	add	hl, bc
 	ex	de, hl
-
-	ld	bc, 248
+	ld	bc, -248
 	ld	(SetCachedTile_DrawingGap+1), bc
-	ld	bc, $42ED
-	ld	(SetCachedTile_DrawingX), bc
 
 _:	ld	c, 8
 	ex	af, af'
@@ -246,10 +229,7 @@ _:	ld	a, (hl)
 SetCachedTile_DrawingGap:
 	ld	bc, 264
 	ex	de, hl
-SetCachedTile_DrawingX:
 	add	hl, bc
-	nop
-	nop
 	ex	de, hl
 	ex	af, af'
 	dec	a
@@ -261,10 +241,7 @@ SetCachedTile_DrawingX:
 	;reset self-modifying code
 	ld	bc, 264
 	ld	(SetCachedTile_DrawingGap+1), bc
-	ld	bc, $09		;ADD HL, BC
-	ld	(SetCachedTile_DrawingX), bc
-	ret
-	
+	ret	
 
 GetTilePointer:		;makes HL a pointer to the selected tile
 	ld	a, (hl)
@@ -334,41 +311,29 @@ _:	bit	1, e		;do we flip the tile horizontally?
 	add	hl, bc
 	ld	a, $1B		;since we're drawing the tile backwards, we
 	ld	(DrawPixel), a	;switch out the INC DE in the tile drawing
-	ld	bc, $010811	;routines for a DEC DE.
-	ld	(SetScanlineSkip), bc
+	ld	bc, 264		;routines for a DEC DE.
+	ld	(SetScanlineSkip+1), bc
 
 _:	bit	2, e		;do we flip the tile vertically?
 	jr	z, +_		;jump if we shouldn't
 
 	ld	bc, $0700
 	add	hl, bc
-	ld	a, $ED		;switch out ADD HL, DE with SBC HL, DE
-	ld	(MoveToNextLine), a
-	ld	a, $52
-	ld	(MoveToNextLine+1), a
-	ld	bc, $010811
-	ld	(SetScanlineSkip), bc
+	ld	bc, -264
+	ld	(SetScanlineSkip+1), bc
 
 	ld	a, e
 	and	$06
 	cp	$06		;do we flip the tile both ways?
 	jr	nz, +_
-	ld	a, $11
-	ld	(SetScanlineSkip), a
-	ld	bc, 248
+	ld	bc, -248
 	ld	(SetScanlineSkip+1), bc
 _:	push	hl
 	exx
 	pop	de
 	ret
 
-DrawSAT:	;draws all the sprites, from least to most significant
-	ld	hl, DrawTilemapTrig
-	ld.sis	a, (LastTilemapTrig)
-	or.sis	(hl)
-	bit	0, a	
-	call	z, RenderScreen
-
+DrawSAT:	;draws all the sprites, from most to least significant
 	ld	a, 1
 	ld	($D2DE06), a
 	ld	iy, SAT		;y position
@@ -409,8 +374,7 @@ _:	ld	h, (iy)
 	inc	l
 	call	SetSpritePTR
 
-_:	inc	ix		;point IX and IY to the next entry
-	inc	ix
+_:	lea	ix, ix+2	;point IX and IY to the next entry
 	inc	iy
 	djnz	--_
 	ret.sis
@@ -460,16 +424,13 @@ SetScanlineSkip:
 	ld	de, 248
 	ld	a, ($D2DE06)		;are we drawing the SAT?
 	or	a
-	jr	z, MoveToNextLine	;jump if we aren't
+	jr	z, +_			;jump if we aren't
 	ld	de, lcdWidth-8
-MoveToNextLine:
-	add	hl, de
-	nop
-	nop
+_:	add	hl, de
 	ex	de, hl
 	pop	hl
 	dec	c
-	jr	nz, -_
+	jr	nz, --_
 	ret
 	
 
