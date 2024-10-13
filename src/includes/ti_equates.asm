@@ -1,4 +1,3 @@
-
 #define appVarObj		$15
 #define lcdBpp8			$27
 #define lcdHeight		240
@@ -12,10 +11,12 @@
 #define ramStart		$D00000
 #define tempSP			$D0053F
 #define ScrapMem		$D02AD7
+#define pixelShadow		$D031F6
 #define cmdPixelShadow		$D07396
 #define plotSScreen		$D09466
+#define EvalGamePTR		$D0DFFC
+#define TempSpriteBuffer	$D0E100
 #define saveSScreen		$D0EA1F
-#define pixelShadow		$D031F6
 #define SegaTileCache		pixelShadow
 #define VRAM 			$D40000
 #define VRAMEnd			VRAM+((320*240)*2)
@@ -26,6 +27,8 @@
 #define mpLcdIcr		$E30028
 #define mpLcdPalette		$E30200
 #define romStart		$D20000	;game ROM, not TI ROM
+#define	LevelTimerTable		$DC00
+
 
 
 kbdG1		= $F50012

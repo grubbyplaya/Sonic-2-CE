@@ -4,9 +4,12 @@
 
 .ASSUME ADL=1
 CheckForBank: 			;it's bankin' time
- 	call.is	StoreRegisters
-	ld	hl, Engine_ResetInterruptFlag
+ 	call.sis StoreRegisters
+	jp.lil	+_ + romStart
+
+_:	ld	hl, Engine_ResetInterruptFlag
 	push.sis hl		;Copy the return address to the 16-bit stack
+
 	;check for object logic banks
 	ld	hl, Bank28
 	cp	28
@@ -52,7 +55,7 @@ StoreRegisters:		;stores registers in RAM
 	push	ix
 	push	iy
 	ld	sp, (SegaSP)
-	ret.lil
+	ret
 
 RestoreRegisters:
 	ld	(SegaSP), sp
@@ -66,8 +69,6 @@ RestoreRegisters:
 	pop	hl
 	pop	de
 	pop	bc
-	pop	af
-	ex	af, af'
 	pop	af
 	ld	sp, (SegaSP)
 	ret
@@ -90,8 +91,61 @@ LoadBankFromRAM:
 	ldir
 	jp	CheckForBank_ToggleInterrupt + romStart
 
+#define BankAddressTable $D0E000
+
+StoreBankPointers:	;for loading sprite data from ROM banks
+	xor	a
+_:	push	af
+	ld	l, a
+	ld	e, a
+	ld	h, 8
+	ld	d, 3
+	mlt	hl
+	mlt	de
+
+	ld	bc, Bank04 + romStart
+	add	hl, bc	;HL = ROM bank header
+	ex	de, hl
+	ld	bc, BankAddressTable
+	add	hl, bc	
+	ex	de, hl	;DE = bank address holder
+
+	push	de
+	call	Mov9ToOP1
+ 	call	ChkFindSym
+	ex	de, hl
+	pop	de
+	jp	c, ExitGame
+
+	ld	(StoreBankAddress + 1 + romStart), de
+	ld	de, $FF8012	;offset HL into actual data
+	add	hl, de
+StoreBankAddress:
+	ld	(0), hl
+	pop	af
+	inc	a
+	cp	28
+	jr	nz, -_
+	ret.sis
+
+GetDataPTR:	;locate ROM bank data in archive memory
+	sub	$04
+	push	de
+	push	bc
+	ld	e, a
+	ld	d, 3
+	mlt	de
+	ex	de, hl
+	ld	bc, BankAddressTable
+	add	hl, bc
+	ld	hl, (hl)
+	ex	de, hl
+	add	hl, de
+	pop	bc
+	pop	de
+	ret.sis
+
 ExitGame:
-.ORG ExitGame+romStart
 	ld	a, $D0
 	ld	mb, a
 	ld	sp, ($D2DE02)
@@ -106,15 +160,26 @@ ExitGame:
 	ld	bc, $0040
 	ld	(hl), $00
 	ldir
+
+	ld	hl, ClearMemoryMap
+	ld	de, VRAM
+	ld	bc, ExitGameEnd-ClearMemoryMap
+	ldir
+	jp	VRAM
+
+ClearMemoryMap:
+	;clear emulated memory map location
+	ld	hl, romStart
+	ld	de, romStart+1
+	ld	bc, $FFFF
+	ld	(hl), $00
+	ldir
 	call	ClrLCDFull
 	ei
 	ret
 
 ExitGameEnd:
-.ORG ExitGameEnd-romStart
 ;Appvar Headers
-
-
 Bank04:
 	.db	AppvarObj, "Bank04", 0
 
@@ -187,9 +252,18 @@ Bank26:
 Bank27:
 	.db	AppVarObj, "Bank27", 0
 
-NullBank:
-	.db	AppVarObj, "Bank29", 0
+Bank28Header:
+	.db	AppVarObj, "Bank28", 0
 
 Bank29:
 	.db	AppvarObj, "Bank29", 0
+
+Bank30Header:
+	.db	AppvarObj, "Bank30", 0
+
+Bank31Header:
+	.db	AppvarObj, "Bank31", 0
+
+SHCHeader:
+	.db	AppvarObj, "Bank32", 0
 .ASSUME ADL=0

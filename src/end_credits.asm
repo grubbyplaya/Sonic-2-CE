@@ -38,5 +38,6 @@
 .db "THANKS  TINY-H, "
 .db "THANKS  OMNIMAGA"
 .db "THANKS  MATEO   "
+.db "THANKS  PIXELCAT"
 .db "        ,AND YOU"
 .db $FF

@@ -1,12 +1,12 @@
 .assume ADL=0
 
 #include	"includes/defines.asm"
+#include	"includes/macros.asm"
 #include	"includes/sms.asm"
 #include	"includes/structures.asm"
 #include	"includes/objects.asm"		;values for objects
 #include	"includes/player_states.asm"	;values for player object state
 #include	"includes/level_values.asm"
-#include	"includes/macros.asm"
 #include	"includes/memory_layout.asm"
 
 ;=====================================================================
@@ -77,6 +77,9 @@
 #define SegaTileFlags		SegaVRAM + $4000		;flags for drawing tilemap
 #define CRAM			mpLcdPalette
 #define WorkingCRAM		$D4C6				;copy of Colour RAM maintained in work RAM.
+#define ColorDepth		$DC41
+
+
 #define DATA_B30_9841		$E000
 #define DATA_B30_9A41		$E200
 
@@ -85,9 +88,10 @@
 #define LastBankNumber		1 << 5 - 1			; must be 2^n-1 since it is used in AND ops
 
 _START:
+	call.lil StoreBankPointers + romStart
 	jp	Engine_Initialise
 
-.FILL 52, $00
+.FILL 47, $00
 
 ; =============================================================================
 ; Engine_Interrupt()
@@ -147,8 +151,7 @@ Engine_ErrorTrap:		;$0073
 
 	; hang for 180 frames
 	ld	b, Time_3Seconds
-_:	ei
-	halt
+_:	call	Engine_WaitForInterrupt
 	djnz	-_
 	jp	_START
 
@@ -161,7 +164,7 @@ _:	ei
 
 .db " SEGA /Aspect Co.,Ltd "
 
-.FILL $30, $00
+.FILL $2E, $00
 ; =============================================================================
 ;	Tile Mirroring Lookup Table
 ; -----------------------------------------------------------------------------
@@ -225,10 +228,18 @@ Engine_Reset:		; $0431
 	; init the VDP
 	call	VDP_SetMode2Reg_DisplayOff
 	
+	ld	a, (EmeraldFlags)
+
 	; initialise work RAM
-	Engine_FillMemory $00
+	ld	hl, $C000
+	ld	de, $C001
+	ld	bc, $1B00
+	ldir
+
+	ld	(EmeraldFlags), a
 
 	call	Engine_ClearVRAM
+	call	Engine_ClearPaletteRAM
 	
 	; reset the paging registers
 	xor	a
@@ -250,6 +261,9 @@ Engine_Reset:		; $0431
 Engine_Initialise:
 	;clear screen?
 	call	Engine_ClearPaletteRAM
+
+	call	LoadSHCScreen
+
 	;call	LoadSave
 	call	Engine_LoadLevelTiles  
 	call	LevelSelectCheck
@@ -267,9 +281,7 @@ LABEL_472:
 	xor	a
 	ld	($D292), a
 	call	Engine_InitCounters
-	ei
-	halt
-	
+	call	Engine_WaitForInterrupt	
 	ld	hl, GlobalTriggers
 	ld	(hl), GT_GAMEOVER | GT_TITLECARD
 	jp	Engine_CheckGlobalTriggers
@@ -317,7 +329,6 @@ Engine_HandleVBlank:		; $04A5
 	or	a
 	jp	nz, Engine_HandleVBlank_Epilogue
 
-	call	DrawScreen		;draw the last interrupt's frame
 	ld	a, (Frame2Page)
 	ld	($FFFF), a
 	call	VDP_SetMode2Reg_DisplayOff	;update VDP mode control register 2
@@ -470,14 +481,43 @@ Engine_HandleVBlank_PalettesOnly:		; $058D
 ;	None.
 ; -----------------------------------------------------------------------------
 Engine_WaitForInterrupt:		; $0593
+	di
+
+	call	StoreRegisters
+	ld	a, (FrameCounter)
+	rra
+	call	c, DrawScreen		;draw the last interrupt's frame
+	call	RestoreRegisters
+
 	ei
 	; loop until the next interrupt has been serviced
+	push	hl
+	push	af
 	ld	hl, Engine_InterruptServiced
 _:	ld	a, (hl)
 	or	a
 	jr	z, -_
-	
-	ld	(hl), $00
+	xor	a
+	ld	(hl), a
+	pop	af
+	pop	hl
+	ret
+
+; =============================================================================
+;  MACRO: wait_1s()
+; -----------------------------------------------------------------------------
+;  Halts the CPU for 60 frames (1 second on NTSC machines).
+; -----------------------------------------------------------------------------
+;  In:
+;	None.
+;  Out:
+;	None.
+; -----------------------------------------------------------------------------
+
+wait_1s:	;wait a second
+	ld	b, Time_1Second
+_:	call	Engine_WaitForInterrupt
+	djnz	-_
 	ret
 
 LABEL_59E_218:
@@ -494,7 +534,15 @@ _DATA_05AA:
 .db $FE, $00, $FE, $FE, $02, $02, $00, $02
 
 Engine_PauseHandler:
-	push	af
+	;the SMS pause button triggers an NMI for one frame.
+	;since it's the only SMS button to do that, we'll
+	;try to mimic that behavior first.
+	bit	6, (hl)
+	ret	nz
+	set	6, (hl)
+	ld	a, 3
+	ld	(DrawTilemapTrig), a
+
 	ld	a, (BgPaletteControl)
 	or	a
 	jr	nz, +_
@@ -508,11 +556,12 @@ Engine_PauseHandler:
 	cp	GT_GAMEOVER
 	jr	nz, +_
 	
-	ld	a, $01
+	ld	a, $FF
 	ld	($D12E), a
+_:	ret
 
-_:	pop	af
-	ret
+PauseHandler_Trig:
+.db $00
 
 
 Engine_CheckGlobalTriggers:	; $0690
@@ -563,19 +612,9 @@ GameState_EndSequence:
 	
 	; fade out over 1 second
 	call	PaletteFadeOut
-	wait_1s
-	
-	; clear continues & emerald count
-	xor	a
-	ld	(ContinueCounter), a
-	ld	(EmeraldFlags), a
-	
-	; clear some trigger bits.
-	ld	hl, GlobalTriggers
-	ld	a, (hl)
-	and	%00100111
-	ld	(hl), a
-	jp	Engine_CheckGlobalTriggers
+	call	wait_1s
+	jp	EvaluateGame	
+
 
 LABEL_6F3:						;ending credits sequence
 	ld	a, $5D
@@ -606,10 +645,13 @@ _:	call	Engine_WaitForInterrupt
 	jr	nz, -_
 	ret
 
+EvaluateGame:		;display game results
+	ld.lil	hl, (EvalGamePTR)
+	jp.lil	(hl)
+
 GameState_Gameover:	; $072F
 	xor	a
-	ei
-	halt
+	call	Engine_WaitForInterrupt
 	call	Engine_ClearVRAM
 	call	Engine_ClearWorkingVRAM
 	call	Engine_ClearLevelAttributes
@@ -621,8 +663,7 @@ GameState_Gameover:	; $072F
 
 	; wait for 2 seconds
 	ld	b, Time_2Seconds
-_:	ei
-	halt
+_:	call	Engine_WaitForInterrupt
 	djnz	-_
 	
 	ld	bc, $0D98
@@ -637,7 +678,7 @@ _:	ei
 	
 _:	; fade out over 1 second
 	call	PaletteFadeOut
- 	wait_1s
+ 	call	wait_1s
 	
 	jp	LABEL_472
 
@@ -685,7 +726,7 @@ GameState_CheckContinue:		; $0792
 	
 	; fade out over 1 second
 	call	PaletteFadeOut
- 	wait_1s
+ 	call	wait_1s
 	ret
 
 
@@ -733,13 +774,13 @@ LABEL_81D:
 
 
 GameState_NextAct:		; $0820
+
 	call	LABEL_A27			;reset LevelTimerTrigger
 	call	Engine_CheckHasEmerald
 	
 	; wait for 3 seconds
 	ld	b, Time_3Seconds
-_:	ei
-	halt
+_:	call	Engine_WaitForInterrupt
 	djnz	-_
 	
 	; store number of lives when starting the act. this is used
@@ -753,8 +794,7 @@ _:	ei
 	
 	call	PaletteFadeOut	;trigger FG & BG palette fade to black
 	ld	b, $1E
-_:	ei
-	halt
+_:	call	Engine_WaitForInterrupt
 	djnz	-_
 
 	call	Engine_ClearWorkingVRAM		;clear various blocks of RAM & prepare the SAT
@@ -768,11 +808,11 @@ _:	ei
 	call	ScoreCard_UpdateScore
 	
 	; wait for 1 second
- 	wait_1s
+ 	call	wait_1s
 	
 	;fade out for 1 second
 	call	PaletteFadeOut
-	wait_1s
+	call	wait_1s
 	
 	ld	hl, GlobalTriggers
 	res	GT_NEXT_ACT_BIT, (hl)
@@ -847,8 +887,7 @@ LABEL_8A4:
 	
 	call	PaletteFadeOut
 	ld	b, Time_1Second/2
-_:	ei
-	halt
+_:	call	Engine_WaitForInterrupt
 	djnz	-_
 	call	Engine_ClearWorkingVRAM
 	call	Engine_ClearLevelAttributes
@@ -862,11 +901,11 @@ _:	ei
 	call	ScoreCard_UpdateScore
 	
 	; wait for 1 second
- 	wait_1s
+ 	call	wait_1s
 	
 	; fade out for 1 second
 	call	PaletteFadeOut
-	wait_1s
+	call	wait_1s
 	
 	;reset the act counter & increment level counter
 	xor	a
@@ -926,16 +965,17 @@ _:	; check player's onscreen position
 
 	; wait for 2 seconds
 	ld	b, Time_2Seconds
-_:	ei
-	halt
+_:	call	Engine_WaitForInterrupt
 	djnz	-_
+	;FALL THROUGH
 
+Engine_ResetLevel:
 	; reset dynamic palette numbers
 	call	Engine_ClearAuxLevelHeader
 	
 	; fade out for 1 second
 	call	PaletteFadeOut
-	wait_1s
+	call	wait_1s
 	
 	ld	a, (LifeCounter)
 	or	a
@@ -963,8 +1003,7 @@ GameState_Titlecard:		; $097F
 	; fade out over 42 frames
 	call	PaletteFadeOut
 	ld	b, 42
-_:	ei
-	halt
+_:	call	Engine_WaitForInterrupt
 	djnz	-_
 	
 	call	Engine_LoadLevel
@@ -1004,7 +1043,7 @@ _:	ld	a, ($D12E)
 
 	ld	hl, GlobalTriggers
 	res	GT_BIT_1, (hl)
-	halt
+	call	Engine_WaitForInterrupt
 	jp	Engine_CheckGlobalTriggers
 
 
@@ -1050,6 +1089,21 @@ LABEL_A13:
 	ret
 
 LABEL_A27:
+	ld	de, (LevelTimer)
+	ld	ix, CurrentLevel
+	ld	l, (ix)
+	ld	h, 6
+	mlt	hl
+	ld	a, (ix+1)
+	add	a, a
+	ld	c, a
+	ld	b, 0
+	add	hl, bc
+	ld	bc, LevelTimerTable
+	add	hl, bc
+	ld	(hl), e
+	inc	hl
+	ld	(hl), d
 	xor	a		;reset timer update trigger
 	ld	(LevelTimerTrigger), a
 	ret
@@ -1262,7 +1316,13 @@ _:	push	bc
 	ld	bc, $04B0
 _:	call	LABEL_107C
 	push	bc
-	call	Engine_WaitForInterrupt
+	ei
+	halt
+	di
+	ld	a, (FrameCounter)
+	rra
+	call	c, DrawScreen
+
 	call	Engine_UpdateLevelState
 	call	TitleScreen_ChangePressStartText
 	pop	bc
@@ -1317,23 +1377,22 @@ Engine_LoadPlayerTiles:	;$10BF
 	jr	z, +_
 	ld	de, Data_PlayerSprites_Mirrored - $04
 _:	add	hl, de
+
 	ld	a, 31
-	call	Engine_SwapFrame2
-	ld	a, (hl)			;bank number
-	inc	hl
-	ld	e, (hl)			;art pointer
-	inc	hl
-	ld	d, (hl)
-	inc	hl
-	ld	b, (hl)			;tile count / 2 (each sprite is 8x16)
+	call.lil GetDataPTR + romStart
+	ld.lil	a, (hl)			;bank number
+	inc.lil	hl
+	ld.lil	e, (hl)			;art pointer
+	inc.lil	hl
+	ld.lil	d, (hl)
+	inc.lil	hl
+	ld.lil	b, (hl)			;tile count / 2 (each sprite is 8x16)
 	ld	c, $40
 	mlt	bc
- 	call	Engine_SwapFrame2	;calculate new pointer for HL
 	ex	de, hl
-	ld.lil	de, romStart
-	add.lil	hl, de
-	ld.lil	de, SegaVRAM
+ 	call.lil GetDataPTR + romStart		;calculate new pointer for HL
 
+	ld.lil	de, SegaVRAM
 Engine_LoadPlayerTiles_CopyTiles:	;copy 2 tiles (64 bytes) to vram
 	ldir.lil
 	ld	hl, $D34E
@@ -1974,59 +2033,6 @@ _:	pop	bc				;move to the next row
 	ei
 	ret
 
-
-; =============================================================================
-;	VDP_WrapColumnAddress(uint16 vram_addr)							UNUSED
-; -----------------------------------------------------------------------------
-;	Checks a VRAM screen map address pointer and wraps to the first column
-;	if it has overflowed to the next row.
-; -----------------------------------------------------------------------------
-;	In:
-;	HL	- VRAM address.
-;	ld:
-;	None.
-; -----------------------------------------------------------------------------
-VDP_WrapColumnAddress:		; $19B9
-	ld	a, l
-	and	$3F
-	ret	nz
-	push	de
-	ld	de, $0040
-	or	a
-	sbc	hl, de
-	call	VDP_SetAddress
-	pop	de
-	ret
-
-
-; =============================================================================
-;	VDP_WrapColumnAddress(uint16 vram_addr)							UNUSED
-; -----------------------------------------------------------------------------
-;	Checks a VRAM screen map address pointer and wraps to the first column
-;	if it has overflowed to the next row.
-; -----------------------------------------------------------------------------
-;	In:
-;	HL	- VRAM address.
-;	ld:
-;	None.
-; -----------------------------------------------------------------------------
-VDP_WrapRowAddress: 
-	ld	a, h
-	cp	$4B		;check for overflow into SAT
-	ret	nz
-	ld	h, $38
-	ret
-
-
-_Unknown_6:
-	ld	a, h
-	cp	$38
-	ret	nc
-	ld	h, $3E
-	ret
-
-
-
 LABEL_19D7:
 	push	bc
 	
@@ -2112,24 +2118,43 @@ LABEL_1A13:
 
 
 ReadInput:	;$1A35
+	ld	hl, $D145
+	ld	de, $D146
+	ld	bc, $000F
+	lddr
+	ld	hl, $D155
+	ld	de, $D156
+	ld	bc, $000F
+	lddr
 	ld	hl, Engine_InputFlags
-	ld	a, (hl)
-	ld	(Engine_InputFlagsLast), a	;load the previous frame's flags
-
 	call	_Port1_Input
 	ld	(hl), a				;store joypad bitfield
 	ld	($D157), a
+
+	ld	hl, Engine_InputFlagsLast
+	ld	c, a
+	ld	a, ($D138)
+	cpl
+	ld	b, a
+	ld	a, c
+	cpl
+	xor	b
+	and	c
+	ld	(hl), a
+
 	ld	a, ($D292)		;should cpu control sonic?
 	bit	3, a
 	call	nz, Engine_Demo_MovePlayer	;should the cpu control the player?
 
 	ld.lil	a, (kbdG6)
 	bit	kbitClear, a		;is the clear key pressed?
-	jp.lil	nz, ExitGame + romStart	;exit the program if it is
+	jp.lil	nz, ExitGame		;exit the program if it is
 
+	ld	hl, PauseHandler_Trig
 	ld.lil	a, (kbdG1)
 	bit	kbitMode, a		;is the X key pressed?
 	jp	nz, Engine_PauseHandler	;emulate SMS start button if it is
+	res	6, (hl)
 
 	bit	kbitDel, a		;is the delete key pressed?
 	ret	z
@@ -2147,19 +2172,14 @@ _:	ld	d, a
 	ld	e, $80
 	ld.lil	a, (kbdG1)
 	and	kbd2nd		;check button 1
-	jr	z, +_		;jump if button not pressed
-	ld	e, $00
 	rra
 	or	d
 	ld	d, a
 
-_:	ld.lil	a, (kbdG2)
+	ld.lil	a, (kbdG2)
 	and	kbdAlpha	;check button 2
-	jr	z, +_		;jump if button not pressed
-	ld	e, $00
-_:	rra
 	rra
-	or	e
+	rra
 	or	d
 	ret
 
@@ -2183,12 +2203,14 @@ Engine_Demo_MovePlayer:	; $1A8C
 	ld	a, h			;bail out if offset = 0
 	or	l
 	ret	z
+
 	ld	a, (hl)			;load the control byte
 	ld	(Engine_InputFlags), a	;and store it for later
 	inc	hl
 	ld	a, (hl)
 	ld	(Engine_InputFlagsLast), a
 	inc	hl
+
 	ld	(ControlByte), hl	;fetch the next offset 
 	ret
 
@@ -2284,11 +2306,11 @@ ScoreCard_UpdateScore:		;$1C12
 _:	ld	a, (Engine_InputFlags)	;check for button press
 	and	BTN_1 | BTN_2
 	jr	nz, +_		;if not pressing a button, wait for 1 frame
-
 	ei
 	halt
-	
-_:	ld	a, (RingCounter)
+	di
+_:	call	Engine_WaitForInterrupt	
+	ld	a, (RingCounter)
 	or	a
 	jr	z, +_
 
@@ -2301,16 +2323,17 @@ _:	ld	a, (RingCounter)
 	call	LABEL_1D4F		;update score graphics?
 	call	LABEL_1D6F
 	jr	--_
-_:	
-	; wait a second
- 	wait_1s
+_:	; wait a second
+ 	call	wait_1s
 	
 _:	ld	a, (Engine_InputFlags)		;check for button press
 	and	BTN_1 | BTN_2
 	jr	nz, +_
 	ei
 	halt
-_:	xor	a
+	di
+_:	call	Engine_WaitForInterrupt
+	xor	a
 	ld	de, $D2A2		;score time value
 	ld	hl, Score_BadnikValue
 	ld	a, (de)
@@ -2333,6 +2356,9 @@ _:	xor	a
 	inc	hl
 	or	(hl)
 	jr	nz, --_
+	ld	hl, FrameCounter
+	set	1, (hl)
+	call	Engine_WaitForInterrupt
 
 	ld	hl, $3C2A		;vram address
 	ld	de, ScoreCard_Mappings_Blank	;mapping source
@@ -3085,8 +3111,7 @@ Engine_LoadLevel:		;$21AA
 	ld	(LevelTimer+1), a
 	dec	a			;set timer update trigger
 	ld	(LevelTimerTrigger), a
-_:	ei
-	halt
+_:	call	Engine_WaitForInterrupt
 	ret
 	
 
@@ -3345,8 +3370,7 @@ LABEL_243C:
 	ld	($D700), a
 	call	PaletteFadeOut
 	ld	b, 42
-_:	ei
-	halt
+_:	call	Engine_WaitForInterrupt
 	djnz	-_
 	ld	hl, $D292
 	res	5, (hl)	;clear load intro flag
@@ -3359,8 +3383,7 @@ LABEL_2459_51:
 	call	_Load_Title_Level
 	call	PaletteFadeOut	;fade the palette
 	ld	b, 42
-_:	ei
-	halt	
+_:	call	Engine_WaitForInterrupt
 	djnz	-_
 	ld	hl, $D292
 	res	4, (hl)	;clear load title screen flag
@@ -3416,8 +3439,7 @@ LABEL_24BE_48:
 	call	LevelSelectMenu		;run the level select
 	call	PaletteFadeOut
 	ld	b, 42
-_:	ei
-	halt
+_:	call	Engine_WaitForInterrupt
 	djnz	-_
 _:	xor	a
 	ld	($D292), a
@@ -3528,8 +3550,7 @@ DemoSequence_LoadLevel:	;254A
 	call	ScrollingText_UpdateSprites
 	call	PaletteFadeOut
 	ld	b, 42		;pause to load the level
-_:	ei
-	halt
+_:	call	Engine_WaitForInterrupt
 	djnz	-_
 	call	Engine_LoadLevel			;load the level
 	call	Engine_LoadLevelPalette
@@ -3555,14 +3576,13 @@ _:	; reset dynamic palette numbers
 	
 	; fade out over 1 second
 	call	PaletteFadeOut
- 	wait_1s
+ 	call	wait_1s
 	
 	ret
 	
 
 LABEL_259C:
-	ei
-	halt
+	call	Engine_WaitForInterrupt
 	ld	a, ($D292)
 	bit	7, a
 	ret	nz
@@ -3668,8 +3688,7 @@ LABEL_2606:
 	inc	hl
 	ld	(hl), a
 	ld	b, $0C
-_:	ei
-	halt
+_:	call	Engine_WaitForInterrupt
 	djnz	-_
 #if Language = 1
 	call	TitleCard_LoadText
@@ -3771,8 +3790,7 @@ _:	ld	($D118), bc	;rows/cols
 
 TitleCard_ScrollTextFromLeft:		;$26E1
 	push	bc
-	ei
-	halt
+	call	Engine_WaitForInterrupt
 	ld	bc, ($D118)	;rows/cols
 	ld	de, ($D11A)	;pointer to mappings
 	ld	hl, ($D11C)	;VRAM address
@@ -3948,9 +3966,8 @@ LABEL_2849:	;TODO: unused?
 	push	hl
 	ld	bc, $0001
 	call	VDP_Copy
-	ei
-	halt
-	halt
+	call	Engine_WaitForInterrupt
+	call	Engine_WaitForInterrupt
 	pop	hl
 	inc	hl
 	pop	de
@@ -3963,8 +3980,7 @@ ScrollingText_UpdateSprites:		;285D
 	ld	hl, $003C
 _:	push	hl
 	call	LABEL_107C
-	ei
-	halt
+	call	Engine_WaitForInterrupt
 	pop	hl
 	dec	hl
 	ld	a, h
@@ -4337,6 +4353,8 @@ LABEL_3267:
 ;* Handle a button press when the player is Spin Dashing.	*
 ;****************************************************************
 Player_HandleSpinDash:
+	bit	OBJ_F3_IN_AIR, (ix + Object.Flags03) ;is the player in air?
+	jp	nz, Player_SetState_Roll_SpinDashRelease
 	ld	a, $80					;reset the camera offset 
 	ld	($D289), a
 	call	LABEL_3A62
@@ -4661,7 +4679,7 @@ LABEL_33B7:
 	ret	z
 	res	0, (ix+$03)
 	call	LABEL_3676
-	ld	a, (Engine_InputFlagsLast)
+	ld	a, (Engine_InputFlags)
 	and	BTN_1 | BTN_2
 	jp	nz, Player_SetState_Jumping
 	ld	hl, ($D516)
@@ -5774,13 +5792,14 @@ _:	call	Player_UpdatePositionX
 	call	LABEL_6BF2		;check collisions
 	call	LABEL_376E
 
-	ld	a, (Engine_InputFlagsLast)
+	ld	a, (Engine_InputFlags)
 	and	BTN_1 | BTN_2		;check for either button 1 or button 2
 	ret	z
 
 	ld	a, ($D501)                
 	cp	PlayerState_Crouch
 	jp	z, Player_SetState_SpinDash
+
 	cp	PlayerState_SpinDash
 	ret	z
 
@@ -6384,7 +6403,7 @@ LABEL_40F0:
 	jr	nz, +_
 	call	LABEL_4109
 	jr	c, +_
-	ld	a, (Engine_InputFlagsLast)
+	ld	a, (Engine_InputFlags)
 	and	BTN_1 | BTN_2
 	ret	z
 _:	res	2, (ix+$03)
@@ -6602,7 +6621,7 @@ _:	ld	a, ($D3C6)
 	add	a, b
 	ld	($D3C6), a
 	call	LABEL_42B7
-	ld	a, (Engine_InputFlagsLast)
+	ld	a, (Engine_InputFlags)
 	and	BTN_1 | BTN_2
 	ret	z
 	xor	a
@@ -7918,7 +7937,6 @@ Engine_LoadLevelLayout_CopyByte:
 ;*	the screen viewport.					*
 ;****************************************************************
 Engine_LoadLevel_DrawScreen:		;$5353	;interrupt happens immediately after this
-	ei
 	call	Engine_LoadLevel_SetInitialPositions
 	ld	hl, ($D2CA)	;set the screen X pos
 	ld	(Camera_X), hl
@@ -11711,6 +11729,10 @@ _:	cp	c
 ;*	the player's right edge.			*
 ;********************************************************
 Player_CollideRightBreakableBlock:		;$71C9
+	ld	a, ($D501)                
+	cp	PlayerState_SpinDash
+	jp	z, Player_CollideBreakableBlock_UpdateMappings
+
 	bit	1, (ix+$03)
 	jp	z, Player_CollideRightWithSolidBlock
 	ld	a, ($D517)
@@ -13726,18 +13748,14 @@ _:	ld	(Engine_RingAnimFrame), a
 
 	; swap in the bank with the ring art
 	ld	a, 29
-	call	Engine_SwapFrame2
+	ex	de, hl
+	call.lil GetDataPTR + romStart
 
-	push	hl
+	push.lil hl
 	ld.lil	hl, SegaVRAM
 	add.lil	hl, de
 	ex.lil	de, hl
-	pop	hl
-
-	push.lil de
-	ld.lil	de, romStart
-	add.lil	hl, de
-	pop.lil	de
+	pop.lil	hl
 	
 	; copy 128 bytes to VRAM
 	ld	bc, 128
@@ -13745,6 +13763,11 @@ _:	ld	(Engine_RingAnimFrame), a
 	ld	hl, DrawTilemapTrig
 	set	0, (hl)
 	ret
+
+LoadSHCScreen:
+	ld a, 32
+	call Engine_SwapFrame2
+	jp $8000
 
 ROM_HEADER:				;$7FF0
 .db "TMR SEGA" 
@@ -13766,8 +13789,8 @@ ROM_HEADER:				;$7FF0
 #include "cycling_palette_data.asm"
 
 #include	"includes/ti_equates.asm"
-;#include	"appvars/banks.asm"	;uncomment to include game data. meant for debugging only.
 #include	"appvars.asm"
 #include	"screen_drawing_routines.asm"
+
 #include	"appvars/bank_equates.inc"
 #undef Listing

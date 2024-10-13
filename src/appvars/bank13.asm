@@ -8,11 +8,7 @@ Layout_GHZ2:
 
 
 Layout_GHZ3:
-#if Version = 2
 #import "layout\ghz\layout_ghz3.bin"
-#else
-#import "layout\ghz\layout_ghz3_og.bin"
-#endif
 
 Layout_SHZ1:
 #if Version = 2

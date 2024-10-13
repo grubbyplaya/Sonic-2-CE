@@ -1,12 +1,12 @@
 
-echo off
+@echo off
 set /P VersionType=What version are you building? (1 = Normal, 2 = Easy): 
 set /P Language=What language are you using? (1 = English, 2 = French): 
 cd src
 
 echo Assembling game...
-spasm64 -E -D Version=%VersionType% sonic2.asm bin/sonic2.8xp
-spasm64 -E -L -O -D Version=%VersionType% -D Listing=1 -D Language=%Language% s2_engine.asm s2.8xv
+spasm64 -E -D Version=%VersionType% launcher.asm bin/sonic2.8xp
+spasm64 -E -L -O -D Version=%VersionType% -D Listing=1 -D Language=%Language% s2.asm s2.8xv
 
 echo Building Rom Listings...
 spasm64 -E -L -D Listing=1 object_logic/bank28.asm bin/bank28.8xv
@@ -42,7 +42,8 @@ spasm64 -E -D Listing=0 object_logic/bank28.asm bin/bank28.8xv
 spasm64 -E -L bank29.asm bin/bank29.8xv
 spasm64 -E -D Listing=0 appvars/bank30.asm bin/bank30.8xv
 spasm64 -E -D Listing=0 appvars/bank31.asm bin/bank31.8xv
-spasm64 -E -D Version=%VersionType% -D Listing=0 -D Language=%Language% s2_engine.asm bin/Sonic2.8xv
+spasm64 -E -L SHC/SHC.asm bin/bank32.8xv
+spasm64 -E -D Version=%VersionType% -D Listing=0 -D Language=%Language% s2.asm bin/Sonic2.8xv
 
 cd ..
 

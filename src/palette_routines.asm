@@ -1,6 +1,7 @@
 .ASSUME ADL=0
 ;Variables used by palette control/update routines
 #define Palettes	$F680
+
 Palette_Update:
 	ld	hl, $D2C9	;counter for smooth fade
 	inc	(hl)
@@ -9,7 +10,7 @@ Palette_Update:
 	ret	nc
 	ld	(hl), $00
 	ld	ix, $D4E6
-	ld	iy, $D4C6
+	ld	iy, WorkingCRAM
 	ld	b, $02
 _:	push	bc
 	push	iy
@@ -26,7 +27,7 @@ _:	lea	ix, ix+2	;check FgPaletteControl
 	djnz	--_
 	ret
 
-Palette_UpdateColours:	
+Palette_UpdateColours:
 	bit	7, a	;check for fade to colour
 	jp	nz, Palette_FadeToColour
 	bit	6, a	;check for fade to black

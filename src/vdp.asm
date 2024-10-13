@@ -564,10 +564,11 @@ VDP_ClearScreen:	 ;$17AC
 	ld	bc, $0380
 	ld	de, $0100
 	call	VDP_Write
-
+VDP_ClearTileCache:
 	ld.lil	hl, SegaTileFlags	;clear cache flags
 	ld.lil	de, SegaTileFlags+1
-	ld	c, $F0
+	ld	bc, $F0
+	ld.lil (hl), b
 	ldir.lil
 	;FALL THROUGH
 

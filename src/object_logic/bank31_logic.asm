@@ -368,7 +368,7 @@ _:  	ld	hl, $0180
 	ld	b, a
 	jr	nc, +_
 	ld	b, $ff
-  	ld	hl, ($D511)
+_:	ld	hl, ($D511)
 	ld	e, (ix+$11)
 	ld	d, (ix+$12)
 	xor	a

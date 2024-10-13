@@ -59,7 +59,7 @@
 .dw DATA_B28_B6AF				;37
 .dw DATA_B28_B73A				;38
 .dw DATA_B28_B8E2				;39
-.dw DATA_B28_B9CC				;3A
+.dw DATA_B28_B9CC				;3A - GMZ pig
 .dw DATA_B28_BB2C				;3B
 .dw DATA_B28_BD8E				;3C
 .dw DATA_B28_BDF0				;3D

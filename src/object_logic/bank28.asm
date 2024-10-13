@@ -5353,7 +5353,7 @@ LABEL_B28_BA30:
 	call	VF_Engine_GetCollisionValueForBlock
 	cp	$81
 	jr	nz, +_
-	ld	hl, ($bb2a)
+	ld	hl, (DATA_B28_BB2A)
 	ld	(ix+$18), l
 	ld	(ix+$19), h
 	ld	a, (ix+$1e)
@@ -5393,7 +5393,7 @@ LABEL_B28_BAA3:
 	ld	(ix+$02), $01
 	ld	(ix+$17), $00
 	ld	(ix+$16), $00
-	ld	hl, ($bb2a)
+	ld	hl, (DATA_B28_BB2A)
 	ld	(ix+$18), l
 	ld	(ix+$19), h
 	ret	

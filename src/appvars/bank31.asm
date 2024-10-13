@@ -9,5 +9,6 @@
 
 #if Listing=0
 #include "s2.lab"
+#include "bin/bank05.lab"
 #endif
 #undef Listing

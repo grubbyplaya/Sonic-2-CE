@@ -124,9 +124,7 @@ LevelSelect_Values:
 .db $06, $02	;Crystal Egg Zone - Act 3
 
 LevelSelect_MainLoop:	;0E46
-	ei
-	halt
-	di
+	call	Engine_WaitForInterrupt
 	call	_CheckInput
 	call	_DrawCursor
 	ld	a, (Engine_InputFlags)
@@ -236,7 +234,7 @@ LevelSelect_Entry1:
 .db "ZONE SOUTERRAINE   ACT-1"
 
 LevelSelect_Entry4:
-.db "ZONE TRES HAUTE    ACT-1"
+.db "ZONE DU CIEL HAUTE ACT-1"
 	
 LevelSelect_Entry7:
 .db "ZONE DU LAC AQUA   ACT-1"

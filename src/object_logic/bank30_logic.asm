@@ -187,12 +187,9 @@ LABEL_B30_8F7D:
 	push	hl
 	ld	a, b
 	dec	a
-	add	a, a
-	add	a, a
-	add	a, a
-	add	a, a
-	add	a, a
-	add	a, a
+	and	$03
+	rrca
+	rrca
 	ld	e, (ix+$1e)
 	add	a, e
 	ld	e, a
@@ -239,12 +236,14 @@ LABEL_B30_8FB2:
 	ret	
 
 DATA_B30_8FC6:
-.db $CA, $8F
-.db $D0, $8F
+	.dw DATA_B30_8FCA
+	.dw DATA_B30_8FD0
+
 DATA_B30_8FCA:
 .db $20, $00
 	.dw LABEL_B30_9020
 .db $FF, $03
+
 DATA_B30_8FD0:
 .db $FF, $04
 	.dw $FF00
@@ -986,7 +985,7 @@ DATA_B30_94FF:
 	.dw LABEL_B30_951C
 .db $FF, $00
 
-DATA_B30_9505
+DATA_B30_9505:
 .db $E0, $13
 	.dw VF_DoNothing
 .db $E0, $13
@@ -1004,6 +1003,8 @@ DATA_B30_9516:
 
 
 LABEL_B30_951C:
+	ld	hl, DrawTilemapTrig
+	set	1, (hl)
 	ld	de, $0040
 	ld	bc, $0600
 	call	VF_Engine_SetObjectVerticalSpeed

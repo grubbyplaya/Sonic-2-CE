@@ -121,8 +121,7 @@ Monitor_SetCollisionValue:		;$B797
 	ld	(Engine_MonitorCllsnType), a
 
 	; set monitor type to $40
-	ld	(ix + Object.ix3F), $00
-	set	6, (ix + Object.ix3F)		;FIXME: this could be done in the previous op
+	ld	(ix + Object.ix3F), $40
 	ret	 
 
 ;collision value for each monitor type

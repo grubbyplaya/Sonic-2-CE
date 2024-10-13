@@ -8,6 +8,7 @@ DrawScreen:
 	ld	a, (DrawTilemapTrig)
 	bit	0, a
 	call.lil nz, DrawScreenMap
+
 	ld	a, (DrawTilemapTrig)
 	bit	1, a
 	call.lil nz, RenderScreenMap
@@ -17,8 +18,6 @@ DrawScreen:
 	or	a
 	call.lil nz, DrawSAT
 
-	ld	a, (DrawTilemapTrig)
-	ld	(LastTilemapTrig), a
 	xor	a
 	ld	(DrawSATTrig), a
 	ld	(DrawTilemapTrig), a
@@ -29,7 +28,7 @@ RenderScreenMap:
 	ld	hl, RenderedScreenMap
 	ld	de, VRAM+$1E20		;first letter in letterbox
 	ld	bc, 0
-	ld	iyl, 192		;length of SMS screen
+	ld	iyl, 193		;length of SMS screen
 	ld.sis	a, (VDP_VScroll)
 	add	a, h			;should HLU increment?
 	jr	nc, +_			;jump if not
@@ -168,6 +167,7 @@ DrawCachedTile:
 	ld	de, SegaTileCache
 	add	hl, de			;HL = cached tile ptr
 	pop	de
+
 
 	bit	1, a				;do we flip the tile horizontally?
 	jp	nz, DrawCachedTile_FlippedX	;jump if we shouldn't
@@ -348,18 +348,10 @@ _:	ld	h, (iy)
 	cp	h		;is the sprite's Y position 208?
 	ret.sis	z		;stop rendering SAT if so
 
-	;is the sprite off-screen?
-	ld	a, 175
-	cp	h
-	jr	c, +_		;skip this sprite
-	ld	a, (ix)
-	or	a
-	jr	z, +_		;check if the same applies to Y coords
-	cp	$F8
-	jr	nc, +_
-
 	;draw the top half of the sprite
+	ld	a, (ix)
 	call	SetSpriteCoords	;set sprite coordinates
+	jr	nc, +_
 	ex	de, hl		;HL now points to the tile's top-left corner
 	ld	l, (ix+1)
 	call	SetSpritePTR
@@ -368,7 +360,8 @@ _:	ld	h, (iy)
 	ld	a, (iy)
 	add	a, 8
 	ld	h, a
-	call	SetSpriteCoords
+	ld	a, (ix)
+	call	SetSpriteCoords_NoClip
 	ex	de, hl
 	ld	l, (ix+1)
 	inc	l
@@ -380,15 +373,32 @@ _:	lea	ix, ix+2	;point IX and IY to the next entry
 	ret.sis
 
 SetSpriteCoords:
+	ld	e, a
+	call	CheckSpriteOffscreen
+	ret	nc
+	ld	a, e
+SetSpriteCoords_NoClip:
 	ld	l, 160
 	mlt	hl
 	add	hl, hl		;HL now has the scanline to start on
 	ld	de, $0020
 	add	hl, de		;move into the letterbox
-	ld	e, (ix)
+	ld	e, a
 	add	hl, de		;DE has the tile's coordinates
 	ld	de, VRAM+$1F40	;first scanline to be updated
 	add	hl, de
+	scf
+	ret
+
+CheckSpriteOffscreen:
+	;is the sprite off-screen?
+	or	a
+	ret	z
+	cp	$F8
+	ret	nc
+	ld	a, h
+	cp	177
+	ret	nc		;skip this sprite
 	ret
 
 SetSpritePTR:

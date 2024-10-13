@@ -2,7 +2,7 @@
 
 A mostly complete port of the Sega Master System version of Sonic 2 to the TI-84+ CE.
 
-The game is 443 kilobytes in size. Make sure that every appvar and the launcher is loaded into archive memory, as the game will crash if any appvar is stored in RAM.
+The game is 443 kilobytes in size. Make sure that every appvar and the launcher (Sonic2.8xp) is stored in archive memory, as the game will crash if any appvar is stored in RAM.
 
 # Controls
 
@@ -22,5 +22,5 @@ Delete - Reset Game
  - [x] Replace original 6bpp palettes with 16bpp approximations
  - [x] Emulate the SMS VDP, rendering, caches, and all
  - [x] Fix remaining runtime errors
- - [ ] (MID PRIORITY) Get the game running at full speed
+ - [x] (MID PRIORITY) Get the game running at full speed
  - [ ] (VERY LOW PRIORITY) expand the rendering area to fill the 84+ CE's screen

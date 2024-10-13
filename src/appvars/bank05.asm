@@ -5,3 +5,9 @@ Art_Sonic_Gliding:
 
 Art_Sonic_Minecart:
 #import "art\sonic\art_ucmp_sonic_minecart.bin"
+
+Art_Sonic_SpinDash:
+#import "art\sonic\art_ucmp_spin_dash.bin"
+
+Art_Sonic_SpinDash_Mirrored:
+#import "art\sonic\art_ucmp_spin_dash_mirrored.bin"

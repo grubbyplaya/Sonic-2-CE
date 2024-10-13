@@ -15,12 +15,6 @@ _START:
 	ld	(hl), $00
 	ldir
 
-	;set up 4bpp mode with Vcomp interrupts
-	ld	hl, mpLcdCtrl
-	ld	(hl), $23
-	inc	hl
-	ld	(hl), %00011101
-
 	;set up front porch interrupt
 	ld	hl, mpLcdImsc
 	set	3, (hl)
@@ -30,7 +24,16 @@ _START:
 	ld	hl, $F50000
 	ld	(hl), 3
 
+	ld	hl, EvaluateGame
+	ld	(EvalGamePTR), hl
+
 	call	SegaLogo
+SetupGame:
+	;set up 8bpp mode with Vcomp interrupts
+	ld	hl, mpLcdCtrl
+	ld	(hl), $27
+	inc	hl
+	ld	(hl), %00011001
 
 	;clear VRAM
 	ld	hl, VRAM
@@ -101,7 +104,7 @@ _START:
 	ld	a, $D2
 	ld	mb, a
 	ld	($D2DE02), sp
-	ld.lil	sp, $D1A745
+	ld.lil	sp, $D1A545
 	ld.sis	sp, $DFF0
 	jp.sis	$0000	;start of program
 
@@ -122,10 +125,12 @@ LoadBank:
 
 #include "sega_logo.asm"
 
+#include "evaluate_game.asm"
+
 #include "includes/ti_equates.asm"
 
 Palettes:
-#include "includes\palettes.asm"
+#include "includes/palettes.asm"
 
 Sonic2_Engine:
 	.db AppVarObj, "Sonic2", 0

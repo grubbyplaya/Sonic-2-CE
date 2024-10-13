@@ -1,0 +1,23 @@
+WhiteNumbers:
+#import "misc/Numbers/WhiteNumbers/0.bin"
+#import "misc/Numbers/WhiteNumbers/1.bin"
+#import "misc/Numbers/WhiteNumbers/2.bin"
+#import "misc/Numbers/WhiteNumbers/3.bin"
+#import "misc/Numbers/WhiteNumbers/4.bin"
+#import "misc/Numbers/WhiteNumbers/5.bin"
+#import "misc/Numbers/WhiteNumbers/6.bin"
+#import "misc/Numbers/WhiteNumbers/7.bin"
+#import "misc/Numbers/WhiteNumbers/8.bin"
+#import "misc/Numbers/WhiteNumbers/9.bin"
+
+YellowNumbers:
+#import "misc/Numbers/YellowNumbers/0.bin"
+#import "misc/Numbers/YellowNumbers/1.bin"
+#import "misc/Numbers/YellowNumbers/2.bin"
+#import "misc/Numbers/YellowNumbers/3.bin"
+#import "misc/Numbers/YellowNumbers/4.bin"
+#import "misc/Numbers/YellowNumbers/5.bin"
+#import "misc/Numbers/YellowNumbers/6.bin"
+#import "misc/Numbers/YellowNumbers/7.bin"
+#import "misc/Numbers/YellowNumbers/8.bin"
+#import "misc/Numbers/YellowNumbers/9.bin"
