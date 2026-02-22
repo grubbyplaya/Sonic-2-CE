@@ -749,43 +749,43 @@ DATA_B31_8545:
 	.dw DATA_B31_A676
 	.dw $000A
 	.dw $0000
-	.dw $D3A0
+	.dw DATA_B31_SonicMinecart
 DATA_B31_8550:
 .db $08, $04, $1C
 	.dw DATA_B31_A676 
 	.dw $000A
 	.dw $0000
-	.dw $D3A0
+	.dw DATA_B31_SonicMinecart
 DATA_B31_855B:
 .db $08, $04, $1C
 	.dw DATA_B31_A676
 	.dw $000A
 	.dw $0000
-	.dw $D3A0
+	.dw DATA_B31_SonicMinecart
 DATA_B31_8566:
 .db $08, $04, $1C
 	.dw DATA_B31_A676
 	.dw $000A
 	.dw $0000
-	.dw $D3A0
+	.dw DATA_B31_SonicMinecart
 DATA_B31_8571:
 .db $08, $04, $1C
 	.dw DATA_B31_A676
 	.dw $000A
 	.dw $0000
-	.dw $D3A0
+	.dw DATA_B31_SonicMinecart
 DATA_B31_857C:
 .db $08, $04, $1C
 	.dw DATA_B31_A676
 	.dw $000A
 	.dw $0000
-	.dw $D3A0
+	.dw DATA_B31_SonicMinecart
 DATA_B31_8587:
 .db $08, $04, $1C
 	.dw DATA_B31_A676
 	.dw $000A
 	.dw $0000
-	.dw $D3A0
+	.dw DATA_B31_SonicMinecart
 DATA_B31_8592:
 .db $08, $04, $1C
 	.dw SprArrange_4x2
@@ -826,6 +826,8 @@ SpinDashSpr:
 DATA_B31_85C9:		;mappings for sonic sprite
 .db $00, $02, $04, $06, $08, $0A, $0C, $0E
 
+DATA_B31_SonicMinecart:	; mappings for sonic minecart anim
+.db $00, $02, $04, $6A, $6C, $6E, $70, $72
 
 DATA_B31_85D1:
 .dw AnimData_BlankFrame
@@ -4275,4 +4277,4 @@ DATA_B31_9D22:
 .db $02, $04, $06, $00, $16, $0A, $18, $1A, $00, $1C, $1E, $20
 
 
-#include "sprite_arrangement_data.asm"
+#include "src/sprite_arrangement_data.asm"

@@ -327,51 +327,51 @@ Data_ObjectLayout_CEZ:	 ;$816D
 
 
 Data_ObjectLayout_UGZ1:	 ;$8173
-#import "layout/ugz/object_layout_ugz1.bin"
+#import "src/layout/ugz/object_layout_ugz1.bin"
 Data_ObjectLayout_UGZ2:	 ;$82C1
-#import "layout/ugz/object_layout_ugz2.bin"
+#import "src/layout/ugz/object_layout_ugz2.bin"
 Data_ObjectLayout_UGZ3:	 ;$840F
-#import "layout/ugz/object_layout_ugz3.bin"
+#import "src/layout/ugz/object_layout_ugz3.bin"
 
 Data_ObjectLayout_SHZ1:	 ;$848E
-#import "layout/shz/object_layout_shz1.bin"
+#import "src/layout/shz/object_layout_shz1.bin"
 Data_ObjectLayout_SHZ2:	 ;$84E9
-#import "layout/shz/object_layout_shz2.bin"
+#import "src/layout/shz/object_layout_shz2.bin"
 Data_ObjectLayout_SHZ3:	 ;$8568
-#import "layout/shz/object_layout_shz3.bin"
+#import "src/layout/shz/object_layout_shz3.bin"
 
 Data_ObjectLayout_ALZ1:	 ;$8584
-#import "layout/alz/object_layout_alz1.bin"
+#import "src/layout/alz/object_layout_alz1.bin"
 Data_ObjectLayout_ALZ2:	 ;$8666
-#import "layout/alz/object_layout_alz2.bin"
+#import "src/layout/alz/object_layout_alz2.bin"
 Data_ObjectLayout_ALZ3:	 ;$87BD
-#import "layout/alz/object_layout_alz3.bin"
+#import "src/layout/alz/object_layout_alz3.bin"
 
 Data_ObjectLayout_GHZ1:	 ;$87F4
-;#import "layout/ghz/object_layout_ghz1.bin"
-#include "layout/ghz/object_layout_ghz1.asm"
+;#import "src/layout/ghz/object_layout_ghz1.bin"
+#include "src/layout/ghz/object_layout_ghz1.asm"
 Data_ObjectLayout_GHZ2:	 ;$88C4
-#import "layout/ghz/object_layout_ghz2.bin"
+#import "src/layout/ghz/object_layout_ghz2.bin"
 Data_ObjectLayout_GHZ3:	 ;$8970
-#import "layout/ghz/object_layout_ghz3.bin"
+#import "src/layout/ghz/object_layout_ghz3.bin"
 
 Data_ObjectLayout_GMZ1:	 ;$8983
-#import "layout/gmz/object_layout_gmz1.bin"
+#import "src/layout/gmz/object_layout_gmz1.bin"
 Data_ObjectLayout_GMZ2:	 ;$8A4A
-#import "layout/gmz/object_layout_gmz2.bin"
+#import "src/layout/gmz/object_layout_gmz2.bin"
 Data_ObjectLayout_GMZ3:	 ;$8AFF
-#import "layout/gmz/object_layout_gmz3.bin"
+#import "src/layout/gmz/object_layout_gmz3.bin"
 
 Data_ObjectLayout_SEZ1:	 ;$8B24
-#import "layout/sez/object_layout_sez1.bin"
+#import "src/layout/sez/object_layout_sez1.bin"
 Data_ObjectLayout_SEZ2:	 ;$8BE2
-#import "layout/sez/object_layout_sez2.bin"
+#import "src/layout/sez/object_layout_sez2.bin"
 Data_ObjectLayout_SEZ3:	 ;$8C7C
-#import "layout/sez/object_layout_sez3.bin"
+#import "src/layout/sez/object_layout_sez3.bin"
 
 Data_ObjectLayout_CEZ1:	 ;$8C8F
-#import "layout/cez/object_layout_cez1.bin"
+#import "src/layout/cez/object_layout_cez1.bin"
 Data_ObjectLayout_CEZ2:	 ;$8D20
-#import "layout/cez/object_layout_cez2.bin"
+#import "src/layout/cez/object_layout_cez2.bin"
 Data_ObjectLayout_CEZ3: ;$8D8D
-#import "layout/cez/object_layout_cez3.bin"
+#import "src/layout/cez/object_layout_cez3.bin"

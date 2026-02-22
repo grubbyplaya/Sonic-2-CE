@@ -1,5 +1,5 @@
 .assume ADL=0
-#include "object_logic/logic_titlescreen_objects.asm"
+#include "src/object_logic/logic_titlescreen_objects.asm"
 
 
 DATA_B30_8E2B:

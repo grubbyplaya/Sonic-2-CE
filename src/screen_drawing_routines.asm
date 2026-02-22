@@ -1,4 +1,3 @@
-
 ;These routines take data from VDP RAM and translates them into a usable frame.
 
 .ASSUME ADL=0
@@ -14,117 +13,150 @@ DrawScreen:
 	call.lil nz, RenderScreenMap
 
 	;start drawing the SAT
-	ld	a, (DrawSATTrig)
-	or	a
-	call.lil nz, DrawSAT
+	call.lil DrawSAT
 
 	xor	a
-	ld	(DrawSATTrig), a
 	ld	(DrawTilemapTrig), a
 	ret
 .ASSUME ADL=1
 
-RenderScreenMap:
-	ld	hl, RenderedScreenMap
-	ld	de, VRAM+$1E20		;first letter in letterbox
-	ld	bc, 0
-	ld	iyl, 193		;length of SMS screen
-	ld.sis	a, (VDP_VScroll)
-	add	a, h			;should HLU increment?
-	jr	nc, +_			;jump if not
-	ld	hl, SegaVRAM
-_:	ld	h, a
+#define ScreenPTR VRAM
 
-	;draw scanline
-	ld.sis	a, (VDP_HScroll)
+RenderScreenMap:
+	; setup values
+	ld	de, ScreenPTR
+	ld.sis bc, (VDP_HScroll)
+	ld	a, c
 	or	a
 	jp	z, RenderScreenMap_NullScroll
+	
+	ld	a, 192
+RenderScreenMap_Loop:
+	push af
+	push bc
 
-_:	ld	c, a
+	; offset HL to the starting pixel
+	ld	hl, RenderedScreenMap
+	add hl, bc
+	ld	a, c
 	neg
 	ld	l, a
+	; intiial pixels drawn = C
+	ld b, 0
 	ldir
-	dec	h
+
+	; go back to the scanline
+	dec	hl
 	ld	l, 0
+	; pixels drawn = 256 - HScroll
 	ld	c, a
 	ldir
-	neg
 
-	;go to next scanline
-	ex	de, hl
-	ld	c, $40
-	add	hl, bc
-	ex	de, hl
-	inc	h
-	ld	l, b
+	;go to the next scanline
+	pop bc
+	inc b
+	ld a, b
+	cp 224
+	jr nz, +_
+	ld b, 0
 
-	push	de
-	ld	de, SegaVRAM
-	call	CpHLDE
-	pop	de
-	jr	c, +_
-	ld	hl, RenderedScreenMap
-_:	dec	iyl
-	jr	nz, --_
+_:	pop af
+	dec a
+	jr	nz, RenderScreenMap_Loop
 	ret.sis
 	
 RenderScreenMap_NullScroll:
-	ld	bc, $0100
-	ldir
-	ex	de, hl
-	ld	c, $40
-	add	hl, bc
-	ex	de, hl
-
-	push	de
-	ld	de, SegaVRAM
-	call	CpHLDE
-	pop	de
-	jr	c, +_
+	; draw the top half of the screen
 	ld	hl, RenderedScreenMap
-_:	dec	iyl
 
-	jr	nz, RenderScreenMap_NullScroll
+	ld a, b
+	cp 32 + 1
+	jr c, RenderScreenMap_WholeScreen
+
+	ld	a, 224
+	add hl, bc
+	sub a, b
+	ld b, a
+	ldir
+	
+	ld b, a
+	ld a, 192
+	sub b
+	ld b, a
+	
+	; draw the bottom half of the screen
+	ld	hl, RenderedScreenMap
+	ldir
 	ret.sis
 
+RenderScreenMap_WholeScreen:
+	add hl, bc
+	ld bc, smsHeight * smsWidth
+	ldir
+	ret.sis
+
+
 DrawScreenMap:
-	xor	a
-	ld	ixh, a				;x position of tile (in tiles)
-	ld	ixl, a				;y position (in tiles)
 	ld	hl, ScreenMap
 	ld	bc, 32*28
+
 _:	push	bc
-	ld	a, (hl)
+	push	hl
+
+	ld a, (hl)
 	inc	hl
-	or	(hl)
-	jr	z, +_				;jump if null indice
-	ld	a, (hl)
-	and	%10000000			;should we draw the tile right now?
+	or (hl)
+	jr z, +_
+
+	bit	7, (hl)
 	call	z, DrawScreenMap_Tiles
+_:	call	IncTileCoords
 
-_:	inc	ixh				;update counters
-	ld	a, 32
-	cp	ixh
-	jr	nz, +_
-	ld	ixh, $00
-	inc	ixl
-
-_:	inc	hl
+	pop	hl
 	pop	bc
+
+	inc hl
+	inc	hl
 	dec	bc
 	ld	a, b
 	or	c
-	jr	nz, ---_
+	jr	nz, --_
+
+	; clear tile coords
+	ld	hl, 0
+	ld	(TileCoords), hl
+
 	ret.sis
+
+IncTileCoords:
+	; inc the tile column
+	ld	hl, TileCoords
+	inc	(hl)
+
+	; if we're haven't finished the row, bail out
+	ld	a, 32
+	cp	(hl)
+	ret	nz
+
+	; go to next tile row
+	ld	(hl), 0
+	inc	hl
+	inc	(hl)
+	ret
+
+TileCoords:
+	;   X, Y
+	.db 0, 0, 0
 
 DrawScreenMap_Tiles:
 	set	7, (hl)				;set that flag for future interrupts
-	xor	a
-	ld	($D2DE06), a			;reset the SAT drawing flag
 	ld	c, (hl)
-	bit	0, (hl)				;which half of VRAM is the tile on?
-	dec	hl
-	jr	z, ++_				;don't use cached tiles if said tile is on the first half
+	dec hl
+
+	bit 4, c
+	jr	nz, +_
+	bit	0, c				;which half of VRAM is the tile on?
+	jr	z, +_				;don't use cached tiles if said tile is on the first half of VRAM
 
 	ld	a, (hl)
 	ld	de, SegaTileFlags
@@ -136,22 +168,16 @@ DrawScreenMap_Tiles:
 	bit	3, c
 	jr	nz, +_				;if we're using the FG palette, don't flag the cached tile
 	inc	a
-_:	ld	(de), a
-	jr	++_
+	ld	(de), a
 
-_:	ld	de, 0
-	ld	(DrawCachedPixel), de
 _:	call	GetTilePointer
 	call	GetTileFlags
 	call	ConvertTileTo8bpp
 	;reset self-modifying code
 	ld	a, $13				;INC DE
-	ld	(DrawPixel), a
-	ld	hl, 248
-	ld	(SetScanlineSkip+1), hl
-	ld	hl, $0077FD
-	ld	(DrawCachedPixel), hl
-	ld	hl, ($D2DD00)
+	ld	(IncPixel), a
+	ld 	hl, smsWidth - 8
+	ld 	(SetScanlineSkip), hl
 	ret
 
 DrawCachedTile:
@@ -168,7 +194,6 @@ DrawCachedTile:
 	add	hl, de			;HL = cached tile ptr
 	pop	de
 
-
 	bit	1, a				;do we flip the tile horizontally?
 	jp	nz, DrawCachedTile_FlippedX	;jump if we shouldn't
 
@@ -179,7 +204,7 @@ _:	bit	2, a			;do we flip the tile vertically?
 	ex	de, hl
 	add	hl, bc
 	ex	de, hl
-	ld	bc, -264
+	ld	bc, -(smsWidth + 8)
 	ld	(SetCachedTile_DrawingGapY+1), bc
 
 _:	ld	a, $08
@@ -187,7 +212,7 @@ _:	ld	bc, $0008		;BC = tile width
 	ldir
 	ex	de, hl
 SetCachedTile_DrawingGapY:
-	ld	bc, 248
+	ld	bc, smsWidth - 8
 	add	hl, bc
 	ex	de, hl
 	dec	a
@@ -196,7 +221,7 @@ SetCachedTile_DrawingGapY:
 	inc	hl
 	set	7, (hl)
 	;reset self-modifying code
-	ld	bc, 248
+	ld	bc, smsWidth - 8
 	ld	(SetCachedTile_DrawingGapY+1), bc
 	ret
 
@@ -215,7 +240,7 @@ DrawCachedTile_FlippedX:
 	ex	de, hl
 	add	hl, bc
 	ex	de, hl
-	ld	bc, -248
+	ld	bc, -(smsWidth - 8)
 	ld	(SetCachedTile_DrawingGap+1), bc
 
 _:	ld	c, 8
@@ -227,7 +252,7 @@ _:	ld	a, (hl)
 	dec	c
 	jr	nz, -_
 SetCachedTile_DrawingGap:
-	ld	bc, 264
+	ld	bc, smsWidth + 8
 	ex	de, hl
 	add	hl, bc
 	ex	de, hl
@@ -239,7 +264,7 @@ SetCachedTile_DrawingGap:
 	inc	hl
 	set	7, (hl)
 	;reset self-modifying code
-	ld	bc, 264
+	ld	bc, smsWidth + 8
 	ld	(SetCachedTile_DrawingGap+1), bc
 	ret	
 
@@ -265,19 +290,18 @@ _:	ex	de, hl
 	push	hl
 	pop	iy		;IY = BG tile cache
 	ex	de, hl
-	pop	bc
-	ld	($D2DD00), bc
+	pop	ix
 	ret
 	
 GetTileCoordinates:
 	exx
 	ld	l, $08
-	ld	a, ixl
+	ld	a, (TileCoords + 1)
 	ld	h, a
 	mlt	hl		;HL has the Y coordinate
 
 	ld	e, $08
-	ld	a, ixh
+	ld	a, (TileCoords)
 	ld	d, a
 	mlt	de		;DE has the X coordinate
 	
@@ -295,47 +319,69 @@ GetTileFlags:		;calculates a tile's palette & mirroring direction
 	exx
 	ld	d, $00
 	exx
-	ld	a, (bc)
-	and	$0E		;is the tile normal?
-	ret	z		;return if so
 
+	; return if the tile is normal
+	ld	a, (ix)
+	and	%11110
+	ret	z
 	exx
-	ld	e, a
-	bit	3, e		;should we use the FG palette?
-	jr	z, +_		;jump if we shouldn't
-	ld	d, $10
-_:	bit	1, e		;do we flip the tile horizontally?
-	jr	z, +_		;jump if we don't
 
+	;should we use the FG palette?
+	ld e, a
+	bit	3, e
+	jr	z, +_
+	; if so, set bit 4 of D
+	set	4, d
+
+	; is this a priority tile?
+_:	bit	4, e
+	jr	z, +_
+	; if so, set bit 5 of D
+	set	5, d
+
+	; should we flip the tile horizontally?
+_:	bit	1, e
+	jr	z, +_
+
+	; if so, modify the coords and the drawing code
 	ld	bc, $0007
 	add	hl, bc
-	ld	a, $1B		;since we're drawing the tile backwards, we
-	ld	(DrawPixel), a	;switch out the INC DE in the tile drawing
-	ld	bc, 264		;routines for a DEC DE.
-	ld	(SetScanlineSkip+1), bc
 
-_:	bit	2, e		;do we flip the tile vertically?
-	jr	z, +_		;jump if we shouldn't
+	; since we're drawing the tile backwards, we
+	; switch out the INC DE in the tile drawing
+	; routines for a DEC DE.
+	ld	a, $1B
+	ld	(IncPixel), a
+	ld	bc, smsWidth + 8
+	ld	(SetScanlineSkip), bc
+
+	; should we flip the tile vertically?
+_:	bit	2, e
+	jr	z, +_
 
 	ld	bc, $0700
 	add	hl, bc
-	ld	bc, -264
-	ld	(SetScanlineSkip+1), bc
+	ld	bc, -(smsWidth + 8)
+	ld	(SetScanlineSkip), bc
 
+	; should we flip the tile both ways?
 	ld	a, e
 	and	$06
-	cp	$06		;do we flip the tile both ways?
+	cp	$06	
 	jr	nz, +_
-	ld	bc, -248
-	ld	(SetScanlineSkip+1), bc
+
+	ld	bc, -(smsWidth - 8)
+	ld	(SetScanlineSkip), bc
+
 _:	push	hl
 	exx
 	pop	de
 	ret
 
 DrawSAT:	;draws all the sprites, from most to least significant
-	ld	a, 1
-	ld	($D2DE06), a
+	ld	a, 16
+	ld	(SpriteLength), a
+	
 	ld	iy, SAT		;y position
 	ld	ix, SAT+$80	;x position/tile index
 	ld	b, $40		;number of SAT entries
@@ -356,36 +402,25 @@ _:	ld	h, (iy)
 	ld	l, (ix+1)
 	call	SetSpritePTR
 
-	;draw the bottom half of the sprite
-	ld	a, (iy)
-	add	a, 8
-	ld	h, a
-	ld	a, (ix)
-	call	SetSpriteCoords_NoClip
-	ex	de, hl
-	ld	l, (ix+1)
-	inc	l
-	call	SetSpritePTR
-
 _:	lea	ix, ix+2	;point IX and IY to the next entry
 	inc	iy
 	djnz	--_
+
+	ld	a, 8
+	ld	(SpriteLength), a
 	ret.sis
 
 SetSpriteCoords:
 	ld	e, a
 	call	CheckSpriteOffscreen
 	ret	nc
-	ld	a, e
 SetSpriteCoords_NoClip:
-	ld	l, 160
-	mlt	hl
-	add	hl, hl		;HL now has the scanline to start on
-	ld	de, $0020
-	add	hl, de		;move into the letterbox
-	ld	e, a
-	add	hl, de		;DE has the tile's coordinates
-	ld	de, VRAM+$1F40	;first scanline to be updated
+	or	a
+	sbc	hl, hl
+	ld	l, (ix)
+	ld	h, (iy)
+	inc h
+	ld	de, ScreenPTR
 	add	hl, de
 	scf
 	ret
@@ -426,21 +461,18 @@ SetSpritePTR:
 ; -----------------------------------------------------------------------------
 
 ConvertTileTo8bpp:
+SpriteLength = $+1
 	ld	c, $08
 _:	call	ConvertPixelRow
 	push	hl
 	ex	de, hl
-SetScanlineSkip:
-	ld	de, 248
-	ld	a, ($D2DE06)		;are we drawing the SAT?
-	or	a
-	jr	z, +_			;jump if we aren't
-	ld	de, lcdWidth-8
-_:	add	hl, de
+SetScanlineSkip = $+1
+	ld	de, smsWidth - 8
+	add	hl, de
 	ex	de, hl
 	pop	hl
 	dec	c
-	jr	nz, --_
+	jr	nz, -_
 	ret
 	
 
@@ -455,7 +487,8 @@ ConvertPixelRow:		;converts pixels from a planar format to a nybble
 	inc	hl
 	push	hl
 	ld	hl, (hl)
-_:	xor	a
+DrawPixel_Loop:
+	xor	a
 	rl	h
 	rla
 	rl	l
@@ -464,24 +497,48 @@ _:	xor	a
 	rla
 	rl	b
 	rla
+	bit	4, d
+	jr	nz, DrawSpritePixel
+
 	or	d
 	exx
-	cp	$10
-	jr	z, DrawPixel
 	ld	(de), a
-DrawPixel:
-	inc	de
-DrawCachedPixel:
+	and $0F
 	ld	(iy), a
 	inc	iy
+
+DrawPixel_LoopBack:
+IncPixel:
+	inc	de
 	exx
 	dec	e
-	jr	nz, -_
+	jr	nz, DrawPixel_Loop
 	exx
 	pop	hl
 	inc	hl
 	inc	hl
 	ret
+
+DrawSpritePixel:
+	exx
+	set	4, a
+	cp	$10
+	jr	z, DrawPixel_LoopBack
+	ex	de, hl
+	bit	5, (hl)
+	ex de, hl
+	jr	nz, DrawPixel_Priority
+	ld	(de), a
+	jr	DrawPixel_LoopBack
+
+DrawPixel_Priority:
+	ex af, af'
+	ld a, (de)
+	cp	$20
+	jr	nz, DrawPixel_LoopBack
+	ex af, af'
+	ld	(de), a
+	jr	DrawPixel_LoopBack
 
 Draw8bppTileEnd:
 .ORG	Draw8bppTileEnd-romStart

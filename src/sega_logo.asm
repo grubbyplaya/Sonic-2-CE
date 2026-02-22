@@ -1,6 +1,10 @@
+#define screenWidth 320
+
 ;SEGA logo routines
 SegaLogo:
 	call	StatusScroll
+
+	call	boot_InitializeHardware
 
 	;set up 4bpp mode with Vcomp interrupts
 	ld	hl, mpLcdCtrl
@@ -93,8 +97,8 @@ StatusScroll:
 	ld	b, 15
 _:	push	bc
 	ld	de, VRAM
-	ld	hl, VRAM + (LcdWidth*4)
-	ld	bc, lcdWidth*98
+	ld	hl, VRAM + (screenWidth*4)
+	ld	bc, screenWidth*98
 	ldir
 	pop	bc
 	call	WaitAFrame
@@ -102,7 +106,7 @@ _:	push	bc
 	ret
 
 LogoArt:
-#import "misc/sega_logo.bin"
+#import "src/misc/sega_logo.bin"
 
 LightPalette:
 .dw $81BF, $36DF, $CB5F, $FFFF	;brightness level 4

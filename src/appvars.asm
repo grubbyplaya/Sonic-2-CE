@@ -2,9 +2,11 @@
 #define Bank30	pixelShadow+$8000
 #define Bank31	pixelShadow+$C000
 
+#define HeaderSize Bank05-Bank04
+
 .ASSUME ADL=1
 CheckForBank: 			;it's bankin' time
- 	call.sis StoreRegisters
+ 	call	StoreRegisters
 	jp.lil	+_ + romStart
 
 _:	ld	hl, Engine_ResetInterruptFlag
@@ -23,23 +25,18 @@ _:	ld	hl, Engine_ResetInterruptFlag
 
 	sub	$04		;banks 0-3 are the actual engine/SMPS
 	ld	l, a
-	ld	h, $08
+	ld	h, HeaderSize
 	mlt	hl
 	ld	de, Bank04+romStart
 	add	hl, de
 
 	call	Mov9ToOP1
  	call	ChkFindSym
-	jp.lil	c, ExitGame + romStart
+	jp.lil	c, Engine_Exit + romStart
 	call	PutBankinSlot2 + romStart
 	ex	af, af'
 CheckForBank_ToggleInterrupt:
-	call.is RestoreRegisters
-	ld	a, ($DF20)
-	or	a
-	ret	nz
-	ei
-	ret
+	jp.sis RestoreRegisters
 
 StoreRegisters:		;stores registers in RAM
 	ld	(SegaSP), sp
@@ -76,7 +73,7 @@ RestoreRegisters:
 PutBankinSlot2:
 	ex	de, hl			;point HL to appvar
 	ld	de, BankSlot2+romStart	;point DE to bank slot	
-	ld	bc, 16
+	ld	bc, 8 + HeaderSize
 	add	hl, bc			;offset HL into actual data
 	ld	c, (hl)
 	inc	hl
@@ -98,7 +95,7 @@ StoreBankPointers:	;for loading sprite data from ROM banks
 _:	push	af
 	ld	l, a
 	ld	e, a
-	ld	h, 8
+	ld	h, HeaderSize
 	ld	d, 3
 	mlt	hl
 	mlt	de
@@ -115,10 +112,10 @@ _:	push	af
  	call	ChkFindSym
 	ex	de, hl
 	pop	de
-	jp	c, ExitGame
+	jp	c, Engine_Exit + romStart
 
 	ld	(StoreBankAddress + 1 + romStart), de
-	ld	de, $FF8012	;offset HL into actual data
+	ld	de, $FF8011	;offset HL into actual data
 	add	hl, de
 StoreBankAddress:
 	ld	(0), hl
@@ -126,6 +123,14 @@ StoreBankAddress:
 	inc	a
 	cp	28
 	jr	nz, -_
+
+	ld iy, BankAddressTable + (24 * 3)
+	ld hl, Bank28 - $8000
+	ld (iy), hl
+	ld hl, Bank30 - $8000
+	ld (iy + 6), hl
+	ld hl, Bank31 - $8000
+	ld (iy + 9), hl
 	ret.sis
 
 GetDataPTR:	;locate ROM bank data in archive memory
@@ -139,131 +144,95 @@ GetDataPTR:	;locate ROM bank data in archive memory
 	ld	bc, BankAddressTable
 	add	hl, bc
 	ld	hl, (hl)
-	ex	de, hl
-	add	hl, de
 	pop	bc
 	pop	de
 	ret.sis
 
-ExitGame:
-	ld	a, $D0
-	ld	mb, a
-	ld	sp, ($D2DE02)
-	ld	hl, $F00004
-	ld	(hl), $11
-	inc	hl
-	ld	(hl), $30
-	ld	hl, lcdNormalMode
-	ld	(mpLcdCtrl), hl
-	ld	hl, mpLcdPalette
-	ld	de, mpLcdPalette+1
-	ld	bc, $0040
-	ld	(hl), $00
-	ldir
-
-	ld	hl, ClearMemoryMap
-	ld	de, VRAM
-	ld	bc, ExitGameEnd-ClearMemoryMap
-	ldir
-	jp	VRAM
-
-ClearMemoryMap:
-	;clear emulated memory map location
-	ld	hl, romStart
-	ld	de, romStart+1
-	ld	bc, $FFFF
-	ld	(hl), $00
-	ldir
-	call	ClrLCDFull
-	ei
-	ret
-
-ExitGameEnd:
 ;Appvar Headers
 Bank04:
-	.db	AppvarObj, "Bank04", 0
+	.db	AppvarObj, "S2B04", 0
 
 Bank05:
-	.db	AppVarObj, "Bank05", 0
+	.db	AppVarObj, "S2B05", 0
 
 Bank06:
-	.db	AppVarObj, "Bank06", 0
+	.db	AppVarObj, "S2B06", 0
 
 Bank07:
-	.db	AppVarObj, "Bank07", 0
+	.db	AppVarObj, "S2B07", 0
 
 Bank08:
-	.db	AppVarObj, "Bank08", 0
+	.db	AppVarObj, "S2B08", 0
 
 Bank09:
-	.db	AppVarObj, "Bank09", 0
+	.db	AppVarObj, "S2B09", 0
 
 Bank10:
-	.db	AppVarObj, "Bank10", 0
+	.db	AppVarObj, "S2B10", 0
 
 Bank11:
-	.db	AppVarObj, "Bank11", 0
+	.db	AppVarObj, "S2B11", 0
 
 Bank12:
-	.db	AppVarObj, "Bank12", 0
+	.db	AppVarObj, "S2B12", 0
 
 Bank13:
-	.db	AppVarObj, "Bank13", 0
+	.db	AppVarObj, "S2B13", 0
 
 Bank14:
-	.db	AppVarObj, "Bank14", 0
+	.db	AppVarObj, "S2B14", 0
 
 Bank15:
-	.db	AppVarObj, "Bank15", 0
+	.db	AppVarObj, "S2B15", 0
 
 Bank16:
-	.db	AppVarObj, "Bank16", 0
+	.db	AppVarObj, "S2B16", 0
 
 Bank17:
-	.db	AppVarObj, "Bank17", 0
+	.db	AppVarObj, "S2B17", 0
 
 Bank18:
-	.db	AppVarObj, "Bank18", 0
+	.db	AppVarObj, "S2B18", 0
 
 Bank19:
-	.db	AppVarObj, "Bank19", 0
+	.db	AppVarObj, "S2B19", 0
 
 Bank20:
-	.db	AppVarObj, "Bank20", 0
+	.db	AppVarObj, "S2B20", 0
 
 Bank21:
-	.db	AppVarObj, "Bank21", 0
+	.db	AppVarObj, "S2B21", 0
 
 Bank22:
-	.db	AppVarObj, "Bank22", 0
+	.db	AppVarObj, "S2B22", 0
 
 Bank23:
-	.db	AppVarObj, "Bank23", 0
+	.db	AppVarObj, "S2B23", 0
 
 Bank24:
-	.db	AppVarObj, "Bank24", 0
+	.db	AppVarObj, "S2B24", 0
 
 Bank25:
-	.db	AppVarObj, "Bank25", 0
+	.db	AppVarObj, "S2B25", 0
 
 Bank26:
-	.db	AppVarObj, "Bank26", 0
+	.db	AppVarObj, "S2B26", 0
 
 Bank27:
-	.db	AppVarObj, "Bank27", 0
+	.db	AppVarObj, "S2B27", 0
 
 Bank28Header:
-	.db	AppVarObj, "Bank28", 0
+	.db	AppVarObj, "S2B28", 0
 
 Bank29:
-	.db	AppvarObj, "Bank29", 0
+	.db	AppvarObj, "S2B29", 0
 
 Bank30Header:
-	.db	AppvarObj, "Bank30", 0
+	.db	AppvarObj, "S2B30", 0
 
 Bank31Header:
-	.db	AppvarObj, "Bank31", 0
+	.db	AppvarObj, "S2B31", 0
 
 SHCHeader:
-	.db	AppvarObj, "Bank32", 0
+	.db	AppvarObj, "S2B32", 0
 .ASSUME ADL=0

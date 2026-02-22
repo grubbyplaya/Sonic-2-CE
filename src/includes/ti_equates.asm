@@ -3,6 +3,8 @@
 #define lcdHeight		240
 #define lcdWidth		320
 #define lcdNormalMode		$92D
+
+#define boot_InitializeHardware	$000384
 #define	CpHLDE			$02013C
 #define Mov9ToOP1		$020320
 #define ChkFindSym		$02050C

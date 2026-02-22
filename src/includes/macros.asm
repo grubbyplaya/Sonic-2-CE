@@ -32,7 +32,7 @@
 	#ifdef palette_addr <= Palettes
 		.echo "Specified palette address ($"
 		.echo palette_addr
-		.echo "is not within range.\n"
+		.echo "is not within range./n"
 	#endif
 	.db ((palette_addr - Palettes) / 16)
 #endmacro

@@ -138,7 +138,7 @@ Miscellaneous Variables
 
     $D39A           -   Player's position within a loop (GHZ/ALZ)
     
-    $D39D           -   Monitor collision type. See "src\object_logic\logic_monitors.asm".
+    $D39D           -   Monitor collision type. See "src/object_logic/logic_monitors.asm".
     $D39E -> $D39F  -   Used by minecart logic to store pointer to minecart
                         object descriptor.
 

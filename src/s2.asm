@@ -1,13 +1,13 @@
 .assume ADL=0
 
-#include	"includes/defines.asm"
-#include	"includes/macros.asm"
-#include	"includes/sms.asm"
-#include	"includes/structures.asm"
-#include	"includes/objects.asm"		;values for objects
-#include	"includes/player_states.asm"	;values for player object state
-#include	"includes/level_values.asm"
-#include	"includes/memory_layout.asm"
+#include	"src/includes/defines.asm"
+#include	"src/includes/macros.asm"
+#include	"src/includes/sms.asm"
+#include	"src/includes/structures.asm"
+#include	"src/includes/objects.asm"		;values for objects
+#include	"src/includes/player_states.asm"	;values for player object state
+#include	"src/includes/level_values.asm"
+#include	"src/includes/memory_layout.asm"
 
 ;=====================================================================
 ;Changing the "Version" variable will determine which version
@@ -168,13 +168,13 @@ _:	call	Engine_WaitForInterrupt
 ; =============================================================================
 ;	Tile Mirroring Lookup Table
 ; -----------------------------------------------------------------------------
-#include "byte_flip_lut.asm"
+#include "src/byte_flip_lut.asm"
 
 
 ; =============================================================================
 ;	Object Logic Jump Table
 ; -----------------------------------------------------------------------------
-#include "logic_jump_table.asm"
+#include "src/logic_jump_table.asm"
 
 DATA_330:
 .db $00, $03, $06, $09, $0C, $0F, $12, $15
@@ -209,6 +209,10 @@ DATA_330:
 .db $B9, $BC, $BE, $C1, $C4, $C7, $CA, $CC
 .db $CF, $D2, $D5, $D8, $DB, $DE, $E1, $E4
 .db $E7, $EB, $EE, $F1, $F4, $F7, $FA, $FD
+
+Engine_Exit:
+	ld.lil	sp, ($D2DE02)
+	ret
 
 ; =============================================================================
 ;	Engine_Reset()
@@ -261,8 +265,6 @@ Engine_Reset:		; $0431
 Engine_Initialise:
 	;clear screen?
 	call	Engine_ClearPaletteRAM
-
-	call	LoadSHCScreen
 
 	;call	LoadSave
 	call	Engine_LoadLevelTiles  
@@ -415,8 +417,6 @@ _:	call	VDP_UpdateSAT
 	bit	GT_TITLECARD_BIT, a
 	jr	nz, Engine_HandleVBlank_Epilogue
 
-	ld	a, 31
- 	call	Engine_SwapFrame2
 	call	Engine_UpdateSpriteAttribs
 	call	Engine_UpdateSpriteAttribsArt
 	call	Engine_UpdateCyclingPalettes
@@ -435,17 +435,11 @@ Engine_HandleVBlank_Epilogue:
 	ld	hl, Engine_InterruptServiced
 	inc	(hl)
 
-	ld	hl, (CurrentLevel)
-	ld	de, $0109
-	or	a
-	sbc	hl, de
-	jr	z, +_
 	ld	a, ($FFFF)
 	call	Engine_SwapFrame2
 
-_:	ld.lil	hl, $E30028
+	ld.lil	hl, $E30028
 	ld.lil	(hl), $08
-	ld.lil	sp, $D1A745		;reset SPL
 
 	; -------------------------------------
 	; VBlank Epilogue
@@ -484,7 +478,9 @@ Engine_WaitForInterrupt:		; $0593
 	di
 
 	call	StoreRegisters
-	ld	a, (FrameCounter)
+	ld	hl, RenderFrameCounter
+	inc	(hl)
+	ld	a, (hl)
 	rra
 	call	c, DrawScreen		;draw the last interrupt's frame
 	call	RestoreRegisters
@@ -502,6 +498,9 @@ _:	ld	a, (hl)
 	pop	af
 	pop	hl
 	ret
+
+RenderFrameCounter:
+	.db $00
 
 ; =============================================================================
 ;  MACRO: wait_1s()
@@ -1109,7 +1108,7 @@ LABEL_A27:
 	ret
 
 
-#include "level_select.asm"
+#include "src/level_select.asm"
 
 
 _Load_Intro_Level:
@@ -1247,6 +1246,7 @@ LABEL_FB9:
 	ld	hl, $2000
 	call	VDP_SetAddress
 	ld	hl, Art_Title_Screen	;title screen compressed art
+	xor	a
 	call	LoadTiles		;load the tiles into VRAM
 	
 	ld	a, $08
@@ -1263,7 +1263,7 @@ LABEL_FB9:
 	ld	(BackgroundXScroll), a
 	di
 
-	ld	hl, $DB00	;clear the working SAT
+	ld	hl, $DB00		;clear the working SAT
 	ld	de, $DB01
 	ld	bc, $00BF
 	ld	(hl), $00
@@ -1274,23 +1274,25 @@ LABEL_FB9:
 	ld	(Player.ObjID), a
 
 	ld	a, $08
-	call	Engine_SwapFrame2		;page in bank 08.
+	call	Engine_SwapFrame2			;page in bank 08.
 
 	ld	hl, $0200
 	call	VDP_SetAddress
-	ld	hl, Art_Title_Sonic_Hand	;load sonic's animated hand
+	ld	hl, Art_Title_Sonic_Hand		;load sonic's animated hand
+	xor	a
 	call	LoadTiles
 	
 	ld	hl, $05C0
 	call	VDP_SetAddress
-	ld	hl, Art_Title_Tails_Face	;load tails' animated eye
+	ld	hl, Art_Title_Tails_Face		;load tails' animated eye
+	xor	a
 	call	LoadTiles
 	
-	ld	c, $50				;object number
+	ld	c, $50					;object number
 	ld	h, $00
-	call	Engine_AllocateObjectHighPriority		;set up the hand object
+	call	Engine_AllocateObjectHighPriority	;set up the hand object
 	
-	ld	c, $51				;object number
+	ld	c, $51					;object number
 	ld	h, $00
 	call	Engine_AllocateObjectHighPriority	;set up the eye object
 	
@@ -1298,8 +1300,9 @@ LABEL_FB9:
 	ld	a, GT_GAMEOVER
 	ld	(GlobalTriggers), a
 	
-	xor	a
+	ld	a, 1
 	ld	(FrameCounter), a		;reset the frame counter
+	ld	(RenderFrameCounter), a
 
 	; wait for .5 sec
 	ld	bc, Time_1Second/2
@@ -1316,13 +1319,7 @@ _:	push	bc
 	ld	bc, $04B0
 _:	call	LABEL_107C
 	push	bc
-	ei
-	halt
-	di
-	ld	a, (FrameCounter)
-	rra
-	call	c, DrawScreen
-
+	call	Engine_WaitForInterrupt
 	call	Engine_UpdateLevelState
 	call	TitleScreen_ChangePressStartText
 	pop	bc
@@ -1334,22 +1331,36 @@ _:	call	LABEL_107C
 
 
 TitleScreen_ChangePressStartText:		; $1060
+	ld	a, (RenderFrameCounter)		;get the frame counter value
+	and	$1F				;alternate between "Press Start Button" and blank
+	ret	nz				;row every 32nd frame 
+
 	;page in the bank containing the mappings	
-	ld	a, 08	 
+	ld	a, 8	 
 	call	Engine_SwapFrame2
 
-	ld	a, ($D12F)			;get the frame counter value
-	
-	ld	de, Mappings_Title + $258	;"Press Start Button" text mappings
-	
-	and	$20				;alternate between "Press Start Button" and blank
-	jr	z, +_				;row every 32nd frame
+	ld	hl, StartButtonToggle
+	ld	a, 1
+	xor	(hl)
+	ld	(hl), a
 
-	ld	de, Mappings_Title		;title screen mappings
-_:	ld	hl, $3C8C			;vram destination
+	add	a, a
+	ld	l, a
+	ld	h, 0
+	ld	de, StartButtonMappings
+	add	hl, de
+	ld	de, (hl)
+	ld	hl, $3C8C			;vram destination
 	ld	bc, $0114			;rows/cols
 	;load the mappings into VRAM
 	jp	Engine_LoadCardMappings
+
+StartButtonToggle:
+	.db $00
+
+StartButtonMappings:
+	.dw Mappings_Title + $258	;"Press Start Button" text mappings
+	.dw Mappings_Title 		;title screen mappings
 
 LABEL_107C:
 	ld	hl, $D292
@@ -1379,7 +1390,9 @@ Engine_LoadPlayerTiles:	;$10BF
 _:	add	hl, de
 
 	ld	a, 31
+	ex	de, hl
 	call.lil GetDataPTR + romStart
+	add.lil hl, de
 	ld.lil	a, (hl)			;bank number
 	inc.lil	hl
 	ld.lil	e, (hl)			;art pointer
@@ -1389,8 +1402,8 @@ _:	add	hl, de
 	ld.lil	b, (hl)			;tile count / 2 (each sprite is 8x16)
 	ld	c, $40
 	mlt	bc
-	ex	de, hl
  	call.lil GetDataPTR + romStart		;calculate new pointer for HL
+	add.lil hl, de
 
 	ld.lil	de, SegaVRAM
 Engine_LoadPlayerTiles_CopyTiles:	;copy 2 tiles (64 bytes) to vram
@@ -1454,10 +1467,14 @@ _:	ld	a, (Frame2Page)
 	ret	z		;return if we aren't
 	ld	(Frame2Page), a
 	di
-	jp.lil	CheckForBank+romStart
+	jp	CheckForBank
 Engine_ResetInterruptFlag:
-	xor	a
-	ld	($DF20), a
+	ld	hl, $DF20
+	ld	a, (hl)
+	ld	(hl), 0
+	or	a
+	ret	nz
+	ei
 	ret
 
 PaletteFadeOut:
@@ -1475,7 +1492,7 @@ LABEL_12C8:
 ;	Engine_CopyPalettes()
 ; -----------------------------------------------------------------------------
 ;	Copies the colour data stored in RAM to the VDP.
-;	CE - Converts CRAM data to 16bpp and copies it to the LCD controller.
+;	CE - Converts CRAM data to 1555bpp and copies it to the LCD controller.
 ; -----------------------------------------------------------------------------
 ;	In:
 ;	None.
@@ -1489,27 +1506,30 @@ Engine_CopyPalettes:		; $12D6
 	ld	a, (Palette_UpdateTrig)
 	or	a
 	ret	z			;don't update if the flag is 0
-	ld.lil	de, CRAM
-	exx
-	ld	b, $20
-	ld.lil	de, WorkingCRAM+romStart
 
+	ld	ix, WorkingCRAM
+	ld.lil	de, CRAM
+	ld	b, $20
+
+	; convert palettes to 1555bpp
 _:	push	bc
-	ld	a, (de)	
+	ld	a, (ix)	
 	ld	l, a
 	ld	h, $00
 	add	hl, hl
-	ld.lil	bc, SMS_Palette+romStart
+	ld.lil	bc, SMS_Palette + romStart
 	add.lil	hl, bc
-	push.lil hl
-	exx
-	pop.lil	hl
-	ld	bc, $0002
-	ldir.lil
-	exx
-	inc.lil	de
+	ldi.lil
+	ldi.lil
+	inc	ix
 	pop	bc
 	djnz	-_
+
+	; copy the palettes to the priority tile area
+	ld.lil hl, CRAM
+	ld.lil de, CRAM + (32 * 2)
+	ld	bc, 32 * 2
+	ldir.lil
 
 	;reset the Palette_UpdateTrig flag
 	xor	a
@@ -1517,12 +1537,12 @@ _:	push	bc
 	ret
 
 SMS_Palette:	;SMS palette converted to 16bpp
-	#include "sms_palette.asm"
+	#include "src/sms_palette.asm"
 
 ; =============================================================================
 ;	VDP Routines
 ; -----------------------------------------------------------------------------
-#include "vdp.asm"
+#include "src/vdp.asm"
 
 
 ; =============================================================================
@@ -1638,11 +1658,14 @@ Engine_UpdateObjectVPOS:		;$1842
 	ld	iy, (Engine_UpdateSpriteAttribs_vpos_ptr)		;SAT VPOS
 	
 	; read the vertical offset value from the anim mapping data
-	ld	h, (ix + Object.SprOffsets + 1) 
-	ld	l, (ix + Object.SprOffsets)
-	ld	e, (hl)
-	inc	hl
-	ld	d, (hl)
+	ld	a, 31
+	ld	d, (ix + Object.SprOffsets + 1) 
+	ld	e, (ix + Object.SprOffsets)
+	call.lil GetDataPTR + romStart
+	add.lil hl, de
+	ld.lil	e, (hl)
+	inc.lil	hl
+	ld.lil	d, (hl)
 	
 	; fetch the object's vertical position
 	ld	l, (ix + Object.ScreenY)
@@ -1658,8 +1681,17 @@ Engine_UpdateObjectVPOS:		;$1842
 	exx
 	; fetch the sprite mapping pointer & adjusted
 	; position into the shadow DE and BC registers.
+	inc	de
 	ld	d, (ix + Object.SprMappgPtr + 1)
 	ld	e, (ix + Object.SprMappgPtr)
+
+	push	hl
+	ld	a, 31
+	call.lil GetDataPTR + romStart
+	add.lil	hl, de
+	ex.lil	de, hl
+	pop	hl
+
 	ld	bc, (Engine_UpdateSpriteAttribs_adj_pos)
 	exx
 	
@@ -1674,12 +1706,12 @@ Engine_UpdateObjectVPOS:		;$1842
 			
 _:	exx
 	; get the mapping data for this sprite
-	ld	a, (de)
+	ld.lil	a, (de)
 	ld	l, a
-	inc	de
-	ld	a, (de)
+	inc.lil	de
+	ld.lil	a, (de)
 	ld	h, a
-	inc	de
+	inc.lil	de
 		
 	; add the adjustment value to the mapping value
 	add	hl, bc
@@ -1706,8 +1738,8 @@ _:	; push the sprite offscreen
 	ld	(iy + 0), 224
 	
 	; move to the next sprite mapping entry
-_:	inc	de
-	inc	de
+_:	inc.lil	de
+	inc.lil	de
 	; move to the next SAT vpos entry
 	inc	iy
 	exx
@@ -1736,16 +1768,20 @@ Engine_UpdateObjectHPOS:		;$1896
 	ld	iy, (Engine_UpdateSpriteAttribs_hpos_ptr)		;SAT HPOS pointer
 	
 	; fetch the sprite offset pointer from the object structure
-	ld	h, (ix + Object.SprOffsets + 1)
-	ld	l, (ix + Object.SprOffsets)
+	ld	a, 31
+	ld	d, (ix + Object.SprOffsets + 1) 
+	ld	e, (ix + Object.SprOffsets)
+
 	; adjust the pointer past the vertical offset word
-	inc	hl
-	inc	hl
-	
+	inc	de
+	inc	de
+
+	call.lil GetDataPTR + romStart
+	add.lil hl, de
 	; read the horizontal offset value into DE
-	ld	e, (hl)
-	inc	hl
-	ld	d, (hl)
+	ld.lil	e, (hl)
+	inc.lil	hl
+	ld.lil	d, (hl)
 	
 	; check which direction the object is facing
 	; if it's facing left we need to negate the offset value
@@ -1762,10 +1798,10 @@ Engine_UpdateObjectHPOS:		;$1896
 	ld	e, a
 	
 _:	; get a pointer to the object's char codes...
-	inc	hl
-	ld	c, (hl)
-	inc	hl
-	ld	b, (hl)
+	inc.lil	hl
+	ld.lil	c, (hl)
+	inc.lil	hl
+	ld.lil	b, (hl)
 	; ...and store it here
 	ld	(Engine_ObjCharCodePtr), bc
 	; fetch the object's onscreen x-coordinate
@@ -1784,20 +1820,28 @@ _:	; get a pointer to the object's char codes...
 	; skip past the v-pos value
 	inc	de
 	inc	de
+
+	push	hl
+	ld	a, 31
+	call.lil GetDataPTR + romStart
+	add.lil	hl, de
+	ex.lil	de, hl
+	pop	hl
+
 	; check the object number. jump if we're dealing with the
 	; player object
 	ld	a, (ix + Object.ObjID)
 	dec	a
 	jr	z, +_
 		
-		; check which direction the object is facing
+	; check which direction the object is facing
 	bit	OBJ_F4_FACING_LEFT, (ix + Object.Flags04)
 	jr	z, +_
 		
 	; object is facing left. update the pointer
 	ld	hl, $046C
-	add	hl, de
-	ex	de, hl
+	add.lil	hl, de
+	ex.lil	de, hl
 		
 _:	ld	bc, (Engine_UpdateSpriteAttribs_adj_pos)		;fetch the horizontal position value
 	exx
@@ -1812,12 +1856,12 @@ _:	ld	bc, (Engine_UpdateSpriteAttribs_adj_pos)		;fetch the horizontal position v
 	
 _:	exx
 	; fetch the mapping data for this sprite
-	ld	a, (de)
+	ld.lil	a, (de)
 	ld	l, a
-	inc	de
-	ld	a, (de)
+	inc.lil	de
+	ld.lil	a, (de)
 	ld	h, a
-	inc	de	
+	inc.lil	de	
 	; add the adjustment value
 	add	hl, bc	
 	; store the hpos attribute in the SAT
@@ -1829,13 +1873,23 @@ _:	exx
 	ld	(iy+0), $00
 		
 _:	; move to the next entry in the mapping data
-	inc	de
-	inc	de	
+	inc.lil	de
+	inc.lil	de	
 	; move to the SAT char code for this sprite
 	inc	iy
+
 	; fetch the char code 
-	ld	hl, (Engine_ObjCharCodePtr)
-	ld	a, (hl)	
+	push.lil de
+	ld	de, (Engine_ObjCharCodePtr)
+	inc	de
+	ld	(Engine_ObjCharCodePtr), de	
+	dec	de
+	ld	a, 31
+	call.lil GetDataPTR + romStart
+	add.lil	hl, de
+	ld.lil	a, (hl)	
+	pop.lil de
+
 	; check which direction the object is facing
 	bit	OBJ_F4_FACING_LEFT, (ix + Object.Flags04)
 	jr	z, +_
@@ -1848,8 +1902,6 @@ _:	; object is facing right - add the VRAM index value
 _:	; store the resulting char code in the SAT
 	ld	(iy + $00), a
 	; increment the char code pointer and store it
-	inc	hl
-	ld	(Engine_ObjCharCodePtr), hl	
 	; move to the next SAT entry
 	inc	iy
 	exx
@@ -1978,14 +2030,11 @@ Engine_LoadMappings:		;$1982
 	push	bc
 	push	hl
 	ld	b, c
+	call	VDP_SetAddress
+	ex	de, hl
+	call	VDP_GetAddress24	
 
-	push	de
-	ld.lil	de, SegaVRAM
-	add.lil	hl, de
-	pop	de
-	
 .ASSUME ADL=1
-	ex.il	de, hl
 	push.il	de
 	ld.il	de, romStart
 	add.il	hl, de
@@ -2115,8 +2164,6 @@ LABEL_1A13:
 	add	hl, bc
 	ret
 
-
-
 ReadInput:	;$1A35
 	ld	hl, $D145
 	ld	de, $D146
@@ -2147,8 +2194,8 @@ ReadInput:	;$1A35
 	call	nz, Engine_Demo_MovePlayer	;should the cpu control the player?
 
 	ld.lil	a, (kbdG6)
-	bit	kbitClear, a		;is the clear key pressed?
-	jp.lil	nz, ExitGame		;exit the program if it is
+	bit	kbitClear, a					;is the clear key pressed?
+	jp.lil	nz, Engine_Exit + romStart	;exit the program if it is
 
 	ld	hl, PauseHandler_Trig
 	ld.lil	a, (kbdG1)
@@ -2196,26 +2243,26 @@ _:	ld	d, a
 ; -----------------------------------------------------------------------------
 Engine_Demo_MovePlayer:	; $1A8C
 	; page in the bank with the control sequences
-	ld	a, (Engine_DemoSeq_Bank)
-	call	Engine_SwapFrame2
-
-	ld	hl, (ControlByte)	;fetch the offset (offset for the current control sequence within the bank)
-	ld	a, h			;bail out if offset = 0
-	or	l
+	ld	a, (DemoBank)
+	call.lil GetDataPTR + romStart
+	ld	de, (ControlByte)	;fetch the offset (offset for the current control sequence within the bank)
+	ld	a, d			;bail out if offset = 0
+	or	e
 	ret	z
 
-	ld	a, (hl)			;load the control byte
+	add.lil hl, de
+	ld.lil	a, (hl)			;load the control byte
 	ld	(Engine_InputFlags), a	;and store it for later
-	inc	hl
-	ld	a, (hl)
+	inc.lil	hl
+	ld.lil	a, (hl)
 	ld	(Engine_InputFlagsLast), a
-	inc	hl
+	inc	de
+	inc	de
 
-	ld	(ControlByte), hl	;fetch the next offset 
+	ld	(ControlByte), de	;fetch the next offset 
 	ret
 
-
-#include "tile_loading_routines.asm"
+#include "src/tile_loading_routines.asm"
 
 ; =============================================================================
 ;	Engine_Multiply_8_by_8u(uint8 multiplier, uint8 multiplicand)	UNUSED
@@ -2309,8 +2356,7 @@ _:	ld	a, (Engine_InputFlags)	;check for button press
 	ei
 	halt
 	di
-_:	call	Engine_WaitForInterrupt	
-	ld	a, (RingCounter)
+_:	ld	a, (RingCounter)
 	or	a
 	jr	z, +_
 
@@ -2322,8 +2368,13 @@ _:	call	Engine_WaitForInterrupt
 	call	LABEL_1CD0		;update score value
 	call	LABEL_1D4F		;update score graphics?
 	call	LABEL_1D6F
+	ld	a, 3
+	ld	(DrawTilemapTrig), a
+	call	Engine_WaitForInterrupt
 	jr	--_
 _:	; wait a second
+	ld	hl, RenderFrameCounter
+	set	1, (hl)
  	call	wait_1s
 	
 _:	ld	a, (Engine_InputFlags)		;check for button press
@@ -2332,8 +2383,7 @@ _:	ld	a, (Engine_InputFlags)		;check for button press
 	ei
 	halt
 	di
-_:	call	Engine_WaitForInterrupt
-	xor	a
+_:	xor	a
 	ld	de, $D2A2		;score time value
 	ld	hl, Score_BadnikValue
 	ld	a, (de)
@@ -2350,13 +2400,16 @@ _:	call	Engine_WaitForInterrupt
 	call	LABEL_1CD0		;update score value
 	call	LABEL_1D60
 	call	LABEL_1D6F
+	ld	a, 3
+	ld	(DrawTilemapTrig), a
+	call	Engine_WaitForInterrupt
 
 	ld	hl, $D2A2
 	ld	a, (hl)
 	inc	hl
 	or	(hl)
 	jr	nz, --_
-	ld	hl, FrameCounter
+	ld	hl, RenderFrameCounter
 	set	1, (hl)
 	call	Engine_WaitForInterrupt
 
@@ -2538,9 +2591,8 @@ _:	push	bc
 
 	di
 	ld	hl, ($D11C)
-	ld.lil	de, SegaVRAM
-	add.lil	hl, de
-	ex.lil	de, hl
+	call	VDP_SetAddress
+	call	VDP_GetAddress24
 	ld	hl, ScoreCard_Mappings_Numbers
 	ld	c, a
 	ld	b, $00
@@ -2557,9 +2609,8 @@ _:	push	bc
 	ld	($D11C), hl
 	ld	de, $3E
 	add	hl, de
-	ld.lil	de, SegaVRAM
-	add.lil	hl, de
-	ex.lil	de, hl
+	call	VDP_SetAddress
+	call	VDP_GetAddress24
 	pop.lil	hl
 	ldi.lil
 	ldi.lil
@@ -2886,7 +2937,7 @@ DATA_1F70:
 
 
 DATA_1FE4:
-#import "unknown\s2_1FE4.bin"
+#import "src/unknown/s2_1FE4.bin"
 
 ;Used by the score card
 ;add the value pointed to by HL to the score at $D2A2
@@ -3228,7 +3279,7 @@ Engine_InitCounters:		;$225B
 	ld	(Score+1), a
 	ld	(Score+2), a
 	
-	ld	($D2A2), a			;\ 
+	ld	($D2A2), a			;/ 
 	ld	($D2A3), a			; |
 	ld	($D2A4), a			; | used in score card tallying 
 	ld	($D2A5), a			; |
@@ -3326,7 +3377,7 @@ Engine_LoadAuxLevelHeader:		;$2291
 	inc	hl
 	ret
 
-#include "ring_art_pointers.asm"
+#include "src/ring_art_pointers.asm"
 
 
 LABEL_2416:
@@ -3790,7 +3841,6 @@ _:	ld	($D118), bc	;rows/cols
 
 TitleCard_ScrollTextFromLeft:		;$26E1
 	push	bc
-	call	Engine_WaitForInterrupt
 	ld	bc, ($D118)	;rows/cols
 	ld	de, ($D11A)	;pointer to mappings
 	ld	hl, ($D11C)	;VRAM address
@@ -3813,40 +3863,51 @@ TitleCard_ScrollTextFromLeft:		;$26E1
 	dec	de
 	dec	de
 	ld	($D11A), de
+	ld	a, 3
+	ld	(DrawTilemapTrig), a
+	call	Engine_WaitForInterrupt
 	pop	bc
 	djnz	TitleCard_ScrollTextFromLeft
 	ret
 
 TitleCard_ScrollActLogo:		;$2722
 	push	bc
-	ei
+	ld	a, 3
+	ld	(DrawTilemapTrig), a
+	call	Engine_WaitForInterrupt
+
 	ld	bc, ($D118)
 	ld	de, ($D11A)
 	ld	hl, ($D11C)
 	call	Engine_LoadCardMappings
+
 	ld	bc, ($D118)
 	ld	hl, ($D11A)
 	ld	de, (Engine_ObjCharCodePtr)
 	add	hl, de
 	ex	de, hl
+
 	push	de
 	ld	hl, ($D11C)
 	ld	de, $0040
 	add	hl, de
 	pop	de
 	call	Engine_LoadCardMappings
+
 	ld	bc, ($D118)
 	ld	hl, ($D11A)
 	ld	de, (Engine_ObjCharCodePtr)
 	add	hl, de
 	add	hl, de
 	ex	de, hl
+
 	push	de
 	ld	hl, ($D11C)
 	ld	de, $0080
 	add	hl, de
 	pop	de
 	call	Engine_LoadCardMappings
+
 	ld	bc, ($D118)
 	ld	hl, ($D11A)
 	ld	de, (Engine_ObjCharCodePtr)
@@ -3854,12 +3915,14 @@ TitleCard_ScrollActLogo:		;$2722
 	add	hl, de
 	add	hl, de
 	ex	de, hl
+
 	push	de
 	ld	hl, ($D11C)
 	ld	de, $00C0
 	add	hl, de
 	pop	de 
 	call	Engine_LoadCardMappings
+
 	ld	bc, ($D118)
 	ld	hl, ($D11A)
 	ld	de, (Engine_ObjCharCodePtr)
@@ -3868,12 +3931,14 @@ TitleCard_ScrollActLogo:		;$2722
 	add	hl, de
 	add	hl, de
 	ex	de, hl
+
 	push	de
 	ld	hl, ($D11C)
 	ld	de, $0100
 	add	hl, de
 	pop	de
 	call	Engine_LoadCardMappings
+
 	ld	bc, ($D118)
 	inc	c
 	ld	($D118), bc
@@ -3989,7 +4054,7 @@ _:	push	hl
 	ret
 
 TitleCard_Mappings:	;28F0
-#include "titlecard_mappings.asm"
+#include "src/titlecard_mappings.asm"
 
 Engine_UpdatePlayerObjectState:	; $2FA8
 	ld	ix, PlayerObj
@@ -4011,7 +4076,6 @@ Engine_UpdatePlayerObjectState:	; $2FA8
 	call	Engine_UpdatePlayerObject
 	
 	ld	a, 31
-	call	Engine_SwapFrame2
 	call	LABEL_6139
 	jp	LABEL_47C9		;check monitor collisions?
 
@@ -5211,9 +5275,6 @@ _:	ld	(ix+$02), $0D
 	pop	af
 	ret	
 
-Player_Nop:		; $375E
-	ret	
-
 LABEL_375F:
 	ld	hl, $0180
 	ld	(Player_MaxVelX), hl
@@ -6275,19 +6336,19 @@ _:	; update the 3-byte x-position value
 #endif
 
 Data_AccelerationValues_Right:		; $3D16
-#import "misc/accel_values_right.bin"
+#import "src/misc/accel_values_right.bin"
 
 Data_AccelerationValues_Left:		; $3D96
-#import "misc/accel_values_left.bin"
+#import "src/misc/accel_values_left.bin"
 
 Data_DecelerationValues:			; $3E16
-#import "misc/decel_values.bin"
+#import "src/misc/decel_values.bin"
 
 Data_AccelerationValues_Right_UnderWater:		; $3E96
-#import "misc/accel_values_right_water.bin"
+#import "src/misc/accel_values_right_water.bin"
 
 Data_AccelerationValues_Left_UnderWater:		; $3F16
-#import "misc/accel_values_left_water.bin"
+#import "src/misc/accel_values_left_water.bin"
 
 
 ;gradient delta-v values
@@ -7175,22 +7236,6 @@ LABEL_46BB:
 ;called on initial collision with mine cart
 LABEL_46C0:
 	res	7, (ix+$04)
-	ld	hl, $D3A0
-	ld	(hl), $00
-	inc	hl
-	ld	(hl), $02
-	inc	hl
-	ld	(hl), $04
-	inc	hl
-	ld	(hl), $6A
-	inc	hl
-	ld	(hl), $6C
-	inc	hl
-	ld	(hl), $6E
-	inc	hl
-	ld	(hl), $70
-	inc	hl
-	ld	(hl), $72
 	ld	iy, ($D39E)
 	call	LABEL_4727
 	set	7, (iy+$04)
@@ -7264,6 +7309,10 @@ _:	ld	a, (ix+$1E)		;frame number
 	inc	a
 	jr	MineCart_SetSprite
 
+#macro WriteMinecartPTR(offset)
+	ld.lil 	((Bank31 + DATA_B31_SonicMinecart + offset) - $8000), a
+#endmacro
+
 MineCart_UpdateAnimation:		;4784
 	dec	a				;next frame
 MineCart_SetSprite:			;4785
@@ -7278,10 +7327,10 @@ MineCart_SetSprite:			;4785
 	ld	(ix+$06), a
 	inc	hl
 	ld	a, (hl)		;wheel left
-	ld	($D3A6), a
+	WriteMinecartPTR(6)
 	inc	hl
 	ld	a, (hl)		;wheel right
-	ld	($D3A7), a
+	WriteMinecartPTR(7)
 	ld	(ix+$07), $03	;?
 	ret
 
@@ -7843,7 +7892,7 @@ _:	; shift the metatile index into the upper byte
 
 ;Precalculated address offsets for each row of blocks
 ;for a given level width (the stride tables)
-#include "level_width_multiples.asm"
+#include "src/level_width_multiples.asm"
 
 
 
@@ -8026,7 +8075,7 @@ Engine_LoadLevel_SetInitialPositions:		;$53C0
 	ld	($D514), hl
 	ret
 
-#include "level_layout_initial_positions.asm"
+#include "src/level_layout_initial_positions.asm"
 
 
 ; =============================================================================
@@ -8129,7 +8178,7 @@ Engine_LoadLevelHeader:		;$553F
 	ld	($D289), a
 	jp	Engine_CalculateCameraBounds	
 
-#include "level_headers.asm"
+#include "src/level_headers.asm"
 
 
 ; =============================================================================
@@ -8456,7 +8505,7 @@ _:	djnz	--_
 ;*	Lookup table of off-screen buffer address offsets. *
 ;***********************************************************
 Data_OffscreenBufferOffsets:		;$59DB
-#import "misc\offscreen_buffer_offsets.bin"
+#import "src/misc/offscreen_buffer_offsets.bin"
 
 LABEL_5D93:				;updates current position in level
 	; clear the scroll bits from the viewport flags
@@ -8697,8 +8746,7 @@ LABEL_5EFD:
 	call	Engine_SwapFrame2
 	call	Engine_UpdateObject
 
-	ld	a, 31
-	call	Engine_SwapFrame2	
+	ld	a, 31	
 	call	LABEL_6139
 	
 	ld	a, (ix + Object.State)
@@ -8712,8 +8760,6 @@ LABEL_5F29: ;badniks & minecart
 	call	Engine_UpdateObject
 
 	ld	a, 28
-	call	Engine_SwapFrame2
-
 	call	LABEL_6139
 	jp	LABEL_617C	
 
@@ -8723,8 +8769,6 @@ LABEL_5F3D:
 	call	Engine_UpdateObject
 
 	ld	a, 30
-	call	Engine_SwapFrame2
-
 	call	LABEL_6139
 	jp	LABEL_617C	
 
@@ -8748,7 +8792,7 @@ LABEL_5F51:
 
 
 Logic_Pointers:		;$5F81
-#include "object_logic_pointers.asm"
+#include "src/object_logic_pointers.asm"
 
 
 ; =============================================================================
@@ -8986,13 +9030,35 @@ LABEL_6131:
 	jr	LABEL_6127
 
 LABEL_6139:
+	ld	(TempBank), a
 	ld	l, (ix+$0C)
 	ld	h, (ix+$0D)
 	ld	a, h
 	or	l
 	ret	z
-	jp	(hl)
-	ret	
+
+	;heuristics to reduce the amount of bank swaps
+	bit	7, h
+	jr	z, +_	;if HL points to bank 0, just execute it
+
+	ex	de, hl
+	ld	a, (TempBank)
+	call.lil GetDataPTR + romStart
+
+	; if the code leads to an immedate RET, return
+	add.lil hl, de
+	ld.lil	a, (hl)
+	cp	$C9
+	ret	z
+
+	ld	a, (TempBank)
+	call	Engine_SwapFrame2
+	ld	l, (ix+$0C)
+	ld	h, (ix+$0D)
+_:	jp	(hl)
+
+TempBank:
+	.db $00
 
 ;find an open object slot (entire range)
 Engine_AllocateObjectHighPriority:		;$6144
@@ -9519,6 +9585,7 @@ LABEL_6483:
 	ret	
 
 DoNothingStub:		;$64B0
+Player_Nop:
 	ret	
 
 
@@ -12951,10 +13018,9 @@ Engine_HandlePLC:		;$783B
 
 
 	call	Engine_SwapFrame2		;swap the correct bank into page 2
-	ld	de, (PLC_VRAMAddr)
-	ld.lil	hl, SegaVRAM
-	add.lil	hl, de
-	ex.lil	de, hl
+	ld	hl, (PLC_VRAMAddr)
+	call	VDP_SetAddress
+	call	VDP_GetAddress24
 
 	ld	hl, (PLC_SourceAddr)
 	ld.lil	bc, romStart
@@ -13217,7 +13283,7 @@ Engine_HandlePLC_ChaosEmerald:	;$7993
 	ei	;enable interrupts
 	jp	Engine_HandlePLC_CleanUp
 
-#include "chaos_emerald_pointers.asm"
+#include "src/chaos_emerald_pointers.asm"
 
 
 Engine_HandlePLC_MonitorArt:	;$79C7
@@ -13262,7 +13328,7 @@ Monitor_Art_Pointers:		;$79E9
 
 
 LevelTilesets:			;$79FB
-#include "zone_tilesets.asm"
+#include "src/zone_tilesets.asm"
 
 
 
@@ -13738,30 +13804,29 @@ _:	ld	(Engine_RingAnimFrame), a
 	; HL now contains a pointer to the frame art
 	; fetch the VRAM destination pointer
 	ld	de, (Engine_RingArt_Dest)
+	ex	de, hl
+	call	VDP_SetAddress
 
 	; check for null ptr and bail out if necessary
-	ld	a, d
-	or	e
+	ld	a, h
+	or	l
 	ret	z
 
-	di
+	push	de
+	call	VDP_GetAddress24
+	pop	hl
 
 	; swap in the bank with the ring art
+	push.lil de
 	ld	a, 29
 	ex	de, hl
 	call.lil GetDataPTR + romStart
+	add.lil hl, de
+	pop.lil de
 
-	push.lil hl
-	ld.lil	hl, SegaVRAM
-	add.lil	hl, de
-	ex.lil	de, hl
-	pop.lil	hl
-	
 	; copy 128 bytes to VRAM
 	ld	bc, 128
 	ldir.lil
-	ld	hl, DrawTilemapTrig
-	set	0, (hl)
 	ret
 
 LoadSHCScreen:
@@ -13785,12 +13850,12 @@ ROM_HEADER:				;$7FF0
 #endif
 .db $40				;region code/rom size
 
-#include "palette_routines.asm"
-#include "cycling_palette_data.asm"
+#include	"src/palette_routines.asm"
+#include	"src/cycling_palette_data.asm"
 
-#include	"includes/ti_equates.asm"
-#include	"appvars.asm"
-#include	"screen_drawing_routines.asm"
+#include	"src/includes/ti_equates.asm"
+#include	"src/appvars.asm"
+#include	"src/screen_drawing_routines.asm"
 
-#include	"appvars/bank_equates.inc"
+#include	"src/appvars/bank_equates.inc"
 #undef Listing

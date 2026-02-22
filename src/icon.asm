@@ -1,7 +1,7 @@
 Tails_Icon:
 #if Version = 2
 	jp	_START
-	.db	1								
+	.db	1
 	.db	16, 16								
 	.db	$FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
 	.db	$FF, $C3, $C3, $C3, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $C3, $C3, $FF

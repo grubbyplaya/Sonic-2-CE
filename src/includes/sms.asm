@@ -14,6 +14,9 @@
 #define    Ports_VDP_Data      $BE
 #define    Ports_VDP_Control   $BF
 
+#define smsWidth 256
+#define smsHeight 192
+
 
 ; =========================================================
 ;  Input Bitfield

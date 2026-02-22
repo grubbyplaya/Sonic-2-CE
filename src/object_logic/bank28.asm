@@ -575,7 +575,7 @@ LABEL_B28_840E:
 
 
 ;Logic for crab badnik
-#include "object_logic/logic_crab_badnik.asm"
+#include "src/object_logic/logic_crab_badnik.asm"
 
 
 Logic_SHZ_YellowBird:	;$85F3
@@ -813,7 +813,7 @@ _:  	bit	6, (ix+$04)
 
 
 
-#include "object_logic/logic_glider.asm"
+#include "src/object_logic/logic_glider.asm"
 
 
 
@@ -926,7 +926,7 @@ DATA_B28_88C5
 
 
 ;Minecart logic
-#include "object_logic/logic_minecart.asm"
+#include "src/object_logic/logic_minecart.asm"
 
 
 DATA_B28_8B5A:
@@ -1557,11 +1557,11 @@ DATA_B28_901E:
 
 
 ;Logic for the end of level prison capsule
-#include "object_logic/logic_prison_capsule.asm"
+#include "src/object_logic/logic_prison_capsule.asm"
 
 
 ;Logic for the animals that fall from the prison capsule
-#include "object_logic/logic_prison_animals.asm"
+#include "src/object_logic/logic_prison_animals.asm"
 
 
 DATA_B28_9419:
@@ -2539,7 +2539,7 @@ LABEL_B28_9B0B:
 
 
 ; Logic for SHZ3 boss objects
-#include "object_logic/logic_shz3_boss.asm"
+#include "src/object_logic/logic_shz3_boss.asm"
 
 
 DATA_B28_9FB8:
@@ -3067,7 +3067,7 @@ _: 	ld	($D516), hl
 ;************************************
 ;* Logic for UGZ3 Boss - Robotnik	*
 ;************************************
-#include "object_logic/logic_ugz3_boss.asm"
+#include "src/object_logic/logic_ugz3_boss.asm"
 
 
 
@@ -4567,7 +4567,7 @@ Logic_Generic_CheckDestroyObject:	;$B311
 
 
 ;Logic for the Newtron (chameleon) badnik
-#include "object_logic/logic_newtron_badnik.asm"
+#include "src/object_logic/logic_newtron_badnik.asm"
 
 
 
@@ -6118,6 +6118,6 @@ _:	ret
 DATA_B28_BFAC:
 
 #if Listing=0
-#include "s2.lab"
+#include "bin/sonic2.lab"
 #endif
 #undef Listing

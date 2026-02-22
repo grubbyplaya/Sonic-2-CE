@@ -68,7 +68,7 @@ _:	push	bc
 	ld	de, Act3Text
 	ld	c, 5
 	call	VDP_DrawText
-	lea	ix, ix+2	;LEA IX, IX+2 is more efficient than INC IX \ INC IX
+	lea	ix, ix+2	;LEA IX, IX+2 is more efficient than INC IX / INC IX
 	lea	iy, iy+2	;same with IY
 	pop	bc
 	djnz	-_

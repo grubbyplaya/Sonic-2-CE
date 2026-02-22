@@ -505,11 +505,11 @@ LABEL_8040D:
 	rst $38	; Engine_Interrupt
 ; Data from 80414 to 83FFF (15340 bytes)
 DATA_80414:
-	#import "SHC/SHCDATA.bin"
+	#import "src/SHC/SHCDATA.bin"
 
 #define DATA_820D2  DATA_80414 + $1CBE
 #define DATA_823E1  DATA_80414 + $1FCD
 #define DATA_823E7  DATA_80414 + $1FD3
 #define DATA_8262E  DATA_80414 + $221A
 
-#include "s2.lab"
+#include "bin/sonic2.lab"

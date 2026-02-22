@@ -1,5 +1,6 @@
 EvaluateGame:
 	di
+	call	SetDefaultSPI
 
 	ld	hl, EndBG
 	ld	de, VRAM
@@ -16,7 +17,10 @@ EvaluateGame:
 	ld	hl, kbdG1
 _:	bit	kbit2nd, (hl)
 	jr	z, -_
+
 	ld	sp, ($D2DE02)		;reset SP
+	pop	iy
+	pop	iy
 	jp	SetupGame		;reset game
 
 
@@ -278,13 +282,13 @@ _:	inc	hl
 	jr	nz, DrawArtLoop
 	ret
 
-#include "includes/dzx0_fast.asm"
+#include "src/includes/dzx0_fast.asm"
 
 EndBG:
-#import "misc/EndBG.bin"
+#import "src/misc/EndBG.bin"
 
 EndPal:
-#import "misc/EndPal.bin"
+#import "src/misc/EndPal.bin"
 
 EmeraldTable:
 .dl	BlankEmerald
@@ -314,19 +318,19 @@ EmeraldCoords:
 .dl	$D4F324
 
 EmeraldBlue:
-#import "misc/Emeralds/EmeraldBlue.bin"
+#import "src/misc/Emeralds/EmeraldBlue.bin"
 EmeraldYellow:
-#import "misc/Emeralds/EmeraldYellow.bin"
+#import "src/misc/Emeralds/EmeraldYellow.bin"
 EmeraldPink:
-#import "misc/Emeralds/EmeraldPink.bin"
+#import "src/misc/Emeralds/EmeraldPink.bin"
 EmeraldGrey:
-#import "misc/Emeralds/EmeraldGrey.bin"
+#import "src/misc/Emeralds/EmeraldGrey.bin"
 EmeraldRed:
-#import "misc/Emeralds/EmeraldRed.bin"
+#import "src/misc/Emeralds/EmeraldRed.bin"
 EmeraldGreen:
-#import "misc/Emeralds/EmeraldGreen.bin"
+#import "src/misc/Emeralds/EmeraldGreen.bin"
 BlankEmerald:
-#import "misc/Emeralds/EmeraldBlank.bin"
+#import "src/misc/Emeralds/EmeraldBlank.bin"
 
 ProperBCD:
 .db $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29
@@ -346,4 +350,4 @@ ReverseBCD:
 .db 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 0, 0, 0, 0, 0, 0
 
 
-#include "misc/font.asm"
+#include "src/misc/font.asm"

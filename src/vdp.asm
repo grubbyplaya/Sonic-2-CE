@@ -2,8 +2,8 @@
 #define	VDP_ScreenMap			SegaVRAM+$3800
 #define	VDP_SATAddress			SegaVRAM+$3F00
 #define DrawTilemapTrig			$D4C0
-#define DrawSATTrig			$D4C1
 #define LastTilemapTrig			$D4C2
+
 ; =============================================================================
 ;	VDP_InitRegisters()
 ; -----------------------------------------------------------------------------
@@ -95,13 +95,38 @@ VDP_ReadStatus:	 ; $1325
 ;	None.
 ; -----------------------------------------------------------------------------
 VDP_SetAddress:	 ; Ported
-	push	af	
-	ld	a, h
-	and	$3F
-	ld	(VRAMPointer+1), a
-	ld	a, l
-	ld	(VRAMPointer), a	
-	pop	af	
+	res	6, h
+	ld	(VRAMPointer), hl
+	ret
+
+VDP_GetAddress16:	;get relative VRAM address
+	push	ix
+	push	hl
+	ld	ix, 0
+	add	ix, sp
+	ld	hl, (VRAMPointer)
+	ld	(ix+6), hl
+	pop	hl
+	pop	ix
+	ret
+
+VDP_GetAddress24:	;put actual VRAM address into DE
+	push	hl
+	push	de
+	call	VDP_GetAddress16
+	pop	de
+	ld.lil	hl, SegaVRAM
+	add.lil hl, de
+	ex.lil	de, hl
+	pop	hl
+	ret
+
+VDP_IncAddress:		;IN: BC = amount to increment
+	push	hl
+	ld	hl, (VRAMPointer)
+	add	hl, bc
+	ld	(VRAMPointer), hl
+	pop	hl
 	ret
 
 
@@ -514,7 +539,6 @@ VDP_UpdateSAT_Attributes:
 	ld	de, SegaVRAM+$3F80
 	ld	bc, $80
 	ldir
-	ld.sis	(DrawSATTrig), a
 	ret.sis
 
 ; =============================================================================
@@ -602,7 +626,5 @@ _:	; set the vpos and clear the hpos and char code
 	inc	de
 	
 	djnz	-_
-	xor	a
-	ld	(DrawSATTrig), a
 	ret
 .ASSUME ADL=0

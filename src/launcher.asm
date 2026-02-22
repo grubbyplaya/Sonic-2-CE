@@ -2,7 +2,7 @@
 .assume ADL = 1
 .org userMem - 2
 .db $EF, $7B
-#include "icon.asm"
+#include "src/icon.asm"
 
 _START:
 	di
@@ -41,6 +41,10 @@ SetupGame:
 	ld	bc, VRAMEnd-VRAM
 	ld	(hl), $00
 	ldir
+
+	call WaitAFrame
+
+	call	SetSonicSPI
 
 	;clear emulated memory map location
 	ld	hl, romStart
@@ -103,8 +107,13 @@ SetupGame:
 
 	ld	a, $D2
 	ld	mb, a
+
+	push iy
+	ld	hl, ExitGame
+	push	hl
 	ld	($D2DE02), sp
-	ld.lil	sp, $D1A545
+
+	ld	sp, $D1A545
 	ld.sis	sp, $DFF0
 	jp.sis	$0000	;start of program
 
@@ -114,7 +123,7 @@ LoadBank:
  	call	ChkFindSym
 	ex	de, hl			;point HL to appvar
 	pop	de
-	ld	bc, 16
+	ld	bc, 15
 	add	hl, bc			;offset HL into actual data
 	ld	c, (hl)
 	inc	hl
@@ -123,30 +132,61 @@ LoadBank:
 	ldir				;copy appvar to bank slot
 	ret
 
-#include "sega_logo.asm"
+ExitGame:
+	pop	iy
 
-#include "evaluate_game.asm"
+	call	SetDefaultSPI
 
-#include "includes/ti_equates.asm"
+	ld	a, $D0
+	ld	mb, a
+	ld	hl, $F00004
+	ld	(hl), $11
+	inc	hl
+	ld	(hl), $30
+	ld	hl, lcdNormalMode
+	ld	(mpLcdCtrl), hl
+	ld	hl, mpLcdPalette
+	ld	de, mpLcdPalette+1
+	ld	bc, $0040
+	ld	(hl), $00
+	ldir
+	
+	;clear emulated memory map location
+	ld	hl, romStart
+	ld	de, romStart+1
+	ld	bc, $FFFF
+	ld	(hl), $00
+	ldir
+	call	ClrLCDFull
+	ei
+	ret
+
+#include "src/spi.asm"
+
+#include "src/sega_logo.asm"
+
+#include "src/evaluate_game.asm"
+
+#include "src/includes/ti_equates.asm"
 
 Palettes:
-#include "includes/palettes.asm"
+#include "src/includes/palettes.asm"
 
 Sonic2_Engine:
 	.db AppVarObj, "Sonic2", 0
 
 Bank28:
-	.db	AppVarObj, "Bank28", 0
+	.db	AppVarObj, "S2B28", 0
 
 Bank30:
-	.db	AppVarObj, "Bank30", 0
+	.db	AppVarObj, "S2B30", 0
 
 Bank31:
-	.db	AppVarObj, "Bank31", 0
+	.db	AppVarObj, "S2B31", 0
 
 #define CollisionSize	Collision_End-Cllsn_Data_CollisionHeaders
 
 Coliision:
 .ORG $E000
-#include "collision_data.asm"
+#include "src/collision_data.asm"
 Collision_End:

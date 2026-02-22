@@ -32,8 +32,8 @@
 ; =========================================================
 ;  VDP Variables
 ;----------------------------------------------------------
-	#define VDP_HScroll 		$D877
-	#define VDP_VScroll		$D878
+	#define VDP_HScroll 		$FF77
+	#define VDP_VScroll			$FF78
 	#define VDP_ViewportX		$D179
 	#define VDP_ViewportY		$D17C
 	#define VDP_TileColBuffer 	$D17F    ; holds a column of tile indices before copying to the VDP
@@ -66,8 +66,6 @@
 #define  VDP_DefaultTileAttribs		$D2C7	; byte
 
 #define  Engine_CollisionDataPtr	$D2D4	; word - pointer to collision data for current level
-
-#define  Engine_DemoSeq_Bank		$D2D8
 
 #define  Engine_RingAnimFrame		$D351	; byte - ring animation frame number.
 #define  Cllsn_RingBlock		$D352	; byte - used by ring<>player collision routines to store ring metatile number.

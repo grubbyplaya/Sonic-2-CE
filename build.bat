@@ -1,51 +1,48 @@
 
 @echo off
-set /P VersionType=What version are you building? (1 = Normal, 2 = Easy): 
+set /P VersionType=What version are you building? (1 = Original, 2 = Normal): 
 set /P Language=What language are you using? (1 = English, 2 = French): 
-cd src
 
 echo Assembling game...
-spasm64 -E -D Version=%VersionType% launcher.asm bin/sonic2.8xp
-spasm64 -E -L -O -D Version=%VersionType% -D Listing=1 -D Language=%Language% s2.asm s2.8xv
+spasm64 -E -D Version=%VersionType% src/launcher.asm bin/sonic2.8xp
+spasm64 -E -L -O -D Version=%VersionType% -D Listing=1 -D Language=%Language% src/s2.asm bin/Sonic2.8xv
 
 echo Building Rom Listings...
-spasm64 -E -L -D Listing=1 object_logic/bank28.asm bin/bank28.8xv
-spasm64 -E -L -D Listing=1 appvars/bank30.asm bin/bank30.8xv
-spasm64 -E -L -D Listing=1 appvars/bank31.asm bin/bank31.8xv
+spasm64 -E -L -D Listing=1 src/object_logic/bank28.asm bin/S2B28.8xv
+spasm64 -E -L -D Listing=1 src/appvars/bank30.asm bin/S2B30.8xv
+spasm64 -E -L -D Listing=1 src/appvars/bank31.asm bin/S2B31.8xv
 
 echo Bulding ROM Banks...
-spasm64 -E -L appvars/bank04.asm bin/bank04.8xv
-spasm64 -E -L appvars/bank05.asm bin/bank05.8xv
-spasm64 -E -L appvars/bank06.asm bin/bank06.8xv
-spasm64 -E -L appvars/bank07.asm bin/bank07.8xv
-spasm64 -E -L appvars/bank08.asm bin/bank08.8xv
-spasm64 -E -L appvars/bank09.asm bin/bank09.8xv
-spasm64 -E -L appvars/bank10.asm bin/bank10.8xv
-spasm64 -E -L appvars/bank11.asm bin/bank11.8xv
-spasm64 -E -L appvars/bank12.asm bin/bank12.8xv
-spasm64 -E -L appvars/bank13.asm bin/bank13.8xv
-spasm64 -E -L appvars/bank14.asm bin/bank14.8xv
-spasm64 -E -L appvars/bank15.asm bin/bank15.8xv
-spasm64 -E -L appvars/bank16.asm bin/bank16.8xv
-spasm64 -E -L appvars/bank17.asm bin/bank17.8xv
-spasm64 -E -L appvars/bank18.asm bin/bank18.8xv
-spasm64 -E -L appvars/bank19.asm bin/bank19.8xv
-spasm64 -E -L appvars/bank20.asm bin/bank20.8xv
-spasm64 -E -L appvars/bank21.asm bin/bank21.8xv
-spasm64 -E -L appvars/bank22.asm bin/bank22.8xv
-spasm64 -E -L appvars/bank23.asm bin/bank23.8xv
-spasm64 -E -L appvars/bank24.asm bin/bank24.8xv
-spasm64 -E -L appvars/bank25.asm bin/bank25.8xv
-spasm64 -E -L appvars/bank26.asm bin/bank26.8xv
-spasm64 -E -L appvars/bank27.asm bin/bank27.8xv
-spasm64 -E -D Listing=0 object_logic/bank28.asm bin/bank28.8xv
-spasm64 -E -L bank29.asm bin/bank29.8xv
-spasm64 -E -D Listing=0 appvars/bank30.asm bin/bank30.8xv
-spasm64 -E -D Listing=0 appvars/bank31.asm bin/bank31.8xv
-spasm64 -E -L SHC/SHC.asm bin/bank32.8xv
-spasm64 -E -D Version=%VersionType% -D Listing=0 -D Language=%Language% s2.asm bin/Sonic2.8xv
-
-cd ..
+spasm64 -E -L src/appvars/bank04.asm bin/S2B04.8xv
+spasm64 -E -L src/appvars/bank05.asm bin/S2B05.8xv
+spasm64 -E -L src/appvars/bank06.asm bin/S2B06.8xv
+spasm64 -E -L src/appvars/bank07.asm bin/S2B07.8xv
+spasm64 -E -L src/appvars/bank08.asm bin/S2B08.8xv
+spasm64 -E -L src/appvars/bank09.asm bin/S2B09.8xv
+spasm64 -E -L src/appvars/bank10.asm bin/S2B10.8xv
+spasm64 -E -L src/appvars/bank11.asm bin/S2B11.8xv
+spasm64 -E -L src/appvars/bank12.asm bin/S2B12.8xv
+spasm64 -E -L src/appvars/bank13.asm bin/S2B13.8xv
+spasm64 -E -L src/appvars/bank14.asm bin/S2B14.8xv
+spasm64 -E -L src/appvars/bank15.asm bin/S2B15.8xv
+spasm64 -E -L src/appvars/bank16.asm bin/S2B16.8xv
+spasm64 -E -L src/appvars/bank17.asm bin/S2B17.8xv
+spasm64 -E -L src/appvars/bank18.asm bin/S2B18.8xv
+spasm64 -E -L src/appvars/bank19.asm bin/S2B19.8xv
+spasm64 -E -L src/appvars/bank20.asm bin/S2B20.8xv
+spasm64 -E -L src/appvars/bank21.asm bin/S2B21.8xv
+spasm64 -E -L src/appvars/bank22.asm bin/S2B22.8xv
+spasm64 -E -L src/appvars/bank23.asm bin/S2B23.8xv
+spasm64 -E -L src/appvars/bank24.asm bin/S2B24.8xv
+spasm64 -E -L src/appvars/bank25.asm bin/S2B25.8xv
+spasm64 -E -L src/appvars/bank26.asm bin/S2B26.8xv
+spasm64 -E -L src/appvars/bank27.asm bin/S2B27.8xv
+spasm64 -E -D Listing=0 src/object_logic/bank28.asm bin/S2B28.8xv
+spasm64 -E -L src/bank29.asm bin/S2B29.8xv
+spasm64 -E -D Listing=0 src/appvars/bank30.asm bin/S2B30.8xv
+spasm64 -E -D Listing=0 src/appvars/bank31.asm bin/S2B31.8xv
+spasm64 -E -L src/SHC/SHC.asm bin/S2B32.8xv
+spasm64 -E -D Version=%VersionType% -D Listing=0 -D Language=%Language% src/s2.asm bin/Sonic2.8xv
 
 echo Sonic the Hedgehog created by Sega
 echo Sonic the Hedgehog 2 8-bit developed by Aspect

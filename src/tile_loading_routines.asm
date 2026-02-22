@@ -1,28 +1,28 @@
 .ASSUME ADL=0
-;**************************************************
-;*			Variables
-;**************************************************
-#define	BitFieldCount	$D340
-#define	TileCount	$D342
-#define	FlagPointer	$D345
-#define	SourcePointer	$D348
+
+;**********************************
+;*	Variables
+;**********************************
+#define	TileCount		$D342
+#define	SourcePointer		$D346
+#define	BitFieldCount		$D340
+#define	FlagPointer		$D344
 
 ;**************************************************
 ;* LoadTiles - 
 ;* Load (un)compressed tile data into VRAM.
 ;* Expects VDP memory pointer to have been set.
-;*	
-;*	A  - Indexed tiles flag
-;*	HL - Source Address
+;*  
+;*  A	- Indexed tiles flag
+;*  HL	- Source Address
 ;**************************************************
 LoadTiles:
-_LABEL_1AA6_22:
 	;if $D34C is set, each byte of decompressed data 
 	;at $D300 is treated as an index into the mirroring
 	;table stored at $0100.
-	ld	($D34C), a
-	push	hl				;push the base address onto the stack
-	inc	hl				;read the tile data header
+	ld	($D34C), a		
+	push	hl						;push the base address onto the stack
+	inc	hl						;read the tile data header
 	inc	hl
 	ld	a, (hl)
 	ld	(TileCount), a			;tilecount lo-byte
@@ -34,54 +34,53 @@ _LABEL_1AA6_22:
 	inc	hl
 	ld	d, (hl)				;compression definition pointer (http://forums.sonicretro.org/index.php?showtopic=11509)
 	inc	hl
-	ld	(SourcePointer), hl		;tile data pointer
+	ld	(SourcePointer), hl	;tile data pointer
 	pop	hl
-	add	hl, de				;add the relative compression definition pointer to the base address
+	add	hl, de					;add the relative compression definition pointer to the base address
 	ld	(FlagPointer), hl		;store the compression definition pointer
-	ld	hl, $D320		;clear RAM $D320->$D340
+	ld	hl, $D320				;clear RAM $D320->$D340
 	ld	de, $D321
 	ld	bc, $001F
 	ld	(hl), $00
 	ldir
-	xor	a				;reset counter
+	xor	a						;reset counter
 	ld	(BitFieldCount), a
-
-_:	call	_GetCompressionType		;select the correct decompression method
-								
-	cp	$00				;$00 - blank tile
-	jr	nz, +_
-	call	WriteBlankTile			;write a blank tile to VRAM
-	jr	++++_
-	
-_:	cp	$02				;$02 - compressed tile
-	jr	nz, +_
-	call	LoadCompressedTile
-	call	WriteTileToVRAM
-	jr	+++_
-	
-_:	cp	$03				;$03 - xor compressed tile
-	jr	nz, +_
-	call	LoadCompressedTile
-	call	XORDecode
-	call	WriteTileToVRAM
-	jr	++_
-	
-_:	call	LoadUncompressedTile		;$01 - uncompressed tile
-	call	WriteTileToVRAM
-	
-_: 	ld	hl, (TileCount)			;decrement tile count
+LoadTiles_Loop:
+	call	LoadTiles_GetCompression
+	ld	hl, (TileCount)			;decrement tile count
 	dec	hl
 	ld	(TileCount), hl
 	ld	a, l
 	or	h
-	jr	nz, -----_
+	jr	nz, LoadTiles_Loop
 	ret
+
+LoadTiles_GetCompression:	;selects the correct decompression method		
+	call	GetCompressionType					
+	or	a					;$00 - blank tile
+	jp	z, WriteBlankTile			;write a blank tile to VRAM
+	
+	dec	a
+	jr	nz, +_
+	call	LoadUncompressedTile			;$01 - uncompressed tile
+	jp	WriteTileToVRAM
+	
+_:	dec	a					;$02 - compressed tile
+	jr	nz, +_
+	call	LoadCompressedTile
+	jp	WriteTileToVRAM
+	
+_:	dec	a					;$03 - xor compressed tile
+	ret	nz					;exit if invalid compression type
+	call	LoadCompressedTile
+	call	XORDecode
+	jp	WriteTileToVRAM
 
 ;*************************************************************
 ;*	Load uncompressed tile (direct copy from $D346 to $D300).
 ;*************************************************************
 LoadUncompressedTile:
-	ld	hl, (SourcePointer)	;copy 32 bytes from source to $D300	
+	ld	hl, (SourcePointer)	;copy 32 bytes from source to $D300
 	ld	de, $D300
 	ld	bc, $0020
 	ldir
@@ -94,7 +93,6 @@ LoadUncompressedTile:
 LoadCompressedTile:		;$1B1E
 	ld	ix, $D300				;destination address for decompressed tile data
 	ld	hl, (SourcePointer)	;read the bitmask
-
 	ld	e, (hl)
 	inc	hl
 	ld	d, (hl)
@@ -104,21 +102,23 @@ LoadCompressedTile:		;$1B1E
 	ld	b, (hl)
 	inc	hl
 	ld	a, $20
-_:	push	af
+LoadCompressedTile_Loop:
+	push	af
 	rr	b
 	rr	c
 	rr	d
 	rr	e
-	jr	c, +_		;if previous lsb was 0, read a byte from (hl)
+	jr	c, +_			;if previous lsb was 0, read a byte from (hl)
 	ld	(ix+0), $00	;previous lsb was 0 - write $00 to (ix)
-	jr	++_
+	jr	LoadCompressedTile_LoopBack
 _:	ld	a, (hl)		;read byte from (hl) and write to (ix)
 	ld	(ix+0), a
 	inc	hl				;increment source pointer
-_: 	inc	ix				;increment destination pointer
+LoadCompressedTile_LoopBack:
+	inc	ix				;increment destination pointer
 	pop	af
 	dec	a
-	jr	nz, ---_
+	jr	nz, LoadCompressedTile_Loop
 	ld	(SourcePointer), hl	;store next source pointer
 	ret
 
@@ -126,9 +126,10 @@ _: 	inc	ix				;increment destination pointer
 ;*	Decode XOR'ed tile data.
 ;*************************************************************
 XORDecode:
-	ld	ix, $D300	;decode data at $D300
+	ld	ix, $D300		;decode data at $D300
 	ld	b, $07
-_:	ld	a, (ix+0)		;xor byte at (ix+0) with byte at (ix+2)...
+XORDecode_Loop:
+	ld	a, (ix+0)		;xor byte at (ix+0) with byte at (ix+2)...
 	xor	(ix+2)
 	ld	(ix+2), a		;...and store the result at (ix+2)
 	
@@ -144,8 +145,8 @@ _:	ld	a, (ix+0)		;xor byte at (ix+0) with byte at (ix+2)...
 	xor	(ix+19)
 	ld	(ix+19), a		;...and store result at (ix+19)
 	
-	lea	ix, ix+2		;ix += 2
-	djnz	-_
+	lea	ix, ix+2				;ix += 2
+	djnz	XORDecode_Loop
 	ret
 
 ;**********************************************************************
@@ -156,7 +157,7 @@ _:	ld	a, (ix+0)		;xor byte at (ix+0) with byte at (ix+2)...
 ;*	See: http://forums.sonicretro.org/index.php?showtopic=10063
 ;*
 ;**********************************************************************
-_GetCompressionType:
+GetCompressionType:
 	ld	a, (BitFieldCount)		;get counter value (4 flags per byte)
 	cp	$04			;do we need to increment flag-byte pointer?
 	jr	nz, +_
@@ -171,10 +172,10 @@ _:	ld	b, a
 	ld	hl, (FlagPointer)	;read flag pointer
 	ld	a, (hl)
 _:	dec	b
-	jp	m, +_	;jump if sign (<0)
+	jp	m, +_			;jump if sign (<0)
 	rrca				;rotate previous compression type out
 	rrca
-	jr	-_
+	jp	-_
 _:	and	$03
 	push	af
 	ld	a, (BitFieldCount)
@@ -198,52 +199,38 @@ WriteBlankTile:
 ;*	Write the decompressed tile data (at $D300) to VRAM
 ;*************************************************************
 WriteTileToVRAM:
-	ld.lil	hl, $D2D300		;copy 32 bytes from $D300 to VRAM
-	ld	ix, (VRAMPointer)
-	call	SetTileCacheFlags
 	ld	a, ($D34C)
 	or	a
-	jr	nz, WriteMirroredTileToVRAM
-
+	call	nz, LoadMirroredTile
+	call	VDP_GetAddress24
+	ld.lil	hl, $D300 + romStart		;copy 32 bytes from $D300 to VRAM
 	ld	bc, $0020
-	push	ix
-	ld.lil	de, SegaVRAM
-	add.lil	ix, de
-	push.lil ix
-	pop.lil	de
-	pop	ix
-	add	ix, bc
 	ldir.lil
 
-	ld	(VRAMPointer), ix
+	call	SetTileCacheFlags
+	ld	bc, $0020
+	call	VDP_IncAddress
 	ret
 
 ;************************************************************
-;*	Write tile data to VRAM. Data at $D300 is treated as an	*
-;*	index into the mirroring data at $0100.					*
+;*	Write tile data to VRAM. Data at $D300 is treated as an	
+;*	index into the mirroring data at $0100.
 ;************************************************************
-WriteMirroredTileToVRAM:
+LoadMirroredTile:
+	ld	hl, $D300
 	ld	b, $20
 _:	ld	e, (hl)		;read a byte of tile data from RAM
-	ld	d, $01
-	push	ix
-	exx
-	ld.lil	de, SegaVRAM
-	add.lil	ix, de
-	exx
-	ld	a, (de)		;"flip" the byte by using it as an		
-	ld.lil	(ix), a		;index into the array at $100 and
-	pop	ix		;retrieving the value
-	inc	ix
+	ld	d, Engine_Data_ByteFlipLUT >> 8
+	;"flip" the byte by using it as an index into the array at $100 and retrieving the value
+	ld	a, (de)	
+	ld	(hl), a
 	inc	hl
-	ld	(VRAMPointer), ix
 	djnz	-_
 	ret
 
 SetTileCacheFlags:
-	exx
-	lea	hl, ix
-
+	push	hl
+	call	VDP_GetAddress16
 	;divide the address pointer by the tile size
 	srl	h
 	rr	l		;hl /= 2
@@ -261,5 +248,5 @@ SetTileCacheFlags:
 	ld.lil	bc, SegaTileFlags
 	add.lil	hl, bc
 	res.lil	0, (hl)			;flag this tile for redrawing
-	exx
+	pop	hl
 	ret

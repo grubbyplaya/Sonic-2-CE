@@ -5,34 +5,34 @@
 .db $08, $00
 
 DemoControlSequence_GHZ:
-#import "demo\demo_control_sequence_ghz.bin"
+#import "src/demo/demo_control_sequence_ghz.bin"
 
 DemoControlSequence_SHZ:
-#import "demo\demo_control_sequence_shz.bin"
+#import "src/demo/demo_control_sequence_shz.bin"
 
 Art_Rings_UGZ:
-#import "art\rings\rings_ucmp_ugz.bin"
+#import "src/art/rings/rings_ucmp_ugz.bin"
 
 Art_Rings_SHZ1_3:
-#import "art\rings\rings_ucmp_shz1_3.bin"
+#import "src/art/rings/rings_ucmp_shz1_3.bin"
 
 Art_Rings_SHZ2:
-#import "art\rings\rings_ucmp_shz2.bin"
+#import "src/art/rings/rings_ucmp_shz2.bin"
 
 Art_Rings_ALZ:
-#import "art\rings\rings_ucmp_alz.bin"
+#import "src/art/rings/rings_ucmp_alz.bin"
 
 Art_Rings_GHZ:
-#import "art\rings\rings_ucmp_ghz.bin"
+#import "src/art/rings/rings_ucmp_ghz.bin"
 
 Art_Rings_GMZ:
-#import "art\rings\rings_ucmp_gmz.bin"
+#import "src/art/rings/rings_ucmp_gmz.bin"
 
 Art_Rings_SEZ:
-#import "art\rings\rings_ucmp_sez.bin"
+#import "src/art/rings/rings_ucmp_sez.bin"
 
 Art_Rings_CEZ:
-#import "art\rings\rings_ucmp_cez.bin"
+#import "src/art/rings/rings_ucmp_cez.bin"
 
 LABEL_B29_B400:				;push the last 16 sprites off of the screen
 	ld      b, $10			;by setting the VPOS attribute
@@ -206,10 +206,10 @@ LABEL_B29_B51C:
 
 ;movement data for the credits text?
 DATA_B29_B522:
-#import "unknown\bank29_B522.bin"
+#import "src/unknown/bank29_B522.bin"
 
 DATA_B29_B542:
-#import "unknown\bank29_B542.bin"
+#import "src/unknown/bank29_B542.bin"
 
 EndSequence_Data_CreditsText:
-#include "end_credits.asm"
+#include "src/end_credits.asm"

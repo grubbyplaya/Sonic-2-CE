@@ -15,103 +15,103 @@ DATA_28FE:	;mappings for act logo
 
 DATA_2904:	;mappings for "GREEN HILLS"
  #if Language = 1
-  #import "mappings/titlecard/titlecard_mappings_2904.bin"
+  #import "src/mappings/titlecard/titlecard_mappings_2904.bin"
 #else Language = 2
-  #import "mappings/titlecard/titlecard_mappings_2904_FR.bin"
+  #import "src/mappings/titlecard/titlecard_mappings_2904_FR.bin"
 #endif
 
 
 DATA_2974:
-  #import "mappings/titlecard/titlecard_mappings_2974.bin"
+  #import "src/mappings/titlecard/titlecard_mappings_2974.bin"
 
 
 DATA_299C:
-  #import "mappings/titlecard/titlecard_mappings_299C.bin"
+  #import "src/mappings/titlecard/titlecard_mappings_299C.bin"
 
 
 DATA_29C4:	;mappings for "AQUA LAKE"
 #if Language = 1
-  #import "mappings/titlecard/titlecard_mappings_29C4.bin"
+  #import "src/mappings/titlecard/titlecard_mappings_29C4.bin"
 #else Language = 2
-  #import "mappings/titlecard/titlecard_mappings_29C4_FR.bin"
+  #import "src/mappings/titlecard/titlecard_mappings_29C4_FR.bin"
 #endif
 
 
 DATA_2A34:	;mappings for "UNDER GROUND"
 #if Language = 1
-  #import "mappings/titlecard/titlecard_mappings_2A34.bin"
+  #import "src/mappings/titlecard/titlecard_mappings_2A34.bin"
 #else Language = 2
-  #import "mappings/titlecard/titlecard_mappings_2A34_FR.bin"
+  #import "src/mappings/titlecard/titlecard_mappings_2A34_FR.bin"
 #endif
 
 
 DATA_2AA4:	;mappings for "SKY HIGH"
 #if Language = 1
-  #import "mappings/titlecard/titlecard_mappings_2AA4.bin"
+  #import "src/mappings/titlecard/titlecard_mappings_2AA4.bin"
 #else Language = 2
-  #import "mappings/titlecard/titlecard_mappings_2AA4_FR.bin"
+  #import "src/mappings/titlecard/titlecard_mappings_2AA4_FR.bin"
 #endif
 
 
 
 DATA_2B14:	;mappings for "GIMMICK MT."
 #if Language = 1
-  #import "mappings/titlecard/titlecard_mappings_2B14.bin"
+  #import "src/mappings/titlecard/titlecard_mappings_2B14.bin"
 #else Language = 2
-  #import "mappings/titlecard/titlecard_mappings_2B14_FR.bin"
+  #import "src/mappings/titlecard/titlecard_mappings_2B14_FR.bin"
 #endif
 
 
 DATA_2B84:	;unused "MOUNTAIN" mappings
-  #import "mappings/titlecard/titlecard_mappings_2B84.bin"
+  #import "src/mappings/titlecard/titlecard_mappings_2B84.bin"
 
 
 DATA_2BF4:	;mappings for "SCRAMBLED EGG"
 #if Language = 1
-  #import "mappings/titlecard/titlecard_mappings_2BF4.bin"
+  #import "src/mappings/titlecard/titlecard_mappings_2BF4.bin"
 #else Language = 2
-  #import "mappings/titlecard/titlecard_mappings_2BF4_FR.bin"
+  #import "src/mappings/titlecard/titlecard_mappings_2BF4_FR.bin"
 #endif
 
 
 DATA_2C64:	;mappings for "CRYSTAL EGG"
 #if Language = 1
-  #import "mappings/titlecard/titlecard_mappings_2C64.bin"
+  #import "src/mappings/titlecard/titlecard_mappings_2C64.bin"
 #else Language = 2
-  #import "mappings/titlecard/titlecard_mappings_2C64_FR.bin"
+  #import "src/mappings/titlecard/titlecard_mappings_2C64_FR.bin"
 #endif
 
 DATA_2D0C:	
-  #import "mappings/titlecard/titlecard_mappings_2D0C.bin"
+  #import "src/mappings/titlecard/titlecard_mappings_2D0C.bin"
 
 
 DATA_2D6C:
-  #import "mappings/titlecard/titlecard_mappings_2D6C.bin"
+  #import "src/mappings/titlecard/titlecard_mappings_2D6C.bin"
 
 
 DATA_2D98:
-  #import "mappings/titlecard/titlecard_mappings_2D98.bin"
+  #import "src/mappings/titlecard/titlecard_mappings_2D98.bin"
 
 
 DATA_2DAC:
-  #import "mappings/titlecard/titlecard_mappings_2DAC.bin"
+  #import "src/mappings/titlecard/titlecard_mappings_2DAC.bin"
 
 
 DATA_2DC0:
-  #import "mappings/titlecard/titlecard_mappings_2DC0.bin"
+  #import "src/mappings/titlecard/titlecard_mappings_2DC0.bin"
 
 
 DATA_2DD4:
-  #import "mappings/titlecard/titlecard_mappings_2DD4.bin"
+  #import "src/mappings/titlecard/titlecard_mappings_2DD4.bin"
 
 
 DATA_2E04:
-  #import "mappings/titlecard/titlecard_mappings_2E04.bin"
+  #import "src/mappings/titlecard/titlecard_mappings_2E04.bin"
 
 
 DATA_2E90:
-  #import "mappings/titlecard/titlecard_mappings_2E90.bin"
+  #import "src/mappings/titlecard/titlecard_mappings_2E90.bin"
 
 
 DATA_2F1C:
-  #import "mappings/titlecard/titlecard_mappings_2F1C.bin"
+  #import "src/mappings/titlecard/titlecard_mappings_2F1C.bin"
